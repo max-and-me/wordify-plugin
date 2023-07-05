@@ -17,11 +17,14 @@
 //!             governing permissions and limitations under the License.
 //------------------------------------------------------------------------------
 
-// #include "ARATestDocumentController.h"
 #include "ARA_API/ARAVST3.h"
+#include "ara_document_controller.h"
 
 ARA_DISABLE_VST3_WARNINGS_BEGIN
 
+namespace mam {
+
+//------------------------------------------------------------------------
 class ARAMainFactory : public ARA::IMainFactory
 {
 public:
@@ -47,12 +50,14 @@ public:
     //------------------------------------------------------------------------
     const ARA::ARAFactory* PLUGIN_API getFactory() SMTG_OVERRIDE
     {
-        // Implement me!
-        return nullptr; // ARATestDocumentController::getARAFactory();
+        return ARADocumentController::getARAFactory();
     }
 };
 
-IMPLEMENT_FUNKNOWN_METHODS(ARAMainFactory,
+//------------------------------------------------------------------------
+} // namespace mam
+
+IMPLEMENT_FUNKNOWN_METHODS(mam::ARAMainFactory,
                            ARA::IMainFactory,
                            ARA::IMainFactory::iid)
 

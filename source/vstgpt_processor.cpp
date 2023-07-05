@@ -3,10 +3,10 @@
 //------------------------------------------------------------------------
 
 #include "vstgpt_processor.h"
-#include "vstgpt_cids.h"
-
+#include "ara_document_controller.h"
 #include "base/source/fstreamer.h"
 #include "pluginterfaces/vst/ivstparameterchanges.h"
+#include "vstgpt_cids.h"
 
 using namespace Steinberg;
 
@@ -155,8 +155,7 @@ VstGPTProcessor::bindToDocumentControllerWithRoles(
 //-----------------------------------------------------------------------------
 const ARA::ARAFactory* PLUGIN_API VstGPTProcessor::getFactory()
 {
-    // TODO
-    return nullptr; // ARATestDocumentController::getARAFactory();
+    return ARADocumentController::getARAFactory();
 }
 
 //------------------------------------------------------------------------
