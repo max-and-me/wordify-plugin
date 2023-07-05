@@ -1,4 +1,5 @@
 # VST 3 GPT Plug-In
+[![CMake (Linux, macOS, Windows)](https://github.com/rehans/vst-gpt/actions/workflows/cmake.yml/badge.svg)](https://github.com/rehans/vst-gpt/actions/workflows/cmake.yml)
 
 ## Clone and Build
 
