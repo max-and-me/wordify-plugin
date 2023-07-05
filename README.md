@@ -4,7 +4,7 @@
 ## Clone and Build
 
 ```cmd
-git clone <this repository>
+git clone https://github.com/rehans/vst-gpt.git
 mkdir build
 cd build
 cmake -DCMAKE_BUILD_TYPE=Debug ../<repo_name>
