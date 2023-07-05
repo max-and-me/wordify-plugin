@@ -131,5 +131,33 @@ tresult PLUGIN_API VstGPTProcessor::getState(IBStream* state)
     return kResultOk;
 }
 
+//-----------------------------------------------------------------------------
+const ARA::ARAPlugInExtensionInstance* PLUGIN_API
+VstGPTProcessor::bindToDocumentController(
+    ARA::ARADocumentControllerRef /*documentControllerRef*/)
+{
+    ARA_VALIDATE_API_STATE(
+        false && "call is deprecated in ARA 2, host must not call this");
+    return nullptr;
+}
+
+//-----------------------------------------------------------------------------
+const ARA::ARAPlugInExtensionInstance* PLUGIN_API
+VstGPTProcessor::bindToDocumentControllerWithRoles(
+    ARA::ARADocumentControllerRef documentControllerRef,
+    ARA::ARAPlugInInstanceRoleFlags knownRoles,
+    ARA::ARAPlugInInstanceRoleFlags assignedRoles)
+{
+    return _araPlugInExtension.bindToARA(documentControllerRef, knownRoles,
+                                         assignedRoles);
+}
+
+//-----------------------------------------------------------------------------
+const ARA::ARAFactory* PLUGIN_API VstGPTProcessor::getFactory()
+{
+    // TODO
+    return nullptr; // ARATestDocumentController::getARAFactory();
+}
+
 //------------------------------------------------------------------------
 } // namespace mam

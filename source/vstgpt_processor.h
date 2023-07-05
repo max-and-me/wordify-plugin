@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include "ARA_API/ARAVST3.h"
+#include "ARA_Library/PlugIn/ARAPlug.h"
 #include "public.sdk/source/vst/vstaudioeffect.h"
 
 namespace mam {
@@ -11,7 +13,9 @@ namespace mam {
 //------------------------------------------------------------------------
 //  VstGPTProcessor
 //------------------------------------------------------------------------
-class VstGPTProcessor : public Steinberg::Vst::AudioEffect
+class VstGPTProcessor : public Steinberg::Vst::AudioEffect,
+                        public ARA::IPlugInEntryPoint,
+                        public ARA::IPlugInEntryPoint2
 {
 public:
     VstGPTProcessor();
@@ -23,9 +27,9 @@ public:
         return (Steinberg::Vst::IAudioProcessor*)new VstGPTProcessor;
     }
 
-    //--- ---------------------------------------------------------------------
+    //-------------------------------------------------------------------------
     // AudioEffect overrides:
-    //--- ---------------------------------------------------------------------
+    //-------------------------------------------------------------------------
     /** Called at first after constructor */
     Steinberg::tresult PLUGIN_API initialize(Steinberg::FUnknown* context)
         SMTG_OVERRIDE;
@@ -56,7 +60,29 @@ public:
         SMTG_OVERRIDE;
 
     //------------------------------------------------------------------------
+    // ARA::IPlugInEntryPoint2 overrides:
+    //------------------------------------------------------------------------
+    /** Get associated ARA factory */
+    const ARA::ARAFactory* PLUGIN_API getFactory() SMTG_OVERRIDE;
+
+    /** Bind to ARA document controller instance */
+    const ARA::ARAPlugInExtensionInstance* PLUGIN_API bindToDocumentController(
+        ARA::ARADocumentControllerRef documentControllerRef) SMTG_OVERRIDE;
+    const ARA::ARAPlugInExtensionInstance* PLUGIN_API
+    bindToDocumentControllerWithRoles(
+        ARA::ARADocumentControllerRef documentControllerRef,
+        ARA::ARAPlugInInstanceRoleFlags knownRoles,
+        ARA::ARAPlugInInstanceRoleFlags assignedRoles) SMTG_OVERRIDE;
+
+    OBJ_METHODS(VstGPTProcessor, AudioEffect)
+    DEFINE_INTERFACES
+    DEF_INTERFACE(IPlugInEntryPoint)
+    DEF_INTERFACE(IPlugInEntryPoint2)
+    END_DEFINE_INTERFACES(AudioEffect)
+    REFCOUNT_METHODS(AudioEffect)
+    //------------------------------------------------------------------------
 protected:
+    ARA::PlugIn::PlugInExtension _araPlugInExtension;
 };
 
 //------------------------------------------------------------------------
