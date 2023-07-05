@@ -10,7 +10,7 @@ namespace mam {
 const ARA::ARAFactory* ARADocumentController::getARAFactory() noexcept
 {
     return ARA::PlugIn::PlugInEntry::getPlugInEntry<ARATestFactoryConfig,
-                                                    ARATestDocumentController>()
+                                                    ARADocumentController>()
         ->getFactory();
 }
 
