@@ -60,4 +60,32 @@ void ARADocumentController::didEnableAudioSourceSamplesAccess(
 }
 
 //------------------------------------------------------------------------
+ARA::PlugIn::AudioSource* ARADocumentController::doCreateAudioSource(
+    ARA::PlugIn::Document* document,
+    ARA::ARAAudioSourceHostRef hostRef) noexcept
+{
+    auto audio_src = Super::doCreateAudioSource(document, hostRef);
+
+    // TODO: We need to create our own AudioSource here in order
+    // to analyze it later
+
+    return audio_src;
+}
+
+//------------------------------------------------------------------------
+void ARADocumentController::didUpdateAudioSourceProperties(
+    ARA::PlugIn::AudioSource* audioSource) noexcept
+{
+    // TODO: Trigger or schedule analysis here!
+    /* From the ARA doc
+        // create temporary host audio reader and let it fill the cache
+        ARA::PlugIn::HostAudioReader audioReader { audio_src };
+        std::vector<void*> dataPointers { channelCount };
+        for (auto c { 0U }; c < channelCount; ++c)
+            dataPointers[c] = _sampleCache.data () + c * sampleCount;
+        audioReader.readAudioSamples (0, static_cast<ARA::ARASampleCount>
+        (sampleCount), dataPointers.data ());
+    */
+}
+//------------------------------------------------------------------------
 } // namespace mam

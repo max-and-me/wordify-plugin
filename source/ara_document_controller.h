@@ -16,6 +16,7 @@ public:
     //--------------------------------------------------------------------
     // publish inherited constructor
     using ARA::PlugIn::DocumentController::DocumentController;
+    using Super = ARA::PlugIn::DocumentController;
 
     // getter for the companion API implementations
     static const ARA::ARAFactory* getARAFactory() noexcept;
@@ -39,6 +40,12 @@ public:
     void
     didEnableAudioSourceSamplesAccess(ARA::PlugIn::AudioSource* audioSource,
                                       bool enable) noexcept override;
+    ARA::PlugIn::AudioSource*
+    doCreateAudioSource(ARA::PlugIn::Document* document,
+                        ARA::ARAAudioSourceHostRef hostRef) noexcept override;
+    void didUpdateAudioSourceProperties(
+        ARA::PlugIn::AudioSource* audioSource) noexcept override;
+
     //--------------------------------------------------------------------
 protected:
 };
