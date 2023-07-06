@@ -3,9 +3,8 @@
 //------------------------------------------------------------------------
 
 #include "ara_factory_config.h"
+#include "projectversion.h"
 #include "vstgpt_defines.h"
-
-#define VSTGPT_VERSION_STRING "0.9.0"
 
 #define VSTGPT_FACTORY_ID "org.maxandme.vstgptplugin.arafactory"
 #define VSTGPT_DOCUMENT_ARCHIVE_ID                                             \
@@ -42,7 +41,7 @@ const char* ARAFactoryConfig::getInformationURL() const noexcept
 //--------------------------------------------------------------------
 const char* ARAFactoryConfig::getVersion() const noexcept
 {
-    return VSTGPT_VERSION_STRING;
+    return VERSION_STR;
 }
 
 //--------------------------------------------------------------------
