@@ -3,14 +3,12 @@
 //------------------------------------------------------------------------
 
 #include "ara_main_factory.h"
+#include "public.sdk/source/main/pluginfactory.h"
 #include "version.h"
 #include "vstgpt_cids.h"
 #include "vstgpt_controller.h"
+#include "vstgpt_defines.h"
 #include "vstgpt_processor.h"
-
-#include "public.sdk/source/main/pluginfactory.h"
-
-#define stringPluginName "VstGPT"
 
 using namespace Steinberg::Vst;
 using namespace mam;
@@ -28,16 +26,16 @@ DEF_CLASS_IID(ARA::IPlugInEntryPoint2)
 
 // clang-format off
 
-BEGIN_FACTORY_DEF("Max And Me",
-				  "https://www.maxandme.org",
-				  "mailto:info@maxandme.org")
+BEGIN_FACTORY_DEF(COMPANY_NAME_STR,
+				  COMPANY_URL_STR,
+				  COMPANY_EMAIL_STR)
 
 //---First Plug-in included in this factory-------
 // its kVstAudioEffectClass component
 DEF_CLASS2(INLINE_UID_FROM_FUID(kVstGPTProcessorUID),
 		   PClassInfo::kManyInstances,		// cardinality
 		   kVstAudioEffectClass,			// the component category (do not changed this)
-		   stringPluginName,				// here the Plug-in name (to be changed)
+		   PLUGIN_NAME_STR,				// here the Plug-in name (to be changed)
 		   Vst::kDistributable,				// means that component and controller could be distributed on different computers
 		   VstGPTVST3Category,				// Subcategory for this Plug-in (to be changed)
 		   FULL_VERSION_STR,				// Plug-in version (to be changed)
@@ -48,7 +46,7 @@ DEF_CLASS2(INLINE_UID_FROM_FUID(kVstGPTProcessorUID),
 DEF_CLASS2(INLINE_UID_FROM_FUID(kVstGPTControllerUID),
 		   PClassInfo::kManyInstances,		 // cardinality
 		   kVstComponentControllerClass,	 // the Controller category (do not changed this)
-		   stringPluginName "Controller",	 // controller name (could be the same than component name)
+		   PLUGIN_NAME_STR "Controller",	 // controller name (could be the same than component name)
 		   0,								 // not used here
 		   "",								 // not used here
 		   FULL_VERSION_STR,				 // Plug-in version (to be changed)
@@ -59,7 +57,7 @@ DEF_CLASS2(INLINE_UID_FROM_FUID(kVstGPTControllerUID),
 DEF_CLASS2(INLINE_UID_FROM_FUID(ARAMainFactory::getClassFUID()),
 		   PClassInfo::kManyInstances,		   // cardinality
 		   kARAMainFactoryClass,			   // the ARA Main Factory category (do not changed this)
-		   stringPluginName "ARA Factory",				   // here the Plug-in name (MUST be the same as component name if multiple kVstAudioEffectClass components are used!)
+		   PLUGIN_NAME_STR "ARA Factory",				   // here the Plug-in name (MUST be the same as component name if multiple kVstAudioEffectClass components are used!)
 		   0,								   // not used here
 		   "",								   // not used here
 		   FULL_VERSION_STR,				   // Plug-in version (to be changed)
