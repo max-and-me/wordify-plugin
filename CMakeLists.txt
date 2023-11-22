@@ -13,17 +13,21 @@ add_subdirectory(extern)
 smtg_enable_vst3_sdk()
 
 smtg_add_vst3plugin(VstGPT
+    source/analyse_buffer.cpp
+    source/analyse_buffer.h
+    source/ara_audio_source.cpp
+    source/ara_audio_source.h
     source/ara_document_controller.cpp
     source/ara_document_controller.h
     source/ara_factory_config.cpp
     source/ara_factory_config.h
     source/version.h
     source/vstgpt_cids.h
-    source/vstgpt_processor.h
-    source/vstgpt_processor.cpp
-    source/vstgpt_controller.h
     source/vstgpt_controller.cpp
+    source/vstgpt_controller.h
     source/vstgpt_entry.cpp
+    source/vstgpt_processor.cpp
+    source/vstgpt_processor.h
 )
 
 smtg_target_add_plugin_resources(VstGPT
@@ -41,6 +45,7 @@ target_link_libraries(VstGPT
     PRIVATE
         sdk
         ARA_PlugIn_Library
+        tiny-process-library
 )
 
 smtg_target_configure_version_file(VstGPT)

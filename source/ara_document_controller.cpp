@@ -4,6 +4,8 @@
 
 #include "ara_document_controller.h"
 #include "ara_factory_config.h"
+#include "ara_audio_source.h"
+#include "analyse_buffer.h"
 
 namespace mam {
 
@@ -45,7 +47,10 @@ void ARADocumentController::doUpdateAudioSourceContent(
     const ARA::ARAContentTimeRange* range,
     ARA::ContentUpdateScopes scopeFlags) noexcept
 {
+    // TODO
+    
 }
+
 
 //------------------------------------------------------------------------
 void ARADocumentController::willEnableAudioSourceSamplesAccess(
@@ -57,6 +62,12 @@ void ARADocumentController::willEnableAudioSourceSamplesAccess(
 void ARADocumentController::didEnableAudioSourceSamplesAccess(
     ARA::PlugIn::AudioSource* audioSource, bool enable) noexcept
 {
+    auto testAudioSource = dynamic_cast<ARATestAudioSource*> (audioSource);
+    
+    if (testAudioSource == nullptr)
+        return;
+    
+    testAudioSource->updateRenderSampleCache();
 }
 
 //------------------------------------------------------------------------
@@ -64,8 +75,9 @@ ARA::PlugIn::AudioSource* ARADocumentController::doCreateAudioSource(
     ARA::PlugIn::Document* document,
     ARA::ARAAudioSourceHostRef hostRef) noexcept
 {
-    auto audio_src = Super::doCreateAudioSource(document, hostRef);
+    auto audio_src = new ARATestAudioSource(document, hostRef);
 
+    analyse_buffer(nullptr);
     // TODO: We need to create our own AudioSource here in order
     // to analyze it later
 
