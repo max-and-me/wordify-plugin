@@ -71,6 +71,20 @@ elseif(SMTG_WIN)
             "--pluginfolder \"$(OutDir)/\""
         )
     endif()
+
+    if(WIN32)
+        target_compile_definitions(VstGPT
+            PUBLIC
+                -D_UNICODE
+                -DUNICODE
+        )
+    
+        target_compile_definitions(tiny-process-library
+            PUBLIC
+                -D_UNICODE
+                -DUNICODE
+        )
+    endif()
 endif(SMTG_MAC)
 
 # VSTGUI support
