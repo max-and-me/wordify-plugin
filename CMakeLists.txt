@@ -97,3 +97,8 @@ target_link_libraries(VstGPT
     PRIVATE
         vstgui_support
 )
+
+set_target_properties(tiny-process-library
+    PROPERTIES
+        POSITION_INDEPENDENT_CODE ON
+)
