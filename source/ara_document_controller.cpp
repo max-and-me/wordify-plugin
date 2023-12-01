@@ -3,9 +3,9 @@
 //------------------------------------------------------------------------
 
 #include "ara_document_controller.h"
-#include "ara_factory_config.h"
-#include "ara_audio_source.h"
 #include "analyse_buffer.h"
+#include "ara_audio_source.h"
+#include "ara_factory_config.h"
 
 namespace mam {
 
@@ -48,9 +48,7 @@ void ARADocumentController::doUpdateAudioSourceContent(
     ARA::ContentUpdateScopes scopeFlags) noexcept
 {
     // TODO
-    
 }
-
 
 //------------------------------------------------------------------------
 void ARADocumentController::willEnableAudioSourceSamplesAccess(
@@ -62,12 +60,13 @@ void ARADocumentController::willEnableAudioSourceSamplesAccess(
 void ARADocumentController::didEnableAudioSourceSamplesAccess(
     ARA::PlugIn::AudioSource* audioSource, bool enable) noexcept
 {
-    auto testAudioSource = dynamic_cast<ARATestAudioSource*> (audioSource);
-    
+    auto testAudioSource = dynamic_cast<ARATestAudioSource*>(audioSource);
+
     if (testAudioSource == nullptr)
         return;
-    
-    testAudioSource->updateRenderSampleCache();
+
+    if (enable)
+        testAudioSource->updateRenderSampleCache();
 }
 
 //------------------------------------------------------------------------

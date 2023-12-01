@@ -35,7 +35,7 @@ public:
     const float*
     getRenderSampleCacheForChannel(ARA::ARAChannelCount channel) const;
     void destroyRenderSampleCache();
-    MultiChannelBufferType& get_audio_buffers();
+    MultiChannelBufferType& get_audio_buffers() { return audio_buffers; }
 
 protected:
     MultiChannelBufferType audio_buffers;
