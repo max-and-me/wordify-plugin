@@ -6,10 +6,16 @@
 
 #include "ARA_Library/PlugIn/ARAPlug.h"
 
+namespace mam {
+
 //------------------------------------------------------------------------
 class ARATestAudioSource : public ARA::PlugIn::AudioSource
 {
 public:
+    using SampleType             = float;
+    using ChannelBufferType      = std::vector<SampleType>;
+    using MultiChannelBufferType = std::vector<ChannelBufferType>;
+
     ARATestAudioSource(ARA::PlugIn::Document* document,
                        ARA::ARAAudioSourceHostRef hostRef)
     : AudioSource{document, hostRef}
@@ -29,7 +35,12 @@ public:
     const float*
     getRenderSampleCacheForChannel(ARA::ARAChannelCount channel) const;
     void destroyRenderSampleCache();
+    MultiChannelBufferType& get_audio_buffers();
 
 protected:
+    MultiChannelBufferType audio_buffers;
     std::vector<float> _sampleCache;
 };
+
+//------------------------------------------------------------------------
+}
