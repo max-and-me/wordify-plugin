@@ -47,6 +47,7 @@ target_link_libraries(VstGPT
         ARA_PlugIn_Library
         tiny-process-library
         sndfile
+        meta-words
 )
 
 smtg_target_configure_version_file(VstGPT)
