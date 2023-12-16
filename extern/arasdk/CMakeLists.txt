@@ -6,7 +6,7 @@ include(FetchContent)
 FetchContent_Declare(
     arasdk
     GIT_REPOSITORY https://github.com/Celemony/ARA_SDK.git
-    GIT_TAG 8e893bfc7d6847c2100a47ad4314599994533458
+    GIT_TAG 53fc2b887abed5ddb6047b1ad7acee60604c6489
     SOURCE_SUBDIR ARA_Library
 )
 
