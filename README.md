@@ -11,6 +11,24 @@ cmake -DCMAKE_BUILD_TYPE=Debug ../<repo_name>
 cmake --build .
 ```
 
+## Dependency Graph
+
+![Alt text](doc/VstGPT.dot.VstGPT.png "Dependency Graph")
+
+### How to generate
+
+```shell
+cmake --build . --target VstGPT-dependency-graph
+cd graphviz
+dot -Tpng -O ./VstGPT.dot.VstGPT
+cp ./VstGPT.dot.VstGPT.png ../../vst-gpt/doc    
+```
+
+Copy the generated ```VstGPT.dot.VstGPT.png``` into the ```doc``` folder.
+
+> TODO: Automate this!!
+
+
 ## How to whisper
 
 How to use the whisper library:

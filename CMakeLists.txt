@@ -108,3 +108,8 @@ set_property(
     PROPERTY
         POSITION_INDEPENDENT_CODE ON
 )
+
+# Dependency Graph
+add_custom_target(${PROJECT_NAME}-dependency-graph
+    COMMAND ${CMAKE_COMMAND} ${CMAKE_SOURCE_DIR} --graphviz=${CMAKE_BINARY_DIR}/graphviz/${PROJECT_NAME}.dot
+)
