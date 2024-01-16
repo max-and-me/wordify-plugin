@@ -8,3 +8,4 @@
 #define COMPANY_NAME_STR "Max And Me"
 #define COMPANY_URL_STR "https://www.maxandme.org"
 #define COMPANY_EMAIL_STR "mailto:info@maxandme.org"
+#define PLUGIN_IDENTIFIER "org.maxandme.vstgpt"

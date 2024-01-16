@@ -5,7 +5,9 @@
 #include "ara_audio_source.h"
 
 #include "sndfile.h"
+#include "vstgpt_defines.h"
 #include <cmath>
+#include <filesystem>
 #include <functional>
 
 namespace mam {
@@ -79,7 +81,7 @@ int write_audio_file(const PathType& file_path,
     sfinfo.channels   = channel_count;
     sfinfo.format     = (SF_FORMAT_WAV | SF_FORMAT_PCM_16);
 
-    if (!(file = sf_open(file_path.data(), SFM_WRITE, &sfinfo)))
+    if (!(file = sf_open(file_path.data(), SFM_RDWR, &sfinfo)))
     {
         printf("Error : Not able to open output file.\n");
         free(buffer);
@@ -144,9 +146,13 @@ void ARATestAudioSource::updateRenderSampleCache()
     for (auto& ch : audio_buffers)
         ch.resize(this->getSampleCount());
 
+    auto tmp_dir = std::filesystem::temp_directory_path();
+    tmp_dir /= PLUGIN_IDENTIFIER;
+    std::filesystem::create_directories(tmp_dir);
+    tmp_dir /= PathType(this->getName());
+
     read_audio_from_host(*this);
-    write_audio_to_file(*this,
-                        PathType{"/home/rene/Documents/VstGPT/sine.wav"});
+    write_audio_to_file(*this, PathType{tmp_dir});
 
 #else
     ARA_INTERNAL_ASSERT(isSampleAccessEnabled());
