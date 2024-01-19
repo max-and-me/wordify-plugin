@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.14.0)
-set(CMAKE_OSX_DEPLOYMENT_TARGET 10.12 CACHE STRING "")
+set(CMAKE_OSX_DEPLOYMENT_TARGET 10.15 CACHE STRING "")
 
 project(VstGPT
     # This is your plug-in version number. Change it here only.
