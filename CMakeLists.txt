@@ -100,6 +100,11 @@ target_link_libraries(VstGPT
         vstgui_support
 )
 
+target_compile_features(VstGPT 
+    PRIVATE
+        cxx_std_17
+)
+
 set_property(
     TARGET
         ARA_PlugIn_Library
@@ -107,6 +112,16 @@ set_property(
         sndfile
     PROPERTY
         POSITION_INDEPENDENT_CODE ON
+)
+
+# test
+add_executable(temp-dir-test
+    test/test_temp_dir.cpp
+)
+
+target_compile_features(temp-dir-test 
+    PRIVATE
+        cxx_std_17
 )
 
 # Dependency Graph
