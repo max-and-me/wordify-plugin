@@ -9,6 +9,9 @@
 #include <cmath>
 #include <filesystem>
 #include <functional>
+#include "mam/meta_words/runner.h"
+#include <iostream>
+
 
 namespace mam {
 namespace {
@@ -132,6 +135,43 @@ void write_audio_to_file(ARATestAudioSource& audio_src,
                      func);
 }
 
+//-----------------------------------------------------------------------------
+meta_words::MetaWords run_sync(mam::meta_words::Command& cmd)
+{
+    std::cout << "Run sync..." << '\n';
+
+    mam::meta_words::FnProgress fn_progress = [](double val) { double tmp = val; };
+
+    return (run(cmd, fn_progress));
+}
+
+//------------------------------------------------------------------------
+mam::meta_words::MetaWords process_audio_with_meta_words (const PathType& file_path)
+{
+    using namespace mam::meta_words;
+    
+    // whisper.cpp executable
+    const PathType executable =
+        "/Users/max/Documents/Code/vst-gpt/build_whisper/bin/"
+        "main";
+    //  The whisper.cpp library takes the audio file and writes the result
+    //  of its analysis into a CSV file. The file is named like the audio
+    //  file and by prepending ".csv" e.g. my_speech.wav ->
+    //  my_speech.wav.csv
+    const Options options         = {"-ocsv"};
+    const OneValArgs one_val_args = {
+        // model file resp. binary
+        {"-m", "/Users/max/Documents/Code/vst-gpt/whisper.cpp/models/ggml-base.en.bin"},
+        // audio file to analyse
+        {"-f", file_path},
+        // maximum segment length in characters: "1" mains one word
+        {"-ml", "1"}};
+
+    Command cmd{executable, options, one_val_args};
+
+    return run_sync(cmd);
+};
+
 //------------------------------------------------------------------------
 } // namespace
 
@@ -152,8 +192,14 @@ void ARATestAudioSource::updateRenderSampleCache()
     tmp_dir /= PathType(this->getName());
 
     read_audio_from_host(*this);
-    write_audio_to_file(*this, PathType{tmp_dir});
-
+    
+    auto path = PathType{tmp_dir};
+    write_audio_to_file(*this, path);
+   
+    auto meta_words = process_audio_with_meta_words (path);
+    for (auto& word : meta_words)
+        std::cout << word.word;
+    
 #else
     ARA_INTERNAL_ASSERT(isSampleAccessEnabled());
 
