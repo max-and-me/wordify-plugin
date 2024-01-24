@@ -4,6 +4,7 @@
 		"bitmaps": {},
 		"fonts": {},
 		"colors": {},
+		"control-tags": {},
 		"custom": {
 			"FocusDrawing": {},
 			"VST3Editor": {
@@ -17,19 +18,19 @@
 			},
 			"UIEditController": {
 				"EditViewScale": "1",
-				"EditorSize": "0, 0, 1164, 495",
-				"SplitViewSize_0_0": "0.7228144989339019277352349490683991461992",
-				"SplitViewSize_0_1": "0.2345415778251599137060878774718730710447",
-				"SplitViewSize_1_0": "0.4776119402985074535727960665099089965224",
-				"SplitViewSize_1_1": "0.5117270788912580137264285440323874354362",
-				"SplitViewSize_2_0": "0.8453608247422680355143143060558941215277",
-				"SplitViewSize_2_1": "0.1503436426116838420252719288328080438077",
+				"EditorSize": "0, 0, 1221, 568",
+				"SplitViewSize_0_0": "0.7601476014760147892346253684081602841616",
+				"SplitViewSize_0_1": "0.2029520295202952018254194399560219608247",
+				"SplitViewSize_1_0": "0.481549815498154953896658980738720856607",
+				"SplitViewSize_1_1": "0.5110701107011069721508533802989404648542",
+				"SplitViewSize_2_0": "0.5700245700245700763986178571940399706364",
+				"SplitViewSize_2_1": "0.4258804258804259057491492512781405821443",
 				"TabSwitchValue": "0",
 				"Version": "1"
 			},
 			"UIAttributesController": {},
 			"UIViewCreatorDataSource": {
-				"SelectedRow": "3"
+				"SelectedRow": "25"
 			}
 		},
 		"templates": {
@@ -42,6 +43,7 @@
 					"opacity": "1",
 					"origin": "0, 0",
 					"size": "300, 300",
+					"sub-controller": "MetaWordsListController",
 					"transparent": "false",
 					"wants-focus": "false"
 				},
@@ -62,12 +64,39 @@
 							"min-value": "0",
 							"mouse-enabled": "true",
 							"opacity": "1",
-							"origin": "180, 130",
+							"origin": "100, 20",
 							"round-rect-radius": "0",
 							"size": "100, 20",
 							"title": "VST_GPT",
 							"transparent": "false",
 							"wants-focus": "true",
+							"wheel-inc-value": "0.1"
+						}
+					},
+					"CStringListControl": {
+						"attributes": {
+							"back-color": "~ WhiteCColor",
+							"back-color-selected": "~ BlueCColor",
+							"class": "CStringListControl",
+							"default-value": "0.5",
+							"font": "~ NormalFont",
+							"font-color": "~ BlackCColor",
+							"font-color-selected": "~ WhiteCColor",
+							"hover-color": "#00000064",
+							"line-color": "~ BlackCColor",
+							"line-width": "1",
+							"max-value": "1",
+							"min-value": "0",
+							"mouse-enabled": "true",
+							"opacity": "0.95",
+							"origin": "40, 80",
+							"row-height": "12",
+							"size": "180, 24",
+							"style-hover": "true",
+							"text-alignment": "left",
+							"text-inset": "5",
+							"transparent": "false",
+							"wants-focus": "false",
 							"wheel-inc-value": "0.1"
 						}
 					}

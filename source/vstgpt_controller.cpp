@@ -4,6 +4,7 @@
 
 #include "vstgpt_controller.h"
 #include "vstgpt_cids.h"
+#include "vstgpt_listcontroller.h"
 #include "vstgui/plugin-bindings/vst3editor.h"
 
 using namespace Steinberg;
@@ -110,4 +111,12 @@ tresult PLUGIN_API VstGPTController::getParamValueByString(
 }
 
 //------------------------------------------------------------------------
+VSTGUI::IController* VstGPTController::createSubController (
+                                                            VSTGUI::UTF8StringPtr name, const VSTGUI::IUIDescription* /*description*/, VSTGUI::VST3Editor* /*editor*/)
+{
+    if (VSTGUI::UTF8StringView (name) == "MetaWordsListController")
+        return new VstGPTListController ();
+    
+    return nullptr;
+}
 } // namespace mam

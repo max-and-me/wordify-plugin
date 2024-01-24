@@ -26,6 +26,8 @@ smtg_add_vst3plugin(VstGPT
    source/vstgpt_controller.cpp
    source/vstgpt_controller.h
    source/vstgpt_entry.cpp
+   source/vstgpt_listcontroller.h
+   source/vstgpt_listcontroller.cpp
    source/vstgpt_processor.cpp
    source/vstgpt_processor.h
 )

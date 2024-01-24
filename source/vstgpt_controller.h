@@ -5,13 +5,15 @@
 #pragma once
 
 #include "public.sdk/source/vst/vsteditcontroller.h"
+#include "vstgui/plugin-bindings/vst3editor.h"
 
 namespace mam {
 
 //------------------------------------------------------------------------
 //  VstGPTController
 //------------------------------------------------------------------------
-class VstGPTController : public Steinberg::Vst::EditControllerEx1
+class VstGPTController : public Steinberg::Vst::EditControllerEx1,
+                         public VSTGUI::VST3EditorDelegate
 {
 public:
     //------------------------------------------------------------------------
@@ -49,6 +51,8 @@ public:
         Steinberg::Vst::ParamID tag,
         Steinberg::Vst::TChar* string,
         Steinberg::Vst::ParamValue& valueNormalized) SMTG_OVERRIDE;
+    
+    VSTGUI::IController* createSubController (VSTGUI::UTF8StringPtr name, const VSTGUI::IUIDescription* description, VSTGUI::VST3Editor* editor) SMTG_OVERRIDE;
 
     //---Interface---------
     DEFINE_INTERFACES
