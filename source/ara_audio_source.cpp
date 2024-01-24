@@ -1,17 +1,18 @@
 //------------------------------------------------------------------------
-// Copyright(c) 2023 Max And Me.
+// Copyright(c) 2024 Max And Me.
 //------------------------------------------------------------------------
-
 #include "ara_audio_source.h"
 
 #include "sndfile.h"
+#include "vstgpt_context.h"
 #include "vstgpt_defines.h"
+
+#include "mam/meta_words/runner.h"
+
 #include <cmath>
 #include <filesystem>
 #include <functional>
-#include "mam/meta_words/runner.h"
 #include <iostream>
-
 
 namespace mam {
 namespace {
@@ -199,6 +200,9 @@ void ARATestAudioSource::updateRenderSampleCache()
     auto meta_words = process_audio_with_meta_words (path);
     for (auto& word : meta_words)
         std::cout << word.word;
+    
+    VstGPTContext* context = VstGPTContext::getInstance ();
+    context->setData(VstGPTContext::Data{meta_words});
     
 #else
     ARA_INTERNAL_ASSERT(isSampleAccessEnabled());

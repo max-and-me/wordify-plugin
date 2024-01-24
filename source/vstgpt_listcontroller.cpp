@@ -3,6 +3,7 @@
 //------------------------------------------------------------------------
 
 #include "vstgpt_listcontroller.h"
+#include "vstgpt_context.h"
 
 #include "vstgui/lib/controls/clistcontrol.h"
 #include "vstgui/lib/controls/cstringlist.h"
@@ -33,13 +34,19 @@ CView* VstGPTListController::verifyView (CView* view,
     
     if (listControl)
     {
-        listControl->setMax(12);
+        VstGPTContext* context = VstGPTContext::getInstance ();
+        
+        listControl->setMax(context->getData().words.size()-1);
         listControl->recalculateLayout();
         
         if (auto stringListDrawer =  dynamic_cast<StringListControlDrawer*> (listControl->getDrawer ()))
         {
-            stringListDrawer->setStringProvider([] (int32_t row) {
-                UTF8String string ("FooBarBaz");
+            stringListDrawer->setStringProvider([context] (int32_t row) {
+                meta_words::MetaWords words = context->getData().words;
+                meta_words::MetaWord word = words.at (row);
+                std::string name = word.word;
+                
+                UTF8String string (name.data());
                 return getPlatformFactory ().createString (string);
             });
         }

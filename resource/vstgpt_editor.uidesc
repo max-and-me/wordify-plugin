@@ -18,31 +18,32 @@
 			},
 			"UIEditController": {
 				"EditViewScale": "1",
-				"EditorSize": "0, 0, 1221, 568",
-				"SplitViewSize_0_0": "0.7601476014760147892346253684081602841616",
-				"SplitViewSize_0_1": "0.2029520295202952018254194399560219608247",
-				"SplitViewSize_1_0": "0.481549815498154953896658980738720856607",
-				"SplitViewSize_1_1": "0.5110701107011069721508533802989404648542",
-				"SplitViewSize_2_0": "0.5700245700245700763986178571940399706364",
-				"SplitViewSize_2_1": "0.4258804258804259057491492512781405821443",
+				"EditorSize": "0, 0, 1342, 584",
+				"SplitViewSize_0_0": "0.7670250896057347889112065786321181803942",
+				"SplitViewSize_0_1": "0.1971326164874551978289929365928401239216",
+				"SplitViewSize_1_0": "0.4829749103942652110887934213678818196058",
+				"SplitViewSize_1_1": "0.5116487455197132883100152866973076015711",
+				"SplitViewSize_2_0": "0.608792846497764550406373018631711602211",
+				"SplitViewSize_2_1": "0.3874813710879284611721118380955886095762",
 				"TabSwitchValue": "0",
-				"Version": "1"
+				"Version": "1",
+				"ViewBackground": "1"
 			},
 			"UIAttributesController": {},
 			"UIViewCreatorDataSource": {
-				"SelectedRow": "25"
+				"SelectedRow": "19"
 			}
 		},
 		"templates": {
 			"view": {
 				"attributes": {
-					"background-color": "~ BlackCColor",
+					"background-color": "~ TransparentCColor",
 					"background-color-draw-style": "filled and stroked",
 					"class": "CViewContainer",
 					"mouse-enabled": "true",
 					"opacity": "1",
 					"origin": "0, 0",
-					"size": "300, 300",
+					"size": "880, 360",
 					"sub-controller": "MetaWordsListController",
 					"transparent": "false",
 					"wants-focus": "false"
@@ -64,7 +65,7 @@
 							"min-value": "0",
 							"mouse-enabled": "true",
 							"opacity": "1",
-							"origin": "100, 20",
+							"origin": "380, 40",
 							"round-rect-radius": "0",
 							"size": "100, 20",
 							"title": "VST_GPT",
@@ -73,31 +74,59 @@
 							"wheel-inc-value": "0.1"
 						}
 					},
-					"CStringListControl": {
+					"CScrollView": {
 						"attributes": {
-							"back-color": "~ WhiteCColor",
-							"back-color-selected": "~ BlueCColor",
-							"class": "CStringListControl",
-							"default-value": "0.5",
-							"font": "~ NormalFont",
-							"font-color": "~ BlackCColor",
-							"font-color-selected": "~ WhiteCColor",
-							"hover-color": "#00000064",
-							"line-color": "~ BlackCColor",
-							"line-width": "1",
-							"max-value": "1",
-							"min-value": "0",
+							"auto-drag-scrolling": "false",
+							"auto-hide-scrollbars": "false",
+							"background-color": "~ BlackCColor",
+							"background-color-draw-style": "filled and stroked",
+							"bordered": "true",
+							"class": "CScrollView",
+							"container-size": "230, 588",
+							"follow-focus-view": "false",
+							"horizontal-scrollbar": "false",
 							"mouse-enabled": "true",
-							"opacity": "0.95",
-							"origin": "40, 80",
-							"row-height": "12",
-							"size": "180, 24",
-							"style-hover": "true",
-							"text-alignment": "left",
-							"text-inset": "5",
+							"opacity": "1",
+							"origin": "310, 70",
+							"overlay-scrollbars": "false",
+							"scrollbar-background-color": "#ffffffc8",
+							"scrollbar-frame-color": "~ BlackCColor",
+							"scrollbar-scroller-color": "~ GreyCColor",
+							"scrollbar-width": "16",
+							"size": "240, 240",
 							"transparent": "false",
-							"wants-focus": "false",
-							"wheel-inc-value": "0.1"
+							"vertical-scrollbar": "true",
+							"wants-focus": "false"
+						},
+						"children": {
+							"CStringListControl": {
+								"attributes": {
+									"back-color": "~ WhiteCColor",
+									"back-color-selected": "~ GreyCColor",
+									"class": "CStringListControl",
+									"default-value": "0.5",
+									"font": "~ SymbolFont",
+									"font-color": "~ BlackCColor",
+									"font-color-selected": "~ WhiteCColor",
+									"hover-color": "#00000064",
+									"line-color": "~ BlackCColor",
+									"line-width": "1",
+									"max-value": "48",
+									"min-value": "0",
+									"mouse-enabled": "true",
+									"opacity": "0.95",
+									"origin": "0, 0",
+									"row-height": "12",
+									"size": "230, 588",
+									"style-hover": "true",
+									"sub-controller": "MetaWordsListController",
+									"text-alignment": "center",
+									"text-inset": "5",
+									"transparent": "false",
+									"wants-focus": "false",
+									"wheel-inc-value": "0.1"
+								}
+							}
 						}
 					}
 				}

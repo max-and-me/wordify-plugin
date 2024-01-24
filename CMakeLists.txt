@@ -23,6 +23,8 @@ smtg_add_vst3plugin(VstGPT
    source/ara_factory_config.h
    source/version.h
    source/vstgpt_cids.h
+   source/vstgpt_context.h
+   source/vstgpt_context.cpp
    source/vstgpt_controller.cpp
    source/vstgpt_controller.h
    source/vstgpt_entry.cpp
