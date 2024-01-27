@@ -5,18 +5,25 @@
 #pragma once
 
 #include "ARA_Library/PlugIn/ARAPlug.h"
+#include "vstgpt_context.h"
 
 namespace mam {
 //------------------------------------------------------------------------
 // ARADocumentController
 //------------------------------------------------------------------------
-class ARADocumentController : public ARA::PlugIn::DocumentController
+class ARADocumentController : public ARA::PlugIn::DocumentController, public mam::ContextListenerAdapter
 {
 public:
     //--------------------------------------------------------------------
     // publish inherited constructor
     using ARA::PlugIn::DocumentController::DocumentController;
     using Super = ARA::PlugIn::DocumentController;
+    
+    virtual ~ARADocumentController ()
+    {
+        VstGPTContext* context = VstGPTContext::getInstance ();
+        context->unregisterContextListener (this);
+    };
 
     // getter for the companion API implementations
     static const ARA::ARAFactory* getARAFactory() noexcept;
@@ -45,6 +52,8 @@ public:
                         ARA::ARAAudioSourceHostRef hostRef) noexcept override;
     void didUpdateAudioSourceProperties(
         ARA::PlugIn::AudioSource* audioSource) noexcept override;
+    
+    void onRequestLocatorPosChanged (double pos) override;
 
     //--------------------------------------------------------------------
 protected:

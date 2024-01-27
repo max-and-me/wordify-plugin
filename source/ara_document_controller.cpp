@@ -74,6 +74,10 @@ ARA::PlugIn::AudioSource* ARADocumentController::doCreateAudioSource(
     ARA::PlugIn::Document* document,
     ARA::ARAAudioSourceHostRef hostRef) noexcept
 {
+    
+    VstGPTContext* context = VstGPTContext::getInstance ();
+    context->registerContextListener (this);
+    
     auto audio_src = new ARATestAudioSource(document, hostRef);
 
     analyse_buffer(nullptr);
@@ -97,6 +101,14 @@ void ARADocumentController::didUpdateAudioSourceProperties(
         audioReader.readAudioSamples (0, static_cast<ARA::ARASampleCount>
         (sampleCount), dataPointers.data ());
     */
+}
+
+//------------------------------------------------------------------------
+void ARADocumentController::onRequestLocatorPosChanged (double pos)
+{
+    auto hostPBCtrl = getHostPlaybackController();
+    if (hostPBCtrl)
+        hostPBCtrl->requestSetPlaybackPosition(ARA::ARATimePosition{pos});
 }
 //------------------------------------------------------------------------
 } // namespace mam

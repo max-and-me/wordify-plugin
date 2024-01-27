@@ -21,6 +21,7 @@ public:
     : AudioSource{document, hostRef}
     {
     }
+    virtual ~ARATestAudioSource (){};
 
     // render thread sample access:
     // in order to keep this test code as simple as possible, our test audio

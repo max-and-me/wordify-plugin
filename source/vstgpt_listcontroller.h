@@ -6,7 +6,11 @@
 
 #include "vstgui/uidescription/icontroller.h"
 #include "base/source/fobject.h"
+#include "vstgui/lib/iviewlistener.h"
 
+namespace VSTGUI {
+    class CListControl;
+}
 namespace mam {
 
 class VstGPTListController : public Steinberg::FObject, public VSTGUI::IController
@@ -14,19 +18,20 @@ class VstGPTListController : public Steinberg::FObject, public VSTGUI::IControll
 public:
 //------------------------------------------------------------------------
     VstGPTListController ();
-	virtual ~VstGPTListController ();
+    virtual ~VstGPTListController ();
 
     void PLUGIN_API update (FUnknown* changedUnknown, Steinberg::int32 message) override {};
 	VSTGUI::CView* verifyView (VSTGUI::CView* view, const VSTGUI::UIAttributes& attributes,
 	                           const VSTGUI::IUIDescription* description) override;
-    void valueChanged (VSTGUI::CControl* pControl) override {};
+    //IControlListener
+    void valueChanged (VSTGUI::CControl* pControl) override;
     void controlBeginEdit (VSTGUI::CControl* pControl) override {};
     void controlEndEdit (VSTGUI::CControl* pControl) override {};
 
 	OBJ_METHODS (VstGPTListController, FObject)
 //------------------------------------------------------------------------
 private:
-	VSTGUI::CControl* sizeControl = nullptr;
+	VSTGUI::CListControl* listControl = nullptr;
 };
 
 //------------------------------------------------------------------------
