@@ -8,7 +8,7 @@
 		"custom": {
 			"FocusDrawing": {},
 			"VST3Editor": {
-				"Path": "/Users/max/Documents/Code/vst-gpt/vst-gpt/resource/vstgpt_editor.uidesc"
+				"Path": "/mnt/veracrypt2/Developer/github/max-and-me/vst-gpt/resource/vstgpt_editor.uidesc"
 			},
 			"UIGridController": {
 				"Grids": "1x 1,5x 5,10x 10,12x 12,15x 15"
@@ -21,8 +21,8 @@
 				"EditorSize": "0, 0, 1342, 584",
 				"SplitViewSize_0_0": "0.7670250896057347889112065786321181803942",
 				"SplitViewSize_0_1": "0.1971326164874551978289929365928401239216",
-				"SplitViewSize_1_0": "0.4829749103942652110887934213678818196058",
-				"SplitViewSize_1_1": "0.5116487455197132883100152866973076015711",
+				"SplitViewSize_1_0": "0.4838709677419354981964261241955682635307",
+				"SplitViewSize_1_1": "0.5125448028673834643953455270093400031328",
 				"SplitViewSize_2_0": "0.608792846497764550406373018631711602211",
 				"SplitViewSize_2_1": "0.3874813710879284611721118380955886095762",
 				"TabSwitchValue": "0",
@@ -49,31 +49,6 @@
 					"wants-focus": "false"
 				},
 				"children": {
-					"CCheckBox": {
-						"attributes": {
-							"autosize-to-fit": "false",
-							"boxfill-color": "~ WhiteCColor",
-							"boxframe-color": "~ BlackCColor",
-							"checkmark-color": "~ RedCColor",
-							"class": "CCheckBox",
-							"default-value": "0.5",
-							"draw-crossbox": "false",
-							"font": "~ SystemFont",
-							"font-color": "~ WhiteCColor",
-							"frame-width": "1",
-							"max-value": "1",
-							"min-value": "0",
-							"mouse-enabled": "true",
-							"opacity": "1",
-							"origin": "380, 40",
-							"round-rect-radius": "0",
-							"size": "100, 20",
-							"title": "VST_GPT",
-							"transparent": "false",
-							"wants-focus": "true",
-							"wheel-inc-value": "0.1"
-						}
-					},
 					"CScrollView": {
 						"attributes": {
 							"auto-drag-scrolling": "false",
@@ -82,7 +57,7 @@
 							"background-color-draw-style": "filled and stroked",
 							"bordered": "true",
 							"class": "CScrollView",
-							"container-size": "230, 588",
+							"container-size": "230, 312",
 							"follow-focus-view": "false",
 							"horizontal-scrollbar": "false",
 							"mouse-enabled": "true",
@@ -105,19 +80,19 @@
 									"back-color-selected": "~ GreyCColor",
 									"class": "CStringListControl",
 									"default-value": "0.5",
-									"font": "~ SymbolFont",
+									"font": "~ NormalFont",
 									"font-color": "~ BlackCColor",
 									"font-color-selected": "~ WhiteCColor",
 									"hover-color": "#00000064",
 									"line-color": "~ BlackCColor",
 									"line-width": "1",
-									"max-value": "48",
+									"max-value": "25",
 									"min-value": "0",
 									"mouse-enabled": "true",
 									"opacity": "0.95",
 									"origin": "0, 0",
 									"row-height": "12",
-									"size": "230, 588",
+									"size": "230, 312",
 									"style-hover": "true",
 									"sub-controller": "MetaWordsListController",
 									"text-alignment": "center",
