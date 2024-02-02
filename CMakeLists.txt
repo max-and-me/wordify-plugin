@@ -114,6 +114,7 @@ set_property(
         ARA_PlugIn_Library
         tiny-process-library
         sndfile
+        meta-words
     PROPERTY
         POSITION_INDEPENDENT_CODE ON
 )
