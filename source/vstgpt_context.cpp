@@ -25,13 +25,22 @@ void VstGPTContext::unregisterContextListener(IContextListener* listener)
 }
 
 //------------------------------------------------------------------------
+using Seconds      = const double;
+using MilliSeconds = const double;
+static MilliSeconds to_milliseconds(Seconds val)
+{
+    return val / 1000.;
+}
+
+//------------------------------------------------------------------------
 void VstGPTContext::onRequestSelectWord(int index)
 {
     if (listeners)
     {
         meta_words::MetaWord word = data.words.at(index);
         listeners->forEach([this, word](IContextListener* listener) {
-            listener->onRequestLocatorPosChanged(word.begin / 10000);
+            MilliSeconds pos = to_milliseconds(word.begin);
+            listener->onRequestLocatorPosChanged(pos);
         });
     }
 }
