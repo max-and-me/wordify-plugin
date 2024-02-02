@@ -119,6 +119,13 @@ set_property(
         POSITION_INDEPENDENT_CODE ON
 )
 
+# whisper.cpp exe and model
+target_compile_definitions(VstGPT
+    PRIVATE
+        MAM_WHISPER_CPP_EXECUTABLE="$<TARGET_FILE:main>"
+        MAM_WHISPER_CPP_MODEL_DOWNLOAD_DIR="${MAM_WHISPER_CPP_MODEL_DOWNLOAD_DIR}"
+)
+
 # test
 add_executable(temp-dir-test
     test/test_temp_dir.cpp
