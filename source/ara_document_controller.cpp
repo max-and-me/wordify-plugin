@@ -6,6 +6,7 @@
 #include "ara_audio_source.h"
 #include "ara_factory_config.h"
 #include "meta_words_audio_modification.h"
+#include "meta_words_playback_region.h"
 
 namespace mam {
 
@@ -114,6 +115,22 @@ void ARADocumentController::didUpdateAudioSourceProperties(
         audioReader.readAudioSamples (0, static_cast<ARA::ARASampleCount>
         (sampleCount), dataPointers.data ());
     */
+}
+
+//------------------------------------------------------------------------
+ARA::PlugIn::PlaybackRegion* ARADocumentController::doCreatePlaybackRegion(
+    ARA::PlugIn::AudioModification* modification,
+    ARA::ARAPlaybackRegionHostRef hostRef) noexcept
+{
+    return new mam::meta_words::PlaybackRegion(modification, hostRef);
+}
+
+//------------------------------------------------------------------------
+void ARADocumentController::didUpdatePlaybackRegionProperties(
+    ARA::PlugIn::PlaybackRegion* playbackRegion) noexcept
+{
+    ARA::PlugIn::DocumentController::didUpdatePlaybackRegionProperties(
+        playbackRegion);
 }
 
 //------------------------------------------------------------------------

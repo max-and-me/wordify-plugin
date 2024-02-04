@@ -63,6 +63,13 @@ public:
     void didUpdateAudioModificationProperties(
         ARA::PlugIn::AudioModification* audioModification) noexcept override;
 
+    ARA::PlugIn::PlaybackRegion* doCreatePlaybackRegion(
+        ARA::PlugIn::AudioModification* modification,
+        ARA::ARAPlaybackRegionHostRef hostRef) noexcept override;
+
+    void didUpdatePlaybackRegionProperties(
+        ARA::PlugIn::PlaybackRegion* playbackRegion) noexcept override;
+
     void onRequestLocatorPosChanged(double pos) override;
 
     //--------------------------------------------------------------------
