@@ -195,9 +195,7 @@ void ARATestAudioSource::updateRenderSampleCache()
     auto path = PathType{tmp_dir};
     write_audio_to_file(*this, path);
 
-    auto meta_words = process_audio_with_meta_words(path);
-    for (auto& word : meta_words)
-        std::cout << word.word;
+    meta_words = process_audio_with_meta_words(path);
 
     VstGPTContext* context = VstGPTContext::getInstance();
     context->setData(VstGPTContext::Data{meta_words});

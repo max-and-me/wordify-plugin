@@ -5,6 +5,7 @@
 #pragma once
 
 #include "ARA_Library/PlugIn/ARAPlug.h"
+#include "mam/meta_words/meta_word.h"
 
 namespace mam {
 
@@ -15,13 +16,14 @@ public:
     using SampleType             = float;
     using ChannelBufferType      = std::vector<SampleType>;
     using MultiChannelBufferType = std::vector<ChannelBufferType>;
+    using MetaWords              = mam::meta_words::MetaWords;
 
     ARATestAudioSource(ARA::PlugIn::Document* document,
                        ARA::ARAAudioSourceHostRef hostRef)
     : AudioSource{document, hostRef}
     {
     }
-    virtual ~ARATestAudioSource (){};
+    virtual ~ARATestAudioSource(){};
 
     // render thread sample access:
     // in order to keep this test code as simple as possible, our test audio
@@ -41,7 +43,8 @@ public:
 protected:
     MultiChannelBufferType audio_buffers;
     std::vector<float> _sampleCache;
+    MetaWords meta_words;
 };
 
 //------------------------------------------------------------------------
-}
+} // namespace mam
