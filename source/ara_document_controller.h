@@ -11,18 +11,19 @@ namespace mam {
 //------------------------------------------------------------------------
 // ARADocumentController
 //------------------------------------------------------------------------
-class ARADocumentController : public ARA::PlugIn::DocumentController, public mam::ContextListenerAdapter
+class ARADocumentController : public ARA::PlugIn::DocumentController,
+                              public mam::ContextListenerAdapter
 {
 public:
     //--------------------------------------------------------------------
     // publish inherited constructor
     using ARA::PlugIn::DocumentController::DocumentController;
     using Super = ARA::PlugIn::DocumentController;
-    
-    virtual ~ARADocumentController ()
+
+    virtual ~ARADocumentController()
     {
-        VstGPTContext* context = VstGPTContext::getInstance ();
-        context->unregisterContextListener (this);
+        VstGPTContext* context = VstGPTContext::getInstance();
+        context->unregisterContextListener(this);
     };
 
     // getter for the companion API implementations
@@ -52,8 +53,17 @@ public:
                         ARA::ARAAudioSourceHostRef hostRef) noexcept override;
     void didUpdateAudioSourceProperties(
         ARA::PlugIn::AudioSource* audioSource) noexcept override;
-    
-    void onRequestLocatorPosChanged (double pos) override;
+
+    ARA::PlugIn::AudioModification* doCreateAudioModification(
+        ARA::PlugIn::AudioSource* audioSource,
+        ARA::ARAAudioModificationHostRef hostRef,
+        const ARA::PlugIn::AudioModification*
+            optionalModificationToClone) noexcept override;
+
+    void didUpdateAudioModificationProperties(
+        ARA::PlugIn::AudioModification* audioModification) noexcept override;
+
+    void onRequestLocatorPosChanged(double pos) override;
 
     //--------------------------------------------------------------------
 protected:

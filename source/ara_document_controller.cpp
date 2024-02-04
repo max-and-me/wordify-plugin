@@ -5,6 +5,7 @@
 #include "ara_document_controller.h"
 #include "ara_audio_source.h"
 #include "ara_factory_config.h"
+#include "meta_words_audio_modification.h"
 
 namespace mam {
 
@@ -78,6 +79,25 @@ ARA::PlugIn::AudioSource* ARADocumentController::doCreateAudioSource(
     context->registerContextListener(this);
 
     return new ARATestAudioSource(document, hostRef);
+}
+
+//------------------------------------------------------------------------
+ARA::PlugIn::AudioModification*
+ARADocumentController::doCreateAudioModification(
+    ARA::PlugIn::AudioSource* audioSource,
+    ARA::ARAAudioModificationHostRef hostRef,
+    const ARA::PlugIn::AudioModification* optionalModificationToClone) noexcept
+{
+    return new meta_words::AudioModification(audioSource, hostRef,
+                                             optionalModificationToClone);
+}
+
+//------------------------------------------------------------------------
+void ARADocumentController::didUpdateAudioModificationProperties(
+    ARA::PlugIn::AudioModification* audioModification) noexcept
+{
+    ARA::PlugIn::DocumentController::didUpdateAudioModificationProperties(
+        audioModification);
 }
 
 //------------------------------------------------------------------------

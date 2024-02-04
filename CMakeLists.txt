@@ -19,6 +19,8 @@ smtg_add_vst3plugin(VstGPT
    source/ara_document_controller.h
    source/ara_factory_config.cpp
    source/ara_factory_config.h
+   source/meta_words_audio_modification.cpp
+   source/meta_words_audio_modification.h
    source/version.h
    source/vstgpt_cids.h
    source/vstgpt_context.h
