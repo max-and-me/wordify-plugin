@@ -13,8 +13,6 @@ add_subdirectory(extern)
 smtg_enable_vst3_sdk()
 
 smtg_add_vst3plugin(VstGPT
-   source/analyse_buffer.cpp
-   source/analyse_buffer.h
    source/ara_audio_source.cpp
    source/ara_audio_source.h
    source/ara_document_controller.cpp

@@ -3,7 +3,6 @@
 //------------------------------------------------------------------------
 
 #include "ara_document_controller.h"
-#include "analyse_buffer.h"
 #include "ara_audio_source.h"
 #include "ara_factory_config.h"
 
@@ -74,17 +73,11 @@ ARA::PlugIn::AudioSource* ARADocumentController::doCreateAudioSource(
     ARA::PlugIn::Document* document,
     ARA::ARAAudioSourceHostRef hostRef) noexcept
 {
-    
-    VstGPTContext* context = VstGPTContext::getInstance ();
-    context->registerContextListener (this);
-    
-    auto audio_src = new ARATestAudioSource(document, hostRef);
 
-    analyse_buffer(nullptr);
-    // TODO: We need to create our own AudioSource here in order
-    // to analyze it later
+    VstGPTContext* context = VstGPTContext::getInstance();
+    context->registerContextListener(this);
 
-    return audio_src;
+    return new ARATestAudioSource(document, hostRef);
 }
 
 //------------------------------------------------------------------------
@@ -104,7 +97,7 @@ void ARADocumentController::didUpdateAudioSourceProperties(
 }
 
 //------------------------------------------------------------------------
-void ARADocumentController::onRequestLocatorPosChanged (double pos)
+void ARADocumentController::onRequestLocatorPosChanged(double pos)
 {
     auto hostPBCtrl = getHostPlaybackController();
     if (hostPBCtrl)
