@@ -70,6 +70,8 @@ public:
     void didUpdatePlaybackRegionProperties(
         ARA::PlugIn::PlaybackRegion* playbackRegion) noexcept override;
 
+    ARA::PlugIn::EditorView* doCreateEditorView() noexcept override;
+
     void onRequestLocatorPosChanged(double pos) override;
 
     //--------------------------------------------------------------------

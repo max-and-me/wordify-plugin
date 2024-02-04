@@ -6,6 +6,7 @@
 #include "ara_audio_source.h"
 #include "ara_factory_config.h"
 #include "meta_words_audio_modification.h"
+#include "meta_words_editor_view.h"
 #include "meta_words_playback_region.h"
 
 namespace mam {
@@ -131,6 +132,12 @@ void ARADocumentController::didUpdatePlaybackRegionProperties(
 {
     ARA::PlugIn::DocumentController::didUpdatePlaybackRegionProperties(
         playbackRegion);
+}
+
+//------------------------------------------------------------------------
+ARA::PlugIn::EditorView* ARADocumentController::doCreateEditorView() noexcept
+{
+    return new mam::meta_words::EditorView(this);
 }
 
 //------------------------------------------------------------------------
