@@ -9,17 +9,17 @@
 namespace mam::meta_words {
 
 //------------------------------------------------------------------------
-using Seconds = MetaWordsData::Seconds;
+using Seconds = const MetaWordsData::Seconds;
 
-Seconds calculate_project_offset(const PlaybackRegion& region)
+static Seconds calculate_project_offset(const PlaybackRegion& region)
 {
     return region.getStartInPlaybackTime() -
            region.getStartInAudioModificationTime();
 }
 
 //------------------------------------------------------------------------
-MetaWords filter_meta_words(const MetaWords& words,
-                            const PlaybackRegion& region)
+static MetaWords filter_meta_words(const MetaWords& words,
+                                   const PlaybackRegion& region)
 {
     MetaWords filtered_words;
 
@@ -45,7 +45,7 @@ MetaWords filter_meta_words(const MetaWords& words,
 }
 
 //------------------------------------------------------------------------
-MetaWords collect_meta_words(const PlaybackRegion& region)
+static const MetaWords collect_meta_words(const PlaybackRegion& region)
 {
     MetaWords words;
 
