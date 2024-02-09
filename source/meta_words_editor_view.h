@@ -15,6 +15,7 @@ public:
     //--------------------------------------------------------------------
     explicit EditorView(
         ARA::PlugIn::DocumentController* document_controller) noexcept;
+
     //--------------------------------------------------------------------
 private:
     void doNotifySelection(
