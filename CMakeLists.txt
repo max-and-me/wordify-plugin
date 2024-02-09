@@ -29,13 +29,17 @@ smtg_add_vst3plugin(VstGPT
     source/vstgpt_cids.h
     source/vstgpt_context.h
     source/vstgpt_context.cpp
-    source/vstgpt_controller.cpp
-    source/vstgpt_controller.h
+    #source/vstgpt_controller.cpp
+    #source/vstgpt_controller.h
     source/vstgpt_entry.cpp
     source/vstgpt_listcontroller.h
     source/vstgpt_listcontroller.cpp
-    source/vstgpt_processor.cpp
-    source/vstgpt_processor.h
+    #source/vstgpt_processor.cpp
+    #source/vstgpt_processor.h
+    source/vstgpt_single_component.cpp
+    source/vstgpt_single_component.h
+    ${public_sdk_SOURCE_DIR}/source/vst/vstsinglecomponenteffect.cpp
+    ${public_sdk_SOURCE_DIR}/source/vst/vstsinglecomponenteffect.h
 )
 
 smtg_target_add_plugin_resources(VstGPT

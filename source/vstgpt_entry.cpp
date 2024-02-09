@@ -6,9 +6,10 @@
 #include "public.sdk/source/main/pluginfactory.h"
 #include "version.h"
 #include "vstgpt_cids.h"
-#include "vstgpt_controller.h"
+//#include "vstgpt_controller.h"
 #include "vstgpt_defines.h"
-#include "vstgpt_processor.h"
+//#include "vstgpt_processor.h"
+#include "vstgpt_single_component.h"
 
 using namespace Steinberg::Vst;
 using namespace mam;
@@ -32,7 +33,7 @@ BEGIN_FACTORY_DEF(COMPANY_NAME_STR,
 
 //---First Plug-in included in this factory-------
 // its kVstAudioEffectClass component
-DEF_CLASS2(INLINE_UID_FROM_FUID(kVstGPTProcessorUID),
+/*DEF_CLASS2(INLINE_UID_FROM_FUID(kVstGPTProcessorUID),
 		   PClassInfo::kManyInstances,		// cardinality
 		   kVstAudioEffectClass,			// the component category (do not changed this)
 		   PLUGIN_NAME_STR,				// here the Plug-in name (to be changed)
@@ -40,7 +41,7 @@ DEF_CLASS2(INLINE_UID_FROM_FUID(kVstGPTProcessorUID),
 		   VstGPTVST3Category,				// Subcategory for this Plug-in (to be changed)
 		   FULL_VERSION_STR,				// Plug-in version (to be changed)
 		   kVstVersionString,				// the VST 3 SDK version (do not changed this, use always this define)
-		   VstGPTProcessor::createInstance) // function pointer called when this component should be instantiated
+		   VstGPTSingleComponent::createInstance) // function pointer called when this component should be instantiated
 
 // its kVstComponentControllerClass component
 DEF_CLASS2(INLINE_UID_FROM_FUID(kVstGPTControllerUID),
@@ -52,6 +53,16 @@ DEF_CLASS2(INLINE_UID_FROM_FUID(kVstGPTControllerUID),
 		   FULL_VERSION_STR,				 // Plug-in version (to be changed)
 		   kVstVersionString,				 // the VST 3 SDK version (do not changed this, use always this define)
 		   VstGPTController::createInstance) // function pointer called when this component should be instantiated
+*/
+DEF_CLASS2(INLINE_UID_FROM_FUID(kVstGPTProcessorUID),
+		   PClassInfo::kManyInstances,		// cardinality
+		   kVstAudioEffectClass,			// the component category (do not changed this)
+		   PLUGIN_NAME_STR,				// here the Plug-in name (to be changed)
+		   Vst::kDistributable,				// means that component and controller could be distributed on different computers
+		   VstGPTVST3Category,				// Subcategory for this Plug-in (to be changed)
+		   FULL_VERSION_STR,				// Plug-in version (to be changed)
+		   kVstVersionString,				// the VST 3 SDK version (do not changed this, use always this define)
+		   VstGPTSingleComponent::createInstance) // function pointer called when this component should be instantiated
 
 // its kARAMainFactoryClass component
 DEF_CLASS2(INLINE_UID_FROM_FUID(ARAMainFactory::getClassFUID()),
