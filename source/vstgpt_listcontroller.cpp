@@ -17,7 +17,10 @@ namespace mam {
 using namespace ::VSTGUI;
 
 //------------------------------------------------------------------------
-VstGPTListController::VstGPTListController() {}
+VstGPTListController::VstGPTListController(VstGPTContext* context)
+: context(context)
+{
+}
 
 //------------------------------------------------------------------------
 VstGPTListController::~VstGPTListController() {}
@@ -27,8 +30,8 @@ void VstGPTListController::valueChanged(CControl* pControl)
 {
     if (pControl && pControl == listControl)
     {
-        VstGPTContext* context = VstGPTContext::getInstance();
-        context->onRequestSelectWord(listControl->getValue());
+        if (context)
+            context->onRequestSelectWord(listControl->getValue());
     }
 }
 
@@ -37,14 +40,14 @@ CView* VstGPTListController::verifyView(CView* view,
                                         const UIAttributes& /*attributes*/,
                                         const IUIDescription* /*description*/)
 {
-
     if (!listControl)
         listControl = dynamic_cast<CListControl*>(view);
 
+    if (!context)
+        return view;
+
     if (listControl)
     {
-        VstGPTContext* context = VstGPTContext::getInstance();
-
         listControl->setMax(context->getData().words.size() - 1);
         listControl->recalculateLayout();
         listControl->registerControlListener(this);
@@ -52,14 +55,15 @@ CView* VstGPTListController::verifyView(CView* view,
         if (auto stringListDrawer = dynamic_cast<StringListControlDrawer*>(
                 listControl->getDrawer()))
         {
-            stringListDrawer->setStringProvider([context](int32_t row) {
-                meta_words::MetaWords words = context->getData().words;
-                meta_words::MetaWord word   = words.at(row);
-                std::string name            = word.word;
+            stringListDrawer->setStringProvider(
+                [context = this->context](int32_t row) {
+                    meta_words::MetaWords words = context->getData().words;
+                    meta_words::MetaWord word   = words.at(row);
+                    std::string name            = word.word;
 
-                UTF8String string(name.data());
-                return getPlatformFactory().createString(string);
-            });
+                    UTF8String string(name.data());
+                    return getPlatformFactory().createString(string);
+                });
         }
     }
     return view;

@@ -136,7 +136,7 @@ VSTGUI::IController* VstGPTSingleComponent::createSubController(
     VSTGUI::VST3Editor* /*editor*/)
 {
     if (VSTGUI::UTF8StringView(name) == "MetaWordsListController")
-        return new VstGPTListController();
+        return new VstGPTListController(VstGPTContext::getInstance());
 
     return nullptr;
 }

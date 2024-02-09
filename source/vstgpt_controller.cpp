@@ -111,12 +111,14 @@ tresult PLUGIN_API VstGPTController::getParamValueByString(
 }
 
 //------------------------------------------------------------------------
-VSTGUI::IController* VstGPTController::createSubController (
-                                                            VSTGUI::UTF8StringPtr name, const VSTGUI::IUIDescription* /*description*/, VSTGUI::VST3Editor* /*editor*/)
+VSTGUI::IController* VstGPTController::createSubController(
+    VSTGUI::UTF8StringPtr name,
+    const VSTGUI::IUIDescription* /*description*/,
+    VSTGUI::VST3Editor* /*editor*/)
 {
-    if (VSTGUI::UTF8StringView (name) == "MetaWordsListController")
-        return new VstGPTListController ();
-    
+    if (VSTGUI::UTF8StringView(name) == "MetaWordsListController")
+        return new VstGPTListController(VstGPTContext::instance());
+
     return nullptr;
 }
 } // namespace mam

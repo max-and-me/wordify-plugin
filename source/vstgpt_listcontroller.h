@@ -12,14 +12,16 @@ namespace VSTGUI {
 class CListControl;
 }
 namespace mam {
-
+class VstGPTContext;
 class VstGPTListController : public Steinberg::FObject,
                              public VSTGUI::IController
 {
 public:
     //------------------------------------------------------------------------
-    VstGPTListController();
+    VstGPTListController(VstGPTContext* context);
     virtual ~VstGPTListController();
+
+    bool initialize(VstGPTContext* context);
 
     void PLUGIN_API update(FUnknown* changedUnknown,
                            Steinberg::int32 message) override{};
@@ -36,6 +38,7 @@ public:
     //------------------------------------------------------------------------
 private:
     VSTGUI::CListControl* listControl = nullptr;
+    VstGPTContext* context            = nullptr;
 };
 
 //------------------------------------------------------------------------
