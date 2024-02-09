@@ -76,10 +76,6 @@ ARA::PlugIn::AudioSource* ARADocumentController::doCreateAudioSource(
     ARA::PlugIn::Document* document,
     ARA::ARAAudioSourceHostRef hostRef) noexcept
 {
-
-    VstGPTContext* context = VstGPTContext::getInstance();
-    context->registerContextListener(this);
-
     return new ARATestAudioSource(document, hostRef);
 }
 

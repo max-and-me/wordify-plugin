@@ -11,20 +11,13 @@ namespace mam {
 //------------------------------------------------------------------------
 // ARADocumentController
 //------------------------------------------------------------------------
-class ARADocumentController : public ARA::PlugIn::DocumentController,
-                              public mam::ContextListenerAdapter
+class ARADocumentController : public ARA::PlugIn::DocumentController
 {
 public:
     //--------------------------------------------------------------------
     // publish inherited constructor
     using ARA::PlugIn::DocumentController::DocumentController;
     using Super = ARA::PlugIn::DocumentController;
-
-    virtual ~ARADocumentController()
-    {
-        VstGPTContext* context = VstGPTContext::getInstance();
-        context->unregisterContextListener(this);
-    };
 
     // getter for the companion API implementations
     static const ARA::ARAFactory* getARAFactory() noexcept;
@@ -72,7 +65,7 @@ public:
 
     ARA::PlugIn::EditorView* doCreateEditorView() noexcept override;
 
-    void onRequestLocatorPosChanged(double pos) override;
+    void onRequestLocatorPosChanged(double pos);
 
     //--------------------------------------------------------------------
 protected:
