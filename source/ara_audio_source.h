@@ -40,6 +40,8 @@ public:
     void destroyRenderSampleCache();
     MultiChannelBufferType& get_audio_buffers() { return audio_buffers; }
 
+    const MetaWords& get_meta_words() const;
+
 protected:
     MultiChannelBufferType audio_buffers;
     std::vector<float> _sampleCache;

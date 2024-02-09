@@ -216,4 +216,10 @@ void ARATestAudioSource::destroyRenderSampleCache()
 }
 
 //------------------------------------------------------------------------
+const ARATestAudioSource::MetaWords& ARATestAudioSource::get_meta_words() const
+{
+    return this->meta_words;
+}
+
+//------------------------------------------------------------------------
 } // namespace mam
