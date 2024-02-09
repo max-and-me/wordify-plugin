@@ -24,12 +24,11 @@ static MetaWords filter_meta_words(const MetaWords& words,
     MetaWords filtered_words;
 
     const auto startInAudioModificationTime =
-        region.getStartInAudioModificationTime() * 1000.;
+        region.getStartInAudioModificationTime();
 
     const auto endInAudioModificationTime =
         (region.getStartInAudioModificationTime() +
-         region.getDurationInAudioModificationTime()) *
-        1000.;
+         region.getDurationInAudioModificationTime());
 
     auto is_in_range =
         [startInAudioModificationTime,

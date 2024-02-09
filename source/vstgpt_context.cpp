@@ -11,14 +11,6 @@
 namespace mam {
 
 //------------------------------------------------------------------------
-using Seconds      = const double;
-using MilliSeconds = const double;
-static MilliSeconds to_milliseconds(Seconds val)
-{
-    return val / 1000.;
-}
-
-//------------------------------------------------------------------------
 VstGPTContext::VstGPTContext(ARADocumentController* document_controller)
 : document_controller(document_controller)
 {
@@ -50,8 +42,7 @@ void VstGPTContext::onRequestSelectWord(int index)
     if (document_controller)
     {
         document_controller->onRequestLocatorPosChanged(
-            to_milliseconds(selected_word.begin) +
-            meta_words_data.project_offset);
+            selected_word.begin + meta_words_data.project_offset);
     }
 }
 

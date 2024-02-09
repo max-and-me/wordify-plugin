@@ -168,6 +168,18 @@ MetaWords process_audio_with_meta_words(const PathType& file_path)
 };
 
 //------------------------------------------------------------------------
+void transform_to_seconds(MetaWords& meta_words)
+{
+    std::transform(meta_words.begin(), meta_words.end(), meta_words.begin(),
+                   [](MetaWord word) {
+                       // ms to s
+                       word.begin *= 0.001;
+                       word.duration *= 0.001;
+                       return word;
+                   });
+}
+
+//------------------------------------------------------------------------
 } // namespace
 
 //------------------------------------------------------------------------
@@ -191,6 +203,7 @@ void AudioSource::updateRenderSampleCache()
     write_audio_to_file(*this, path);
 
     meta_words = process_audio_with_meta_words(path);
+    transform_to_seconds(meta_words);
 }
 
 //------------------------------------------------------------------------
