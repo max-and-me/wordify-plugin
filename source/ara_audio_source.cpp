@@ -62,6 +62,8 @@ int write_audio_file(const PathType& file_path,
                      int sample_count,
                      FnSampleValue& func)
 {
+    std::filesystem::remove(file_path);
+
     using SampleType  = ARATestAudioSource::SampleType;
     auto SAMPLE_RATE  = sample_rate;
     auto SAMPLE_COUNT = sample_count;
