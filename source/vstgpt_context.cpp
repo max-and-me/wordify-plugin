@@ -43,13 +43,15 @@ void VstGPTContext::unregisterContextListener(IContextListener* listener)
 //------------------------------------------------------------------------
 void VstGPTContext::onRequestSelectWord(int index)
 {
-    const auto& words         = getData().words;
-    const auto& selected_word = words.at(index);
+    const auto& meta_words_data = getData();
+    const auto& words           = meta_words_data.words;
+    const auto& selected_word   = words.at(index);
 
     if (document_controller)
     {
         document_controller->onRequestLocatorPosChanged(
-            to_milliseconds(selected_word.begin));
+            to_milliseconds(selected_word.begin) +
+            meta_words_data.project_offset);
     }
 }
 
@@ -64,9 +66,9 @@ void VstGPTContext::updateListeners()
 }
 
 //------------------------------------------------------------------------
-const VstGPTContext::Data VstGPTContext::getData() const
+const MetaWordsData VstGPTContext::getData() const
 {
-    Data meta_words_data;
+    MetaWordsData meta_words_data;
 
     if (!document_controller)
         return meta_words_data;
@@ -82,10 +84,7 @@ const VstGPTContext::Data VstGPTContext::getData() const
     if (playback_regions.empty())
         return meta_words_data;
 
-    meta_words_data.words = playback_regions.at(0)
-                                ->getAudioModification()
-                                ->getAudioSource<ARATestAudioSource>()
-                                ->get_meta_words();
+    meta_words_data = playback_regions.at(0)->get_meta_words_data();
 
     return meta_words_data;
 }

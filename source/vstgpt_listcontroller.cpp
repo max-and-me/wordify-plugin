@@ -52,7 +52,6 @@ CView* VstGPTListController::verifyView(CView* view,
     if (!context)
         return view;
 
-    return view;
     if (listControl)
     {
         listControl->setMax(context->getData().words.size() - 1);

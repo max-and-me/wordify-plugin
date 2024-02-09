@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "mam/meta_words/meta_word.h"
+#include "ara_meta_words.h"
 #include "vstgui/lib/dispatchlist.h"
 
 #include <memory>
@@ -27,12 +27,7 @@ public:
     VstGPTContext(const VstGPTContext& obj) = delete;
     VstGPTContext(ARADocumentController* document_controller);
 
-    struct Data
-    {
-        meta_words::MetaWords words;
-    };
-
-    const Data getData() const;
+    const MetaWordsData getData() const;
     void onRequestSelectWord(int index);
     void registerContextListener(IContextListener* listener);
     void unregisterContextListener(IContextListener* listener);
