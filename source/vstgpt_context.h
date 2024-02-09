@@ -10,46 +10,41 @@
 #include <memory>
 namespace mam {
 
+class ARADocumentController;
+
+//------------------------------------------------------------------------
 class IContextListener
 {
 public:
     /** the context has changed  */
-    virtual void onRequestLocatorPosChanged(double pos) = 0;
+    virtual void onDataChanged() = 0;
 };
 
 //------------------------------------------------------------------------
-class ContextListenerAdapter : public IContextListener
-{
-public:
-    void onRequestLocatorPosChanged(double pos) override {}
-};
-
 class VstGPTContext
 {
 public:
     VstGPTContext(const VstGPTContext& obj) = delete;
-    static VstGPTContext* getInstance()
-    {
-        if (instance == nullptr)
-            instance = new VstGPTContext;
-        return instance;
-    }
+    VstGPTContext(ARADocumentController* document_controller);
+
     struct Data
     {
         meta_words::MetaWords words;
     };
-    void setData(Data _data) { data = _data; }
-    const Data& getData() { return data; }
+
+    const Data getData() const;
     void onRequestSelectWord(int index);
     void registerContextListener(IContextListener* listener);
     void unregisterContextListener(IContextListener* listener);
 
 private:
     VstGPTContext(){};
+
     using ContextListenerList = VSTGUI::DispatchList<IContextListener*>;
     std::unique_ptr<ContextListenerList> listeners;
-    static VstGPTContext* instance;
-    Data data;
+    void updateListeners();
+
+    ARADocumentController* document_controller = nullptr;
 };
 
 //------------------------------------------------------------------------

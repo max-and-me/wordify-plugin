@@ -20,10 +20,16 @@ using namespace ::VSTGUI;
 VstGPTListController::VstGPTListController(VstGPTContext* context)
 : context(context)
 {
+    if (context)
+        context->registerContextListener(this);
 }
 
 //------------------------------------------------------------------------
-VstGPTListController::~VstGPTListController() {}
+VstGPTListController::~VstGPTListController()
+{
+    if (context)
+        context->unregisterContextListener(this);
+}
 
 //------------------------------------------------------------------------
 void VstGPTListController::valueChanged(CControl* pControl)
@@ -46,6 +52,7 @@ CView* VstGPTListController::verifyView(CView* view,
     if (!context)
         return view;
 
+    return view;
     if (listControl)
     {
         listControl->setMax(context->getData().words.size() - 1);
@@ -67,6 +74,31 @@ CView* VstGPTListController::verifyView(CView* view,
         }
     }
     return view;
+}
+
+//------------------------------------------------------------------------
+void VstGPTListController::onDataChanged()
+{
+    if (listControl)
+    {
+        listControl->setMax(context->getData().words.size() - 1);
+        listControl->recalculateLayout();
+        listControl->registerControlListener(this);
+
+        if (auto stringListDrawer = dynamic_cast<StringListControlDrawer*>(
+                listControl->getDrawer()))
+        {
+            stringListDrawer->setStringProvider(
+                [context = this->context](int32_t row) {
+                    meta_words::MetaWords words = context->getData().words;
+                    meta_words::MetaWord word   = words.at(row);
+                    std::string name            = word.word;
+
+                    UTF8String string(name.data());
+                    return getPlatformFactory().createString(string);
+                });
+        }
+    }
 }
 //------------------------------------------------------------------------
 

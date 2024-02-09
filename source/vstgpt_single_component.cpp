@@ -135,19 +135,16 @@ VSTGUI::IController* VstGPTSingleComponent::createSubController(
     const VSTGUI::IUIDescription* /*description*/,
     VSTGUI::VST3Editor* /*editor*/)
 {
+    auto* document_controller =
+        _araPlugInExtension.getDocumentController<ARADocumentController>();
     if (VSTGUI::UTF8StringView(name) == "MetaWordsListController")
-        return new VstGPTListController(VstGPTContext::getInstance());
+        return new VstGPTListController(new VstGPTContext(document_controller));
 
     return nullptr;
 }
 
 //------------------------------------------------------------------------
-void VstGPTSingleComponent::didOpen(VSTGUI::VST3Editor* editor)
-{
-    // Must be set to 'true' to get notified by a host selection change
-    if (_araPlugInExtension.getEditorView())
-        _araPlugInExtension.getEditorView()->setEditorOpen(true);
-}
+void VstGPTSingleComponent::didOpen(VSTGUI::VST3Editor* editor) {}
 
 //------------------------------------------------------------------------
 void VstGPTSingleComponent::willClose(VSTGUI::VST3Editor* editor)
@@ -165,6 +162,11 @@ IPlugView* PLUGIN_API VstGPTSingleComponent::createView(FIDString name)
         // create your editor here and return a IPlugView ptr of it
         auto* view =
             new VSTGUI::VST3Editor(this, "view", "vstgpt_editor.uidesc");
+
+        // Must be set to 'true' to get notified by a host selection change
+        if (_araPlugInExtension.getEditorView())
+            _araPlugInExtension.getEditorView()->setEditorOpen(true);
+
         return view;
     }
     return nullptr;
