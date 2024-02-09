@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "ara_meta_words.h"
+#include "meta_words_data.h"
 #include "vstgui/lib/dispatchlist.h"
 
 #include <memory>

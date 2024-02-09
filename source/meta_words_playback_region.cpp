@@ -4,7 +4,7 @@
 
 #include "meta_words_playback_region.h"
 #include "ARA_Library/PlugIn/ARAPlug.h"
-#include "ara_audio_source.h"
+#include "meta_words_audio_source.h"
 
 namespace mam::meta_words {
 
@@ -18,8 +18,8 @@ Seconds calculate_project_offset(const PlaybackRegion& region)
 }
 
 //------------------------------------------------------------------------
-mam::meta_words::MetaWords filter_meta_words(const MetaWords& words,
-                                             const PlaybackRegion& region)
+MetaWords filter_meta_words(const MetaWords& words,
+                            const PlaybackRegion& region)
 {
     MetaWords filtered_words;
 
@@ -45,14 +45,13 @@ mam::meta_words::MetaWords filter_meta_words(const MetaWords& words,
 }
 
 //------------------------------------------------------------------------
-mam::meta_words::MetaWords collect_meta_words(const PlaybackRegion& region)
+MetaWords collect_meta_words(const PlaybackRegion& region)
 {
-    mam::meta_words::MetaWords words;
+    MetaWords words;
 
     if (const auto* modification = region.getAudioModification())
     {
-        if (const auto* source =
-                modification->getAudioSource<ARATestAudioSource>())
+        if (const auto* source = modification->getAudioSource<AudioSource>())
         {
             words = source->get_meta_words();
         }

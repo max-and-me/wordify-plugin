@@ -3,8 +3,8 @@
 //------------------------------------------------------------------------
 
 #include "vstgpt_context.h"
-#include "ara_audio_source.h"
 #include "ara_document_controller.h"
+#include "meta_words_audio_source.h"
 #include "meta_words_editor_view.h"
 #include "meta_words_playback_region.h"
 

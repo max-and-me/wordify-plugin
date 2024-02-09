@@ -3,9 +3,9 @@
 //------------------------------------------------------------------------
 
 #include "ara_document_controller.h"
-#include "ara_audio_source.h"
 #include "ara_factory_config.h"
 #include "meta_words_audio_modification.h"
+#include "meta_words_audio_source.h"
 #include "meta_words_editor_view.h"
 #include "meta_words_playback_region.h"
 
@@ -62,7 +62,7 @@ void ARADocumentController::willEnableAudioSourceSamplesAccess(
 void ARADocumentController::didEnableAudioSourceSamplesAccess(
     ARA::PlugIn::AudioSource* audioSource, bool enable) noexcept
 {
-    auto testAudioSource = dynamic_cast<ARATestAudioSource*>(audioSource);
+    auto testAudioSource = dynamic_cast<meta_words::AudioSource*>(audioSource);
 
     if (testAudioSource == nullptr)
         return;
@@ -76,7 +76,7 @@ ARA::PlugIn::AudioSource* ARADocumentController::doCreateAudioSource(
     ARA::PlugIn::Document* document,
     ARA::ARAAudioSourceHostRef hostRef) noexcept
 {
-    return new ARATestAudioSource(document, hostRef);
+    return new meta_words::AudioSource(document, hostRef);
 }
 
 //------------------------------------------------------------------------
@@ -119,7 +119,7 @@ ARA::PlugIn::PlaybackRegion* ARADocumentController::doCreatePlaybackRegion(
     ARA::PlugIn::AudioModification* modification,
     ARA::ARAPlaybackRegionHostRef hostRef) noexcept
 {
-    return new mam::meta_words::PlaybackRegion(modification, hostRef);
+    return new meta_words::PlaybackRegion(modification, hostRef);
 }
 
 //------------------------------------------------------------------------
@@ -133,7 +133,7 @@ void ARADocumentController::didUpdatePlaybackRegionProperties(
 //------------------------------------------------------------------------
 ARA::PlugIn::EditorView* ARADocumentController::doCreateEditorView() noexcept
 {
-    return new mam::meta_words::EditorView(this);
+    return new meta_words::EditorView(this);
 }
 
 //------------------------------------------------------------------------

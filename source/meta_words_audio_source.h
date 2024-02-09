@@ -7,10 +7,10 @@
 #include "ARA_Library/PlugIn/ARAPlug.h"
 #include "mam/meta_words/meta_word.h"
 
-namespace mam {
+namespace mam::meta_words {
 
 //------------------------------------------------------------------------
-class ARATestAudioSource : public ARA::PlugIn::AudioSource
+class AudioSource : public ARA::PlugIn::AudioSource
 {
 public:
     using SampleType             = float;
@@ -18,12 +18,12 @@ public:
     using MultiChannelBufferType = std::vector<ChannelBufferType>;
     using MetaWords              = mam::meta_words::MetaWords;
 
-    ARATestAudioSource(ARA::PlugIn::Document* document,
-                       ARA::ARAAudioSourceHostRef hostRef)
-    : AudioSource{document, hostRef}
+    AudioSource(ARA::PlugIn::Document* document,
+                ARA::ARAAudioSourceHostRef hostRef)
+    : ARA::PlugIn::AudioSource{document, hostRef}
     {
     }
-    virtual ~ARATestAudioSource(){};
+    virtual ~AudioSource(){};
 
     // render thread sample access:
     // in order to keep this test code as simple as possible, our test audio
@@ -49,4 +49,4 @@ protected:
 };
 
 //------------------------------------------------------------------------
-} // namespace mam
+} // namespace mam::meta_words

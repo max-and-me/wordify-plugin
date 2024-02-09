@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------
 // Copyright(c) 2024 Max And Me.
 //------------------------------------------------------------------------
-#include "ara_audio_source.h"
+#include "meta_words_audio_source.h"
 
 #include "sndfile.h"
 #include "vstgpt_context.h"
@@ -14,7 +14,7 @@
 #include <functional>
 #include <iostream>
 
-namespace mam {
+namespace mam::meta_words {
 namespace {
 
 //------------------------------------------------------------------------
@@ -25,12 +25,11 @@ enum class ChannelIndex : int
     kLeft,
     kRight
 };
-using FnSampleValue =
-    std::function<ARATestAudioSource::SampleType(ChannelIndex, int)>;
+using FnSampleValue = std::function<AudioSource::SampleType(ChannelIndex, int)>;
 
 //------------------------------------------------------------------------
 DataPointers
-create_data_pointers(ARATestAudioSource::MultiChannelBufferType& audio_buffers)
+create_data_pointers(AudioSource::MultiChannelBufferType& audio_buffers)
 {
     DataPointers data_pointers;
     data_pointers.reserve(audio_buffers.size());
@@ -41,7 +40,7 @@ create_data_pointers(ARATestAudioSource::MultiChannelBufferType& audio_buffers)
 }
 
 //------------------------------------------------------------------------
-void read_audio_from_host(ARATestAudioSource& audio_src)
+void read_audio_from_host(AudioSource& audio_src)
 {
     // create temporary host audio reader and let it fill the buffers
     // (we can safely ignore any errors while reading since host must clear
@@ -64,7 +63,7 @@ int write_audio_file(const PathType& file_path,
 {
     std::filesystem::remove(file_path);
 
-    using SampleType  = ARATestAudioSource::SampleType;
+    using SampleType  = AudioSource::SampleType;
     auto SAMPLE_RATE  = sample_rate;
     auto SAMPLE_COUNT = sample_count;
 
@@ -125,8 +124,7 @@ int write_audio_file(const PathType& file_path,
 }
 
 //------------------------------------------------------------------------
-void write_audio_to_file(ARATestAudioSource& audio_src,
-                         const PathType& file_path)
+void write_audio_to_file(AudioSource& audio_src, const PathType& file_path)
 {
     auto buffers       = audio_src.get_audio_buffers();
     FnSampleValue func = [&](ChannelIndex ch, int sample) {
@@ -139,23 +137,18 @@ void write_audio_to_file(ARATestAudioSource& audio_src,
 }
 
 //-----------------------------------------------------------------------------
-meta_words::MetaWords run_sync(mam::meta_words::Command& cmd)
+meta_words::MetaWords run_sync(Command& cmd)
 {
     std::cout << "Run sync..." << '\n';
 
-    mam::meta_words::FnProgress fn_progress = [](double val) {
-        double tmp = val;
-    };
+    FnProgress fn_progress = [](double val) { double tmp = val; };
 
     return (run(cmd, fn_progress));
 }
 
 //------------------------------------------------------------------------
-mam::meta_words::MetaWords
-process_audio_with_meta_words(const PathType& file_path)
+MetaWords process_audio_with_meta_words(const PathType& file_path)
 {
-    using namespace mam::meta_words;
-
     //  The whisper.cpp library takes the audio file and writes the result
     //  of its analysis into a CSV file. The file is named like the audio
     //  file and by prepending ".csv" e.g. my_speech.wav ->
@@ -178,7 +171,7 @@ process_audio_with_meta_words(const PathType& file_path)
 } // namespace
 
 //------------------------------------------------------------------------
-void ARATestAudioSource::updateRenderSampleCache()
+void AudioSource::updateRenderSampleCache()
 {
     if (this->audio_buffers.size() > 0)
         return;
@@ -201,25 +194,25 @@ void ARATestAudioSource::updateRenderSampleCache()
 }
 
 //------------------------------------------------------------------------
-const float* ARATestAudioSource::getRenderSampleCacheForChannel(
-    ARA::ARAChannelCount channel) const
+const float*
+AudioSource::getRenderSampleCacheForChannel(ARA::ARAChannelCount channel) const
 {
     return _sampleCache.data() +
            static_cast<size_t>(channel * getSampleCount());
 }
 
 //------------------------------------------------------------------------
-void ARATestAudioSource::destroyRenderSampleCache()
+void AudioSource::destroyRenderSampleCache()
 {
     _sampleCache.clear();
     _sampleCache.resize(0);
 }
 
 //------------------------------------------------------------------------
-const ARATestAudioSource::MetaWords& ARATestAudioSource::get_meta_words() const
+const AudioSource::MetaWords& AudioSource::get_meta_words() const
 {
     return meta_words;
 }
 
 //------------------------------------------------------------------------
-} // namespace mam
+} // namespace mam::meta_words

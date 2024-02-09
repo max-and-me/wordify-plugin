@@ -5,7 +5,7 @@
 #pragma once
 
 #include "ARA_Library/PlugIn/ARAPlug.h"
-#include "ara_meta_words.h"
+#include "meta_words_data.h"
 
 namespace mam::meta_words {
 
