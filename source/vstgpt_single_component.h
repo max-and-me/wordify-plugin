@@ -81,6 +81,8 @@ public:
     createSubController(VSTGUI::UTF8StringPtr name,
                         const VSTGUI::IUIDescription* description,
                         VSTGUI::VST3Editor* editor) SMTG_OVERRIDE;
+    void didOpen(VSTGUI::VST3Editor* editor) override;
+    void willClose(VSTGUI::VST3Editor* editor) override;
 
     // Edit Controller
     Steinberg::IPlugView* PLUGIN_API createView(Steinberg::FIDString name)

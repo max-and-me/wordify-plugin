@@ -142,6 +142,21 @@ VSTGUI::IController* VstGPTSingleComponent::createSubController(
 }
 
 //------------------------------------------------------------------------
+void VstGPTSingleComponent::didOpen(VSTGUI::VST3Editor* editor)
+{
+    // Must be set to 'true' to get notified by a host selection change
+    if (_araPlugInExtension.getEditorView())
+        _araPlugInExtension.getEditorView()->setEditorOpen(true);
+}
+
+//------------------------------------------------------------------------
+void VstGPTSingleComponent::willClose(VSTGUI::VST3Editor* editor)
+{
+    if (_araPlugInExtension.getEditorView())
+        _araPlugInExtension.getEditorView()->setEditorOpen(false);
+}
+
+//------------------------------------------------------------------------
 IPlugView* PLUGIN_API VstGPTSingleComponent::createView(FIDString name)
 {
     // Here the Host wants to open your editor (if you have one)
