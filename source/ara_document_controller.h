@@ -15,6 +15,8 @@ class ARADocumentController : public ARA::PlugIn::DocumentController
 {
 public:
     //--------------------------------------------------------------------
+    using MetaWordsDataList = std::vector<MetaWordsData>;
+
     // publish inherited constructor
     using ARA::PlugIn::DocumentController::DocumentController;
     using Super = ARA::PlugIn::DocumentController;
@@ -64,6 +66,8 @@ public:
         ARA::PlugIn::PlaybackRegion* playbackRegion) noexcept override;
 
     ARA::PlugIn::EditorView* doCreateEditorView() noexcept override;
+
+    const MetaWordsDataList collect_meta_data_words() const;
 
     void onRequestLocatorPosChanged(double pos);
 

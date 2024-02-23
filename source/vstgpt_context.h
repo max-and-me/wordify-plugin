@@ -27,6 +27,9 @@ public:
     VstGPTContext(const VstGPTContext& obj) = delete;
     VstGPTContext(ARADocumentController* document_controller);
 
+    using MetaWordsDataList = std::vector<MetaWordsData>;
+
+    const MetaWordsDataList getDataList() const;
     const MetaWordsData getData() const;
     void onRequestSelectWord(int index);
     void registerContextListener(IContextListener* listener);

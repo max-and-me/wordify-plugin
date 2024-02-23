@@ -12,6 +12,31 @@
 namespace mam {
 
 //------------------------------------------------------------------------
+static VstGPTContext::MetaWordsDataList collect_meta_data_words(const mam::ARADocumentController& document_controller)
+{
+    VstGPTContext::MetaWordsDataList meta_words_data_list;
+    if (auto* document = document_controller.getDocument())
+    {
+        const auto& audio_sources = document->getAudioSources<meta_words::AudioSource>();
+        for (const auto& audio_source : audio_sources)
+        {
+            const auto& audio_modifications = audio_source->getAudioModifications();
+            for (const auto audio_modification : audio_modifications)
+            {
+                const auto& playback_regions = audio_modification->getPlaybackRegions<meta_words::PlaybackRegion>();
+                for (const auto& playback_region : playback_regions)
+                {
+                    const auto& data = playback_region->get_meta_words_data();
+                    meta_words_data_list.push_back(data);
+                }
+            }
+        }
+    }
+
+    return meta_words_data_list;
+}
+
+//------------------------------------------------------------------------
 const ARA::ARAFactory* ARADocumentController::getARAFactory() noexcept
 {
     return ARA::PlugIn::PlugInEntry::getPlugInEntry<ARAFactoryConfig,
@@ -134,6 +159,12 @@ void ARADocumentController::didUpdatePlaybackRegionProperties(
 ARA::PlugIn::EditorView* ARADocumentController::doCreateEditorView() noexcept
 {
     return new meta_words::EditorView(this);
+}
+
+//------------------------------------------------------------------------
+const ARADocumentController::MetaWordsDataList ARADocumentController::collect_meta_data_words() const
+{
+    return mam::collect_meta_data_words(*this);
 }
 
 //------------------------------------------------------------------------

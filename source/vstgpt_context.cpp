@@ -57,27 +57,22 @@ void VstGPTContext::updateListeners()
 }
 
 //------------------------------------------------------------------------
+const VstGPTContext::MetaWordsDataList VstGPTContext::getDataList() const
+{
+    if (!document_controller)
+        return MetaWordsDataList();
+
+    return document_controller->collect_meta_data_words();
+}
+
+//------------------------------------------------------------------------
 const MetaWordsData VstGPTContext::getData() const
 {
-    MetaWordsData meta_words_data;
+    const auto& data_list = getDataList();
+    if (data_list.empty())
+        return {};
 
-    if (!document_controller)
-        return meta_words_data;
-
-    auto views = document_controller->getEditorViews();
-    if (views.empty())
-        return meta_words_data;
-
-    const auto& view_selection = views.at(0)->getViewSelection();
-    const auto& playback_regions =
-        view_selection.getPlaybackRegions<meta_words::PlaybackRegion>();
-
-    if (playback_regions.empty())
-        return meta_words_data;
-
-    meta_words_data = playback_regions.at(0)->get_meta_words_data();
-
-    return meta_words_data;
+    return data_list.at(0);
 }
 
 //------------------------------------------------------------------------
