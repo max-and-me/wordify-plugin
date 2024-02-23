@@ -26,8 +26,8 @@ static ARADocumentController::MetaWordsDataList collect_meta_data_words(const ma
                 const auto& playback_regions = audio_modification->getPlaybackRegions<meta_words::PlaybackRegion>();
                 for (const auto& playback_region : playback_regions)
                 {
-                    const auto& data = playback_region->get_meta_words_data();
-                    meta_words_data_list.push_back(data);
+                    const auto data = playback_region->get_meta_words_data();
+                    meta_words_data_list.emplace_back(data);
                 }
             }
         }
