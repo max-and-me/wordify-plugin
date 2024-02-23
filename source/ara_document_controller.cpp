@@ -12,9 +12,9 @@
 namespace mam {
 
 //------------------------------------------------------------------------
-static VstGPTContext::MetaWordsDataList collect_meta_data_words(const mam::ARADocumentController& document_controller)
+static ARADocumentController::MetaWordsDataList collect_meta_data_words(const mam::ARADocumentController& document_controller)
 {
-    VstGPTContext::MetaWordsDataList meta_words_data_list;
+    ARADocumentController::MetaWordsDataList meta_words_data_list;
     if (auto* document = document_controller.getDocument())
     {
         const auto& audio_sources = document->getAudioSources<meta_words::AudioSource>();
