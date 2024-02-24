@@ -47,9 +47,10 @@ static auto update_label_control(CTextLabel& label, const MetaWordsData& data)
 }
 
 //------------------------------------------------------------------------
-static void onRequestSelectWord(int index,
+static auto onRequestSelectWord(int index,
                                 const mam::MetaWordsData& data,
                                 ARADocumentController& document_controller)
+    -> void
 {
     const auto& meta_words_data = data;
     const auto& words           = meta_words_data.words;
