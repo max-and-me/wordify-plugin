@@ -38,6 +38,15 @@ static auto update_list_control_content(CListControl& listControl,
 }
 
 //------------------------------------------------------------------------
+static auto update_label_control(CTextLabel& label, const MetaWordsData& data)
+    -> void
+{
+    const VSTGUI::CColor color(data.color.r, data.color.g, data.color.b);
+    label.setFontColor(color);
+    label.setText(VSTGUI::UTF8String(data.name));
+}
+
+//------------------------------------------------------------------------
 static void onRequestSelectWord(int index,
                                 const mam::MetaWordsData& data,
                                 ARADocumentController& document_controller)
@@ -105,8 +114,7 @@ CView* VstGPTListController::verifyView(CView* view,
             cached_meta_words_data_list = controller.collect_meta_data_words();
             if (!cached_meta_words_data_list.empty())
             {
-                const auto& text = cached_meta_words_data_list.at(0).name;
-                label->setText(VSTGUI::UTF8String(text));
+                update_label_control(*label, cached_meta_words_data_list.at(0));
             }
         }
     }
@@ -133,7 +141,7 @@ void VstGPTListController::onDataChanged()
 
     if (label)
     {
-        label->setText(VSTGUI::UTF8String(data.name));
+        update_label_control(*label, data);
         label->setDirty();
     }
 }
