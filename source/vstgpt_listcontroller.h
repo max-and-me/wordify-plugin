@@ -22,8 +22,6 @@ public:
     VstGPTListController(VstGPTContext* context);
     virtual ~VstGPTListController();
 
-    bool initialize(VstGPTContext* context);
-
     void PLUGIN_API update(FUnknown* changedUnknown,
                            Steinberg::int32 message) override{};
     VSTGUI::CView*
