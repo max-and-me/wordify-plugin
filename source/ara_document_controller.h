@@ -5,8 +5,8 @@
 #pragma once
 
 #include "ARA_Library/PlugIn/ARAPlug.h"
-#include "vstgpt_context.h"
 #include "tiny_observer_pattern.h"
+#include "meta_words_data.h"
 
 namespace mam {
 

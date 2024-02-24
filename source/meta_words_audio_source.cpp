@@ -4,7 +4,6 @@
 #include "meta_words_audio_source.h"
 
 #include "sndfile.h"
-#include "vstgpt_context.h"
 #include "vstgpt_defines.h"
 
 #include "mam/meta_words/runner.h"

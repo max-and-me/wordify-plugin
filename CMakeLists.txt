@@ -32,8 +32,6 @@ smtg_add_vst3plugin(VstGPT
     source/tiny_observer_pattern.h
     source/version.h
     source/vstgpt_cids.h
-    source/vstgpt_context.cpp
-    source/vstgpt_context.h
     source/vstgpt_entry.cpp
     source/vstgpt_listcontroller.cpp
     source/vstgpt_listcontroller.h
