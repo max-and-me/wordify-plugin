@@ -199,7 +199,7 @@ void AudioSource::updateRenderSampleCache()
 
     read_audio_from_host(*this);
 
-    auto path = PathType{tmp_dir};
+    auto path = PathType{tmp_dir.generic_u8string()};
     write_audio_to_file(*this, path);
 
     meta_words = process_audio_with_meta_words(path);
