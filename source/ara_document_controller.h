@@ -14,7 +14,7 @@ namespace mam {
 // ARADocumentController
 //------------------------------------------------------------------------
 class ARADocumentController : public ARA::PlugIn::DocumentController,
-                              public tiny_observer_pattern::Subject
+                              public tiny_observer_pattern::SimpleSubject
 {
 public:
     //--------------------------------------------------------------------
@@ -76,6 +76,7 @@ public:
 
     //--------------------------------------------------------------------
 protected:
+    auto notify_all_observers() const -> void;
 };
 
 //------------------------------------------------------------------------

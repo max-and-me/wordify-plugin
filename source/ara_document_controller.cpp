@@ -188,4 +188,13 @@ void ARADocumentController::onRequestLocatorPosChanged(double pos)
 }
 
 //------------------------------------------------------------------------
+auto ARADocumentController::notify_all_observers() const -> void
+{
+    for (const auto& observer : observers)
+    {
+        observer.second();
+    }
+}
+
+//------------------------------------------------------------------------
 } // namespace mam

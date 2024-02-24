@@ -6,6 +6,7 @@
 
 #include "meta_words_data.h"
 #include "vstgui/lib/dispatchlist.h"
+#include "tiny_observer_pattern.h"
 
 #include <memory>
 namespace mam {
@@ -44,7 +45,7 @@ private:
     void updateListeners();
 
     ARADocumentController* document_controller = nullptr;
-    using ObserverID = std::uint64_t;
+    using ObserverID = mam::tiny_observer_pattern::ObserverID;
     ObserverID observer_id = 0;
 };
 
