@@ -14,6 +14,20 @@ namespace mam {
 VstGPTContext::VstGPTContext(ARADocumentController* document_controller)
 : document_controller(document_controller)
 {
+    if (document_controller)
+    {
+        auto cb = [this]() { this->updateListeners(); };
+        observer_id = document_controller->add_listener(std::move(cb));
+    }
+}
+
+//------------------------------------------------------------------------
+VstGPTContext::~VstGPTContext()
+{
+    if (document_controller)
+    {
+        document_controller->remove_listener(observer_id);
+    }
 }
 
 //------------------------------------------------------------------------

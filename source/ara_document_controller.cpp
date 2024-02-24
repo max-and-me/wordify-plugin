@@ -121,6 +121,8 @@ void ARADocumentController::didUpdateAudioModificationProperties(
 {
     ARA::PlugIn::DocumentController::didUpdateAudioModificationProperties(
         audioModification);
+
+    this->notify_all();
 }
 
 //------------------------------------------------------------------------
@@ -137,6 +139,8 @@ void ARADocumentController::didUpdateAudioSourceProperties(
         audioReader.readAudioSamples (0, static_cast<ARA::ARASampleCount>
         (sampleCount), dataPointers.data ());
     */
+
+    this->notify_all();
 }
 
 //------------------------------------------------------------------------
@@ -153,6 +157,8 @@ void ARADocumentController::didUpdatePlaybackRegionProperties(
 {
     ARA::PlugIn::DocumentController::didUpdatePlaybackRegionProperties(
         playbackRegion);
+
+    this->notify_all();
 }
 
 //------------------------------------------------------------------------
@@ -174,5 +180,34 @@ void ARADocumentController::onRequestLocatorPosChanged(double pos)
     if (hostPBCtrl)
         hostPBCtrl->requestSetPlaybackPosition(ARA::ARATimePosition{pos});
 }
+
+//------------------------------------------------------------------------
+auto ARADocumentController::add_listener(Callback&& cb) -> ObserverID
+{
+    observers.emplace(++observer_id, std::move(cb));
+    return observer_id;
+}
+
+//------------------------------------------------------------------------
+auto ARADocumentController::remove_listener(ObserverID observer_id) -> bool
+{
+    const auto it = observers.find(observer_id);
+    if (it == observers.end())
+    {
+        return false;
+    }
+    observers.erase(it);
+    return true;
+}
+
+//------------------------------------------------------------------------
+void ARADocumentController::notify_all() const
+{
+    for (const auto& observer : observers)
+    {
+        observer.second();
+    }
+}
+
 //------------------------------------------------------------------------
 } // namespace mam

@@ -21,11 +21,12 @@ public:
 };
 
 //------------------------------------------------------------------------
-class VstGPTContext
+class VstGPTContext final
 {
 public:
     VstGPTContext(const VstGPTContext& obj) = delete;
     VstGPTContext(ARADocumentController* document_controller);
+    ~VstGPTContext();
 
     using MetaWordsDataList = std::vector<MetaWordsData>;
 
@@ -43,6 +44,8 @@ private:
     void updateListeners();
 
     ARADocumentController* document_controller = nullptr;
+    using ObserverID = std::uint64_t;
+    ObserverID observer_id = 0;
 };
 
 //------------------------------------------------------------------------
