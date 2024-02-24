@@ -3,13 +3,13 @@
 //------------------------------------------------------------------------
 
 #include "vstgpt_listcontroller.h"
+#include "mam/meta_words/meta_word.h"
 #include "vstgui/lib/controls/clistcontrol.h"
 #include "vstgui/lib/controls/cstringlist.h"
 #include "vstgui/lib/controls/icontrollistener.h"
 #include "vstgui/lib/cstring.h"
 #include "vstgui/lib/events.h"
 #include "vstgui/lib/platform/platformfactory.h"
-#include "mam/meta_words/meta_word.h"
 
 //------------------------------------------------------------------------
 namespace mam {
@@ -114,6 +114,6 @@ void VstGPTListController::onDataChanged()
         listControl->setDirty();
     }
 }
-//------------------------------------------------------------------------
 
+//------------------------------------------------------------------------
 } // namespace mam

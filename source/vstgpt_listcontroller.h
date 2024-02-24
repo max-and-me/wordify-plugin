@@ -21,7 +21,7 @@ class VstGPTListController : public Steinberg::FObject,
                              public VSTGUI::IController
 {
 public:
-    //------------------------------------------------------------------------
+    //--------------------------------------------------------------------
     VstGPTListController(ARADocumentController& controller);
     virtual ~VstGPTListController();
 
@@ -36,11 +36,12 @@ public:
     void controlBeginEdit(VSTGUI::CControl* pControl) override{};
     void controlEndEdit(VSTGUI::CControl* pControl) override{};
 
+    OBJ_METHODS(VstGPTListController, FObject)
+
+    //--------------------------------------------------------------------
+private:
     void onDataChanged();
 
-    OBJ_METHODS(VstGPTListController, FObject)
-    //------------------------------------------------------------------------
-private:
     VSTGUI::CListControl* listControl = nullptr;
     ARADocumentController& controller;
     ARADocumentController::MetaWordsDataList cached_meta_words_data_list;
