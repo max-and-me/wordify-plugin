@@ -74,6 +74,7 @@ const MetaWordsData PlaybackRegion::get_meta_words_data() const
 
     data.words          = collect_meta_words(*this);
     data.project_offset = calculate_project_offset(*this);
+    data.name           = getEffectiveName();
 
     return data;
 }

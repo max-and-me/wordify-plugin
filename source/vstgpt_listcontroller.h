@@ -43,6 +43,8 @@ private:
     void onDataChanged();
 
     VSTGUI::CListControl* listControl = nullptr;
+    VSTGUI::CTextLabel* label = nullptr;
+
     ARADocumentController& controller;
     ARADocumentController::MetaWordsDataList cached_meta_words_data_list;
     tiny_observer_pattern::ObserverID observer_id = 0;

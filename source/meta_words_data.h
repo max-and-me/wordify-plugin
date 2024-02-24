@@ -13,7 +13,9 @@ namespace mam {
 struct MetaWordsData
 {
     using Seconds = double;
+    using String = std::string;
 
+    String name;
     Seconds project_offset;
     meta_words::MetaWords words;
 };

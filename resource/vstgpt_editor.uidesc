@@ -8,7 +8,7 @@
 		"custom": {
 			"FocusDrawing": {},
 			"VST3Editor": {
-				"Path": "/mnt/veracrypt2/Developer/github/max-and-me/vst-gpt/resource/vstgpt_editor.uidesc"
+				"Path": "Z:\\Private\\mam\\vst-gpt\\resource\\vstgpt_editor.uidesc"
 			},
 			"UIGridController": {
 				"Grids": "1x 1,5x 5,10x 10,12x 12,15x 15"
@@ -18,29 +18,29 @@
 			},
 			"UIEditController": {
 				"EditViewScale": "1",
-				"EditorSize": "0, 0, 1342, 584",
-				"SplitViewSize_0_0": "0.7670250896057347889112065786321181803942",
-				"SplitViewSize_0_1": "0.1971326164874551978289929365928401239216",
-				"SplitViewSize_1_0": "0.4838709677419354981964261241955682635307",
-				"SplitViewSize_1_1": "0.5125448028673834643953455270093400031328",
-				"SplitViewSize_2_0": "0.608792846497764550406373018631711602211",
-				"SplitViewSize_2_1": "0.3874813710879284611721118380955886095762",
+				"EditorSize": "0, 0, 1315, 568",
+				"SplitViewSize_0_0": "0.7601476014760147892346253684081602841616",
+				"SplitViewSize_0_1": "0.2029520295202952018254194399560219608247",
+				"SplitViewSize_1_0": "0.4833948339483394862625686982937622815371",
+				"SplitViewSize_1_1": "0.5129151291512915600279143291118089109659",
+				"SplitViewSize_2_0": "0.6007604562737642872605192678747698664665",
+				"SplitViewSize_2_1": "0.3954372623574144429703380865248618647456",
 				"TabSwitchValue": "0",
 				"Version": "1",
 				"ViewBackground": "1"
 			},
 			"UIAttributesController": {},
 			"UIViewCreatorDataSource": {
-				"SelectedRow": "19"
+				"SelectedRow": "9"
 			}
 		},
 		"templates": {
 			"view": {
 				"attributes": {
-					"background-color": "~ TransparentCColor",
+					"background-color": "~ GreyCColor",
 					"background-color-draw-style": "filled and stroked",
 					"class": "CViewContainer",
-					"mouse-enabled": "true",
+					"mouse-enabled": "false",
 					"opacity": "1",
 					"origin": "0, 0",
 					"size": "880, 360",
@@ -57,7 +57,7 @@
 							"background-color-draw-style": "filled and stroked",
 							"bordered": "true",
 							"class": "CScrollView",
-							"container-size": "230, 312",
+							"container-size": "230, 222",
 							"follow-focus-view": "false",
 							"horizontal-scrollbar": "false",
 							"mouse-enabled": "true",
@@ -86,13 +86,13 @@
 									"hover-color": "#00000064",
 									"line-color": "~ BlackCColor",
 									"line-width": "1",
-									"max-value": "25",
+									"max-value": "7",
 									"min-value": "0",
 									"mouse-enabled": "true",
 									"opacity": "0.95",
 									"origin": "0, 0",
 									"row-height": "12",
-									"size": "230, 312",
+									"size": "230, 222",
 									"style-hover": "true",
 									"sub-controller": "MetaWordsListController",
 									"text-alignment": "center",
@@ -102,6 +102,44 @@
 									"wheel-inc-value": "0.1"
 								}
 							}
+						}
+					},
+					"CTextLabel": {
+						"attributes": {
+							"back-color": "~ BlackCColor",
+							"background-offset": "0, 0",
+							"class": "CTextLabel",
+							"default-value": "0.5",
+							"font": "~ NormalFont",
+							"font-antialias": "true",
+							"font-color": "~ WhiteCColor",
+							"frame-color": "~ BlackCColor",
+							"frame-width": "1",
+							"max-value": "1",
+							"min-value": "0",
+							"mouse-enabled": "true",
+							"opacity": "1",
+							"origin": "307, 20",
+							"round-rect-radius": "6",
+							"shadow-color": "~ RedCColor",
+							"size": "240, 30",
+							"style-3D-in": "false",
+							"style-3D-out": "false",
+							"style-no-draw": "false",
+							"style-no-frame": "false",
+							"style-no-text": "false",
+							"style-round-rect": "false",
+							"style-shadow-text": "false",
+							"sub-controller": "MetaWordsListController",
+							"text-alignment": "center",
+							"text-inset": "0, 0",
+							"text-rotation": "0",
+							"text-shadow-offset": "1, 1",
+							"title": "Test",
+							"transparent": "true",
+							"value-precision": "2",
+							"wants-focus": "false",
+							"wheel-inc-value": "0.1"
 						}
 					}
 				}

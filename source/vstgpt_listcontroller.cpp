@@ -6,6 +6,7 @@
 #include "mam/meta_words/meta_word.h"
 #include "vstgui/lib/controls/clistcontrol.h"
 #include "vstgui/lib/controls/cstringlist.h"
+#include "vstgui/lib/controls/ctextlabel.h"
 #include "vstgui/lib/controls/icontrollistener.h"
 #include "vstgui/lib/cstring.h"
 #include "vstgui/lib/events.h"
@@ -84,17 +85,30 @@ CView* VstGPTListController::verifyView(CView* view,
                                         const IUIDescription* /*description*/)
 {
     if (!listControl)
-        listControl = dynamic_cast<CListControl*>(view);
-
-    if (!listControl)
-        return view;
-
-    listControl->registerControlListener(this);
-    cached_meta_words_data_list = controller.collect_meta_data_words();
-    if (!cached_meta_words_data_list.empty())
     {
-        update_list_control_content(*listControl,
-                                    cached_meta_words_data_list.at(0).words);
+        if (listControl = dynamic_cast<CListControl*>(view))
+        {
+            listControl->registerControlListener(this);
+            cached_meta_words_data_list = controller.collect_meta_data_words();
+            if (!cached_meta_words_data_list.empty())
+            {
+                update_list_control_content(
+                    *listControl, cached_meta_words_data_list.at(0).words);
+            }
+        }
+    }
+
+    if (!label)
+    {
+        if (label = dynamic_cast<CTextLabel*>(view))
+        {
+            cached_meta_words_data_list = controller.collect_meta_data_words();
+            if (!cached_meta_words_data_list.empty())
+            {
+                const auto& text = cached_meta_words_data_list.at(0).name;
+                label->setText(VSTGUI::UTF8String(text));
+            }
+        }
     }
 
     return view;
@@ -103,15 +117,24 @@ CView* VstGPTListController::verifyView(CView* view,
 //------------------------------------------------------------------------
 void VstGPTListController::onDataChanged()
 {
-    if (!listControl)
-        return;
-
     cached_meta_words_data_list = controller.collect_meta_data_words();
-    if (!cached_meta_words_data_list.empty())
+    if (cached_meta_words_data_list.empty())
     {
-        update_list_control_content(*listControl,
-                                    cached_meta_words_data_list.at(0).words);
+        // TODO: Clear all controls!!!
+        return;
+    }
+
+    const auto& data = cached_meta_words_data_list.at(0);
+    if (listControl)
+    {
+        update_list_control_content(*listControl, data.words);
         listControl->setDirty();
+    }
+
+    if (label)
+    {
+        label->setText(VSTGUI::UTF8String(data.name));
+        label->setDirty();
     }
 }
 
