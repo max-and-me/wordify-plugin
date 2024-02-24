@@ -97,6 +97,8 @@ void VstGPTListController::onDataChanged()
                     return getPlatformFactory().createString(string);
                 });
         }
+
+        listControl->setDirty();
     }
 }
 //------------------------------------------------------------------------
