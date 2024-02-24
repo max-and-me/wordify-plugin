@@ -6,14 +6,15 @@
 
 #include "ARA_Library/PlugIn/ARAPlug.h"
 #include "vstgpt_context.h"
-#include <unordered_map>
-#include <functional>
+#include "tiny_observer_pattern.h"
 
 namespace mam {
+
 //------------------------------------------------------------------------
 // ARADocumentController
 //------------------------------------------------------------------------
-class ARADocumentController : public ARA::PlugIn::DocumentController
+class ARADocumentController : public ARA::PlugIn::DocumentController,
+                              public tiny_observer_pattern::Subject
 {
 public:
     //--------------------------------------------------------------------
@@ -71,21 +72,11 @@ public:
 
     const MetaWordsDataList collect_meta_data_words() const;
 
-    // Observer pattern
-    using ObserverID = std::uint64_t;
-    using Callback = std::function<void()>;
-    auto add_listener(Callback&& cb) -> ObserverID;
-    auto remove_listener(ObserverID observer_id) -> bool;
-
     void onRequestLocatorPosChanged(double pos);
 
     //--------------------------------------------------------------------
 protected:
-    void notify_all() const;
-
-    ObserverID observer_id = 0;
-    using Observers = std::unordered_map<ObserverID, Callback>;
-    Observers observers;
 };
+
 //------------------------------------------------------------------------
 } // namespace mam

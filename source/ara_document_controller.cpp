@@ -12,18 +12,23 @@
 namespace mam {
 
 //------------------------------------------------------------------------
-static ARADocumentController::MetaWordsDataList collect_meta_data_words(const mam::ARADocumentController& document_controller)
+static ARADocumentController::MetaWordsDataList
+collect_meta_data_words(const mam::ARADocumentController& document_controller)
 {
     ARADocumentController::MetaWordsDataList meta_words_data_list;
     if (auto* document = document_controller.getDocument())
     {
-        const auto& audio_sources = document->getAudioSources<meta_words::AudioSource>();
+        const auto& audio_sources =
+            document->getAudioSources<meta_words::AudioSource>();
         for (const auto& audio_source : audio_sources)
         {
-            const auto& audio_modifications = audio_source->getAudioModifications();
+            const auto& audio_modifications =
+                audio_source->getAudioModifications();
             for (const auto audio_modification : audio_modifications)
             {
-                const auto& playback_regions = audio_modification->getPlaybackRegions<meta_words::PlaybackRegion>();
+                const auto& playback_regions =
+                    audio_modification
+                        ->getPlaybackRegions<meta_words::PlaybackRegion>();
                 for (const auto& playback_region : playback_regions)
                 {
                     const auto data = playback_region->get_meta_words_data();
@@ -122,7 +127,7 @@ void ARADocumentController::didUpdateAudioModificationProperties(
     ARA::PlugIn::DocumentController::didUpdateAudioModificationProperties(
         audioModification);
 
-    this->notify_all();
+    this->notify_all_observers();
 }
 
 //------------------------------------------------------------------------
@@ -140,7 +145,7 @@ void ARADocumentController::didUpdateAudioSourceProperties(
         (sampleCount), dataPointers.data ());
     */
 
-    this->notify_all();
+    this->notify_all_observers();
 }
 
 //------------------------------------------------------------------------
@@ -158,7 +163,7 @@ void ARADocumentController::didUpdatePlaybackRegionProperties(
     ARA::PlugIn::DocumentController::didUpdatePlaybackRegionProperties(
         playbackRegion);
 
-    this->notify_all();
+    this->notify_all_observers();
 }
 
 //------------------------------------------------------------------------
@@ -168,7 +173,8 @@ ARA::PlugIn::EditorView* ARADocumentController::doCreateEditorView() noexcept
 }
 
 //------------------------------------------------------------------------
-const ARADocumentController::MetaWordsDataList ARADocumentController::collect_meta_data_words() const
+const ARADocumentController::MetaWordsDataList
+ARADocumentController::collect_meta_data_words() const
 {
     return mam::collect_meta_data_words(*this);
 }
@@ -179,34 +185,6 @@ void ARADocumentController::onRequestLocatorPosChanged(double pos)
     auto hostPBCtrl = getHostPlaybackController();
     if (hostPBCtrl)
         hostPBCtrl->requestSetPlaybackPosition(ARA::ARATimePosition{pos});
-}
-
-//------------------------------------------------------------------------
-auto ARADocumentController::add_listener(Callback&& cb) -> ObserverID
-{
-    observers.emplace(++observer_id, std::move(cb));
-    return observer_id;
-}
-
-//------------------------------------------------------------------------
-auto ARADocumentController::remove_listener(ObserverID observer_id) -> bool
-{
-    const auto it = observers.find(observer_id);
-    if (it == observers.end())
-    {
-        return false;
-    }
-    observers.erase(it);
-    return true;
-}
-
-//------------------------------------------------------------------------
-void ARADocumentController::notify_all() const
-{
-    for (const auto& observer : observers)
-    {
-        observer.second();
-    }
 }
 
 //------------------------------------------------------------------------
