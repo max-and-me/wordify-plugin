@@ -137,8 +137,12 @@ VSTGUI::IController* VstGPTSingleComponent::createSubController(
 {
     auto* document_controller =
         _araPlugInExtension.getDocumentController<ARADocumentController>();
+
+    if (!context)
+        context = std::make_shared<VstGPTContext>(document_controller);
+
     if (VSTGUI::UTF8StringView(name) == "MetaWordsListController")
-        return new VstGPTListController(new VstGPTContext(document_controller));
+        return new VstGPTListController(context.get());
 
     return nullptr;
 }

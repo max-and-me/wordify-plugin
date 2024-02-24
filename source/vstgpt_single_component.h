@@ -8,6 +8,7 @@
 #include "ARA_Library/PlugIn/ARAPlug.h"
 #include "public.sdk/source/vst/vstsinglecomponenteffect.h"
 #include "vstgui/plugin-bindings/vst3editor.h"
+#include <memory>
 
 namespace mam {
 
@@ -97,6 +98,8 @@ public:
     //------------------------------------------------------------------------
 protected:
     ARA::PlugIn::PlugInExtension _araPlugInExtension;
+    using VstGPTContextPtr = std::shared_ptr<class VstGPTContext>;
+    VstGPTContextPtr context;
 };
 
 //------------------------------------------------------------------------

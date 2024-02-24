@@ -38,6 +38,8 @@ static auto update_list_control_content(CListControl& listControl,
 }
 
 //------------------------------------------------------------------------
+// VstGPTListController
+//------------------------------------------------------------------------
 VstGPTListController::VstGPTListController(VstGPTContext* context)
 : context(context)
 {
