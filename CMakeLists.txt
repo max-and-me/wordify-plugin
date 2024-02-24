@@ -25,6 +25,7 @@ smtg_add_vst3plugin(VstGPT
     source/meta_words_audio_modification.h
     source/meta_words_audio_source.cpp
     source/meta_words_audio_source.h
+    source/meta_words_data.h
     source/meta_words_editor_view.cpp
     source/meta_words_editor_view.h
     source/meta_words_playback_region.cpp
