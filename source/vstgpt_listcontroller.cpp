@@ -17,6 +17,27 @@ namespace mam {
 using namespace ::VSTGUI;
 
 //------------------------------------------------------------------------
+static auto update_list_control_content(CListControl& listControl,
+                                        const VstGPTContext& context) -> void
+{
+    listControl.setMax(context.getData().words.size() - 1);
+    listControl.recalculateLayout();
+
+    if (auto stringListDrawer =
+            dynamic_cast<StringListControlDrawer*>(listControl.getDrawer()))
+    {
+        stringListDrawer->setStringProvider([&](int32_t row) {
+            const meta_words::MetaWords words = context.getData().words;
+            const meta_words::MetaWord word   = words.at(row);
+            const std::string name            = word.word;
+
+            const UTF8String string(name.data());
+            return getPlatformFactory().createString(string);
+        });
+    }
+}
+
+//------------------------------------------------------------------------
 VstGPTListController::VstGPTListController(VstGPTContext* context)
 : context(context)
 {
@@ -54,52 +75,21 @@ CView* VstGPTListController::verifyView(CView* view,
 
     if (listControl)
     {
-        listControl->setMax(context->getData().words.size() - 1);
-        listControl->recalculateLayout();
         listControl->registerControlListener(this);
-
-        if (auto stringListDrawer = dynamic_cast<StringListControlDrawer*>(
-                listControl->getDrawer()))
-        {
-            stringListDrawer->setStringProvider(
-                [context = this->context](int32_t row) {
-                    meta_words::MetaWords words = context->getData().words;
-                    meta_words::MetaWord word   = words.at(row);
-                    std::string name            = word.word;
-
-                    UTF8String string(name.data());
-                    return getPlatformFactory().createString(string);
-                });
-        }
+        update_list_control_content(*listControl, *context);
     }
+
     return view;
 }
 
 //------------------------------------------------------------------------
 void VstGPTListController::onDataChanged()
 {
-    if (listControl)
-    {
-        listControl->setMax(context->getData().words.size() - 1);
-        listControl->recalculateLayout();
-        listControl->registerControlListener(this);
+    if (!listControl)
+        return;
 
-        if (auto stringListDrawer = dynamic_cast<StringListControlDrawer*>(
-                listControl->getDrawer()))
-        {
-            stringListDrawer->setStringProvider(
-                [context = this->context](int32_t row) {
-                    meta_words::MetaWords words = context->getData().words;
-                    meta_words::MetaWord word   = words.at(row);
-                    std::string name            = word.word;
-
-                    UTF8String string(name.data());
-                    return getPlatformFactory().createString(string);
-                });
-        }
-
-        listControl->setDirty();
-    }
+    update_list_control_content(*listControl, *context);
+    listControl->setDirty();
 }
 //------------------------------------------------------------------------
 
