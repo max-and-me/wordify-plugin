@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.14.0)
 set(CMAKE_OSX_DEPLOYMENT_TARGET 10.15 CACHE STRING "")
 
+# Only turn on validator in Release configuration
+option(SMTG_RUN_VST_VALIDATOR $<$<CONFIG:Debug>:OFF>$<$<CONFIG:Release>:ON>)
+
 project(VstGPT
     # This is your plug-in version number. Change it here only.
     # Version number symbols usable in C++ can be found in
