@@ -5,8 +5,9 @@
 #pragma once
 
 #include "ARA_Library/PlugIn/ARAPlug.h"
-#include "tiny_observer_pattern.h"
+#include "ara_playback_renderer.h"
 #include "meta_words_data.h"
+#include "tiny_observer_pattern.h"
 
 namespace mam {
 
@@ -74,9 +75,26 @@ public:
 
     void onRequestLocatorPosChanged(double pos);
 
+    ARA::PlugIn::PlaybackRenderer* doCreatePlaybackRenderer() noexcept override;
+
+    // Render thread synchronization:
+    // This is just a test code implementation of handling the threading -
+    // proper code will use a more sophisticated threading implementation, which
+    // is needed regardless of ARA. The test code simply blocks renderer access
+    // to the model while it is being modified. This includes waiting until
+    // concurrent renderer model access has completed before starting
+    // modifications.
+    bool rendererWillAccessModelGraph(
+        meta_words::ARAPlaybackRenderer* playbackRenderer) noexcept;
+    void rendererDidAccessModelGraph(
+        meta_words::ARAPlaybackRenderer* playbackRenderer) noexcept;
+
     //--------------------------------------------------------------------
 protected:
     auto notify_all_observers() const -> void;
+
+    std::atomic<bool> _renderersCanAccessModelGraph{true};
+    std::atomic<int> _countOfRenderersCurrentlyAccessingModelGraph{0};
 };
 
 //------------------------------------------------------------------------

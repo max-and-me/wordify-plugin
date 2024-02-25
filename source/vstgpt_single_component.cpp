@@ -13,6 +13,14 @@ using namespace Steinberg;
 
 namespace mam {
 //------------------------------------------------------------------------
+//  // helper to improve readability
+static auto getAudioBusChannelCount(const IPtr<Vst::Bus>& bus) -> int32
+{
+    return Vst::SpeakerArr::getChannelCount(
+        FCast<Vst::AudioBus>(bus.get())->getArrangement());
+}
+
+//------------------------------------------------------------------------
 // VstGPTProcessor
 //------------------------------------------------------------------------
 VstGPTSingleComponent::VstGPTSingleComponent() {}
@@ -37,9 +45,6 @@ tresult PLUGIN_API VstGPTSingleComponent::initialize(FUnknown* context)
     addAudioInput(STR16("Stereo In"), Steinberg::Vst::SpeakerArr::kStereo);
     addAudioOutput(STR16("Stereo Out"), Steinberg::Vst::SpeakerArr::kStereo);
 
-    /* If you don't need an event bus, you can remove the next line */
-    addEventInput(STR16("Event In"), 1);
-
     return kResultOk;
 }
 
@@ -57,6 +62,20 @@ tresult PLUGIN_API VstGPTSingleComponent::terminate()
 tresult PLUGIN_API VstGPTSingleComponent::setActive(TBool state)
 {
     //--- called when the Plug-in is enable/disable (On/Off) -----
+
+    if (meta_words::ARAPlaybackRenderer* playbackRenderer =
+            _araPlugInExtension
+                .getPlaybackRenderer<meta_words::ARAPlaybackRenderer>())
+    {
+        if (state)
+            playbackRenderer->enableRendering(
+                processSetup.sampleRate,
+                getAudioBusChannelCount(audioOutputs[0]),
+                processSetup.maxSamplesPerBlock);
+        else
+            playbackRenderer->disableRendering();
+    }
+
     return SingleComponentEffect::setActive(state);
 }
 

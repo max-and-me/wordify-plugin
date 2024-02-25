@@ -4,6 +4,7 @@
 
 #include "ara_document_controller.h"
 #include "ara_factory_config.h"
+#include "ara_playback_renderer.h"
 #include "meta_words_audio_modification.h"
 #include "meta_words_audio_source.h"
 #include "meta_words_editor_view.h"
@@ -170,6 +171,25 @@ void ARADocumentController::didUpdatePlaybackRegionProperties(
 ARA::PlugIn::EditorView* ARADocumentController::doCreateEditorView() noexcept
 {
     return new meta_words::EditorView(this);
+}
+
+//------------------------------------------------------------------------
+ARA::PlugIn::PlaybackRenderer* ARADocumentController::doCreatePlaybackRenderer() noexcept
+{
+    return nullptr;
+}
+
+//------------------------------------------------------------------------
+bool ARADocumentController::rendererWillAccessModelGraph(meta_words::ARAPlaybackRenderer* /*playbackRenderer*/) noexcept
+{
+    ++_countOfRenderersCurrentlyAccessingModelGraph;
+    return _renderersCanAccessModelGraph;
+}
+
+void ARADocumentController::rendererDidAccessModelGraph(meta_words::ARAPlaybackRenderer* /*playbackRenderer*/) noexcept
+{
+    ARA_INTERNAL_ASSERT(_countOfRenderersCurrentlyAccessingModelGraph > 0);
+    --_countOfRenderersCurrentlyAccessingModelGraph;
 }
 
 //------------------------------------------------------------------------
