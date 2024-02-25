@@ -6,6 +6,7 @@
 #include "ara_document_controller.h"
 #include "base/source/fstreamer.h"
 #include "pluginterfaces/vst/ivstparameterchanges.h"
+#include "pluginterfaces/vst/ivstprocesscontext.h"
 #include "vstgpt_cids.h"
 #include "vstgpt_listcontroller.h"
 
@@ -82,27 +83,38 @@ tresult PLUGIN_API VstGPTSingleComponent::setActive(TBool state)
 //------------------------------------------------------------------------
 tresult PLUGIN_API VstGPTSingleComponent::process(Vst::ProcessData& data)
 {
-    //--- First : Read inputs parameter changes-----------
+    ARA_VALIDATE_API_CONDITION(data.outputs[0].numChannels ==
+                               getAudioBusChannelCount(audioOutputs[0]));
+    ARA_VALIDATE_API_CONDITION(data.numSamples <=
+                               processSetup.maxSamplesPerBlock);
 
-    /*if (data.inputParameterChanges)
+    if (auto playbackRenderer =
+            _araPlugInExtension
+                .getPlaybackRenderer<meta_words::ARAPlaybackRenderer>())
     {
-        int32 numParamsChanged = data.inputParameterChanges->getParameterCount
-    (); for (int32 index = 0; index < numParamsChanged; index++)
-        {
-            if (auto* paramQueue = data.inputParameterChanges->getParameterData
-    (index))
-            {
-                Vst::ParamValue value;
-                int32 sampleOffset;
-                int32 numPoints = paramQueue->getPointCount ();
-                switch (paramQueue->getParameterId ())
-                {
-                }
-            }
-        }
-    }*/
+        // if we're an ARA playback renderer, calculate ARA playback output
+        playbackRenderer->renderPlaybackRegions(
+            data.outputs[0].channelBuffers32,
+            data.processContext->projectTimeSamples, data.numSamples,
+            (data.processContext->state & Vst::ProcessContext::kPlaying) != 0);
+    }
+    else
+    {
+        // if we're no ARA playback renderer, we're just copying the inputs to
+        // the outputs, which is appropriate both when being only an ARA editor
+        // renderer, or when being used in non-ARA mode.
+        for (int32 c = 0; c < data.outputs[0].numChannels; ++c)
+            std::memcpy(data.outputs[0].channelBuffers32[c],
+                        data.inputs[0].channelBuffers32[c],
+                        sizeof(float) * static_cast<size_t>(data.numSamples));
+    }
 
-    //--- Here you have to implement your processing
+    // if we are an ARA editor renderer, we now would add out preview signal to
+    // the output, but our test implementation does not support editing and thus
+    // never generates any preview signal.
+    //  if (auto editorRenderer =
+    //  _araPlugInExtension.getEditorRenderer<ARATestEditorRenderer*> ())
+    //      editorRenderer->addEditorSignal (...);
 
     return kResultOk;
 }

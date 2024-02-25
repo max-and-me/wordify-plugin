@@ -176,7 +176,7 @@ ARA::PlugIn::EditorView* ARADocumentController::doCreateEditorView() noexcept
 //------------------------------------------------------------------------
 ARA::PlugIn::PlaybackRenderer* ARADocumentController::doCreatePlaybackRenderer() noexcept
 {
-    return nullptr;
+    return new meta_words::ARAPlaybackRenderer(this);
 }
 
 //------------------------------------------------------------------------
@@ -186,6 +186,7 @@ bool ARADocumentController::rendererWillAccessModelGraph(meta_words::ARAPlayback
     return _renderersCanAccessModelGraph;
 }
 
+//------------------------------------------------------------------------
 void ARADocumentController::rendererDidAccessModelGraph(meta_words::ARAPlaybackRenderer* /*playbackRenderer*/) noexcept
 {
     ARA_INTERNAL_ASSERT(_countOfRenderersCurrentlyAccessingModelGraph > 0);
