@@ -11,15 +11,15 @@ namespace mam::meta_words {
 //------------------------------------------------------------------------
 using Seconds = const MetaWordsData::Seconds;
 
-static Seconds calculate_project_offset(const PlaybackRegion& region)
+static auto calculate_project_offset(const PlaybackRegion& region) -> Seconds
 {
     return region.getStartInPlaybackTime() -
            region.getStartInAudioModificationTime();
 }
 
 //------------------------------------------------------------------------
-static MetaWords filter_audible_meta_words(const MetaWords& words,
-                                           const PlaybackRegion& region)
+static auto filter_audible_meta_words(const MetaWords& words,
+                                      const PlaybackRegion& region) -> MetaWords
 {
     MetaWords filtered_words;
 
@@ -44,7 +44,7 @@ static MetaWords filter_audible_meta_words(const MetaWords& words,
 }
 
 //------------------------------------------------------------------------
-static const MetaWords collect_meta_words(const PlaybackRegion& region)
+static auto collect_meta_words(const PlaybackRegion& region) -> const MetaWords
 {
     MetaWords words;
 
@@ -64,10 +64,11 @@ static const MetaWords collect_meta_words(const PlaybackRegion& region)
 // played back in 44.1Khz but the original sample is in 16kHz. We need to
 // modify the timestamps then.
 //------------------------------------------------------------------------
-static const MetaWords
+static auto
 modify_meta_words_time_stamps(const MetaWords& words,
                               const PlaybackRegion& region,
                               ARA::ARASampleRate playback_sample_rate)
+    -> const MetaWords
 {
     MetaWords modified_words;
 
