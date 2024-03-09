@@ -60,6 +60,31 @@ static auto collect_meta_words(const PlaybackRegion& region) -> const MetaWords
 }
 
 //------------------------------------------------------------------------
+auto compute_speed_factor(const PlaybackRegion& region,
+                          ARA::ARASampleRate playback_sample_rate) -> double
+{
+    double speed_factor = 1.;
+    if (const auto* modification = region.getAudioModification())
+    {
+        if (const auto* source = modification->getAudioSource<AudioSource>())
+        {
+            speed_factor = source->getSampleRate() / playback_sample_rate;
+        }
+    }
+
+    return speed_factor;
+}
+
+//------------------------------------------------------------------------
+auto modify_time_stamps(const MetaWord& word, double speed_factor) -> MetaWord
+{
+    auto modified_word = word;
+    modified_word.begin *= speed_factor;
+    modified_word.duration *= speed_factor;
+    return modified_word;
+}
+
+//------------------------------------------------------------------------
 // Playback speed can differ from the real speed. Imagine the sample being
 // played back in 44.1Khz but the original sample is in 16kHz. We need to
 // modify the timestamps then.
@@ -71,22 +96,13 @@ static auto modify_time_stamps(const MetaWords& words,
 {
     MetaWords modified_words;
 
-    double speed_factor = 1.;
-    if (const auto* modification = region.getAudioModification())
-    {
-        if (const auto* source = modification->getAudioSource<AudioSource>())
-        {
-            speed_factor = source->getSampleRate() / playback_sample_rate;
-        }
-    }
+    const auto speed_factor =
+        compute_speed_factor(region, playback_sample_rate);
 
-    for (const auto& el : words)
+    for (const auto& word : words)
     {
-        auto modified_el = el;
-        modified_el.begin *= speed_factor;
-        modified_el.duration *= speed_factor;
-
-        modified_words.push_back(modified_el);
+        auto modified_word = modify_time_stamps(word, speed_factor);
+        modified_words.emplace_back(std::move(modified_word));
     }
 
     return modified_words;
