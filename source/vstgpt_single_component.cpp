@@ -9,6 +9,8 @@
 #include "pluginterfaces/vst/ivstprocesscontext.h"
 #include "vstgpt_cids.h"
 #include "vstgpt_listcontroller.h"
+#include "meta_words_editor_view.h"
+#include "meta_words_editor_renderer.h"
 
 using namespace Steinberg;
 
@@ -19,6 +21,30 @@ static auto getAudioBusChannelCount(const IPtr<Vst::Bus>& bus) -> int32
 {
     return Vst::SpeakerArr::getChannelCount(
         FCast<Vst::AudioBus>(bus.get())->getArrangement());
+}
+
+//------------------------------------------------------------------------
+void on_playback_renderer(meta_words::PlaybackRenderer& playbackRenderer, Vst::ProcessData& data)
+{
+    // if we're an ARA playback renderer, calculate ARA playback output
+    playbackRenderer.renderPlaybackRegions(
+        data.outputs[0].channelBuffers32,
+        data.processContext->projectTimeSamples, data.numSamples,
+        (data.processContext->state & Vst::ProcessContext::kPlaying) != 0);
+}
+
+//------------------------------------------------------------------------
+void on_editor_renderer(meta_words::EditorRenderer& editorRenderer, Vst::ProcessData& data)
+{
+    editorRenderer;
+    data;
+}
+
+//------------------------------------------------------------------------
+void on_editor_view(meta_words::EditorView& editorView, Vst::ProcessData& data)
+{
+    editorView;
+    data;
 }
 
 //------------------------------------------------------------------------
@@ -64,9 +90,9 @@ tresult PLUGIN_API VstGPTSingleComponent::setActive(TBool state)
 {
     //--- called when the Plug-in is enable/disable (On/Off) -----
 
-    if (meta_words::ARAPlaybackRenderer* playbackRenderer =
+    if (meta_words::PlaybackRenderer* playbackRenderer =
             _araPlugInExtension
-                .getPlaybackRenderer<meta_words::ARAPlaybackRenderer>())
+                .getPlaybackRenderer<meta_words::PlaybackRenderer>())
     {
         if (state)
             playbackRenderer->enableRendering(
@@ -90,13 +116,21 @@ tresult PLUGIN_API VstGPTSingleComponent::process(Vst::ProcessData& data)
 
     if (auto playbackRenderer =
             _araPlugInExtension
-                .getPlaybackRenderer<meta_words::ARAPlaybackRenderer>())
+                .getPlaybackRenderer<meta_words::PlaybackRenderer>())
     {
-        // if we're an ARA playback renderer, calculate ARA playback output
-        playbackRenderer->renderPlaybackRegions(
-            data.outputs[0].channelBuffers32,
-            data.processContext->projectTimeSamples, data.numSamples,
-            (data.processContext->state & Vst::ProcessContext::kPlaying) != 0);
+        on_playback_renderer(*playbackRenderer, data);
+    }
+    else if (auto editorRenderer =
+        _araPlugInExtension
+        .getEditorRenderer<meta_words::EditorRenderer>())
+    {
+        on_editor_renderer(*editorRenderer, data);
+    }
+    else if (auto editorView =
+        _araPlugInExtension
+        .getEditorView<meta_words::EditorView>())
+    {
+        on_editor_view(*editorView, data);
     }
     else
     {

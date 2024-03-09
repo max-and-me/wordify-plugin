@@ -24,13 +24,15 @@ smtg_add_vst3plugin(VstGPT
     source/ara_document_controller.h
     source/ara_factory_config.cpp
     source/ara_factory_config.h
-    source/ara_playback_renderer.cpp
-    source/ara_playback_renderer.h
+    source/meta_words_playback_renderer.cpp
+    source/meta_words_playback_renderer.h
     source/meta_words_audio_modification.cpp
     source/meta_words_audio_modification.h
     source/meta_words_audio_source.cpp
     source/meta_words_audio_source.h
     source/meta_words_data.h
+    source/meta_words_editor_renderer.cpp
+    source/meta_words_editor_renderer.h
     source/meta_words_editor_view.cpp
     source/meta_words_editor_view.h
     source/meta_words_playback_region.cpp

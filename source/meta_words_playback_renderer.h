@@ -11,11 +11,11 @@ namespace mam::meta_words {
 //------------------------------------------------------------------------
 //  ARAPlaybackRenderer
 //------------------------------------------------------------------------
-class ARAPlaybackRenderer : public ARA::PlugIn::PlaybackRenderer
+class PlaybackRenderer : public ARA::PlugIn::PlaybackRenderer
 {
 public:
     //------------------------------------------------------------------------
-    using PlaybackRenderer::PlaybackRenderer;
+    using ARA::PlugIn::PlaybackRenderer::PlaybackRenderer;
 
     void renderPlaybackRegions(float* const* ppOutput,
                                ARA::ARASamplePosition samplePosition,

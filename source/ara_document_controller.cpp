@@ -4,10 +4,11 @@
 
 #include "ara_document_controller.h"
 #include "ara_factory_config.h"
-#include "ara_playback_renderer.h"
+#include "meta_words_playback_renderer.h"
 #include "meta_words_audio_modification.h"
 #include "meta_words_audio_source.h"
 #include "meta_words_editor_view.h"
+#include "meta_words_editor_renderer.h"
 #include "meta_words_playback_region.h"
 
 namespace mam {
@@ -174,20 +175,26 @@ ARA::PlugIn::EditorView* ARADocumentController::doCreateEditorView() noexcept
 }
 
 //------------------------------------------------------------------------
-ARA::PlugIn::PlaybackRenderer* ARADocumentController::doCreatePlaybackRenderer() noexcept
+ARA::PlugIn::EditorRenderer* ARADocumentController::doCreateEditorRenderer() noexcept
 {
-    return new meta_words::ARAPlaybackRenderer(this);
+    return new meta_words::EditorRenderer(this);
 }
 
 //------------------------------------------------------------------------
-bool ARADocumentController::rendererWillAccessModelGraph(meta_words::ARAPlaybackRenderer* /*playbackRenderer*/) noexcept
+ARA::PlugIn::PlaybackRenderer* ARADocumentController::doCreatePlaybackRenderer() noexcept
+{
+    return new meta_words::PlaybackRenderer(this);
+}
+
+//------------------------------------------------------------------------
+bool ARADocumentController::rendererWillAccessModelGraph(meta_words::PlaybackRenderer* /*playbackRenderer*/) noexcept
 {
     ++_countOfRenderersCurrentlyAccessingModelGraph;
     return _renderersCanAccessModelGraph;
 }
 
 //------------------------------------------------------------------------
-void ARADocumentController::rendererDidAccessModelGraph(meta_words::ARAPlaybackRenderer* /*playbackRenderer*/) noexcept
+void ARADocumentController::rendererDidAccessModelGraph(meta_words::PlaybackRenderer* /*playbackRenderer*/) noexcept
 {
     ARA_INTERNAL_ASSERT(_countOfRenderersCurrentlyAccessingModelGraph > 0);
     --_countOfRenderersCurrentlyAccessingModelGraph;

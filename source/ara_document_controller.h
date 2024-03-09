@@ -5,7 +5,7 @@
 #pragma once
 
 #include "ARA_Library/PlugIn/ARAPlug.h"
-#include "ara_playback_renderer.h"
+#include "meta_words_playback_renderer.h"
 #include "meta_words_data.h"
 #include "tiny_observer_pattern.h"
 
@@ -70,6 +70,7 @@ public:
         ARA::PlugIn::PlaybackRegion* playbackRegion) noexcept override;
 
     ARA::PlugIn::EditorView* doCreateEditorView() noexcept override;
+    ARA::PlugIn::EditorRenderer* doCreateEditorRenderer() noexcept override;
 
     const MetaWordsDataList collect_meta_data_words() const;
 
@@ -85,9 +86,9 @@ public:
     // concurrent renderer model access has completed before starting
     // modifications.
     bool rendererWillAccessModelGraph(
-        meta_words::ARAPlaybackRenderer* playbackRenderer) noexcept;
+        meta_words::PlaybackRenderer* playbackRenderer) noexcept;
     void rendererDidAccessModelGraph(
-        meta_words::ARAPlaybackRenderer* playbackRenderer) noexcept;
+        meta_words::PlaybackRenderer* playbackRenderer) noexcept;
 
     //--------------------------------------------------------------------
 protected:

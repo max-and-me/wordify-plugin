@@ -2,7 +2,7 @@
 // Copyright(c) 2023 Max And Me.
 //------------------------------------------------------------------------
 
-#include "ara_playback_renderer.h"
+#include "meta_words_playback_renderer.h"
 #include "ara_document_controller.h"
 #include "meta_words_audio_source.h"
 #include <algorithm>
@@ -11,9 +11,9 @@
 namespace mam::meta_words {
 
 //------------------------------------------------------------------------
-// ARAPlaybackRenderer
+// PlaybackRenderer
 //------------------------------------------------------------------------
-void ARAPlaybackRenderer::renderPlaybackRegions(
+void PlaybackRenderer::renderPlaybackRegions(
     float* const* ppOutput,
     ARA::ARASamplePosition samplePosition,
     ARA::ARASampleCount samplesToRender,
@@ -141,7 +141,7 @@ void ARAPlaybackRenderer::renderPlaybackRegions(
 }
 
 //------------------------------------------------------------------------
-void ARAPlaybackRenderer::enableRendering(
+void PlaybackRenderer::enableRendering(
     ARA::ARASampleRate sampleRate,
     ARA::ARAChannelCount channelCount,
     ARA::ARASampleCount maxSamplesToRender) noexcept
@@ -158,7 +158,7 @@ void ARAPlaybackRenderer::enableRendering(
 }
 
 //------------------------------------------------------------------------
-void ARAPlaybackRenderer::disableRendering() noexcept
+void PlaybackRenderer::disableRendering() noexcept
 {
 #if ARA_VALIDATE_API_CALLS
     _isRenderingEnabled = false;
@@ -167,14 +167,14 @@ void ARAPlaybackRenderer::disableRendering() noexcept
 
 //------------------------------------------------------------------------
 #if ARA_VALIDATE_API_CALLS
-void ARAPlaybackRenderer::willAddPlaybackRegion(
+void PlaybackRenderer::willAddPlaybackRegion(
     ARA::PlugIn::PlaybackRegion* /*playbackRegion*/) noexcept
 {
     ARA_VALIDATE_API_STATE(!_isRenderingEnabled);
 }
 
 //------------------------------------------------------------------------
-void ARAPlaybackRenderer::willRemovePlaybackRegion(
+void PlaybackRenderer::willRemovePlaybackRegion(
     ARA::PlugIn::PlaybackRegion* /*playbackRegion*/) noexcept
 {
     ARA_VALIDATE_API_STATE(!_isRenderingEnabled);
