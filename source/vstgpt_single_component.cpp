@@ -24,8 +24,8 @@ static auto getAudioBusChannelCount(const IPtr<Vst::Bus>& bus) -> int32
 }
 
 //------------------------------------------------------------------------
-void on_playback_renderer(meta_words::PlaybackRenderer& playbackRenderer,
-                          Vst::ProcessData& data)
+static auto on_playback_renderer(meta_words::PlaybackRenderer& playbackRenderer,
+                                 Vst::ProcessData& data) -> void
 {
     // if we're an ARA playback renderer, calculate ARA playback output
     playbackRenderer.renderPlaybackRegions(
@@ -35,15 +35,16 @@ void on_playback_renderer(meta_words::PlaybackRenderer& playbackRenderer,
 }
 
 //------------------------------------------------------------------------
-void on_editor_renderer(meta_words::EditorRenderer& editorRenderer,
-                        Vst::ProcessData& data)
+static auto on_editor_renderer(meta_words::EditorRenderer& editorRenderer,
+                               Vst::ProcessData& data) -> void
 {
     editorRenderer;
     data;
 }
 
 //------------------------------------------------------------------------
-void on_editor_view(meta_words::EditorView& editorView, Vst::ProcessData& data)
+static auto on_editor_view(meta_words::EditorView& editorView,
+                           Vst::ProcessData& data) -> void
 {
     editorView;
     data;
