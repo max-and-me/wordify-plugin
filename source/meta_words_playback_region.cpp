@@ -18,8 +18,8 @@ static auto calculate_project_offset(const PlaybackRegion& region) -> Seconds
 }
 
 //------------------------------------------------------------------------
-static auto filter_audible_meta_words(const MetaWords& words,
-                                      const PlaybackRegion& region) -> MetaWords
+static auto filter_audible_words(const MetaWords& words,
+                                 const PlaybackRegion& region) -> MetaWords
 {
     MetaWords filtered_words;
 
@@ -64,10 +64,9 @@ static auto collect_meta_words(const PlaybackRegion& region) -> const MetaWords
 // played back in 44.1Khz but the original sample is in 16kHz. We need to
 // modify the timestamps then.
 //------------------------------------------------------------------------
-static auto
-modify_meta_words_time_stamps(const MetaWords& words,
-                              const PlaybackRegion& region,
-                              ARA::ARASampleRate playback_sample_rate)
+static auto modify_time_stamps(const MetaWords& words,
+                               const PlaybackRegion& region,
+                               ARA::ARASampleRate playback_sample_rate)
     -> const MetaWords
 {
     MetaWords modified_words;
@@ -108,9 +107,8 @@ const MetaWordsData PlaybackRegion::get_meta_words_data(
     MetaWordsData data;
 
     data.words = collect_meta_words(*this);
-    data.words =
-        modify_meta_words_time_stamps(data.words, *this, playback_sample_rate);
-    data.words          = filter_audible_meta_words(data.words, *this);
+    data.words = modify_time_stamps(data.words, *this, playback_sample_rate);
+    data.words = filter_audible_words(data.words, *this);
     data.project_offset = calculate_project_offset(*this);
     data.name           = getEffectiveName();
 
