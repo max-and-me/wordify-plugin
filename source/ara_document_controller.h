@@ -72,7 +72,7 @@ public:
     ARA::PlugIn::EditorView* doCreateEditorView() noexcept override;
     ARA::PlugIn::EditorRenderer* doCreateEditorRenderer() noexcept override;
 
-    const MetaWordsDataList collect_meta_data_words() const;
+    const MetaWordsDataList collect_meta_data_words(ARA::ARASampleRate playback_sample_rate) const;
 
     void onRequestLocatorPosChanged(double pos);
 

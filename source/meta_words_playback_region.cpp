@@ -18,8 +18,8 @@ static Seconds calculate_project_offset(const PlaybackRegion& region)
 }
 
 //------------------------------------------------------------------------
-static MetaWords filter_meta_words(const MetaWords& words,
-                                   const PlaybackRegion& region)
+static MetaWords filter_audible_meta_words(const MetaWords& words,
+                                           const PlaybackRegion& region)
 {
     MetaWords filtered_words;
 
@@ -56,7 +56,40 @@ static const MetaWords collect_meta_words(const PlaybackRegion& region)
         }
     }
 
-    return filter_meta_words(words, region);
+    return words;
+}
+
+//------------------------------------------------------------------------
+// Playback speed can differ from the real speed. Imagine the sample being
+// played back in 44.1Khz but the original sample is in 16kHz. We need to
+// modify the timestamps then.
+//------------------------------------------------------------------------
+static const MetaWords
+modify_meta_words_time_stamps(const MetaWords& words,
+                              const PlaybackRegion& region,
+                              ARA::ARASampleRate playback_sample_rate)
+{
+    MetaWords modified_words;
+
+    double speed_factor = 1.;
+    if (const auto* modification = region.getAudioModification())
+    {
+        if (const auto* source = modification->getAudioSource<AudioSource>())
+        {
+            speed_factor = source->getSampleRate() / playback_sample_rate;
+        }
+    }
+
+    for (const auto& el : words)
+    {
+        auto modified_el = el;
+        modified_el.begin *= speed_factor;
+        modified_el.duration *= speed_factor;
+
+        modified_words.push_back(modified_el);
+    }
+
+    return modified_words;
 }
 
 //------------------------------------------------------------------------
@@ -68,11 +101,15 @@ PlaybackRegion::PlaybackRegion(
 }
 
 //------------------------------------------------------------------------
-const MetaWordsData PlaybackRegion::get_meta_words_data() const
+const MetaWordsData PlaybackRegion::get_meta_words_data(
+    ARA::ARASampleRate playback_sample_rate) const
 {
     MetaWordsData data;
 
-    data.words          = collect_meta_words(*this);
+    data.words = collect_meta_words(*this);
+    data.words =
+        modify_meta_words_time_stamps(data.words, *this, playback_sample_rate);
+    data.words          = filter_audible_meta_words(data.words, *this);
     data.project_offset = calculate_project_offset(*this);
     data.name           = getEffectiveName();
 

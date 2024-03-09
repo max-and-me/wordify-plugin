@@ -8,6 +8,7 @@
 #include "base/source/fobject.h"
 #include "vstgui/lib/iviewlistener.h"
 #include "vstgui/uidescription/icontroller.h"
+#include <functional>
 
 namespace VSTGUI {
 class CListControl;
@@ -22,7 +23,10 @@ class VstGPTListController : public Steinberg::FObject,
 {
 public:
     //--------------------------------------------------------------------
-    VstGPTListController(ARADocumentController& controller);
+    using SampleRate = double;
+    using FnGetSampleRate = std::function<SampleRate()>;
+
+    VstGPTListController(ARADocumentController& controller, FnGetSampleRate&& fn_get_playback_sample_rate);
     virtual ~VstGPTListController();
 
     void PLUGIN_API update(FUnknown* changedUnknown,
@@ -48,6 +52,7 @@ private:
     ARADocumentController& controller;
     ARADocumentController::MetaWordsDataList cached_meta_words_data_list;
     tiny_observer_pattern::ObserverID observer_id = 0;
+    FnGetSampleRate fn_get_playback_sample_rate;
 };
 
 //------------------------------------------------------------------------

@@ -5,12 +5,12 @@
 #include "vstgpt_single_component.h"
 #include "ara_document_controller.h"
 #include "base/source/fstreamer.h"
+#include "meta_words_editor_renderer.h"
+#include "meta_words_editor_view.h"
 #include "pluginterfaces/vst/ivstparameterchanges.h"
 #include "pluginterfaces/vst/ivstprocesscontext.h"
 #include "vstgpt_cids.h"
 #include "vstgpt_listcontroller.h"
-#include "meta_words_editor_view.h"
-#include "meta_words_editor_renderer.h"
 
 using namespace Steinberg;
 
@@ -24,7 +24,8 @@ static auto getAudioBusChannelCount(const IPtr<Vst::Bus>& bus) -> int32
 }
 
 //------------------------------------------------------------------------
-void on_playback_renderer(meta_words::PlaybackRenderer& playbackRenderer, Vst::ProcessData& data)
+void on_playback_renderer(meta_words::PlaybackRenderer& playbackRenderer,
+                          Vst::ProcessData& data)
 {
     // if we're an ARA playback renderer, calculate ARA playback output
     playbackRenderer.renderPlaybackRegions(
@@ -34,7 +35,8 @@ void on_playback_renderer(meta_words::PlaybackRenderer& playbackRenderer, Vst::P
 }
 
 //------------------------------------------------------------------------
-void on_editor_renderer(meta_words::EditorRenderer& editorRenderer, Vst::ProcessData& data)
+void on_editor_renderer(meta_words::EditorRenderer& editorRenderer,
+                        Vst::ProcessData& data)
 {
     editorRenderer;
     data;
@@ -121,14 +123,13 @@ tresult PLUGIN_API VstGPTSingleComponent::process(Vst::ProcessData& data)
         on_playback_renderer(*playbackRenderer, data);
     }
     else if (auto editorRenderer =
-        _araPlugInExtension
-        .getEditorRenderer<meta_words::EditorRenderer>())
+                 _araPlugInExtension
+                     .getEditorRenderer<meta_words::EditorRenderer>())
     {
         on_editor_renderer(*editorRenderer, data);
     }
     else if (auto editorView =
-        _araPlugInExtension
-        .getEditorView<meta_words::EditorView>())
+                 _araPlugInExtension.getEditorView<meta_words::EditorView>())
     {
         on_editor_view(*editorView, data);
     }
@@ -207,7 +208,9 @@ VSTGUI::IController* VstGPTSingleComponent::createSubController(
         return nullptr;
 
     if (VSTGUI::UTF8StringView(name) == "MetaWordsListController")
-        return new VstGPTListController(*document_controller);
+        return new VstGPTListController(
+            *document_controller,
+            std::move([this]() { return this->processSetup.sampleRate; }));
 
     return nullptr;
 }

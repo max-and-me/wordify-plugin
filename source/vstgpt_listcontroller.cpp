@@ -64,8 +64,9 @@ static auto onRequestSelectWord(int index,
 //------------------------------------------------------------------------
 // VstGPTListController
 //------------------------------------------------------------------------
-VstGPTListController::VstGPTListController(ARADocumentController& controller)
+VstGPTListController::VstGPTListController(ARADocumentController& controller, FnGetSampleRate&& fn_get_playback_sample_rate)
 : controller(controller)
+, fn_get_playback_sample_rate(fn_get_playback_sample_rate)
 {
     observer_id = controller.add_listener([this]() { this->onDataChanged(); });
 }
@@ -99,7 +100,7 @@ CView* VstGPTListController::verifyView(CView* view,
         if (listControl = dynamic_cast<CListControl*>(view))
         {
             listControl->registerControlListener(this);
-            cached_meta_words_data_list = controller.collect_meta_data_words();
+            cached_meta_words_data_list = controller.collect_meta_data_words(fn_get_playback_sample_rate());
             if (!cached_meta_words_data_list.empty())
             {
                 update_list_control_content(
@@ -112,7 +113,7 @@ CView* VstGPTListController::verifyView(CView* view,
     {
         if (label = dynamic_cast<CTextLabel*>(view))
         {
-            cached_meta_words_data_list = controller.collect_meta_data_words();
+            cached_meta_words_data_list = controller.collect_meta_data_words(fn_get_playback_sample_rate());
             if (!cached_meta_words_data_list.empty())
             {
                 update_label_control(*label, cached_meta_words_data_list.at(0));
@@ -126,7 +127,7 @@ CView* VstGPTListController::verifyView(CView* view,
 //------------------------------------------------------------------------
 void VstGPTListController::onDataChanged()
 {
-    cached_meta_words_data_list = controller.collect_meta_data_words();
+    cached_meta_words_data_list = controller.collect_meta_data_words(fn_get_playback_sample_rate());
     if (cached_meta_words_data_list.empty())
     {
         // TODO: Clear all controls!!!

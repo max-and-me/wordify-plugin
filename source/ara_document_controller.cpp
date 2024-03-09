@@ -15,7 +15,7 @@ namespace mam {
 
 //------------------------------------------------------------------------
 static ARADocumentController::MetaWordsDataList
-collect_meta_data_words(const mam::ARADocumentController& document_controller)
+collect_meta_data_words(const mam::ARADocumentController& document_controller, ARA::ARASampleRate playback_sample_rate)
 {
     ARADocumentController::MetaWordsDataList meta_words_data_list;
     if (auto* document = document_controller.getDocument())
@@ -33,7 +33,7 @@ collect_meta_data_words(const mam::ARADocumentController& document_controller)
                         ->getPlaybackRegions<meta_words::PlaybackRegion>();
                 for (const auto& playback_region : playback_regions)
                 {
-                    const auto data = playback_region->get_meta_words_data();
+                    const auto data = playback_region->get_meta_words_data(playback_sample_rate);
                     meta_words_data_list.emplace_back(data);
                 }
             }
@@ -202,9 +202,9 @@ void ARADocumentController::rendererDidAccessModelGraph(meta_words::PlaybackRend
 
 //------------------------------------------------------------------------
 const ARADocumentController::MetaWordsDataList
-ARADocumentController::collect_meta_data_words() const
+ARADocumentController::collect_meta_data_words(ARA::ARASampleRate playback_sample_rate) const
 {
-    return mam::collect_meta_data_words(*this);
+    return mam::collect_meta_data_words(*this, playback_sample_rate);
 }
 
 //------------------------------------------------------------------------
