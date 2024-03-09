@@ -23,10 +23,11 @@ class VstGPTListController : public Steinberg::FObject,
 {
 public:
     //--------------------------------------------------------------------
-    using SampleRate = double;
+    using SampleRate      = double;
     using FnGetSampleRate = std::function<SampleRate()>;
 
-    VstGPTListController(ARADocumentController& controller, FnGetSampleRate&& fn_get_playback_sample_rate);
+    VstGPTListController(ARADocumentController& controller,
+                         FnGetSampleRate&& fn_get_playback_sample_rate);
     virtual ~VstGPTListController();
 
     void PLUGIN_API update(FUnknown* changedUnknown,
@@ -47,7 +48,7 @@ private:
     void onDataChanged();
 
     VSTGUI::CListControl* listControl = nullptr;
-    VSTGUI::CTextLabel* label = nullptr;
+    VSTGUI::CTextLabel* label         = nullptr;
 
     ARADocumentController& controller;
     ARADocumentController::MetaWordsDataList cached_meta_words_data_list;

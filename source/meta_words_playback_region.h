@@ -17,7 +17,8 @@ public:
     explicit PlaybackRegion(ARA::PlugIn::AudioModification* audioModification,
                             ARA::ARAPlaybackRegionHostRef hostRef) noexcept;
 
-    const MetaWordsData get_meta_words_data(ARA::ARASampleRate playback_sample_rate) const;
+    const MetaWordsData
+    get_meta_words_data(ARA::ARASampleRate playback_sample_rate) const;
     //--------------------------------------------------------------------
 private:
 };

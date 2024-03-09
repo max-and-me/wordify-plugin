@@ -4,18 +4,19 @@
 
 #include "ara_document_controller.h"
 #include "ara_factory_config.h"
-#include "meta_words_playback_renderer.h"
 #include "meta_words_audio_modification.h"
 #include "meta_words_audio_source.h"
-#include "meta_words_editor_view.h"
 #include "meta_words_editor_renderer.h"
+#include "meta_words_editor_view.h"
 #include "meta_words_playback_region.h"
+#include "meta_words_playback_renderer.h"
 
 namespace mam {
 
 //------------------------------------------------------------------------
 static ARADocumentController::MetaWordsDataList
-collect_meta_data_words(const mam::ARADocumentController& document_controller, ARA::ARASampleRate playback_sample_rate)
+collect_meta_data_words(const mam::ARADocumentController& document_controller,
+                        ARA::ARASampleRate playback_sample_rate)
 {
     ARADocumentController::MetaWordsDataList meta_words_data_list;
     if (auto* document = document_controller.getDocument())
@@ -33,7 +34,8 @@ collect_meta_data_words(const mam::ARADocumentController& document_controller, A
                         ->getPlaybackRegions<meta_words::PlaybackRegion>();
                 for (const auto& playback_region : playback_regions)
                 {
-                    const auto data = playback_region->get_meta_words_data(playback_sample_rate);
+                    const auto data = playback_region->get_meta_words_data(
+                        playback_sample_rate);
                     meta_words_data_list.emplace_back(data);
                 }
             }
@@ -175,26 +177,30 @@ ARA::PlugIn::EditorView* ARADocumentController::doCreateEditorView() noexcept
 }
 
 //------------------------------------------------------------------------
-ARA::PlugIn::EditorRenderer* ARADocumentController::doCreateEditorRenderer() noexcept
+ARA::PlugIn::EditorRenderer*
+ARADocumentController::doCreateEditorRenderer() noexcept
 {
     return new meta_words::EditorRenderer(this);
 }
 
 //------------------------------------------------------------------------
-ARA::PlugIn::PlaybackRenderer* ARADocumentController::doCreatePlaybackRenderer() noexcept
+ARA::PlugIn::PlaybackRenderer*
+ARADocumentController::doCreatePlaybackRenderer() noexcept
 {
     return new meta_words::PlaybackRenderer(this);
 }
 
 //------------------------------------------------------------------------
-bool ARADocumentController::rendererWillAccessModelGraph(meta_words::PlaybackRenderer* /*playbackRenderer*/) noexcept
+bool ARADocumentController::rendererWillAccessModelGraph(
+    meta_words::PlaybackRenderer* /*playbackRenderer*/) noexcept
 {
     ++_countOfRenderersCurrentlyAccessingModelGraph;
     return _renderersCanAccessModelGraph;
 }
 
 //------------------------------------------------------------------------
-void ARADocumentController::rendererDidAccessModelGraph(meta_words::PlaybackRenderer* /*playbackRenderer*/) noexcept
+void ARADocumentController::rendererDidAccessModelGraph(
+    meta_words::PlaybackRenderer* /*playbackRenderer*/) noexcept
 {
     ARA_INTERNAL_ASSERT(_countOfRenderersCurrentlyAccessingModelGraph > 0);
     --_countOfRenderersCurrentlyAccessingModelGraph;
@@ -202,7 +208,8 @@ void ARADocumentController::rendererDidAccessModelGraph(meta_words::PlaybackRend
 
 //------------------------------------------------------------------------
 const ARADocumentController::MetaWordsDataList
-ARADocumentController::collect_meta_data_words(ARA::ARASampleRate playback_sample_rate) const
+ARADocumentController::collect_meta_data_words(
+    ARA::ARASampleRate playback_sample_rate) const
 {
     return mam::collect_meta_data_words(*this, playback_sample_rate);
 }

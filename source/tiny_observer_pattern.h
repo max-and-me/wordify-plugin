@@ -45,7 +45,8 @@ protected:
     using Observers = std::unordered_map<ObserverID, Callback>;
     Observers observers;
 
-    auto new_id() -> ObserverID {
+    auto new_id() -> ObserverID
+    {
         static ObserverID id;
         return ++id;
     }

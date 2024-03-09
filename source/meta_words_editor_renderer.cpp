@@ -7,7 +7,7 @@
 namespace mam::meta_words {
 
 //------------------------------------------------------------------------
-    EditorRenderer::EditorRenderer(
+EditorRenderer::EditorRenderer(
     ARA::PlugIn::DocumentController* document_controller) noexcept
 : ARA::PlugIn::EditorRenderer(document_controller)
 {

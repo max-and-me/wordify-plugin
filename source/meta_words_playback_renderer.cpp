@@ -3,10 +3,10 @@
 //------------------------------------------------------------------------
 
 #include "meta_words_playback_renderer.h"
+#include "ARA_Library/Utilities/ARASamplePositionConversion.h"
 #include "ara_document_controller.h"
 #include "meta_words_audio_source.h"
 #include <algorithm>
-#include "ARA_Library/Utilities/ARASamplePositionConversion.h"
 
 namespace mam::meta_words {
 
@@ -57,7 +57,8 @@ void PlaybackRenderer::renderPlaybackRegions(
             // to copy in song time (if a plug-in uses playback region
             // head/tail time, it will also need to reflect these values
             // here)
-            const auto regionStartSample = playbackRegion->getStartInPlaybackSamples(_sampleRate);
+            const auto regionStartSample =
+                playbackRegion->getStartInPlaybackSamples(_sampleRate);
             if (sampleEnd <= regionStartSample)
                 continue;
 
@@ -67,23 +68,32 @@ void PlaybackRenderer::renderPlaybackRegions(
                 continue;
 
             auto startSongSample = std::max(regionStartSample, samplePosition);
-            auto endSongSample = std::min(regionEndSample, sampleEnd);
+            auto endSongSample   = std::min(regionEndSample, sampleEnd);
 
             // calculate offset between song and audio source samples, clip
             // at region borders in audio source samples (if a plug-in
             // supports time stretching, it will also need to reflect the
             // stretch factor here)
-            // const auto offsetToPlaybackRegion = playbackRegion->getStartInAudioModificationSamples() - regionStartSample;
-            const auto offsetToPlaybackRegion = ARA::samplePositionAtTime(playbackRegion->getStartInAudioModificationTime(), _sampleRate) - regionStartSample;
-            
+            // const auto offsetToPlaybackRegion =
+            // playbackRegion->getStartInAudioModificationSamples() -
+            // regionStartSample;
+            const auto offsetToPlaybackRegion =
+                ARA::samplePositionAtTime(
+                    playbackRegion->getStartInAudioModificationTime(),
+                    _sampleRate) -
+                regionStartSample;
 
             const auto startAvailableSourceSamples =
                 std::max(ARA::ARASamplePosition{0},
-                    ARA::samplePositionAtTime(playbackRegion->getStartInAudioModificationTime(), _sampleRate));
+                         ARA::samplePositionAtTime(
+                             playbackRegion->getStartInAudioModificationTime(),
+                             _sampleRate));
 
             const auto endAvailableSourceSamples =
                 std::min(audioSource->getSampleCount(),
-                    ARA::samplePositionAtTime(playbackRegion->getEndInAudioModificationTime(), _sampleRate));
+                         ARA::samplePositionAtTime(
+                             playbackRegion->getEndInAudioModificationTime(),
+                             _sampleRate));
             /*const auto endAvailableSourceSamples =
                 std::min(audioSource->getSampleCount(),
                          playbackRegion->getEndInAudioModificationSamples());*/
@@ -93,8 +103,8 @@ void PlaybackRenderer::renderPlaybackRegions(
                          startAvailableSourceSamples - offsetToPlaybackRegion);
             endSongSample = std::min(endSongSample, endAvailableSourceSamples -
                                                         offsetToPlaybackRegion);
-            //if (endSongSample <= startSongSample)
-            //    continue;
+            // if (endSongSample <= startSongSample)
+            //     continue;
 
             // add samples from audio source
             const auto sourceChannelCount{audioSource->getChannelCount()};
@@ -105,12 +115,13 @@ void PlaybackRenderer::renderPlaybackRegions(
                 const auto posInSource{posInSong + offsetToPlaybackRegion};
                 if (sourceChannelCount == _channelCount)
                 {
-                    for (auto c{ 0 }; c < sourceChannelCount; ++c)
+                    for (auto c{0}; c < sourceChannelCount; ++c)
                     {
-                        const auto* channel_samples = audioSource->getRenderSampleCacheForChannel(c);
-                        ppOutput[c][posInBuffer] += channel_samples[posInSource];
+                        const auto* channel_samples =
+                            audioSource->getRenderSampleCacheForChannel(c);
+                        ppOutput[c][posInBuffer] +=
+                            channel_samples[posInSource];
                     }
-
                 }
                 else
                 {

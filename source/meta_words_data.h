@@ -13,7 +13,7 @@ namespace mam {
 struct MetaWordsData
 {
     using Seconds = double;
-    using String = std::string;
+    using String  = std::string;
     struct Color
     {
         uint8_t r;
