@@ -94,9 +94,6 @@ void PlaybackRenderer::renderPlaybackRegions(
                          ARA::samplePositionAtTime(
                              playbackRegion->getEndInAudioModificationTime(),
                              _sampleRate));
-            /*const auto endAvailableSourceSamples =
-                std::min(audioSource->getSampleCount(),
-                         playbackRegion->getEndInAudioModificationSamples());*/
 
             startSongSample =
                 std::max(startSongSample,

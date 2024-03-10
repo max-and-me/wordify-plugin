@@ -6,6 +6,7 @@
 
 #include "ARA_Library/PlugIn/ARAPlug.h"
 #include "mam/meta_words/meta_word.h"
+#include "audio_buffer_management.h"
 
 namespace mam::meta_words {
 
@@ -14,8 +15,7 @@ class AudioSource : public ARA::PlugIn::AudioSource
 {
 public:
     using SampleType             = float;
-    using ChannelBufferType      = std::vector<SampleType>;
-    using MultiChannelBufferType = std::vector<ChannelBufferType>;
+    using MultiChannelBufferType = mam::audio_buffer_management::MultiChannelBuffers<SampleType>;
     using MetaWords              = mam::meta_words::MetaWords;
 
     AudioSource(ARA::PlugIn::Document* document,
@@ -44,7 +44,6 @@ public:
 
 protected:
     MultiChannelBufferType audio_buffers;
-    std::vector<float> _sampleCache;
     MetaWords meta_words;
 };
 

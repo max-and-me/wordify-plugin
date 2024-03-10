@@ -4,6 +4,7 @@ add_subdirectory(vst3sdk)
 add_subdirectory(arasdk)
 add_subdirectory(tiny-process-library)
 add_subdirectory(libsndfile)
+add_subdirectory(libsamplerate)
 add_subdirectory(meta-words)
 
 

@@ -24,6 +24,7 @@ smtg_add_vst3plugin(VstGPT
     source/ara_document_controller.h
     source/ara_factory_config.cpp
     source/ara_factory_config.h
+    source/audio_buffer_management.h
     source/meta_words_playback_renderer.cpp
     source/meta_words_playback_renderer.h
     source/meta_words_audio_modification.cpp
@@ -66,6 +67,7 @@ target_link_libraries(VstGPT
         ARA_PlugIn_Library
         tiny-process-library
         sndfile
+        samplerate
         meta-words
 )
 
