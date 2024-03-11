@@ -73,6 +73,8 @@ public:
     ARA::PlugIn::EditorRenderer* doCreateEditorRenderer() noexcept override;
 
     const MetaWordsDataList collect_meta_data_words(ARA::ARASampleRate playback_sample_rate) const;
+    
+    const float* collect_region_channel_buffer(int& num_samples) const;
 
     void onRequestLocatorPosChanged(double pos);
 

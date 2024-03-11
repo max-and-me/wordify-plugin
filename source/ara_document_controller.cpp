@@ -46,6 +46,47 @@ collect_meta_data_words(const mam::ARADocumentController& document_controller,
 }
 
 //------------------------------------------------------------------------
+static const float*
+collectRegionChannelBuffer (const mam::ARADocumentController& document_controller, int& num_samples)
+{
+    
+    if (auto* document = document_controller.getDocument())
+    {
+        const auto& audio_sources =
+            document->getAudioSources<meta_words::AudioSource>();
+        for (const auto& audio_source : audio_sources)
+        {
+            /*TODO: only the first audio_source is returned by now*/
+            num_samples = static_cast<int>(audio_source->getSampleCount ());
+            
+            int num_channels = audio_source->getChannelCount ();
+            if (num_channels == 1)
+            {
+                return audio_source->getRenderSampleCacheForChannel(0);
+            }
+            if (num_channels == 2)
+            {
+                float* monoChannel = new float[num_samples];
+                auto channel1 = audio_source->getRenderSampleCacheForChannel(0);
+                auto channel2 = audio_source->getRenderSampleCacheForChannel(1);
+                
+                for (size_t i = 0; i < num_samples; ++i) {
+                    monoChannel[i] = channel1[i] + channel2[i];
+                }
+                return monoChannel;
+            }
+            else
+            {
+                //not supported
+                return nullptr;
+            }
+        }
+    }
+
+    return nullptr;
+}
+
+//------------------------------------------------------------------------
 const ARA::ARAFactory* ARADocumentController::getARAFactory() noexcept
 {
     return ARA::PlugIn::PlugInEntry::getPlugInEntry<ARAFactoryConfig,
@@ -213,6 +254,13 @@ ARADocumentController::collect_meta_data_words(
     ARA::ARASampleRate playback_sample_rate) const
 {
     return mam::collect_meta_data_words(*this, playback_sample_rate);
+}
+
+//------------------------------------------------------------------------
+const float*
+ARADocumentController::collect_region_channel_buffer (int& num_samples) const
+{
+    return mam::collectRegionChannelBuffer(*this, num_samples);
 }
 
 //------------------------------------------------------------------------

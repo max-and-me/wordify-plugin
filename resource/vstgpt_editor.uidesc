@@ -8,7 +8,7 @@
 		"custom": {
 			"FocusDrawing": {},
 			"VST3Editor": {
-				"Path": "Z:\\Private\\mam\\vst-gpt\\resource\\vstgpt_editor.uidesc"
+				"Path": "/Users/max/Documents/Code/vst-gpt/vst-gpt/resource/vstgpt_editor.uidesc"
 			},
 			"UIGridController": {
 				"Grids": "1x 1,5x 5,10x 10,12x 12,15x 15"
@@ -18,33 +18,32 @@
 			},
 			"UIEditController": {
 				"EditViewScale": "1",
-				"EditorSize": "0, 0, 1315, 568",
-				"SplitViewSize_0_0": "0.7601476014760147892346253684081602841616",
-				"SplitViewSize_0_1": "0.2029520295202952018254194399560219608247",
-				"SplitViewSize_1_0": "0.4833948339483394862625686982937622815371",
-				"SplitViewSize_1_1": "0.5129151291512915600279143291118089109659",
-				"SplitViewSize_2_0": "0.5072243346007604403169466422696132212877",
-				"SplitViewSize_2_1": "0.4889733840304182344027594808721914887428",
+				"EditorSize": "0, 0, 1119, 621",
+				"SplitViewSize_0_0": "0.7815126050420168057897285507351625710726",
+				"SplitViewSize_0_1": "0.1848739495798319421027144926483742892742",
+				"SplitViewSize_1_0": "0.4865546218487394880547469711018493399024",
+				"SplitViewSize_1_1": "0.513445378151260456434101797640323638916",
+				"SplitViewSize_2_0": "0.4209115281501340510850184273294871672988",
+				"SplitViewSize_2_1": "0.5746201966041107889182626422552857547998",
 				"TabSwitchValue": "0",
 				"Version": "1",
 				"ViewBackground": "1"
 			},
 			"UIAttributesController": {},
 			"UIViewCreatorDataSource": {
-				"SelectedRow": "9"
+				"SelectedRow": "31"
 			}
 		},
 		"templates": {
 			"view": {
 				"attributes": {
-					"background-color": "~ GreyCColor",
+					"background-color": "~ TransparentCColor",
 					"background-color-draw-style": "filled and stroked",
 					"class": "CViewContainer",
 					"mouse-enabled": "true",
 					"opacity": "1",
 					"origin": "0, 0",
 					"size": "880, 360",
-					"sub-controller": "MetaWordsListController",
 					"transparent": "false",
 					"wants-focus": "false"
 				},
@@ -57,12 +56,12 @@
 							"background-color-draw-style": "filled and stroked",
 							"bordered": "true",
 							"class": "CScrollView",
-							"container-size": "230, 222",
+							"container-size": "230, 480",
 							"follow-focus-view": "false",
 							"horizontal-scrollbar": "false",
 							"mouse-enabled": "true",
 							"opacity": "1",
-							"origin": "310, 70",
+							"origin": "20, 60",
 							"overlay-scrollbars": "false",
 							"scrollbar-background-color": "#ffffffc8",
 							"scrollbar-frame-color": "~ BlackCColor",
@@ -86,13 +85,13 @@
 									"hover-color": "#00000064",
 									"line-color": "~ BlackCColor",
 									"line-width": "1",
-									"max-value": "7",
+									"max-value": "39",
 									"min-value": "0",
 									"mouse-enabled": "true",
-									"opacity": "0.95",
+									"opacity": "0.93",
 									"origin": "0, 0",
 									"row-height": "12",
-									"size": "230, 222",
+									"size": "230, 480",
 									"style-hover": "true",
 									"sub-controller": "MetaWordsListController",
 									"text-alignment": "center",
@@ -119,7 +118,7 @@
 							"min-value": "0",
 							"mouse-enabled": "false",
 							"opacity": "1",
-							"origin": "307, 20",
+							"origin": "17, 10",
 							"round-rect-radius": "6",
 							"shadow-color": "~ RedCColor",
 							"size": "240, 30",
@@ -135,11 +134,25 @@
 							"text-inset": "0, 0",
 							"text-rotation": "0",
 							"text-shadow-offset": "1, 1",
-							"title": "jfk",
+							"title": "lodde-23",
 							"transparent": "true",
 							"value-precision": "2",
 							"wants-focus": "false",
 							"wheel-inc-value": "0.1"
+						}
+					},
+					"CView": {
+						"attributes": {
+							"autosize": "left right top bottom ",
+							"class": "CView",
+							"mouse-enabled": "true",
+							"opacity": "1",
+							"origin": "260, 60",
+							"size": "650, 240",
+							"sub-controller": "MetaWordsWaveFormController",
+							"tooltip": "test",
+							"transparent": "false",
+							"wants-focus": "true"
 						}
 					}
 				}

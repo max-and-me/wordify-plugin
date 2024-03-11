@@ -11,6 +11,7 @@
 #include "pluginterfaces/vst/ivstprocesscontext.h"
 #include "vstgpt_cids.h"
 #include "vstgpt_listcontroller.h"
+#include "vstgpt_waveformcontroller.h"
 
 using namespace Steinberg;
 
@@ -213,6 +214,10 @@ VSTGUI::IController* VstGPTSingleComponent::createSubController(
             *document_controller,
             std::move([this]() { return this->processSetup.sampleRate; }));
 
+    if (VSTGUI::UTF8StringView(name) == "MetaWordsWaveFormController")
+        return new VstGPTWaveFormController (*document_controller);
+
+    
     return nullptr;
 }
 
