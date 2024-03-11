@@ -110,7 +110,8 @@ ARA::PlugIn::AudioSource* ARADocumentController::doCreateAudioSource(
     ARA::PlugIn::Document* document,
     ARA::ARAAudioSourceHostRef hostRef) noexcept
 {
-    return new meta_words::AudioSource(document, hostRef);
+    return new meta_words::AudioSource(
+        document, hostRef, [this]() { this->notify_all_observers(); });
 }
 
 //------------------------------------------------------------------------

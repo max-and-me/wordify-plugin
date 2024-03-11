@@ -5,8 +5,10 @@
 #pragma once
 
 #include "ARA_Library/PlugIn/ARAPlug.h"
-#include "mam/meta_words/meta_word.h"
 #include "audio_buffer_management.h"
+#include "base/source/timer.h"
+#include "mam/meta_words/meta_word.h"
+#include <future>
 
 namespace mam::meta_words {
 
@@ -14,13 +16,17 @@ namespace mam::meta_words {
 class AudioSource : public ARA::PlugIn::AudioSource
 {
 public:
-    using SampleType             = float;
-    using MultiChannelBufferType = mam::audio_buffer_management::MultiChannelBuffers<SampleType>;
-    using MetaWords              = mam::meta_words::MetaWords;
+    using SampleType = float;
+    using MultiChannelBufferType =
+        mam::audio_buffer_management::MultiChannelBuffers<SampleType>;
+    using MetaWords = mam::meta_words::MetaWords;
+    using FnChanged = std::function<void()>;
 
     AudioSource(ARA::PlugIn::Document* document,
-                ARA::ARAAudioSourceHostRef hostRef)
+                ARA::ARAAudioSourceHostRef hostRef,
+                FnChanged&& fn_changed)
     : ARA::PlugIn::AudioSource{document, hostRef}
+    , fn_changed(fn_changed)
     {
     }
     virtual ~AudioSource(){};
@@ -43,8 +49,19 @@ public:
     const MetaWords& get_meta_words() const;
 
 protected:
+    void idle();
+    void begin_analysis();
+    void perform_analysis();
+    void end_analysis();
+    std::atomic<double> analysis_progress = 0.;
+
     MultiChannelBufferType audio_buffers;
     MetaWords meta_words;
+    FnChanged fn_changed;
+
+    using MetaWordsFuture = std::future<MetaWords>;
+    Steinberg::IPtr<Steinberg::Timer> timer;
+    MetaWordsFuture future_meta_words;
 };
 
 //------------------------------------------------------------------------

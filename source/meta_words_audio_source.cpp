@@ -10,6 +10,7 @@
 #include <filesystem>
 #include <functional>
 #include <iostream>
+#include <thread>
 
 namespace mam::meta_words {
 namespace {
@@ -109,17 +110,17 @@ auto write_audio_to_file(AudioSource& audio_src, const PathType& file_path)
 }
 
 //-----------------------------------------------------------------------------
-auto run_sync(Command& cmd) -> MetaWords
+auto run_sync(const Command& cmd, FnProgress&& fn_progress) -> MetaWords
 {
     std::cout << "Run sync..." << '\n';
 
-    FnProgress fn_progress = [](double val) { double tmp = val; };
+    // FnProgress fn_progress = [](double val) { double tmp = val; };
 
     return (run(cmd, fn_progress));
 }
 
 //------------------------------------------------------------------------
-auto process_audio_with_meta_words(const PathType& file_path) -> MetaWords
+auto create_whisper_cmd(const PathType& file_path) -> const Command
 {
     //  The whisper.cpp library takes the audio file and writes the result
     //  of its analysis into a CSV file. The file is named like the audio
@@ -135,8 +136,15 @@ auto process_audio_with_meta_words(const PathType& file_path) -> MetaWords
         {"-ml", "1"}};
 
     Command cmd{MAM_WHISPER_CPP_EXECUTABLE, options, one_val_args};
+    return cmd;
+}
 
-    return run_sync(cmd);
+//------------------------------------------------------------------------
+auto process_audio_with_meta_words(const PathType& file_path,
+                                   FnProgress&& fn_progress) -> MetaWords
+{
+    const auto cmd = create_whisper_cmd(file_path);
+    return run_sync(cmd, std::move(fn_progress));
 };
 
 //------------------------------------------------------------------------
@@ -176,8 +184,58 @@ void AudioSource::updateRenderSampleCache()
     const auto path     = PathType{tmp_file.generic_u8string()};
     write_audio_to_file(*this, path);
 
-    this->meta_words = process_audio_with_meta_words(path);
+    future_meta_words = std::async([&, path]() {
+        FnProgress fn_progress = [&](ProgressValue val) {
+            this->analysis_progress = val;
+        };
+
+        return process_audio_with_meta_words(path, std::move(fn_progress));
+    });
+
+    this->begin_analysis();
+}
+
+//------------------------------------------------------------------------
+auto AudioSource::idle() -> void
+{
+    if (future_meta_words.wait_for(std::chrono::seconds(0)) ==
+        std::future_status::ready)
+    {
+        end_analysis();
+
+        if (fn_changed)
+            fn_changed();
+    }
+    else
+    {
+        perform_analysis();
+    }
+}
+
+//------------------------------------------------------------------------
+void AudioSource::begin_analysis()
+{
+    timer = Steinberg::owned(Steinberg::Timer::create(
+        Steinberg::newTimerCallback(
+            [this](Steinberg::Timer* timer) { this->idle(); }),
+        1.));
+}
+
+//------------------------------------------------------------------------
+void AudioSource::perform_analysis()
+{
+    double progress_val = analysis_progress;
+    // TODO: update progress bar
+}
+
+//------------------------------------------------------------------------
+void AudioSource::end_analysis()
+{
+    this->meta_words = future_meta_words.get();
     transform_to_seconds(this->meta_words);
+
+    if (timer)
+        timer->stop();
 }
 
 //------------------------------------------------------------------------
