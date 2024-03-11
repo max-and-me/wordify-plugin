@@ -4,8 +4,8 @@
 
 #pragma once
 
+#include <cstdint>
 #include <functional>
-#include <stdint.h>
 #include <unordered_map>
 
 namespace mam::tiny_observer_pattern {
