@@ -49,7 +49,7 @@ public:
     //--------------------------------------------------------------------
 private:
     ARADocumentController& controller;
-    VSTGUI::CView* view;
+    VSTGUI::CView* view = nullptr;
 };
 
 //------------------------------------------------------------------------
