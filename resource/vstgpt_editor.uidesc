@@ -148,7 +148,7 @@
 							"mouse-enabled": "true",
 							"opacity": "1",
 							"origin": "260, 60",
-							"size": "650, 240",
+							"size": "620, 240",
 							"sub-controller": "MetaWordsWaveFormController",
 							"tooltip": "test",
 							"transparent": "false",
