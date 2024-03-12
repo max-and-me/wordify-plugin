@@ -18,8 +18,8 @@ namespace mam {
 //------------------------------------------------------------------------
 // VstGPTWaveFormController
 //------------------------------------------------------------------------
-class VstGPTWaveFormController :    public Steinberg::FObject,
-                                    public VSTGUI::IController
+class VstGPTWaveFormController : public Steinberg::FObject,
+                                 public VSTGUI::IController
 {
 public:
     //--------------------------------------------------------------------
@@ -28,19 +28,22 @@ public:
     virtual ~VstGPTWaveFormController();
 
     void PLUGIN_API update(FUnknown* changedUnknown,
-                           Steinberg::int32 message) override {};
+                           Steinberg::int32 message) override{};
     VSTGUI::CView*
     verifyView(VSTGUI::CView* view,
                const VSTGUI::UIAttributes& attributes,
-               const VSTGUI::IUIDescription* description) override {return view;}
-    
+               const VSTGUI::IUIDescription* description) override
+    {
+        return view;
+    }
 
-    VSTGUI::CView* createView (const VSTGUI::UIAttributes& attributes, const VSTGUI::IUIDescription* description) override;
-    
+    VSTGUI::CView*
+    createView(const VSTGUI::UIAttributes& attributes,
+               const VSTGUI::IUIDescription* description) override;
+
     // IControlListener
-    void valueChanged(VSTGUI::CControl* pControl) override {};
-    
-    
+    void valueChanged(VSTGUI::CControl* pControl) override{};
+
     OBJ_METHODS(VstGPTWaveFormController, FObject)
 
     //--------------------------------------------------------------------
