@@ -37,7 +37,7 @@
 		"templates": {
 			"view": {
 				"attributes": {
-					"background-color": "~ TransparentCColor",
+					"background-color": "~ GreyCColor",
 					"background-color-draw-style": "filled and stroked",
 					"class": "CViewContainer",
 					"mouse-enabled": "true",
