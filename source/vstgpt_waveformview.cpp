@@ -28,22 +28,23 @@ void WaveformView::draw(CDrawContext* pContext)
     pContext->setFrameColor(CColor(0, 0, 0));
     pContext->setLineWidth(1.0);
 
-    const CRect viewSize = getViewSize();
+    const auto viewSize = getViewSize();
 
-    const float amplitude = viewSize.getHeight() * 0.5;
+    const auto amplitude = viewSize.getHeight() * 0.5;
     if (waveFormData && numSamples > 1)
     {
         // Calculate the horizontal scale factor
-        const float xScale = viewSize.getWidth() / static_cast<float>(numSamples - 1);
+        const auto xScale =
+            viewSize.getWidth() / static_cast<CCoord>(numSamples - 1);
 
-        int stylized = 1; // from 1 up to x to have it more stylized
+        size_t stylized = 1; // from 1 up to x to have it more stylized
         // Draw the waveform lines
-        for (size_t i = 0; i < numSamples - 1; i += stylized)
+        for (size_t i = 0; i < size_t(numSamples) - 1; i += stylized)
         {
-            const float x1 = i * xScale;
-            const float y1 = amplitude * waveFormData[i];
-            const float x2 = (i + stylized) * xScale;
-            const float y2 = amplitude * waveFormData[i + 1];
+            const auto x1 = CCoord(i) * xScale;
+            const auto y1 = amplitude * CCoord(waveFormData[i]);
+            const auto x2 = CCoord(i + stylized) * xScale;
+            const auto y2 = amplitude * CCoord(waveFormData[i + 1]);
 
             pContext->drawLine(CPoint(x1, amplitude + y1),
                                CPoint(x2, amplitude + y2));
