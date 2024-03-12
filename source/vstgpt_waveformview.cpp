@@ -29,9 +29,8 @@ void WaveformView::draw(CDrawContext* pContext)
     pContext->setLineWidth(1.0);
 
     CRect viewSize = getViewSize();
-    viewSize.inset(5, 5);
 
-    const float amplitude = viewSize.getHeight() * 0.7;
+    const float amplitude = viewSize.getHeight();
     if (waveFormData && numSamples > 1)
     {
         // Calculate the horizontal scale factor
