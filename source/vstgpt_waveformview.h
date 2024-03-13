@@ -3,6 +3,8 @@
 //------------------------------------------------------------------------
 
 #include "vstgui/lib/cview.h"
+#include "vstgui/lib/ccolor.h"
+#include "ara_document_controller.h"
 
 #pragma once
 
@@ -19,10 +21,13 @@ public:
                  float* waveFormData,
                  int numSamples);
     void draw(VSTGUI::CDrawContext* pContext) override;
-
+    void setColor (VSTGUI::CColor);
+    
 private:
     float* waveFormData{nullptr};
     int numSamples;
+    VSTGUI::CColor waveformColor {0,0,0};
+   
 };
 
 } // namespace mam

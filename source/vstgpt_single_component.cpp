@@ -215,7 +215,7 @@ VSTGUI::IController* VstGPTSingleComponent::createSubController(
             std::move([this]() { return this->processSetup.sampleRate; }));
 
     if (VSTGUI::UTF8StringView(name) == "MetaWordsWaveFormController")
-        return new VstGPTWaveFormController (*document_controller);
+        return new VstGPTWaveFormController (*document_controller, std::move([this]() { return this->processSetup.sampleRate; }));
 
     
     return nullptr;

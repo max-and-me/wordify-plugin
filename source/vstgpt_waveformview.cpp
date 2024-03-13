@@ -31,7 +31,7 @@ void WaveformView::draw(CDrawContext* pContext)
         *pContext, CGraphicsTransform().translate(viewSize.getTopLeft()));
 
     // Draw the waveform with black lines
-    pContext->setFrameColor(CColor(0, 0, 0));
+    pContext->setFrameColor(waveformColor);
     pContext->setLineWidth(1.0);
 
     const auto amplitude = viewSize.getHeight() * 0.5;
@@ -54,6 +54,12 @@ void WaveformView::draw(CDrawContext* pContext)
                                CPoint(x2, amplitude + y2));
         }
     }
+}
+
+//--------------------------------------------------------------------
+void WaveformView::setColor (VSTGUI::CColor color)
+{
+    waveformColor = color;
 }
 
 } // namespace mam

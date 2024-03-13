@@ -8,6 +8,7 @@
 #include "base/source/fobject.h"
 #include "vstgui/lib/iviewlistener.h"
 #include "vstgui/uidescription/icontroller.h"
+#include "vstgpt_waveformview.h"
 #include <functional>
 
 namespace VSTGUI {
@@ -23,8 +24,7 @@ class VstGPTWaveFormController : public Steinberg::FObject,
 {
 public:
     //--------------------------------------------------------------------
-
-    VstGPTWaveFormController(ARADocumentController& controller);
+    VstGPTWaveFormController(ARADocumentController& controller, ARADocumentController::FnGetSampleRate&& fn_get_playback_sample_rate);
     virtual ~VstGPTWaveFormController();
 
     void PLUGIN_API update(FUnknown* changedUnknown,
@@ -43,13 +43,19 @@ public:
 
     // IControlListener
     void valueChanged(VSTGUI::CControl* pControl) override{};
+   
+    void onDataChanged();
 
     OBJ_METHODS(VstGPTWaveFormController, FObject)
 
     //--------------------------------------------------------------------
 private:
     ARADocumentController& controller;
-    VSTGUI::CView* view = nullptr;
+    ARADocumentController::MetaWordsDataList cached_meta_words_data_list;
+    tiny_observer_pattern::ObserverID observer_id = 0;
+    ARADocumentController::FnGetSampleRate fn_get_playback_sample_rate;
+    
+    WaveformView* view = nullptr;
 };
 
 //------------------------------------------------------------------------
