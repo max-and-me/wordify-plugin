@@ -23,11 +23,8 @@ class VstGPTListController : public Steinberg::FObject,
 {
 public:
     //--------------------------------------------------------------------
-    using SampleRate      = double;
-    using FnGetSampleRate = std::function<SampleRate()>;
-
     VstGPTListController(ARADocumentController& controller,
-                         FnGetSampleRate&& fn_get_playback_sample_rate);
+                         ARADocumentController::FnGetSampleRate&& fn_get_playback_sample_rate);
     virtual ~VstGPTListController();
 
     void PLUGIN_API update(FUnknown* changedUnknown,
@@ -53,7 +50,7 @@ private:
     ARADocumentController& controller;
     ARADocumentController::MetaWordsDataList cached_meta_words_data_list;
     tiny_observer_pattern::ObserverID observer_id = 0;
-    FnGetSampleRate fn_get_playback_sample_rate;
+    ARADocumentController::FnGetSampleRate fn_get_playback_sample_rate;
 };
 
 //------------------------------------------------------------------------

@@ -65,8 +65,7 @@ static auto onRequestSelectWord(int index,
 // VstGPTListController
 //------------------------------------------------------------------------
 VstGPTListController::VstGPTListController(
-    ARADocumentController& controller,
-    FnGetSampleRate&& fn_get_playback_sample_rate)
+    ARADocumentController& controller, ARADocumentController::FnGetSampleRate&& fn_get_playback_sample_rate)
 : controller(controller)
 , fn_get_playback_sample_rate(fn_get_playback_sample_rate)
 {

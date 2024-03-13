@@ -20,6 +20,9 @@ class ARADocumentController : public ARA::PlugIn::DocumentController,
 public:
     //--------------------------------------------------------------------
     using MetaWordsDataList = std::vector<MetaWordsData>;
+    
+    using SampleRate      = double;
+    using FnGetSampleRate = std::function<SampleRate()>;
 
     // publish inherited constructor
     using ARA::PlugIn::DocumentController::DocumentController;
