@@ -29,6 +29,7 @@ void WaveformView::draw(CDrawContext* pContext)
     pContext->setLineWidth(1.0);
 
     const auto viewSize = getViewSize();
+    pContext->setClipRect(viewSize);
 
     const auto amplitude = viewSize.getHeight() * 0.5;
     if (waveFormData && numSamples > 1)
@@ -41,10 +42,10 @@ void WaveformView::draw(CDrawContext* pContext)
         // Draw the waveform lines
         for (size_t i = 0; i < size_t(numSamples) - 1; i += stylized)
         {
-            const auto x1 = CCoord(i) * xScale;
-            const auto y1 = amplitude * CCoord(waveFormData[i]);
-            const auto x2 = CCoord(i + stylized) * xScale;
-            const auto y2 = amplitude * CCoord(waveFormData[i + 1]);
+            const auto x1 = CCoord(i) * xScale + viewSize.getTopLeft().x;
+            const auto y1 = amplitude * CCoord(waveFormData[i]) + viewSize.getTopLeft().y;
+            const auto x2 = CCoord(i + stylized) * xScale +viewSize.getTopLeft().x;
+            const auto y2 = amplitude * CCoord(waveFormData[i + 1]) + viewSize.getTopLeft().y;
 
             pContext->drawLine(CPoint(x1, amplitude + y1),
                                CPoint(x2, amplitude + y2));
