@@ -22,14 +22,17 @@ WaveformView::WaveformView(const VSTGUI::CRect& size,
 }
 
 //------------------------------------------------------------------------
+// https://steinbergmedia.github.io/vst3_doc/vstgui/html/the_view_system.html#inherit_from_cview
+//------------------------------------------------------------------------
 void WaveformView::draw(CDrawContext* pContext)
 {
+    const auto viewSize = getViewSize();
+    CDrawContext::Transform t(
+        *pContext, CGraphicsTransform().translate(viewSize.getTopLeft()));
+
     // Draw the waveform with black lines
     pContext->setFrameColor(CColor(0, 0, 0));
     pContext->setLineWidth(1.0);
-
-    const auto viewSize = getViewSize();
-    pContext->setClipRect(viewSize);
 
     const auto amplitude = viewSize.getHeight() * 0.5;
     if (waveFormData && numSamples > 1)
@@ -42,10 +45,10 @@ void WaveformView::draw(CDrawContext* pContext)
         // Draw the waveform lines
         for (size_t i = 0; i < size_t(numSamples) - 1; i += stylized)
         {
-            const auto x1 = CCoord(i) * xScale + viewSize.getTopLeft().x;
-            const auto y1 = amplitude * CCoord(waveFormData[i]) + viewSize.getTopLeft().y;
-            const auto x2 = CCoord(i + stylized) * xScale +viewSize.getTopLeft().x;
-            const auto y2 = amplitude * CCoord(waveFormData[i + 1]) + viewSize.getTopLeft().y;
+            const auto x1 = CCoord(i) * xScale;
+            const auto y1 = amplitude * CCoord(waveFormData[i]);
+            const auto x2 = CCoord(i + stylized) * xScale;
+            const auto y2 = amplitude * CCoord(waveFormData[i + 1]);
 
             pContext->drawLine(CPoint(x1, amplitude + y1),
                                CPoint(x2, amplitude + y2));
