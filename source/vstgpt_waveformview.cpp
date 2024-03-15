@@ -78,8 +78,8 @@ void WaveformView::drawSimplified(VSTGUI::CDrawContext* pContext,
             int based = floor(x1);
             if (based != oldBased && based % 5 == 0)
             {
-                pContext->drawLine(CPoint(x1, amplitude + y1),
-                                   CPoint(x1, amplitude - y1));
+                pContext->drawLine(CPoint(x1, amplitude + y1 + offset / 2),
+                                   CPoint(x1, amplitude - y1 + offset / 2));
                 oldBased = based;
             }
         }
@@ -97,8 +97,12 @@ void WaveformView::draw(CDrawContext* pContext)
 
     // Draw the waveform with black lines
     pContext->setFrameColor(waveformColor);
-    // drawFull(pContext, viewSize);
-    drawSimplified(pContext, viewSize);
+    
+    pContext->setFillColor({75,75,75});
+    pContext->drawGraphicsPath(pContext->createRoundRectGraphicsPath(viewSize, 15));
+    
+    //drawSimplified(pContext, viewSize);
+    drawFull(pContext, viewSize);
 }
 
 //--------------------------------------------------------------------
