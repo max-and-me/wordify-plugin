@@ -17,9 +17,9 @@ namespace mam {
 using namespace ::VSTGUI;
 
 //------------------------------------------------------------------------
-static auto update_list_control_content(CListControl& listControl,
-                                        const meta_words::MetaWords& words)
-    -> void
+static auto
+update_list_control_content(CListControl& listControl,
+                            const meta_words::MetaWords& words) -> void
 {
     listControl.setMax(words.size() - 1);
     listControl.recalculateLayout();
@@ -38,8 +38,8 @@ static auto update_list_control_content(CListControl& listControl,
 }
 
 //------------------------------------------------------------------------
-static auto update_label_control(CTextLabel& label, const MetaWordsData& data)
-    -> void
+static auto update_label_control(CTextLabel& label,
+                                 const MetaWordsData& data) -> void
 {
     const VSTGUI::CColor color(data.color.r, data.color.g, data.color.b);
     label.setFontColor(color);
@@ -47,10 +47,10 @@ static auto update_label_control(CTextLabel& label, const MetaWordsData& data)
 }
 
 //------------------------------------------------------------------------
-static auto onRequestSelectWord(int index,
-                                const mam::MetaWordsData& data,
-                                ARADocumentController& document_controller)
-    -> void
+static auto
+onRequestSelectWord(int index,
+                    const mam::MetaWordsData& data,
+                    ARADocumentController& document_controller) -> void
 {
     const auto& meta_words_data = data;
     const auto& words           = meta_words_data.words;
@@ -65,7 +65,8 @@ static auto onRequestSelectWord(int index,
 // VstGPTListController
 //------------------------------------------------------------------------
 VstGPTListController::VstGPTListController(
-    ARADocumentController& controller, ARADocumentController::FnGetSampleRate&& fn_get_playback_sample_rate)
+    ARADocumentController& controller,
+    ARADocumentController::FnGetSampleRate&& fn_get_playback_sample_rate)
 : controller(controller)
 , fn_get_playback_sample_rate(fn_get_playback_sample_rate)
 {

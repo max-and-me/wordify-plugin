@@ -72,8 +72,8 @@ auto resample_to_16kHz(
 }
 
 //------------------------------------------------------------------------
-auto write_audio_to_file(AudioSource& audio_src, const PathType& file_path)
-    -> int
+auto write_audio_to_file(AudioSource& audio_src,
+                         const PathType& file_path) -> int
 {
     const auto buffers   = audio_src.get_audio_buffers();
     auto interleaved_buf = audio_buffer_management::to_interleaved(buffers);

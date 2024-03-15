@@ -4,8 +4,8 @@
 
 #include "vstgpt_waveformcontroller.h"
 #include "mam/meta_words/meta_word.h"
-#include "vstgui/lib/controls/icontrollistener.h"
 #include "vstgui/lib/ccolor.h"
+#include "vstgui/lib/controls/icontrollistener.h"
 #include "vstgui/lib/cstring.h"
 #include "vstgui/lib/events.h"
 #include "vstgui/lib/platform/platformfactory.h"
@@ -18,8 +18,8 @@ using namespace ::VSTGUI;
 
 //------------------------------------------------------------------------
 using CPointOptional = std::optional<CPoint>;
-static auto read_view_size(const VSTGUI::UIAttributes& attributes)
-    -> CPointOptional
+static auto
+read_view_size(const VSTGUI::UIAttributes& attributes) -> CPointOptional
 {
     if (!attributes.hasAttribute("size"))
         return std::nullopt;
@@ -35,10 +35,8 @@ static auto read_view_size(const VSTGUI::UIAttributes& attributes)
     return view_size;
 }
 
-
 //------------------------------------------------------------------------
-static auto update_view (WaveformView& view, const MetaWordsData& data)
-    -> void
+static auto update_view(WaveformView& view, const MetaWordsData& data) -> void
 {
     const VSTGUI::CColor color(data.color.r, data.color.g, data.color.b);
     view.setColor(color);
@@ -47,8 +45,9 @@ static auto update_view (WaveformView& view, const MetaWordsData& data)
 //------------------------------------------------------------------------
 // VstGPTWaveFormController
 //------------------------------------------------------------------------
-VstGPTWaveFormController::VstGPTWaveFormController(ARADocumentController& controller,
-                                                   ARADocumentController::FnGetSampleRate&& fn_get_playback_sample_rate)
+VstGPTWaveFormController::VstGPTWaveFormController(
+    ARADocumentController& controller,
+    ARADocumentController::FnGetSampleRate&& fn_get_playback_sample_rate)
 : controller(controller)
 , fn_get_playback_sample_rate(fn_get_playback_sample_rate)
 {
@@ -77,7 +76,6 @@ void VstGPTWaveFormController::onDataChanged()
         view->setDirty();
     }
 }
-
 
 //------------------------------------------------------------------------
 CView*

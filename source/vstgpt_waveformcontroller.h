@@ -6,9 +6,9 @@
 
 #include "ara_document_controller.h"
 #include "base/source/fobject.h"
+#include "vstgpt_waveformview.h"
 #include "vstgui/lib/iviewlistener.h"
 #include "vstgui/uidescription/icontroller.h"
-#include "vstgpt_waveformview.h"
 #include <functional>
 
 namespace VSTGUI {
@@ -24,11 +24,13 @@ class VstGPTWaveFormController : public Steinberg::FObject,
 {
 public:
     //--------------------------------------------------------------------
-    VstGPTWaveFormController(ARADocumentController& controller, ARADocumentController::FnGetSampleRate&& fn_get_playback_sample_rate);
+    VstGPTWaveFormController(
+        ARADocumentController& controller,
+        ARADocumentController::FnGetSampleRate&& fn_get_playback_sample_rate);
     virtual ~VstGPTWaveFormController();
 
     void PLUGIN_API update(FUnknown* changedUnknown,
-                           Steinberg::int32 message) override{};
+                           Steinberg::int32 message) override {};
     VSTGUI::CView*
     verifyView(VSTGUI::CView* view,
                const VSTGUI::UIAttributes& attributes,
@@ -42,8 +44,8 @@ public:
                const VSTGUI::IUIDescription* description) override;
 
     // IControlListener
-    void valueChanged(VSTGUI::CControl* pControl) override{};
-   
+    void valueChanged(VSTGUI::CControl* pControl) override {};
+
     void onDataChanged();
 
     OBJ_METHODS(VstGPTWaveFormController, FObject)
@@ -54,7 +56,7 @@ private:
     ARADocumentController::MetaWordsDataList cached_meta_words_data_list;
     tiny_observer_pattern::ObserverID observer_id = 0;
     ARADocumentController::FnGetSampleRate fn_get_playback_sample_rate;
-    
+
     WaveformView* view = nullptr;
 };
 

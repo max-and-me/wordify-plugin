@@ -23,20 +23,21 @@ class VstGPTListController : public Steinberg::FObject,
 {
 public:
     //--------------------------------------------------------------------
-    VstGPTListController(ARADocumentController& controller,
-                         ARADocumentController::FnGetSampleRate&& fn_get_playback_sample_rate);
+    VstGPTListController(
+        ARADocumentController& controller,
+        ARADocumentController::FnGetSampleRate&& fn_get_playback_sample_rate);
     virtual ~VstGPTListController();
 
     void PLUGIN_API update(FUnknown* changedUnknown,
-                           Steinberg::int32 message) override{};
+                           Steinberg::int32 message) override {};
     VSTGUI::CView*
     verifyView(VSTGUI::CView* view,
                const VSTGUI::UIAttributes& attributes,
                const VSTGUI::IUIDescription* description) override;
     // IControlListener
     void valueChanged(VSTGUI::CControl* pControl) override;
-    void controlBeginEdit(VSTGUI::CControl* pControl) override{};
-    void controlEndEdit(VSTGUI::CControl* pControl) override{};
+    void controlBeginEdit(VSTGUI::CControl* pControl) override {};
+    void controlEndEdit(VSTGUI::CControl* pControl) override {};
 
     OBJ_METHODS(VstGPTListController, FObject)
 

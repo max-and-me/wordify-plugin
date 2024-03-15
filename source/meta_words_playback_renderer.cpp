@@ -101,7 +101,7 @@ void PlaybackRenderer::renderPlaybackRegions(
             endSongSample = std::min(endSongSample, endAvailableSourceSamples -
                                                         offsetToPlaybackRegion);
             if (endSongSample <= startSongSample)
-                 continue;
+                continue;
 
             // add samples from audio source
             const auto sourceChannelCount{audioSource->getChannelCount()};

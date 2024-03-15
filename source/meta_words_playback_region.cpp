@@ -89,10 +89,10 @@ auto modify_time_stamps(const MetaWord& word, double speed_factor) -> MetaWord
 // played back in 44.1Khz but the original sample is in 16kHz. We need to
 // modify the timestamps then.
 //------------------------------------------------------------------------
-static auto modify_time_stamps(const MetaWords& words,
-                               const PlaybackRegion& region,
-                               ARA::ARASampleRate playback_sample_rate)
-    -> const MetaWords
+static auto
+modify_time_stamps(const MetaWords& words,
+                   const PlaybackRegion& region,
+                   ARA::ARASampleRate playback_sample_rate) -> const MetaWords
 {
     MetaWords modified_words;
 

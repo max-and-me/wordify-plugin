@@ -6,9 +6,9 @@
 #include "public.sdk/source/main/pluginfactory.h"
 #include "version.h"
 #include "vstgpt_cids.h"
-//#include "vstgpt_controller.h"
+// #include "vstgpt_controller.h"
 #include "vstgpt_defines.h"
-//#include "vstgpt_processor.h"
+// #include "vstgpt_processor.h"
 #include "vstgpt_single_component.h"
 
 using namespace Steinberg::Vst;

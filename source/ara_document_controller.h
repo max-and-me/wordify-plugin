@@ -5,8 +5,8 @@
 #pragma once
 
 #include "ARA_Library/PlugIn/ARAPlug.h"
-#include "meta_words_playback_renderer.h"
 #include "meta_words_data.h"
+#include "meta_words_playback_renderer.h"
 #include "tiny_observer_pattern.h"
 
 namespace mam {
@@ -20,7 +20,7 @@ class ARADocumentController : public ARA::PlugIn::DocumentController,
 public:
     //--------------------------------------------------------------------
     using MetaWordsDataList = std::vector<MetaWordsData>;
-    
+
     using SampleRate      = double;
     using FnGetSampleRate = std::function<SampleRate()>;
 
@@ -75,8 +75,9 @@ public:
     ARA::PlugIn::EditorView* doCreateEditorView() noexcept override;
     ARA::PlugIn::EditorRenderer* doCreateEditorRenderer() noexcept override;
 
-    const MetaWordsDataList collect_meta_data_words(ARA::ARASampleRate playback_sample_rate) const;
-    
+    const MetaWordsDataList
+    collect_meta_data_words(ARA::ARASampleRate playback_sample_rate) const;
+
     const float* collect_region_channel_buffer(int& num_samples) const;
 
     void onRequestLocatorPosChanged(double pos);
