@@ -99,8 +99,8 @@ void WaveformView::draw(CDrawContext* pContext)
     pContext->setFrameColor(waveformColor);
 
     pContext->setFillColor({75, 75, 75});
-    pContext->drawGraphicsPath(
-        pContext->createRoundRectGraphicsPath(viewSize, 15));
+    //pContext->drawGraphicsPath(
+      //  pContext->createRoundRectGraphicsPath(viewSize, 15));
 
     // drawSimplified(pContext, viewSize);
     drawFull(pContext, viewSize);

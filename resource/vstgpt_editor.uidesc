@@ -4,6 +4,13 @@
 		"bitmaps": {},
 		"fonts": {},
 		"colors": {},
+				},
+				{
+					"rgba": "#0000007f",
+					"start": "1"
+				}
+			]
+		},
 		"control-tags": {},
 		"custom": {
 			"FocusDrawing": {},
@@ -18,20 +25,23 @@
 			},
 			"UIEditController": {
 				"EditViewScale": "1",
-				"EditorSize": "0, 0, 1377, 608",
-				"SplitViewSize_0_0": "0.7766323024054982981922989893064368516207",
-				"SplitViewSize_0_1": "0.1890034364261168331466933523188345134258",
-				"SplitViewSize_1_0": "0.4879725085910652793153019501914968714118",
-				"SplitViewSize_1_1": "0.5154639175257731409374173381365835666656",
-				"SplitViewSize_2_0": "0.5962236746550472199501768955087754875422",
-				"SplitViewSize_2_1": "0.4001452432824981753078930069023044779897",
-				"TabSwitchValue": "0",
+				"EditorSize": "0, 0, 1410, 737",
+				"SplitViewSize_0_0": "0.8171589310829817653925033482664730399847",
+				"SplitViewSize_0_1": "0.1547116736990154783892847945026005618274",
+				"SplitViewSize_1_0": "0.4901547116736990061802714535588165745139",
+				"SplitViewSize_1_1": "0.5126582278481012222570711855951230973005",
+				"SplitViewSize_2_0": "0.7343971631205673533671074437734205275774",
+				"SplitViewSize_2_1": "0.262765957446808529063275727821746841073",
+				"TabSwitchValue": "3",
 				"Version": "1",
 				"ViewBackground": "1"
 			},
 			"UIAttributesController": {},
 			"UIViewCreatorDataSource": {
-				"SelectedRow": "31"
+				"SelectedRow": "5"
+			},
+			"UIGradientsDataSource": {
+				"SelectedRow": "0"
 			}
 		},
 		"templates": {
@@ -163,19 +173,57 @@
 							"wheel-inc-value": "0.1"
 						}
 					},
-							"CView": {
+							"CViewContainer": {
 								"attributes": {
-									"autosize": "left right top bottom ",
-									"class": "CView",
+									"background-color": "~ BlackCColor",
+									"background-color-draw-style": "filled and stroked",
+									"class": "CViewContainer",
 									"mouse-enabled": "true",
 									"opacity": "1",
 									"origin": "0, 30",
-									"size": "500, 180",
+									"size": "500, 170",
+									"transparent": "true",
+									"uidesc-label": "MLayout",
+									"wants-focus": "false"
+								},
+								"children": {
+									"CGradientView": {
+										"attributes": {
+											"autosize": "left right top bottom ",
+											"class": "CGradientView",
+											"draw-antialiased": "true",
+											"frame-color": "~ BlackCColor",
+											"frame-width": "2",
+											"gradient": "waveform_background",
+											"gradient-angle": "0",
+											"gradient-style": "linear",
+											"mouse-enabled": "true",
+											"opacity": "1",
+											"origin": "0, 0",
+											"radial-center": "0.5, 0.5",
+											"radial-radius": "8",
+											"round-rect-radius": "15",
+											"size": "500, 170",
+											"transparent": "false",
+											"uidesc-label": "WaveFormBackground",
+											"wants-focus": "false"
+										}
+									},
+									"CView": {
+										"attributes": {
+											"autosize": "left right top bottom ",
+											"class": "CView",
+											"mouse-enabled": "true",
+											"opacity": "1",
+											"origin": "0, 0",
+											"size": "500, 170",
 									"sub-controller": "MetaWordsWaveFormController",
 									"tooltip": "test",
 									"transparent": "false",
 									"uidesc-label": "WaveFormView",
 									"wants-focus": "true"
+										}
+									}
 								}
 							}
 						}
