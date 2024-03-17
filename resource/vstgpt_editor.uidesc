@@ -9,11 +9,11 @@
 		"gradients": {
 			"waveform_background": [
 				{
-					"rgba": "#ffffff7f",
+					"rgba": "#cccccc7f",
 					"start": "0"
 				},
 				{
-					"rgba": "#0000007f",
+					"rgba": "#9b9b9b7f",
 					"start": "1"
 				}
 			]
