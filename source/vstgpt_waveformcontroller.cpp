@@ -91,6 +91,8 @@ VstGPTWaveFormController::createView(const VSTGUI::UIAttributes& attributes,
 
     view = new WaveformView(CRect{0, 0, view_size.x, view_size.y},
                             waveform_data, num_samples);
+    
+    onDataChanged();
     return view;
 }
 
