@@ -133,7 +133,7 @@ auto create_whisper_cmd(const PathType& file_path) -> const Command
         // audio file to analyse
         {"-f", file_path},
         // maximum segment length in characters: "1" mains one word
-        {"-ml", "1"}};
+        {"-ml", "30"}};
 
     Command cmd{MAM_WHISPER_CPP_EXECUTABLE, options, one_val_args};
     return cmd;
