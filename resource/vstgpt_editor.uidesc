@@ -3,7 +3,14 @@
 		"version": "1",
 		"bitmaps": {},
 		"fonts": {},
-		"colors": {},
+		"colors": {
+			"main_background": "#25282bff"
+		},
+		"gradients": {
+			"waveform_background": [
+				{
+					"rgba": "#ffffff7f",
+					"start": "0"
 				},
 				{
 					"rgba": "#0000007f",
@@ -42,12 +49,15 @@
 			},
 			"UIGradientsDataSource": {
 				"SelectedRow": "0"
+			},
+			"UIColorsDataSource": {
+				"SelectedRow": "0"
 			}
 		},
 		"templates": {
 			"view": {
 				"attributes": {
-					"background-color": "~ TransparentCColor",
+					"background-color": "main_background",
 					"background-color-draw-style": "filled and stroked",
 					"class": "CViewContainer",
 					"mouse-enabled": "true",
