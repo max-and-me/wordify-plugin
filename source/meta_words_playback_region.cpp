@@ -89,10 +89,10 @@ auto modify_time_stamps(const MetaWord& word, double speed_factor) -> MetaWord
 // played back in 44.1Khz but the original sample is in 16kHz. We need to
 // modify the timestamps then.
 //------------------------------------------------------------------------
-static auto
-modify_time_stamps(const MetaWords& words,
-                   const PlaybackRegion& region,
-                   ARA::ARASampleRate playback_sample_rate) -> const MetaWords
+static auto modify_time_stamps(const MetaWords& words,
+                               const PlaybackRegion& region,
+                               ARA::ARASampleRate playback_sample_rate)
+    -> const MetaWords
 {
     MetaWords modified_words;
 
@@ -137,6 +137,22 @@ const MetaWordsData PlaybackRegion::get_meta_words_data(
     }
 
     return data;
+}
+
+//------------------------------------------------------------------------
+auto PlaybackRegion::get_audio_buffer(ARA::ARASampleRate playback_sample_rate) const -> const AudioBufferSpan
+{
+    const auto& audioSrc = this->getAudioModification()
+                               ->getAudioSource<mam::meta_words::AudioSource>();
+
+    const auto& audio_buffers = audioSrc->get_audio_buffers();
+    const auto& left_channel = audio_buffers.at(0);
+    AudioBufferSpan buffer_span{ left_channel };
+
+    const auto start_samples = this->getStartInPlaybackTime() * playback_sample_rate;
+    const auto duration_samples = this->getDurationInPlaybackTime() * playback_sample_rate;
+
+    return buffer_span.subspan(start_samples, duration_samples);
 }
 //------------------------------------------------------------------------
 } // namespace mam::meta_words

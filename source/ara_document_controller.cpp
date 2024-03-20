@@ -46,45 +46,35 @@ collect_meta_data_words(const mam::ARADocumentController& document_controller,
 }
 
 //------------------------------------------------------------------------
-static const float* collectRegionChannelBuffer(
-    const mam::ARADocumentController& document_controller, int& num_samples)
+static auto
+collect_audio_buffer(const mam::ARADocumentController& document_controller,
+                     ARA::ARASampleRate playback_sample_rate)
+    -> meta_words::PlaybackRegion::AudioBufferSpan
 {
-
+    ARADocumentController::MetaWordsDataList meta_words_data_list;
     if (auto* document = document_controller.getDocument())
     {
         const auto& audio_sources =
             document->getAudioSources<meta_words::AudioSource>();
         for (const auto& audio_source : audio_sources)
         {
-            /*TODO: only the first audio_source is returned by now*/
-            num_samples = static_cast<int>(audio_source->getSampleCount());
-
-            int num_channels = audio_source->getChannelCount();
-            if (num_channels == 1)
+            const auto& audio_modifications =
+                audio_source->getAudioModifications();
+            for (const auto audio_modification : audio_modifications)
             {
-                return audio_source->getRenderSampleCacheForChannel(0);
-            }
-            if (num_channels == 2)
-            {
-                float* monoChannel = new float[num_samples];
-                auto channel1 = audio_source->getRenderSampleCacheForChannel(0);
-                auto channel2 = audio_source->getRenderSampleCacheForChannel(1);
-
-                for (size_t i = 0; i < num_samples; ++i)
+                const auto& playback_regions =
+                    audio_modification
+                        ->getPlaybackRegions<meta_words::PlaybackRegion>();
+                for (const auto& playback_region : playback_regions)
                 {
-                    monoChannel[i] = channel1[i] + channel2[i];
+                    return playback_region->get_audio_buffer(
+                        playback_sample_rate);
                 }
-                return monoChannel;
-            }
-            else
-            {
-                // not supported
-                return nullptr;
             }
         }
     }
 
-    return nullptr;
+    return {};
 }
 
 //------------------------------------------------------------------------
@@ -258,10 +248,11 @@ ARADocumentController::collect_meta_data_words(
 }
 
 //------------------------------------------------------------------------
-const float*
-ARADocumentController::collect_region_channel_buffer(int& num_samples) const
+auto ARADocumentController::collect_region_channel_buffer(
+    ARA::ARASampleRate playback_sample_rate) const
+    -> const meta_words::PlaybackRegion::AudioBufferSpan
 {
-    return mam::collectRegionChannelBuffer(*this, num_samples);
+    return mam::collect_audio_buffer(*this, playback_sample_rate);
 }
 
 //------------------------------------------------------------------------

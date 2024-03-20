@@ -12,13 +12,10 @@ namespace mam {
 // WaveformView
 //------------------------------------------------------------------------
 WaveformView::WaveformView(const VSTGUI::CRect& size,
-                           float* _waveFormData,
-                           int _numSamples)
+                           FnGetAudioBuffer&& fn_get_audio_buffer)
 : CView(size)
-, waveFormData(_waveFormData)
-, numSamples(_numSamples)
+, fn_get_audio_buffer(fn_get_audio_buffer)
 {
-    setTransparency(false);
 }
 
 //------------------------------------------------------------------------
@@ -28,8 +25,10 @@ void WaveformView::drawFull(VSTGUI::CDrawContext* pContext,
 
     pContext->setLineWidth(1.0);
 
-    const auto amplitude = viewSize.getHeight() * 0.5;
-    if (waveFormData && numSamples > 1)
+    const auto amplitude    = viewSize.getHeight() * 0.5;
+    const auto waveFormData = fn_get_audio_buffer();
+    const auto numSamples   = fn_get_audio_buffer().size();
+    if (numSamples > 1)
     {
         // Calculate the horizontal scale factor
         const auto xScale =
@@ -55,8 +54,10 @@ void WaveformView::drawSimplified(VSTGUI::CDrawContext* pContext,
 {
     pContext->setLineWidth(4.0);
 
-    const auto amplitude = viewSize.getHeight() * 0.5;
-    if (waveFormData && numSamples > 1)
+    const auto amplitude    = viewSize.getHeight() * 0.5;
+    const auto waveFormData = fn_get_audio_buffer();
+    const auto numSamples   = fn_get_audio_buffer().size();
+    if (numSamples > 1)
     {
         // Calculate the horizontal scale factor
         const auto xScale =
@@ -99,8 +100,8 @@ void WaveformView::draw(CDrawContext* pContext)
     pContext->setFrameColor(waveformColor);
 
     pContext->setFillColor({75, 75, 75});
-    //pContext->drawGraphicsPath(
-      //  pContext->createRoundRectGraphicsPath(viewSize, 15));
+    // pContext->drawGraphicsPath(
+    //   pContext->createRoundRectGraphicsPath(viewSize, 15));
 
     // drawSimplified(pContext, viewSize);
     drawFull(pContext, viewSize);

@@ -6,6 +6,7 @@
 
 #include "ARA_Library/PlugIn/ARAPlug.h"
 #include "meta_words_data.h"
+#include "meta_words_playback_region.h"
 #include "meta_words_playback_renderer.h"
 #include "tiny_observer_pattern.h"
 
@@ -78,7 +79,9 @@ public:
     const MetaWordsDataList
     collect_meta_data_words(ARA::ARASampleRate playback_sample_rate) const;
 
-    const float* collect_region_channel_buffer(int& num_samples) const;
+    const meta_words::PlaybackRegion::AudioBufferSpan
+    collect_region_channel_buffer(
+        ARA::ARASampleRate playback_sample_rate) const;
 
     void onRequestLocatorPosChanged(double pos);
 

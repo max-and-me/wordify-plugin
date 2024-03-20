@@ -18,8 +18,8 @@ using namespace ::VSTGUI;
 
 //------------------------------------------------------------------------
 using CPointOptional = std::optional<CPoint>;
-static auto
-read_view_size(const VSTGUI::UIAttributes& attributes) -> CPointOptional
+static auto read_view_size(const VSTGUI::UIAttributes& attributes)
+    -> CPointOptional
 {
     if (!attributes.hasAttribute("size"))
         return std::nullopt;
@@ -85,13 +85,10 @@ VstGPTWaveFormController::createView(const VSTGUI::UIAttributes& attributes,
     const auto view_size_optional = read_view_size(attributes);
     const auto view_size = view_size_optional.value_or<CPoint>({320., 240.});
 
-    int num_samples;
-    float* waveform_data = const_cast<float*>(
-        controller.collect_region_channel_buffer(num_samples));
+    view = new WaveformView(CRect{0, 0, view_size.x, view_size.y}, [&]() {
+        return controller.collect_region_channel_buffer(fn_get_playback_sample_rate());
+    });
 
-    view = new WaveformView(CRect{0, 0, view_size.x, view_size.y},
-                            waveform_data, num_samples);
-    
     onDataChanged();
     return view;
 }
