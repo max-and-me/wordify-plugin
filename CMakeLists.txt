@@ -73,6 +73,7 @@ target_link_libraries(VstGPT
         sndfile
         samplerate
         meta-words
+        GSL
 )
 
 smtg_target_configure_version_file(VstGPT)

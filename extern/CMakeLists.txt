@@ -6,5 +6,6 @@ add_subdirectory(tiny-process-library)
 add_subdirectory(libsndfile)
 add_subdirectory(libsamplerate)
 add_subdirectory(meta-words)
+add_subdirectory(ms-gsl)
 
 
