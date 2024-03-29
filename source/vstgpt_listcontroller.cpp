@@ -17,9 +17,9 @@ namespace mam {
 using namespace ::VSTGUI;
 
 //------------------------------------------------------------------------
-static auto
-update_list_control_content(CListControl& listControl,
-                            const meta_words::MetaWords& words) -> void
+static auto update_list_control_content(CListControl& listControl,
+                                        const meta_words::MetaWords& words)
+    -> void
 {
     listControl.setMax(words.size() - 1);
     listControl.recalculateLayout();
@@ -38,8 +38,8 @@ update_list_control_content(CListControl& listControl,
 }
 
 //------------------------------------------------------------------------
-static auto update_label_control(CTextLabel& label,
-                                 const MetaWordsData& data) -> void
+static auto update_label_control(CTextLabel& label, const MetaWordsData& data)
+    -> void
 {
     const VSTGUI::CColor color(data.color.r, data.color.g, data.color.b);
     label.setFontColor(color);
@@ -47,10 +47,10 @@ static auto update_label_control(CTextLabel& label,
 }
 
 //------------------------------------------------------------------------
-static auto
-onRequestSelectWord(int index,
-                    const mam::MetaWordsData& data,
-                    ARADocumentController& document_controller) -> void
+static auto onRequestSelectWord(int index,
+                                const mam::MetaWordsData& data,
+                                ARADocumentController& document_controller)
+    -> void
 {
     const auto& meta_words_data = data;
     const auto& words           = meta_words_data.words;
@@ -95,7 +95,7 @@ void VstGPTListController::valueChanged(CControl* pControl)
 //------------------------------------------------------------------------
 CView* VstGPTListController::verifyView(CView* view,
                                         const UIAttributes& /*attributes*/,
-                                        const IUIDescription* /*description*/)
+                                        const IUIDescription* description)
 {
     if (!listControl)
     {
@@ -151,6 +151,13 @@ void VstGPTListController::onDataChanged()
         update_label_control(*label, data);
         label->setDirty();
     }
+}
+
+//------------------------------------------------------------------------
+VSTGUI::IController* VstGPTListController::createSubController(
+    VSTGUI::UTF8StringPtr name, const VSTGUI::IUIDescription* description)
+{
+    return nullptr;
 }
 
 //------------------------------------------------------------------------

@@ -38,6 +38,7 @@ public:
     void valueChanged(VSTGUI::CControl* pControl) override;
     void controlBeginEdit(VSTGUI::CControl* pControl) override {};
     void controlEndEdit(VSTGUI::CControl* pControl) override {};
+    VSTGUI::IController* createSubController(VSTGUI::UTF8StringPtr name, const VSTGUI::IUIDescription* description) override;
 
     OBJ_METHODS(VstGPTListController, FObject)
 

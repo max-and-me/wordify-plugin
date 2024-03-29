@@ -22,30 +22,30 @@
 		"custom": {
 			"FocusDrawing": {},
 			"VST3Editor": {
-				"Path": "/Users/max/Documents/Code/vst-gpt/vst-gpt/resource/vstgpt_editor.uidesc"
+				"Path": "Z:\\Private\\mam\\vst-gpt\\resource\\vstgpt_editor.uidesc"
 			},
 			"UIGridController": {
-				"Grids": "1x 1,5x 5,10x 10,12x 12,15x 15"
+				"Grids": "1x 1,5x 5,8x 8,10x 10,12x 12,15x 15"
 			},
 			"UITemplateController": {
-				"SelectedTemplate": "view"
+				"SelectedTemplate": "ClipMetaWords"
 			},
 			"UIEditController": {
 				"EditViewScale": "1",
-				"EditorSize": "0, 0, 1119, 677",
-				"SplitViewSize_0_0": "0.8003072196620584222159777709748595952988",
-				"SplitViewSize_0_1": "0.1689708141321044632121584072592668235302",
-				"SplitViewSize_1_0": "0.4900153609831029433152593810518737882376",
-				"SplitViewSize_1_1": "0.5130568356374808347553084786341059952974",
-				"SplitViewSize_2_0": "0.6657730116175156753755004501726943999529",
-				"SplitViewSize_2_1": "0.3315460232350312952398496690875617787242",
-				"TabSwitchValue": "3",
+				"EditorSize": "0, 0, 1221, 542",
+				"SplitViewSize_0_0": "0.7480620155038759655496960476739332079887",
+				"SplitViewSize_0_1": "0.2131782945736434009553761370625579729676",
+				"SplitViewSize_1_0": "0.4893410852713178105233282622066326439381",
+				"SplitViewSize_1_1": "0.518410852713178327277887547097634524107",
+				"SplitViewSize_2_0": "0.4316134316134316306623475156811764463782",
+				"SplitViewSize_2_1": "0.5667485667485667732989895739592611789703",
+				"TabSwitchValue": "0",
 				"Version": "1",
 				"ViewBackground": "1"
 			},
 			"UIAttributesController": {},
 			"UIViewCreatorDataSource": {
-				"SelectedRow": "5"
+				"SelectedRow": "25"
 			},
 			"UIGradientsDataSource": {
 				"SelectedRow": "0"
@@ -76,7 +76,7 @@
 							"background-color-draw-style": "filled and stroked",
 							"bordered": "false",
 							"class": "CScrollView",
-							"container-size": "230, 222",
+							"container-size": "240, 240",
 							"follow-focus-view": "false",
 							"horizontal-scrollbar": "false",
 							"mouse-enabled": "true",
@@ -88,37 +88,76 @@
 							"scrollbar-scroller-color": "~ GreyCColor",
 							"scrollbar-width": "16",
 							"size": "240, 240",
+							"sub-controller": "MetaWordsListController",
 							"transparent": "false",
 							"vertical-scrollbar": "true",
 							"wants-focus": "false"
 						},
 						"children": {
-							"CStringListControl": {
+							"CRowColumnView": {
 								"attributes": {
-									"back-color": "main_background",
-									"back-color-selected": "~ GreyCColor",
-									"class": "CStringListControl",
-									"default-value": "0.5",
-									"font": "~ NormalFont",
-									"font-color": "~ WhiteCColor",
-									"font-color-selected": "~ WhiteCColor",
-									"hover-color": "#00000064",
-									"line-color": "main_background",
-									"line-width": "1",
-									"max-value": "3",
-									"min-value": "0",
+									"animate-view-resizing": "false",
+									"background-color": "~ BlackCColor",
+									"background-color-draw-style": "filled and stroked",
+									"class": "CRowColumnView",
+									"equal-size-layout": "left-top",
+									"hide-clipped-subviews": "false",
+									"margin": "0, 0, 0, 0",
 									"mouse-enabled": "true",
-									"opacity": "0.93",
+									"opacity": "1",
 									"origin": "0, 0",
-									"row-height": "20",
-									"size": "230, 222",
-									"style-hover": "true",
-									"sub-controller": "MetaWordsListController",
-									"text-alignment": "left",
-									"text-inset": "20",
-									"transparent": "false",
-									"wants-focus": "false",
-									"wheel-inc-value": "0.1"
+									"row-style": "true",
+									"size": "240, 240",
+									"spacing": "0",
+									"transparent": "true",
+									"view-resize-animation-time": "200",
+									"wants-focus": "false"
+								},
+								"children": {
+									"CRowColumnView": {
+										"attributes": {
+											"animate-view-resizing": "false",
+											"background-color": "~ BlackCColor",
+											"background-color-draw-style": "filled and stroked",
+											"class": "CRowColumnView",
+											"equal-size-layout": "left-top",
+											"hide-clipped-subviews": "false",
+											"margin": "0, 0, 0, 0",
+											"mouse-enabled": "true",
+											"opacity": "1",
+											"origin": "0, 0",
+											"row-style": "true",
+											"size": "240, 100",
+											"spacing": "0",
+											"sub-controller": "MetaWordsClipController",
+											"template": "ClipMetaWords",
+											"transparent": "true",
+											"view-resize-animation-time": "200",
+											"wants-focus": "false"
+										}
+									},
+									"CRowColumnView": {
+										"attributes": {
+											"animate-view-resizing": "false",
+											"background-color": "~ BlackCColor",
+											"background-color-draw-style": "filled and stroked",
+											"class": "CRowColumnView",
+											"equal-size-layout": "left-top",
+											"hide-clipped-subviews": "false",
+											"margin": "0, 0, 0, 0",
+											"mouse-enabled": "true",
+											"opacity": "1",
+											"origin": "0, 100",
+											"row-style": "true",
+											"size": "240, 60",
+											"spacing": "0",
+											"sub-controller": "MetaWordsClipController",
+											"template": "ClipMetaWords",
+											"transparent": "true",
+											"view-resize-animation-time": "200",
+											"wants-focus": "false"
+										}
+									}
 								}
 							}
 						}
@@ -176,7 +215,7 @@
 									"text-inset": "0, 0",
 									"text-rotation": "0",
 									"text-shadow-offset": "1, 1",
-									"title": "jfk-02",
+									"title": "jfk",
 									"transparent": "true",
 									"value-precision": "2",
 									"wants-focus": "false",
@@ -236,6 +275,93 @@
 									}
 								}
 							}
+						}
+					}
+				}
+			},
+			"ClipMetaWords": {
+				"attributes": {
+					"animate-view-resizing": "false",
+					"background-color": "~ BlackCColor",
+					"background-color-draw-style": "filled and stroked",
+					"class": "CRowColumnView",
+					"equal-size-layout": "left-top",
+					"hide-clipped-subviews": "false",
+					"margin": "0, 0, 0, 0",
+					"mouse-enabled": "true",
+					"opacity": "1",
+					"origin": "0, 0",
+					"row-style": "true",
+					"size": "300, 100",
+					"spacing": "0",
+					"sub-controller": "MetaWordsClipController",
+					"transparent": "true",
+					"view-resize-animation-time": "200",
+					"wants-focus": "false"
+				},
+				"children": {
+					"CTextLabel": {
+						"attributes": {
+							"back-color": "~ BlackCColor",
+							"background-offset": "0, 0",
+							"class": "CTextLabel",
+							"default-value": "0.5",
+							"font": "~ NormalFont",
+							"font-antialias": "true",
+							"font-color": "~ WhiteCColor",
+							"frame-color": "~ BlackCColor",
+							"frame-width": "1",
+							"max-value": "1",
+							"min-value": "0",
+							"mouse-enabled": "true",
+							"opacity": "1",
+							"origin": "0, 0",
+							"round-rect-radius": "6",
+							"shadow-color": "~ RedCColor",
+							"size": "300, 20",
+							"style-3D-in": "false",
+							"style-3D-out": "false",
+							"style-no-draw": "false",
+							"style-no-frame": "false",
+							"style-no-text": "false",
+							"style-round-rect": "false",
+							"style-shadow-text": "false",
+							"text-alignment": "left",
+							"text-inset": "0, 0",
+							"text-rotation": "0",
+							"text-shadow-offset": "1, 1",
+							"title": "Test Titel",
+							"transparent": "true",
+							"value-precision": "2",
+							"wants-focus": "false",
+							"wheel-inc-value": "0.1"
+						}
+					},
+					"CStringListControl": {
+						"attributes": {
+							"back-color": "~ WhiteCColor",
+							"back-color-selected": "~ GreyCColor",
+							"class": "CStringListControl",
+							"default-value": "0.5",
+							"font": "~ NormalFont",
+							"font-color": "~ WhiteCColor",
+							"font-color-selected": "~ WhiteCColor",
+							"hover-color": "#00000064",
+							"line-color": "~ TransparentCColor",
+							"line-width": "1",
+							"max-value": "1",
+							"min-value": "0",
+							"mouse-enabled": "true",
+							"opacity": "1",
+							"origin": "0, 20",
+							"row-height": "20",
+							"size": "300, 40",
+							"style-hover": "true",
+							"text-alignment": "left",
+							"text-inset": "25",
+							"transparent": "true",
+							"wants-focus": "false",
+							"wheel-inc-value": "0.1"
 						}
 					}
 				}
