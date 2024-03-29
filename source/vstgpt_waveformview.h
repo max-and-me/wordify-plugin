@@ -32,6 +32,8 @@ private:
                   const VSTGUI::CRect& viewSize);
     void drawSimplified(VSTGUI::CDrawContext* pContext,
                         const VSTGUI::CRect& viewSize);
+    void draw_like_spotify(VSTGUI::CDrawContext* pContext,
+                           const VSTGUI::CRect& viewSize);
 
     FnGetAudioBuffer fn_get_audio_buffer;
     VSTGUI::CColor waveformColor{0, 0, 0};

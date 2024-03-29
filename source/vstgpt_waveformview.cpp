@@ -2,11 +2,36 @@
 // Copyright(c) 2023 Max And Me.
 //------------------------------------------------------------------------
 #include "vstgpt_waveformview.h"
+#include "mam/wave-draw/wave-draw.h"
 #include "vstgui/lib/cdrawcontext.h"
+#include "vstgui/lib/cgraphicspath.h"
+#include <algorithm>
 
 using namespace VSTGUI;
 
 namespace mam {
+
+//------------------------------------------------------------------------
+static auto create_rect(const wave_draw::DrawData& data) -> const CRect
+{
+    const CPoint origin(data.x, data.y);
+    const CPoint size(data.width, data.height);
+    const CRect rect = CRect(origin, size);
+    return rect;
+}
+//------------------------------------------------------------------------
+static auto draw_data(VSTGUI::CDrawContext& context,
+                      const wave_draw::DrawData& data)
+{
+    constexpr CCoord ROUND_CORNER_RADIUS = 1.;
+
+    VSTGUI::SharedPointer<VSTGUI::CGraphicsPath> obj =
+        VSTGUI::owned(context.createRoundRectGraphicsPath(create_rect(data),
+                                                          ROUND_CORNER_RADIUS));
+    auto* graphics_path = context.createRoundRectGraphicsPath(
+        create_rect(data), ROUND_CORNER_RADIUS);
+    context.drawGraphicsPath(graphics_path);
+}
 
 //------------------------------------------------------------------------
 // WaveformView
@@ -19,10 +44,29 @@ WaveformView::WaveformView(const VSTGUI::CRect& size,
 }
 
 //------------------------------------------------------------------------
+void WaveformView::draw_like_spotify(VSTGUI::CDrawContext* pContext,
+                                     const VSTGUI::CRect& viewSize)
+{
+    const auto spacing    = 1.;
+    const auto line_width = 2.;
+
+    // Since we have a fixed view_width, we need to compute the zoom_factor
+    // beforehand.
+    const auto zoom_factor = wave_draw::compute_zoom_factor(
+        fn_get_audio_buffer(), viewSize.getWidth(), line_width, spacing);
+
+    auto drawFunc = [&](const auto& data) { draw_data(*pContext, data); };
+    wave_draw::Drawer()
+        .init(fn_get_audio_buffer(), zoom_factor)
+        .setup_wave(line_width, spacing)
+        .setup_dimensions(viewSize.getWidth(), viewSize.getHeight())
+        .draw(drawFunc);
+}
+
+//------------------------------------------------------------------------
 void WaveformView::drawFull(VSTGUI::CDrawContext* pContext,
                             const VSTGUI::CRect& viewSize)
 {
-
     pContext->setLineWidth(1.0);
 
     const auto amplitude    = viewSize.getHeight() * 0.5;
@@ -48,6 +92,7 @@ void WaveformView::drawFull(VSTGUI::CDrawContext* pContext,
         }
     }
 }
+
 //------------------------------------------------------------------------
 void WaveformView::drawSimplified(VSTGUI::CDrawContext* pContext,
                                   const VSTGUI::CRect& viewSize)
@@ -104,7 +149,8 @@ void WaveformView::draw(CDrawContext* pContext)
     //   pContext->createRoundRectGraphicsPath(viewSize, 15));
 
     // drawSimplified(pContext, viewSize);
-    drawFull(pContext, viewSize);
+    // drawFull(pContext, viewSize);
+    draw_like_spotify(pContext, viewSize);
 }
 
 //--------------------------------------------------------------------
