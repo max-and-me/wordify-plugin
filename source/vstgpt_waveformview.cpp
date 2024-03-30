@@ -148,4 +148,5 @@ void WaveformView::setColor(CColor color)
     waveformColor = color;
 }
 
+//------------------------------------------------------------------------
 } // namespace mam

@@ -46,25 +46,25 @@ static auto update_view(WaveformView& view, const MetaWordsData& data) -> void
 // VstGPTWaveFormController
 //------------------------------------------------------------------------
 VstGPTWaveFormController::VstGPTWaveFormController(
-    ARADocumentController& controller,
+    ARADocumentController* controller,
     ARADocumentController::FnGetSampleRate&& fn_get_playback_sample_rate)
 : controller(controller)
-, fn_get_playback_sample_rate(fn_get_playback_sample_rate)
+, func_playback_sample_rate(fn_get_playback_sample_rate)
 {
-    observer_id = controller.add_listener([this]() { this->onDataChanged(); });
+    observer_id = controller->add_listener([this]() { this->onDataChanged(); });
 }
 
 //------------------------------------------------------------------------
 VstGPTWaveFormController::~VstGPTWaveFormController()
 {
-    controller.remove_listener(observer_id);
+    controller->remove_listener(observer_id);
 }
 
 //------------------------------------------------------------------------
 void VstGPTWaveFormController::onDataChanged()
 {
     cached_meta_words_data_list =
-        controller.collect_meta_data_words(fn_get_playback_sample_rate());
+        controller->collect_meta_data_words(func_playback_sample_rate());
     if (cached_meta_words_data_list.empty())
         return;
 
@@ -85,9 +85,11 @@ VstGPTWaveFormController::createView(const VSTGUI::UIAttributes& attributes,
     const auto view_size_optional = read_view_size(attributes);
     const auto view_size = view_size_optional.value_or<CPoint>({320., 240.});
 
-    view = new WaveformView(CRect{0, 0, view_size.x, view_size.y}, [&]() {
-        return controller.collect_region_channel_buffer(
-            fn_get_playback_sample_rate());
+    const auto c    = this->controller;
+    const auto func = this->func_playback_sample_rate;
+    view = new WaveformView(CRect{0, 0, view_size.x, view_size.y}, [c, func]() {
+        const auto sr = func();
+        return c->collect_region_channel_buffer(sr);
     });
 
     onDataChanged();

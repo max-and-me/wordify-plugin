@@ -25,7 +25,7 @@ class VstGPTWaveFormController : public Steinberg::FObject,
 public:
     //--------------------------------------------------------------------
     VstGPTWaveFormController(
-        ARADocumentController& controller,
+        ARADocumentController* controller,
         ARADocumentController::FnGetSampleRate&& fn_get_playback_sample_rate);
     virtual ~VstGPTWaveFormController();
 
@@ -52,10 +52,10 @@ public:
 
     //--------------------------------------------------------------------
 private:
-    ARADocumentController& controller;
+    ARADocumentController* controller = nullptr;
     ARADocumentController::MetaWordsDataList cached_meta_words_data_list;
     tiny_observer_pattern::ObserverID observer_id = 0;
-    ARADocumentController::FnGetSampleRate fn_get_playback_sample_rate;
+    ARADocumentController::FnGetSampleRate func_playback_sample_rate;
 
     WaveformView* view = nullptr;
 };
