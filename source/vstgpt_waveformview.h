@@ -4,13 +4,14 @@
 
 #pragma once
 
-#include "ara_document_controller.h"
+#include "gsl/span"
 #include "vstgui/lib/ccolor.h"
 #include "vstgui/lib/cview.h"
 
 namespace mam {
 //------------------------------------------------------------------------
-using AudioBufferSpan = const meta_words::PlaybackRegion::AudioBufferSpan;
+using SampleType      = float;
+using AudioBufferSpan = gsl::span<const SampleType>;
 
 //------------------------------------------------------------------------
 // WaveformView
