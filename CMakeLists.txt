@@ -73,6 +73,7 @@ target_link_libraries(VstGPT
         sndfile
         samplerate
         meta-words
+        wave-draw
         GSL
 )
 
