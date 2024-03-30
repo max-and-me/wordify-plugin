@@ -30,33 +30,25 @@ public:
     virtual ~VstGPTWaveFormController();
 
     void PLUGIN_API update(FUnknown* changedUnknown,
-                           Steinberg::int32 message) override {};
-    VSTGUI::CView*
-    verifyView(VSTGUI::CView* view,
-               const VSTGUI::UIAttributes& attributes,
-               const VSTGUI::IUIDescription* description) override
-    {
-        return view;
-    }
+                           Steinberg::int32 message) override{};
 
     VSTGUI::CView*
     createView(const VSTGUI::UIAttributes& attributes,
                const VSTGUI::IUIDescription* description) override;
 
     // IControlListener
-    void valueChanged(VSTGUI::CControl* pControl) override {};
-
-    void onDataChanged();
+    void valueChanged(VSTGUI::CControl* pControl) override{};
 
     OBJ_METHODS(VstGPTWaveFormController, FObject)
 
     //--------------------------------------------------------------------
 private:
+    void onDataChanged();
+
     ARADocumentController* controller = nullptr;
     ARADocumentController::MetaWordsDataList cached_meta_words_data_list;
     tiny_observer_pattern::ObserverID observer_id = 0;
     ARADocumentController::FnGetSampleRate func_playback_sample_rate;
-
     WaveformView* view = nullptr;
 };
 

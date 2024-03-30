@@ -51,18 +51,24 @@ VstGPTWaveFormController::VstGPTWaveFormController(
 : controller(controller)
 , func_playback_sample_rate(fn_get_playback_sample_rate)
 {
-    observer_id = controller->add_listener([this]() { this->onDataChanged(); });
+    if (controller)
+        observer_id =
+            controller->add_listener([this]() { this->onDataChanged(); });
 }
 
 //------------------------------------------------------------------------
 VstGPTWaveFormController::~VstGPTWaveFormController()
 {
-    controller->remove_listener(observer_id);
+    if (controller)
+        controller->remove_listener(observer_id);
 }
 
 //------------------------------------------------------------------------
 void VstGPTWaveFormController::onDataChanged()
 {
+    if (!controller)
+        return;
+
     cached_meta_words_data_list =
         controller->collect_meta_data_words(func_playback_sample_rate());
     if (cached_meta_words_data_list.empty())
@@ -82,6 +88,9 @@ CView*
 VstGPTWaveFormController::createView(const VSTGUI::UIAttributes& attributes,
                                      const VSTGUI::IUIDescription* description)
 {
+    if (!controller)
+        return nullptr;
+
     const auto view_size_optional = read_view_size(attributes);
     const auto view_size = view_size_optional.value_or<CPoint>({320., 240.});
 

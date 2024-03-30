@@ -27,9 +27,9 @@ static auto draw_data(CDrawContext& context, const wave_draw::DrawData& data)
 // WaveformView
 //------------------------------------------------------------------------
 WaveformView::WaveformView(const CRect& size,
-                           FnGetAudioBuffer&& fn_get_audio_buffer)
+                           FnGetAudioBuffer&& func_audio_buffer)
 : CView(size)
-, fn_get_audio_buffer(fn_get_audio_buffer)
+, func_audio_buffer(func_audio_buffer)
 {
 }
 
@@ -45,10 +45,10 @@ void WaveformView::draw_like_spotify(CDrawContext* pContext,
     // Since we have a fixed view_width, we need to compute the zoom_factor
     // beforehand.
     const auto zoom_factor = wave_draw::compute_zoom_factor(
-        fn_get_audio_buffer(), viewSize.getWidth(), LINE_WIDTH, SPACING);
+        func_audio_buffer(), viewSize.getWidth(), LINE_WIDTH, SPACING);
 
     Drawer()
-        .init(fn_get_audio_buffer(), zoom_factor)
+        .init(func_audio_buffer(), zoom_factor)
         .setup_wave(LINE_WIDTH, SPACING)
         .setup_dimensions(viewSize.getWidth(), viewSize.getHeight())
         .draw([&](const DrawData& data) { draw_data(*pContext, data); });
@@ -60,8 +60,8 @@ void WaveformView::drawFull(CDrawContext* pContext, const CRect& viewSize)
     pContext->setLineWidth(1.0);
 
     const auto amplitude    = viewSize.getHeight() * 0.5;
-    const auto waveFormData = fn_get_audio_buffer();
-    const auto numSamples   = fn_get_audio_buffer().size();
+    const auto waveFormData = func_audio_buffer();
+    const auto numSamples   = func_audio_buffer().size();
     if (numSamples > 1)
     {
         // Calculate the horizontal scale factor
@@ -89,8 +89,8 @@ void WaveformView::drawSimplified(CDrawContext* pContext, const CRect& viewSize)
     pContext->setLineWidth(4.0);
 
     const auto amplitude    = viewSize.getHeight() * 0.5;
-    const auto waveFormData = fn_get_audio_buffer();
-    const auto numSamples   = fn_get_audio_buffer().size();
+    const auto waveFormData = func_audio_buffer();
+    const auto numSamples   = func_audio_buffer().size();
     if (numSamples > 1)
     {
         // Calculate the horizontal scale factor
@@ -126,6 +126,9 @@ void WaveformView::drawSimplified(CDrawContext* pContext, const CRect& viewSize)
 //------------------------------------------------------------------------
 void WaveformView::draw(CDrawContext* pContext)
 {
+    if (!pContext)
+        return;
+
     const auto viewSize = getViewSize();
     CDrawContext::Transform t(
         *pContext, CGraphicsTransform().translate(viewSize.getTopLeft()));
