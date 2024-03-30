@@ -2,11 +2,11 @@
 // Copyright(c) 2024 Max And Me.
 //------------------------------------------------------------------------
 
+#pragma once
+
 #include "ara_document_controller.h"
 #include "vstgui/lib/ccolor.h"
 #include "vstgui/lib/cview.h"
-
-#pragma once
 
 namespace mam {
 //------------------------------------------------------------------------
