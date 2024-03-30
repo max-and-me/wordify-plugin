@@ -74,7 +74,6 @@ target_link_libraries(VstGPT
         samplerate
         meta-words
         wave-draw
-        GSL
 )
 
 smtg_target_configure_version_file(VstGPT)
