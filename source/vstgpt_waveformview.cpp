@@ -47,15 +47,17 @@ WaveformView::WaveformView(const VSTGUI::CRect& size,
 void WaveformView::draw_like_spotify(VSTGUI::CDrawContext* pContext,
                                      const VSTGUI::CRect& viewSize)
 {
-    const auto spacing    = 1.;
-    const auto line_width = 2.;
+    constexpr auto spacing    = 1.;
+    constexpr auto line_width = 2.;
 
     // Since we have a fixed view_width, we need to compute the zoom_factor
     // beforehand.
     const auto zoom_factor = wave_draw::compute_zoom_factor(
         fn_get_audio_buffer(), viewSize.getWidth(), line_width, spacing);
 
-    auto drawFunc = [&](const auto& data) { draw_data(*pContext, data); };
+    auto drawFunc = [&](const wave_draw::DrawData& data) {
+        draw_data(*pContext, data);
+    };
     wave_draw::Drawer()
         .init(fn_get_audio_buffer(), zoom_factor)
         .setup_wave(line_width, spacing)
