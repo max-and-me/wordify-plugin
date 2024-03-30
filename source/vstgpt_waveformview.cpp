@@ -12,14 +12,13 @@ using namespace VSTGUI;
 namespace mam {
 
 //------------------------------------------------------------------------
-static auto draw_data(VSTGUI::CDrawContext& context,
-                      const wave_draw::DrawData& data)
+static auto draw_data(CDrawContext& context, const wave_draw::DrawData& data)
 {
     constexpr CCoord ROUND_CORNER_RADIUS = 1.;
 
-    const CRect rect   = CRect({data.x, data.y}, {data.width, data.height});
-    auto graphics_path = VSTGUI::owned(
-        context.createRoundRectGraphicsPath(rect, ROUND_CORNER_RADIUS));
+    const CRect rect = CRect({data.x, data.y}, {data.width, data.height});
+    auto graphics_path =
+        owned(context.createRoundRectGraphicsPath(rect, ROUND_CORNER_RADIUS));
 
     context.drawGraphicsPath(graphics_path);
 }
@@ -27,7 +26,7 @@ static auto draw_data(VSTGUI::CDrawContext& context,
 //------------------------------------------------------------------------
 // WaveformView
 //------------------------------------------------------------------------
-WaveformView::WaveformView(const VSTGUI::CRect& size,
+WaveformView::WaveformView(const CRect& size,
                            FnGetAudioBuffer&& fn_get_audio_buffer)
 : CView(size)
 , fn_get_audio_buffer(fn_get_audio_buffer)
@@ -35,30 +34,28 @@ WaveformView::WaveformView(const VSTGUI::CRect& size,
 }
 
 //------------------------------------------------------------------------
-void WaveformView::draw_like_spotify(VSTGUI::CDrawContext* pContext,
-                                     const VSTGUI::CRect& viewSize)
+void WaveformView::draw_like_spotify(CDrawContext* pContext,
+                                     const CRect& viewSize)
 {
-    constexpr auto spacing    = 1.;
-    constexpr auto line_width = 2.;
+    using Drawer              = wave_draw::Drawer;
+    using DrawData            = wave_draw::DrawData;
+    constexpr auto SPACING    = 1.;
+    constexpr auto LINE_WIDTH = 2.;
 
     // Since we have a fixed view_width, we need to compute the zoom_factor
     // beforehand.
     const auto zoom_factor = wave_draw::compute_zoom_factor(
-        fn_get_audio_buffer(), viewSize.getWidth(), line_width, spacing);
+        fn_get_audio_buffer(), viewSize.getWidth(), LINE_WIDTH, SPACING);
 
-    auto drawFunc = [&](const wave_draw::DrawData& data) {
-        draw_data(*pContext, data);
-    };
-    wave_draw::Drawer()
+    Drawer()
         .init(fn_get_audio_buffer(), zoom_factor)
-        .setup_wave(line_width, spacing)
+        .setup_wave(LINE_WIDTH, SPACING)
         .setup_dimensions(viewSize.getWidth(), viewSize.getHeight())
-        .draw(drawFunc);
+        .draw([&](const DrawData& data) { draw_data(*pContext, data); });
 }
 
 //------------------------------------------------------------------------
-void WaveformView::drawFull(VSTGUI::CDrawContext* pContext,
-                            const VSTGUI::CRect& viewSize)
+void WaveformView::drawFull(CDrawContext* pContext, const CRect& viewSize)
 {
     pContext->setLineWidth(1.0);
 
@@ -87,8 +84,7 @@ void WaveformView::drawFull(VSTGUI::CDrawContext* pContext,
 }
 
 //------------------------------------------------------------------------
-void WaveformView::drawSimplified(VSTGUI::CDrawContext* pContext,
-                                  const VSTGUI::CRect& viewSize)
+void WaveformView::drawSimplified(CDrawContext* pContext, const CRect& viewSize)
 {
     pContext->setLineWidth(4.0);
 
@@ -147,7 +143,7 @@ void WaveformView::draw(CDrawContext* pContext)
 }
 
 //--------------------------------------------------------------------
-void WaveformView::setColor(VSTGUI::CColor color)
+void WaveformView::setColor(CColor color)
 {
     waveformColor = color;
 }
