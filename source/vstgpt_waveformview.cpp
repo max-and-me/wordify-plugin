@@ -12,35 +12,25 @@ using namespace VSTGUI;
 namespace mam {
 
 //------------------------------------------------------------------------
-static auto draw_data(CDrawContext& context, const wave_draw::DrawData& data)
-{
-    constexpr CCoord ROUND_CORNER_RADIUS = 1.;
-
-    const CRect rect = CRect({data.x, data.y}, {data.width, data.height});
-    auto graphics_path =
-        owned(context.createRoundRectGraphicsPath(rect, ROUND_CORNER_RADIUS));
-
-    context.drawGraphicsPath(graphics_path);
-}
-
-//------------------------------------------------------------------------
 // WaveformView
 //------------------------------------------------------------------------
 WaveformView::WaveformView(const CRect& size,
-                           FnGetAudioBuffer&& func_audio_buffer)
+                           FuncAudioBuffer&& func_audio_buffer)
 : CView(size)
 , func_audio_buffer(func_audio_buffer)
 {
 }
 
 //------------------------------------------------------------------------
-void WaveformView::draw_like_spotify(CDrawContext* pContext,
+void WaveformView::draw_like_spotify(CDrawContext& pContext,
                                      const CRect& viewSize)
 {
-    using Drawer              = wave_draw::Drawer;
-    using DrawData            = wave_draw::DrawData;
-    constexpr auto SPACING    = 1.;
-    constexpr auto LINE_WIDTH = 2.;
+    using Drawer   = wave_draw::Drawer;
+    using DrawData = wave_draw::DrawData;
+
+    constexpr auto SPACING             = 1.;
+    constexpr auto LINE_WIDTH          = 2.;
+    constexpr auto ROUND_CORNER_RADIUS = 1.;
 
     // Since we have a fixed view_width, we need to compute the zoom_factor
     // beforehand.
@@ -51,7 +41,14 @@ void WaveformView::draw_like_spotify(CDrawContext* pContext,
         .init(func_audio_buffer(), zoom_factor)
         .setup_wave(LINE_WIDTH, SPACING)
         .setup_dimensions(viewSize.getWidth(), viewSize.getHeight())
-        .draw([&](const DrawData& data) { draw_data(*pContext, data); });
+        .draw([&](const DrawData& data) {
+            const auto rect =
+                CRect({data.x, data.y}, {data.width, data.height});
+            auto graphics_path = owned(pContext.createRoundRectGraphicsPath(
+                rect, ROUND_CORNER_RADIUS));
+
+            pContext.drawGraphicsPath(graphics_path);
+        });
 }
 
 //------------------------------------------------------------------------
@@ -133,16 +130,11 @@ void WaveformView::draw(CDrawContext* pContext)
     CDrawContext::Transform t(
         *pContext, CGraphicsTransform().translate(viewSize.getTopLeft()));
 
-    // Draw the waveform with black lines
-    pContext->setFrameColor(waveformColor);
-
     pContext->setFillColor({75, 75, 75});
-    // pContext->drawGraphicsPath(
-    //   pContext->createRoundRectGraphicsPath(viewSize, 15));
 
     // drawSimplified(pContext, viewSize);
     // drawFull(pContext, viewSize);
-    draw_like_spotify(pContext, viewSize);
+    draw_like_spotify(*pContext, viewSize);
 }
 
 //--------------------------------------------------------------------

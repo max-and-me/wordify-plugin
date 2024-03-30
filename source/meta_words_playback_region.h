@@ -19,7 +19,7 @@ public:
     using AudioBuf =
         mam::audio_buffer_management::AudioBuffer<AudioSource::SampleType>;
     using AudioBufferSpan = gsl::span<const AudioSource::SampleType>;
-    ;
+    
     explicit PlaybackRegion(ARA::PlugIn::AudioModification* audioModification,
                             ARA::ARAPlaybackRegionHostRef hostRef) noexcept;
 
