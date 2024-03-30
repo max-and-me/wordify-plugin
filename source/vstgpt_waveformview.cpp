@@ -12,24 +12,15 @@ using namespace VSTGUI;
 namespace mam {
 
 //------------------------------------------------------------------------
-static auto create_rect(const wave_draw::DrawData& data) -> const CRect
-{
-    const CPoint origin(data.x, data.y);
-    const CPoint size(data.width, data.height);
-    const CRect rect = CRect(origin, size);
-    return rect;
-}
-//------------------------------------------------------------------------
 static auto draw_data(VSTGUI::CDrawContext& context,
                       const wave_draw::DrawData& data)
 {
     constexpr CCoord ROUND_CORNER_RADIUS = 1.;
 
-    VSTGUI::SharedPointer<VSTGUI::CGraphicsPath> obj =
-        VSTGUI::owned(context.createRoundRectGraphicsPath(create_rect(data),
-                                                          ROUND_CORNER_RADIUS));
-    auto* graphics_path = context.createRoundRectGraphicsPath(
-        create_rect(data), ROUND_CORNER_RADIUS);
+    const CRect rect   = CRect({data.x, data.y}, {data.width, data.height});
+    auto graphics_path = VSTGUI::owned(
+        context.createRoundRectGraphicsPath(rect, ROUND_CORNER_RADIUS));
+
     context.drawGraphicsPath(graphics_path);
 }
 
