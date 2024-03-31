@@ -28,24 +28,24 @@
 				"Grids": "1x 1,5x 5,8x 8,10x 10,12x 12,15x 15"
 			},
 			"UITemplateController": {
-				"SelectedTemplate": "view"
+				"SelectedTemplate": "WaveFormTemplate"
 			},
 			"UIEditController": {
 				"EditViewScale": "1",
-				"EditorSize": "0, 0, 1371, 619",
-				"SplitViewSize_0_0": "0.78077571669477230376088527918909676373",
-				"SplitViewSize_0_1": "0.1854974704890387793287942486131214536726",
-				"SplitViewSize_1_0": "0.5961214165261382591509686790232080966234",
-				"SplitViewSize_1_1": "0.4139966273187183909421094085701042786241",
-				"SplitViewSize_2_0": "0.6462436177972282758119604295643512159586",
-				"SplitViewSize_2_1": "0.3522975929978118259100483555812388658524",
+				"EditorSize": "0, 0, 1187, 566",
+				"SplitViewSize_0_0": "0.7592592592592593003786305416724644601345",
+				"SplitViewSize_0_1": "0.203703703703703692395876601040072273463",
+				"SplitViewSize_1_0": "0.6148148148148148139924273891665507107973",
+				"SplitViewSize_1_1": "0.414814814814814802890197142914985306561",
+				"SplitViewSize_2_0": "0.7493681550126368717812397335364948958158",
+				"SplitViewSize_2_1": "0.2489469250210614992280255819423473440111",
 				"TabSwitchValue": "0",
 				"Version": "1",
 				"ViewBackground": "1"
 			},
 			"UIAttributesController": {},
 			"UIViewCreatorDataSource": {
-				"SelectedRow": "25"
+				"SelectedRow": "30"
 			},
 			"UIGradientsDataSource": {
 				"SelectedRow": "0"
@@ -132,6 +132,7 @@
 											"sub-controller": "MetaWordsClipController",
 											"template": "ClipMetaWords",
 											"transparent": "true",
+											"uidesc-label": "MetaWordsClip",
 											"view-resize-animation-time": "200",
 											"wants-focus": "false"
 										}
@@ -154,6 +155,7 @@
 											"sub-controller": "MetaWordsClipController",
 											"template": "ClipMetaWords",
 											"transparent": "true",
+											"uidesc-label": "MetaWordsClip",
 											"view-resize-animation-time": "200",
 											"wants-focus": "false"
 										}
@@ -186,7 +188,6 @@
 						"children": {
 							"CViewContainer": {
 								"attributes": {
-									"autosize": "left right top bottom ",
 									"background-color": "~ BlackCColor",
 									"background-color-draw-style": "filled and stroked",
 									"class": "CViewContainer",
@@ -194,48 +195,10 @@
 									"opacity": "1",
 									"origin": "0, 0",
 									"size": "572, 80",
+									"template": "WaveFormTemplate",
 									"transparent": "true",
-									"uidesc-label": "MLayout",
+									"uidesc-label": "WaveFormTemplate",
 									"wants-focus": "false"
-								},
-								"children": {
-									"CGradientView": {
-										"attributes": {
-											"autosize": "left right top bottom ",
-											"class": "CGradientView",
-											"draw-antialiased": "true",
-											"frame-color": "~ BlackCColor",
-											"frame-width": "0",
-											"gradient": "waveform_background",
-											"gradient-angle": "0",
-											"gradient-style": "linear",
-											"mouse-enabled": "true",
-											"opacity": "1",
-											"origin": "0, 0",
-											"radial-center": "0.5, 0.5",
-											"radial-radius": "8",
-											"round-rect-radius": "8",
-											"size": "572, 80",
-											"transparent": "false",
-											"uidesc-label": "WaveFormBackground",
-											"wants-focus": "false"
-										}
-									},
-									"CView": {
-										"attributes": {
-											"autosize": "left right top bottom ",
-											"class": "CView",
-											"mouse-enabled": "true",
-											"opacity": "1",
-											"origin": "0, 0",
-											"size": "572, 80",
-											"sub-controller": "MetaWordsWaveFormController",
-											"tooltip": "test",
-											"transparent": "true",
-											"uidesc-label": "WaveFormView",
-											"wants-focus": "true"
-										}
-									}
 								}
 							}
 						}
@@ -259,6 +222,7 @@
 					"spacing": "0",
 					"sub-controller": "MetaWordsClipController",
 					"transparent": "true",
+					"uidesc-label": "MetaWordsClip",
 					"view-resize-animation-time": "200",
 					"wants-focus": "false"
 				},
@@ -325,6 +289,76 @@
 							"transparent": "true",
 							"wants-focus": "false",
 							"wheel-inc-value": "0.1"
+						}
+					}
+				}
+			},
+			"WaveFormTemplate": {
+				"attributes": {
+					"background-color": "~ BlackCColor",
+					"background-color-draw-style": "filled and stroked",
+					"class": "CViewContainer",
+					"mouse-enabled": "true",
+					"opacity": "1",
+					"origin": "0, 0",
+					"size": "572, 80",
+					"transparent": "true",
+					"uidesc-label": "WaveFormTemplate",
+					"wants-focus": "false"
+				},
+				"children": {
+					"CViewContainer": {
+						"attributes": {
+							"background-color": "~ BlackCColor",
+							"background-color-draw-style": "filled and stroked",
+							"class": "CViewContainer",
+							"mouse-enabled": "true",
+							"opacity": "1",
+							"origin": "0, 0",
+							"size": "572, 80",
+							"sub-controller": "WaveFormController",
+							"transparent": "true",
+							"uidesc-label": "MLayout",
+							"wants-focus": "false"
+						},
+						"children": {
+							"CGradientView": {
+								"attributes": {
+									"autosize": "left right top bottom ",
+									"class": "CGradientView",
+									"custom-view-name": "Background",
+									"draw-antialiased": "true",
+									"frame-color": "~ BlackCColor",
+									"frame-width": "0",
+									"gradient": "waveform_background",
+									"gradient-angle": "0",
+									"gradient-style": "linear",
+									"mouse-enabled": "true",
+									"opacity": "0.25",
+									"origin": "0, 0",
+									"radial-center": "0.5, 0.5",
+									"radial-radius": "8",
+									"round-rect-radius": "8",
+									"size": "572, 80",
+									"transparent": "true",
+									"uidesc-label": "Background",
+									"wants-focus": "false"
+								}
+							},
+							"CView": {
+								"attributes": {
+									"autosize": "left right top bottom ",
+									"class": "CView",
+									"custom-view-name": "WaveForm",
+									"mouse-enabled": "true",
+									"opacity": "1",
+									"origin": "0, 0",
+									"size": "572, 80",
+									"transparent": "true",
+									"uidesc-label": "WaveForm",
+									"wants-focus": "true"
+								}
+							}
 						}
 					}
 				}

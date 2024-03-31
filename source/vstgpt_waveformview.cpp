@@ -47,6 +47,7 @@ void WaveformView::draw_like_spotify(CDrawContext& pContext,
             auto graphics_path = owned(pContext.createRoundRectGraphicsPath(
                 rect, ROUND_CORNER_RADIUS));
 
+            pContext.setFillColor(waveformColor);
             pContext.drawGraphicsPath(graphics_path);
         });
 }

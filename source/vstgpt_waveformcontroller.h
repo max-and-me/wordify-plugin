@@ -6,16 +6,15 @@
 
 #include "ara_document_controller.h"
 #include "base/source/fobject.h"
-#include "vstgpt_waveformview.h"
 #include "vstgui/lib/iviewlistener.h"
 #include "vstgui/uidescription/icontroller.h"
-#include <functional>
 
 namespace VSTGUI {
 class CListControl;
+class CGradientView;
 }
 namespace mam {
-
+class WaveformView;
 //------------------------------------------------------------------------
 // VstGPTWaveFormController
 //------------------------------------------------------------------------
@@ -36,6 +35,11 @@ public:
     createView(const VSTGUI::UIAttributes& attributes,
                const VSTGUI::IUIDescription* description) override;
 
+    VSTGUI::CView*
+    verifyView(VSTGUI::CView* view,
+               const VSTGUI::UIAttributes& attributes,
+               const VSTGUI::IUIDescription* description) override;
+
     // IControlListener
     void valueChanged(VSTGUI::CControl* pControl) override{};
 
@@ -49,7 +53,8 @@ private:
     ARADocumentController::MetaWordsDataList cached_meta_words_data_list;
     tiny_observer_pattern::ObserverID observer_id = 0;
     ARADocumentController::FnGetSampleRate func_playback_sample_rate;
-    WaveformView* view = nullptr;
+    WaveformView* waveform_view = nullptr;
+    VSTGUI::CGradientView* background_view = nullptr;
 };
 
 //------------------------------------------------------------------------

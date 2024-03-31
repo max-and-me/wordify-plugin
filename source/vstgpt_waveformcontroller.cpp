@@ -4,11 +4,14 @@
 
 #include "vstgpt_waveformcontroller.h"
 #include "mam/meta_words/meta_word.h"
+#include "vstgpt_waveformview.h"
 #include "vstgui/lib/ccolor.h"
+#include "vstgui/lib/cgradientview.h"
 #include "vstgui/lib/controls/icontrollistener.h"
 #include "vstgui/lib/cstring.h"
 #include "vstgui/lib/events.h"
 #include "vstgui/lib/platform/platformfactory.h"
+#include "vstgui/uidescription/iuidescription.h"
 #include "vstgui/uidescription/uiattributes.h"
 #include <optional>
 
@@ -36,10 +39,29 @@ static auto read_view_size(const VSTGUI::UIAttributes& attributes)
 }
 
 //------------------------------------------------------------------------
-static auto update_view(WaveformView& view, const MetaWordsData& data) -> void
+static auto update_waveform_view(WaveformView* view, const MetaWordsData& data)
+    -> void
 {
+    if (!view)
+        return;
+
     const VSTGUI::CColor color(data.color.r, data.color.g, data.color.b);
-    view.setColor(color);
+    view->setColor(color);
+    view->setDirty();
+}
+
+//------------------------------------------------------------------------
+static auto update_background_view(CGradientView* background_view,
+                                   const MetaWordsData& data)
+{
+    if (!background_view)
+        return;
+
+    if (auto gradient_view = dynamic_cast<CGradientView*>(background_view))
+    {
+        // TODO: Create a new gradient and set it to the view!
+        // view.setDirty();
+    }
 }
 
 //------------------------------------------------------------------------
@@ -76,11 +98,8 @@ void VstGPTWaveFormController::onDataChanged()
 
     const auto& data = cached_meta_words_data_list.at(0);
 
-    if (view)
-    {
-        update_view(*view, data);
-        view->setDirty();
-    }
+    update_waveform_view(waveform_view, data);
+    update_background_view(background_view, data);
 }
 
 //------------------------------------------------------------------------
@@ -91,19 +110,49 @@ VstGPTWaveFormController::createView(const VSTGUI::UIAttributes& attributes,
     if (!controller)
         return nullptr;
 
-    const auto view_size_optional = read_view_size(attributes);
-    const auto view_size = view_size_optional.value_or<CPoint>({320., 240.});
+    CView* new_view = nullptr;
+    if (const auto* view_name =
+            attributes.getAttributeValue("custom-view-name"))
+    {
+        if (*view_name == "WaveForm")
+        {
+            const auto view_size_optional = read_view_size(attributes);
+            const auto view_size =
+                view_size_optional.value_or<CPoint>({320., 240.});
 
-    const auto c    = this->controller;
-    const auto func = this->func_playback_sample_rate;
-    view = new WaveformView(CRect{0, 0, view_size.x, view_size.y}, [c, func]() {
-        const auto sr = func();
-        return c->collect_region_channel_buffer(sr);
-    });
+            const auto c    = this->controller;
+            const auto func = this->func_playback_sample_rate;
+            new_view        = new WaveformView(
+                CRect{0, 0, view_size.x, view_size.y}, [c, func]() {
+                    const auto sr = func();
+                    return c->collect_region_channel_buffer(sr);
+                });
+        }
+    }
 
-    onDataChanged();
-    return view;
+    return new_view;
 }
 
+//------------------------------------------------------------------------
+VSTGUI::CView*
+VstGPTWaveFormController::verifyView(VSTGUI::CView* view,
+                                     const VSTGUI::UIAttributes& attributes,
+                                     const VSTGUI::IUIDescription* description)
+{
+    if (const auto* view_name =
+            attributes.getAttributeValue("custom-view-name"))
+    {
+        if (*view_name == "WaveForm")
+        {
+            waveform_view = dynamic_cast<WaveformView*>(view);
+            onDataChanged();
+        }
+        else if (*view_name == "Background")
+        {
+            background_view = dynamic_cast<CGradientView*>(view);
+        }
+    }
+    return view;
+}
 //------------------------------------------------------------------------
 } // namespace mam
