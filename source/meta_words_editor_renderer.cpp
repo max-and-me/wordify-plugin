@@ -14,4 +14,10 @@ EditorRenderer::EditorRenderer(
 }
 
 //------------------------------------------------------------------------
+auto EditorRenderer::update_project_time(Seconds time) -> void
+{
+    this->time = time;
+}
+
+//------------------------------------------------------------------------
 } // namespace mam::meta_words

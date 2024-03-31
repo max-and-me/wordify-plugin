@@ -39,6 +39,13 @@ static auto on_playback_renderer(meta_words::PlaybackRenderer& playbackRenderer,
 static auto on_editor_renderer(meta_words::EditorRenderer& editorRenderer,
                                Vst::ProcessData& data) -> void
 {
+    if (data.processContext)
+    {
+        const auto time = data.processContext->projectTimeSamples /
+                          data.processContext->sampleRate;
+        editorRenderer.update_project_time(time);
+    }
+
     editorRenderer;
     data;
 }
@@ -205,6 +212,7 @@ VSTGUI::IController* VstGPTSingleComponent::createSubController(
 {
     auto* document_controller =
         _araPlugInExtension.getDocumentController<ARADocumentController>();
+    auto* editorView = _araPlugInExtension.getEditorView();
 
     if (!document_controller)
         return nullptr;
