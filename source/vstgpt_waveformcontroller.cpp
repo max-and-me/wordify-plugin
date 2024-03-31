@@ -51,17 +51,15 @@ static auto update_waveform_view(WaveformView* view, const MetaWordsData& data)
 }
 
 //------------------------------------------------------------------------
-static auto update_background_view(CGradientView* background_view,
-                                   const MetaWordsData& data)
+static auto update_background_view(CGradientView* view,
+                                   const MetaWordsData& data) -> void
 {
-    if (!background_view)
+    if (!view)
         return;
 
-    if (auto gradient_view = dynamic_cast<CGradientView*>(background_view))
-    {
-        // TODO: Create a new gradient and set it to the view!
-        // view.setDirty();
-    }
+    // TODO: Create a new gradient and set it to the view!
+    // view->setGradient(new VSTGUI::CGradient(...));
+    // view->setDirty();
 }
 
 //------------------------------------------------------------------------
