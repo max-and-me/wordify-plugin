@@ -12,7 +12,7 @@
 namespace VSTGUI {
 class CListControl;
 class CGradientView;
-}
+} // namespace VSTGUI
 namespace mam {
 class WaveformView;
 //------------------------------------------------------------------------
@@ -25,7 +25,7 @@ public:
     //--------------------------------------------------------------------
     VstGPTWaveFormController(
         ARADocumentController* controller,
-        ARADocumentController::FnGetSampleRate&& fn_get_playback_sample_rate);
+        ARADocumentController::FnGetSampleRate&& func_playback_sample_rate);
     virtual ~VstGPTWaveFormController();
 
     void PLUGIN_API update(FUnknown* changedUnknown,
@@ -53,7 +53,7 @@ private:
     ARADocumentController::MetaWordsDataList cached_meta_words_data_list;
     tiny_observer_pattern::ObserverID observer_id = 0;
     ARADocumentController::FnGetSampleRate func_playback_sample_rate;
-    WaveformView* waveform_view = nullptr;
+    WaveformView* waveform_view            = nullptr;
     VSTGUI::CGradientView* background_view = nullptr;
 };
 
