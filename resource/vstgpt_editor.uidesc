@@ -22,23 +22,23 @@
 		"custom": {
 			"FocusDrawing": {},
 			"VST3Editor": {
-				"Path": "Z:\\Private\\mam\\vst-gpt\\resource\\vstgpt_editor.uidesc"
+				"Path": "/Users/max/Documents/Code/vst-gpt/vst-gpt/resource/vstgpt_editor.uidesc"
 			},
 			"UIGridController": {
 				"Grids": "1x 1,5x 5,8x 8,10x 10,12x 12,15x 15"
 			},
 			"UITemplateController": {
-				"SelectedTemplate": "WaveFormTemplate"
+				"SelectedTemplate": "view"
 			},
 			"UIEditController": {
 				"EditViewScale": "1",
-				"EditorSize": "0, 0, 1187, 566",
-				"SplitViewSize_0_0": "0.7592592592592593003786305416724644601345",
-				"SplitViewSize_0_1": "0.203703703703703692395876601040072273463",
-				"SplitViewSize_1_0": "0.6148148148148148139924273891665507107973",
-				"SplitViewSize_1_1": "0.414814814814814802890197142914985306561",
-				"SplitViewSize_2_0": "0.7493681550126368717812397335364948958158",
-				"SplitViewSize_2_1": "0.2489469250210614992280255819423473440111",
+				"EditorSize": "0, 0, 1424, 613",
+				"SplitViewSize_0_0": "0.7785349233390119749742552812676876783371",
+				"SplitViewSize_0_1": "0.1873935264054514548970331588861881755292",
+				"SplitViewSize_1_0": "0.6056218057921635145035565983562264591455",
+				"SplitViewSize_1_1": "0.4216354344122657527016428957722382619977",
+				"SplitViewSize_2_0": "0.791432584269662897646924193395534530282",
+				"SplitViewSize_2_1": "0.2078651685393258508049996180488960817456",
 				"TabSwitchValue": "0",
 				"Version": "1",
 				"ViewBackground": "1"
@@ -112,54 +112,6 @@
 									"transparent": "true",
 									"view-resize-animation-time": "200",
 									"wants-focus": "false"
-								},
-								"children": {
-									"CRowColumnView": {
-										"attributes": {
-											"animate-view-resizing": "false",
-											"background-color": "~ BlackCColor",
-											"background-color-draw-style": "filled and stroked",
-											"class": "CRowColumnView",
-											"equal-size-layout": "left-top",
-											"hide-clipped-subviews": "false",
-											"margin": "0, 0, 0, 0",
-											"mouse-enabled": "true",
-											"opacity": "1",
-											"origin": "0, 0",
-											"row-style": "true",
-											"size": "240, 100",
-											"spacing": "0",
-											"sub-controller": "MetaWordsClipController",
-											"template": "ClipMetaWords",
-											"transparent": "true",
-											"uidesc-label": "MetaWordsClip",
-											"view-resize-animation-time": "200",
-											"wants-focus": "false"
-										}
-									},
-									"CRowColumnView": {
-										"attributes": {
-											"animate-view-resizing": "false",
-											"background-color": "~ BlackCColor",
-											"background-color-draw-style": "filled and stroked",
-											"class": "CRowColumnView",
-											"equal-size-layout": "left-top",
-											"hide-clipped-subviews": "false",
-											"margin": "0, 0, 0, 0",
-											"mouse-enabled": "true",
-											"opacity": "1",
-											"origin": "0, 100",
-											"row-style": "true",
-											"size": "240, 60",
-											"spacing": "0",
-											"sub-controller": "MetaWordsClipController",
-											"template": "ClipMetaWords",
-											"transparent": "true",
-											"uidesc-label": "MetaWordsClip",
-											"view-resize-animation-time": "200",
-											"wants-focus": "false"
-										}
-									}
 								}
 							}
 						}

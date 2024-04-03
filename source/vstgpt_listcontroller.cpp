@@ -5,12 +5,15 @@
 #include "vstgpt_listcontroller.h"
 #include "mam/meta_words/meta_word.h"
 #include "vstgui/lib/controls/clistcontrol.h"
+#include "vstgui/lib/crowcolumnview.h"
 #include "vstgui/lib/controls/cstringlist.h"
 #include "vstgui/lib/controls/ctextlabel.h"
+#include "vstgui/uidescription/iuidescription.h"
 #include "vstgui/lib/controls/icontrollistener.h"
 #include "vstgui/lib/cstring.h"
 #include "vstgui/lib/events.h"
 #include "vstgui/lib/platform/platformfactory.h"
+#include <iterator>
 
 //------------------------------------------------------------------------
 namespace mam {
@@ -62,6 +65,87 @@ static auto onRequestSelectWord(int index,
 }
 
 //------------------------------------------------------------------------
+// VstGPTWaveClipListController
+//------------------------------------------------------------------------
+class VstGPTListEntryController :   public Steinberg::FObject,
+                                    public VSTGUI::IController
+{
+public:
+    //--------------------------------------------------------------------
+    VstGPTListEntryController (MetaWordsData& data, ARADocumentController& controller)
+    : data (data)
+    , controller(controller)
+    {}
+    virtual ~VstGPTListEntryController(){};
+    
+    void updateData (MetaWordsData& _data)
+    {
+        data = _data;
+        if (listControl)
+        {
+            update_list_control_content(*listControl, data.words);
+            listControl->setDirty();
+        }
+
+        if (label)
+        {
+            update_label_control(*label, data);
+            label->setDirty();
+        }
+    }
+
+    void PLUGIN_API update(FUnknown* changedUnknown,
+                           Steinberg::int32 message) override {};
+    VSTGUI::CView*
+    verifyView(VSTGUI::CView* view,
+               const VSTGUI::UIAttributes& attributes,
+               const VSTGUI::IUIDescription* description) override
+    {
+        
+        if (!listControl)
+        {
+            if (listControl = dynamic_cast<CListControl*>(view))
+            {
+                listControl->registerControlListener(this);
+                update_list_control_content(*listControl,data.words);
+            }
+        }
+        if (!label)
+        {
+            if (label = dynamic_cast<CTextLabel*>(view))
+                update_label_control(*label, data);
+        }
+    
+        return view;
+    };
+    // IControlListener
+    void valueChanged(VSTGUI::CControl* pControl) override
+    {
+        if (pControl && pControl == listControl)
+        {
+            onRequestSelectWord(listControl->getValue(),
+                                data, controller);
+        }
+    }
+    void controlBeginEdit(VSTGUI::CControl* pControl) override {};
+    void controlEndEdit(VSTGUI::CControl* pControl) override {};
+   
+    VSTGUI::IController* createSubController(VSTGUI::UTF8StringPtr name, const VSTGUI::IUIDescription* description) override {return nullptr;}
+
+    OBJ_METHODS(VstGPTListEntryController, FObject)
+    //--------------------------------------------------------------------
+private:
+
+    VSTGUI::CListControl* listControl = nullptr;
+    VSTGUI::CTextLabel* label         = nullptr;
+    
+    MetaWordsData& data;
+    ARADocumentController& controller;
+    
+};
+
+
+//------------------------------------------------------------------------
 // VstGPTListController
 //------------------------------------------------------------------------
 VstGPTListController::VstGPTListController(
@@ -80,47 +164,28 @@ VstGPTListController::~VstGPTListController()
 }
 
 //------------------------------------------------------------------------
-void VstGPTListController::valueChanged(CControl* pControl)
-{
-    if (pControl && pControl == listControl)
-    {
-        if (cached_meta_words_data_list.empty())
-            return;
-
-        onRequestSelectWord(listControl->getValue(),
-                            cached_meta_words_data_list.at(0), controller);
-    }
-}
-
-//------------------------------------------------------------------------
 CView* VstGPTListController::verifyView(CView* view,
                                         const UIAttributes& /*attributes*/,
                                         const IUIDescription* description)
 {
-    if (!listControl)
+    if (!rowColView)
     {
-        if (listControl = dynamic_cast<CListControl*>(view))
-        {
-            listControl->registerControlListener(this);
-            cached_meta_words_data_list = controller.collect_meta_data_words(
-                fn_get_playback_sample_rate());
-            if (!cached_meta_words_data_list.empty())
-            {
-                update_list_control_content(
-                    *listControl, cached_meta_words_data_list.at(0).words);
-            }
-        }
-    }
-
-    if (!label)
-    {
-        if (label = dynamic_cast<CTextLabel*>(view))
+        if (rowColView = dynamic_cast<CRowColumnView*>(view))
         {
             cached_meta_words_data_list = controller.collect_meta_data_words(
                 fn_get_playback_sample_rate());
-            if (!cached_meta_words_data_list.empty())
+            if (cached_meta_words_data_list.empty())
+                return view;
+            
+            for (int i = 0; i < cached_meta_words_data_list.size(); i++)
             {
-                update_label_control(*label, cached_meta_words_data_list.at(0));
+                const IUIDescription* uidescription = description;
+                if (!uidescription)
+                    return view;
+                
+                auto* newView = uidescription->createView("ClipMetaWords", this);
+                if (newView)
+                    rowColView->addView(newView);
             }
         }
     }
@@ -139,17 +204,10 @@ void VstGPTListController::onDataChanged()
         return;
     }
 
-    const auto& data = cached_meta_words_data_list.at(0);
-    if (listControl)
-    {
-        update_list_control_content(*listControl, data.words);
-        listControl->setDirty();
-    }
-
-    if (label)
-    {
-        update_label_control(*label, data);
-        label->setDirty();
+    for (int i = 0; i < subControllerList.size (); i++) {
+        auto subCtrl = dynamic_cast<VstGPTListEntryController*>(subControllerList.at(i));
+        
+       subCtrl->updateData (cached_meta_words_data_list.at(i));
     }
 }
 
@@ -157,6 +215,17 @@ void VstGPTListController::onDataChanged()
 VSTGUI::IController* VstGPTListController::createSubController(
     VSTGUI::UTF8StringPtr name, const VSTGUI::IUIDescription* description)
 {
+    if (cached_meta_words_data_list.empty())
+        return nullptr;
+    
+    if (VSTGUI::UTF8StringView(name) == "MetaWordsClipController")
+    {
+        auto* subctrl = new VstGPTListEntryController(cached_meta_words_data_list.at(0), controller);
+        subControllerList.push_back(subctrl);
+        return subctrl;
+        
+    }
+    
     return nullptr;
 }
 

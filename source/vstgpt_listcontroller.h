@@ -35,7 +35,7 @@ public:
                const VSTGUI::UIAttributes& attributes,
                const VSTGUI::IUIDescription* description) override;
     // IControlListener
-    void valueChanged(VSTGUI::CControl* pControl) override;
+    void valueChanged(VSTGUI::CControl* pControl) override {};
     void controlBeginEdit(VSTGUI::CControl* pControl) override {};
     void controlEndEdit(VSTGUI::CControl* pControl) override {};
     VSTGUI::IController* createSubController(VSTGUI::UTF8StringPtr name, const VSTGUI::IUIDescription* description) override;
@@ -48,6 +48,11 @@ private:
 
     VSTGUI::CListControl* listControl = nullptr;
     VSTGUI::CTextLabel* label         = nullptr;
+    
+    VSTGUI::CRowColumnView* rowColView = nullptr;
+    
+    using SubControllerList = std::vector<VSTGUI::IController*>;
+    SubControllerList subControllerList;
 
     ARADocumentController& controller;
     ARADocumentController::MetaWordsDataList cached_meta_words_data_list;

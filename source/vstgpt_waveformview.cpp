@@ -134,7 +134,7 @@ void WaveformView::draw(CDrawContext* pContext)
     pContext->setFillColor({75, 75, 75});
 
     // drawSimplified(pContext, viewSize);
-    // drawFull(pContext, viewSize);
+    //drawFull(pContext, viewSize);
     draw_like_spotify(*pContext, viewSize);
 }
 
