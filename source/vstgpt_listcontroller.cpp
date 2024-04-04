@@ -4,6 +4,7 @@
 
 #include "vstgpt_listcontroller.h"
 #include "mam/meta_words/meta_word.h"
+#include "vstgpt_waveformcontroller.h"
 #include "vstgui/lib/controls/clistcontrol.h"
 #include "vstgui/lib/controls/cstringlist.h"
 #include "vstgui/lib/controls/ctextlabel.h"
@@ -187,7 +188,7 @@ CView* VstGPTListController::verifyView(CView* view,
                     return view;
 
                 auto* newView =
-                    uidescription->createView("MetaWordsClipTemplate", this);
+                    uidescription->createView("ListEntryTemplate", this);
                 if (newView)
                     rowColView->addView(newView);
             }
@@ -230,6 +231,11 @@ VSTGUI::IController* VstGPTListController::createSubController(
             cached_meta_words_data_list.at(0), controller);
         subControllerList.push_back(subctrl);
         return subctrl;
+    }
+    else if (VSTGUI::UTF8StringView(name) == "WaveFormController")
+    {
+        return new VstGPTWaveFormController(&controller,
+                                            fn_get_playback_sample_rate);
     }
 
     return nullptr;

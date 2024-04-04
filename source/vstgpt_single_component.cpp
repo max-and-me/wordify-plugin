@@ -222,11 +222,6 @@ VSTGUI::IController* VstGPTSingleComponent::createSubController(
             *document_controller,
             std::move([this]() { return this->processSetup.sampleRate; }));
 
-    if (VSTGUI::UTF8StringView(name) == "WaveFormController")
-        return new VstGPTWaveFormController(
-            document_controller,
-            std::move([this]() { return this->processSetup.sampleRate; }));
-
     return nullptr;
 }
 

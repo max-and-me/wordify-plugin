@@ -67,7 +67,7 @@ static auto update_background_view(CGradientView* view,
 //------------------------------------------------------------------------
 VstGPTWaveFormController::VstGPTWaveFormController(
     ARADocumentController* controller,
-    ARADocumentController::FnGetSampleRate&& func_playback_sample_rate)
+    ARADocumentController::FnGetSampleRate& func_playback_sample_rate)
 : controller(controller)
 , func_playback_sample_rate(func_playback_sample_rate)
 {

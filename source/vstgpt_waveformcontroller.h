@@ -25,7 +25,7 @@ public:
     //--------------------------------------------------------------------
     VstGPTWaveFormController(
         ARADocumentController* controller,
-        ARADocumentController::FnGetSampleRate&& func_playback_sample_rate);
+        ARADocumentController::FnGetSampleRate& func_playback_sample_rate);
     virtual ~VstGPTWaveFormController();
 
     void PLUGIN_API update(FUnknown* changedUnknown,
