@@ -183,7 +183,7 @@ CView* VstGPTListController::verifyView(CView* view,
                 if (!uidescription)
                     return view;
                 
-                auto* newView = uidescription->createView("ClipMetaWords", this);
+                auto* newView = uidescription->createView("MetaWordsClipTemplate", this);
                 if (newView)
                     rowColView->addView(newView);
             }
