@@ -28,17 +28,17 @@
 				"Grids": "1x 1,5x 5,8x 8,10x 10,12x 12,15x 15"
 			},
 			"UITemplateController": {
-				"SelectedTemplate": "MetaWordsClipTemplate"
+				"SelectedTemplate": "view"
 			},
 			"UIEditController": {
 				"EditViewScale": "1",
-				"EditorSize": "0, 0, 1423, 765",
-				"SplitViewSize_0_0": "0.5372124492557510677670506993308663368225",
-				"SplitViewSize_0_1": "0.4357239512855209939701239818532485514879",
-				"SplitViewSize_1_0": "0.5852503382949932886347710336849559098482",
-				"SplitViewSize_1_1": "0.4391069012178620001307649545196909457445",
-				"SplitViewSize_2_0": "0.791286015460295200085738542838953435421",
-				"SplitViewSize_2_1": "0.2080112438510189620810564292696653865278",
+				"EditorSize": "0, 0, 1460, 794",
+				"SplitViewSize_0_0": "0.5638020833333333703407674875052180141211",
+				"SplitViewSize_0_1": "0.41015625",
+				"SplitViewSize_1_0": "0.5826822916666666296592325124947819858789",
+				"SplitViewSize_1_1": "0.4420572916666666851703837437526090070605",
+				"SplitViewSize_2_0": "0.7965753424657534553787741060659755021334",
+				"SplitViewSize_2_1": "0.2027397260273972601218872569006634876132",
 				"TabSwitchValue": "0",
 				"Version": "1",
 				"ViewBackground": "1"
@@ -87,7 +87,7 @@
 							"scrollbar-frame-color": "main_background",
 							"scrollbar-scroller-color": "~ GreyCColor",
 							"scrollbar-width": "16",
-							"size": "240, 240",
+							"size": "840, 320",
 							"sub-controller": "MetaWordsListController",
 							"transparent": "false",
 							"vertical-scrollbar": "true",
@@ -130,52 +130,13 @@
 											"size": "300, 100",
 											"spacing": "0",
 											"sub-controller": "MetaWordsClipController",
-											"template": "MetaWordsTemplate",
+											"template": "MetaWordsClipTemplate",
 											"transparent": "true",
 											"uidesc-label": "MetaWordsClip",
 											"view-resize-animation-time": "200",
 											"wants-focus": "false"
 										}
 									}
-								}
-							}
-						}
-					},
-					"CRowColumnView": {
-						"attributes": {
-							"animate-view-resizing": "false",
-							"autosize": "left right ",
-							"background-color": "~ BlackCColor",
-							"background-color-draw-style": "filled and stroked",
-							"class": "CRowColumnView",
-							"equal-size-layout": "left-top",
-							"hide-clipped-subviews": "false",
-							"margin": "0, 0, 0, 0",
-							"mouse-enabled": "true",
-							"opacity": "1",
-							"origin": "270, 40",
-							"row-style": "true",
-							"size": "572, 80",
-							"spacing": "0",
-							"transparent": "true",
-							"uidesc-label": "HLayout",
-							"view-resize-animation-time": "200",
-							"wants-focus": "false"
-						},
-						"children": {
-							"CViewContainer": {
-								"attributes": {
-									"background-color": "~ BlackCColor",
-									"background-color-draw-style": "filled and stroked",
-									"class": "CViewContainer",
-									"mouse-enabled": "true",
-									"opacity": "1",
-									"origin": "0, 0",
-									"size": "572, 80",
-									"template": "WaveFormTemplate",
-									"transparent": "true",
-									"uidesc-label": "WaveFormTemplate",
-									"wants-focus": "false"
 								}
 							}
 						}
