@@ -23,9 +23,12 @@ class VstGPTWaveFormController : public Steinberg::FObject,
 {
 public:
     //--------------------------------------------------------------------
+    using SampleRate = double;
+    using FuncGetSampleRate = std::function<SampleRate()>;
+
     VstGPTWaveFormController(
         ARADocumentController* controller,
-        ARADocumentController::FnGetSampleRate& func_playback_sample_rate);
+        FuncGetSampleRate func_playback_sample_rate);
     virtual ~VstGPTWaveFormController();
 
     void PLUGIN_API update(FUnknown* changedUnknown,
