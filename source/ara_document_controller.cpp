@@ -14,70 +14,6 @@
 namespace mam {
 
 //------------------------------------------------------------------------
-static ARADocumentController::MetaWordsDataList
-collect_meta_data_words(const mam::ARADocumentController& document_controller,
-                        ARA::ARASampleRate playback_sample_rate)
-{
-    ARADocumentController::MetaWordsDataList meta_words_data_list;
-    if (auto* document = document_controller.getDocument())
-    {
-        const auto& audio_sources =
-            document->getAudioSources<meta_words::AudioSource>();
-        for (const auto& audio_source : audio_sources)
-        {
-            const auto& audio_modifications =
-                audio_source->getAudioModifications();
-            for (const auto audio_modification : audio_modifications)
-            {
-                const auto& playback_regions =
-                    audio_modification
-                        ->getPlaybackRegions<meta_words::PlaybackRegion>();
-                for (const auto& playback_region : playback_regions)
-                {
-                    const auto data = playback_region->get_meta_words_data(
-                        playback_sample_rate);
-                    meta_words_data_list.emplace_back(data);
-                }
-            }
-        }
-    }
-
-    return meta_words_data_list;
-}
-
-//------------------------------------------------------------------------
-static auto
-collect_audio_buffer(const mam::ARADocumentController& document_controller,
-                     ARA::ARASampleRate playback_sample_rate)
-    -> meta_words::PlaybackRegion::AudioBufferSpan
-{
-    ARADocumentController::MetaWordsDataList meta_words_data_list;
-    if (auto* document = document_controller.getDocument())
-    {
-        const auto& audio_sources =
-            document->getAudioSources<meta_words::AudioSource>();
-        for (const auto& audio_source : audio_sources)
-        {
-            const auto& audio_modifications =
-                audio_source->getAudioModifications();
-            for (const auto audio_modification : audio_modifications)
-            {
-                const auto& playback_regions =
-                    audio_modification
-                        ->getPlaybackRegions<meta_words::PlaybackRegion>();
-                for (const auto& playback_region : playback_regions)
-                {
-                    return playback_region->get_audio_buffer(
-                        playback_sample_rate);
-                }
-            }
-        }
-    }
-
-    return {};
-}
-
-//------------------------------------------------------------------------
 const ARA::ARAFactory* ARADocumentController::getARAFactory() noexcept
 {
     return ARA::PlugIn::PlugInEntry::getPlugInEntry<ARAFactoryConfig,
@@ -239,22 +175,6 @@ void ARADocumentController::rendererDidAccessModelGraph(
 {
     ARA_INTERNAL_ASSERT(_countOfRenderersCurrentlyAccessingModelGraph > 0);
     --_countOfRenderersCurrentlyAccessingModelGraph;
-}
-
-//------------------------------------------------------------------------
-const ARADocumentController::MetaWordsDataList
-ARADocumentController::collect_meta_data_words(
-    ARA::ARASampleRate playback_sample_rate) const
-{
-    return mam::collect_meta_data_words(*this, playback_sample_rate);
-}
-
-//------------------------------------------------------------------------
-auto ARADocumentController::collect_region_channel_buffer(
-    ARA::ARASampleRate playback_sample_rate) const
-    -> const meta_words::PlaybackRegion::AudioBufferSpan
-{
-    return mam::collect_audio_buffer(*this, playback_sample_rate);
 }
 
 //------------------------------------------------------------------------

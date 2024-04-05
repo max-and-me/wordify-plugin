@@ -76,13 +76,6 @@ public:
     ARA::PlugIn::EditorView* doCreateEditorView() noexcept override;
     ARA::PlugIn::EditorRenderer* doCreateEditorRenderer() noexcept override;
 
-    const MetaWordsDataList
-    collect_meta_data_words(ARA::ARASampleRate playback_sample_rate) const;
-
-    const meta_words::PlaybackRegion::AudioBufferSpan
-    collect_region_channel_buffer(
-        ARA::ARASampleRate playback_sample_rate) const;
-
     void onRequestLocatorPosChanged(double pos);
 
     ARA::PlugIn::PlaybackRenderer* doCreatePlaybackRenderer() noexcept override;
