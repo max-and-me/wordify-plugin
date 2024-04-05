@@ -22,11 +22,11 @@ public:
     //--------------------------------------------------------------------
     using FuncAudioBuffer = std::function<AudioBufferSpan()>;
 
-    WaveformView(const VSTGUI::CRect& size,
-                 FuncAudioBuffer&& func_audio_buffer);
+    WaveformView(const VSTGUI::CRect& size);
 
     void draw(VSTGUI::CDrawContext* pContext) override;
     void setColor(VSTGUI::CColor);
+    void setAudioBufferFunc(FuncAudioBuffer&& func_audio_buffer);
 
     //--------------------------------------------------------------------
 private:

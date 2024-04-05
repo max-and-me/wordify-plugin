@@ -108,7 +108,6 @@ VstGPTWaveFormController::createView(const VSTGUI::UIAttributes& attributes,
     if (!controller)
         return nullptr;
 
-    CView* new_view = nullptr;
     if (const auto* view_name =
             attributes.getAttributeValue("custom-view-name"))
     {
@@ -120,15 +119,17 @@ VstGPTWaveFormController::createView(const VSTGUI::UIAttributes& attributes,
 
             const auto c    = this->controller;
             const auto func = this->func_playback_sample_rate;
-            new_view        = new WaveformView(
-                CRect{0, 0, view_size.x, view_size.y}, [c, func]() {
-                    const auto sr = func();
-                    return c->collect_region_channel_buffer(sr);
-                });
+            auto* waveform_view =
+                new WaveformView(CRect{0, 0, view_size.x, view_size.y});
+            waveform_view->setAudioBufferFunc([c, func]() {
+                const auto sr = func();
+                return c->collect_region_channel_buffer(sr);
+            });
+            return waveform_view;
         }
     }
 
-    return new_view;
+    return nullptr;
 }
 
 //------------------------------------------------------------------------

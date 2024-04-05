@@ -14,10 +14,8 @@ namespace mam {
 //------------------------------------------------------------------------
 // WaveformView
 //------------------------------------------------------------------------
-WaveformView::WaveformView(const CRect& size,
-                           FuncAudioBuffer&& func_audio_buffer)
+WaveformView::WaveformView(const CRect& size)
 : CView(size)
-, func_audio_buffer(func_audio_buffer)
 {
 }
 
@@ -50,6 +48,13 @@ void WaveformView::draw_like_spotify(CDrawContext& pContext,
             pContext.setFillColor(waveformColor);
             pContext.drawGraphicsPath(graphics_path);
         });
+}
+
+//------------------------------------------------------------------------
+void WaveformView::setAudioBufferFunc(FuncAudioBuffer&& func_audio_buffer)
+{
+    this->func_audio_buffer = func_audio_buffer;
+    this->setDirty();
 }
 
 //------------------------------------------------------------------------
@@ -134,7 +139,7 @@ void WaveformView::draw(CDrawContext* pContext)
     pContext->setFillColor({75, 75, 75});
 
     // drawSimplified(pContext, viewSize);
-    //drawFull(pContext, viewSize);
+    // drawFull(pContext, viewSize);
     draw_like_spotify(*pContext, viewSize);
 }
 
