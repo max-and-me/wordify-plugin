@@ -68,15 +68,15 @@ static auto onRequestSelectWord(int index,
 //------------------------------------------------------------------------
 // VstGPTWaveClipListController
 //------------------------------------------------------------------------
-class VstGPTListEntryController : public Steinberg::FObject,
-                                  public VSTGUI::IController
+class MetaWordsClipController : public Steinberg::FObject,
+                                public VSTGUI::IController
 {
 public:
     //--------------------------------------------------------------------
     using FuncMetaWordsData    = std::function<const MetaWordsData()>;
     using FuncListValueChanged = std::function<void(int)>;
 
-    VstGPTListEntryController(tiny_observer_pattern::SimpleSubject* subject)
+    MetaWordsClipController(tiny_observer_pattern::SimpleSubject* subject)
     : subject(subject)
     {
         if (subject)
@@ -84,7 +84,7 @@ public:
                 [this](const auto&) { this->onDataChanged(); });
     }
 
-    ~VstGPTListEntryController() override
+    ~MetaWordsClipController() override
     {
         if (subject)
             subject->remove_listener(observer_id);
@@ -153,7 +153,7 @@ public:
         this->list_value_changed_func = list_value_changed_func;
     }
 
-    OBJ_METHODS(VstGPTListEntryController, FObject)
+    OBJ_METHODS(MetaWordsClipController, FObject)
     //--------------------------------------------------------------------
 private:
     VSTGUI::CListControl* listControl = nullptr;
@@ -234,7 +234,7 @@ VSTGUI::IController* VstGPTListController::createSubController(
 
     if (VSTGUI::UTF8StringView(name) == "MetaWordsClipController")
     {
-        auto* subctrl = new VstGPTListEntryController(&controller);
+        auto* subctrl = new MetaWordsClipController(&controller);
         subctrl->set_meta_words_data_func(
             [sample_rate_func, region = this->tmp_playback_region]() {
                 return region->get_meta_words_data(sample_rate_func());
