@@ -113,19 +113,10 @@ VstGPTWaveFormController::createView(const VSTGUI::UIAttributes& attributes,
     {
         if (*view_name == "WaveForm")
         {
-            const auto view_size_optional = read_view_size(attributes);
             const auto view_size =
-                view_size_optional.value_or<CPoint>({320., 240.});
+                read_view_size(attributes).value_or<CPoint>({320., 240.});
 
-            const auto c    = this->controller;
-            const auto func = this->func_playback_sample_rate;
-            auto* waveform_view =
-                new WaveformView(CRect{0, 0, view_size.x, view_size.y});
-            waveform_view->setAudioBufferFunc([c, func]() {
-                const auto sr = func();
-                return c->collect_region_channel_buffer(sr);
-            });
-            return waveform_view;
+            return new WaveformView(CRect{0, 0, view_size.x, view_size.y});
         }
     }
 
@@ -143,7 +134,13 @@ VstGPTWaveFormController::verifyView(VSTGUI::CView* view,
     {
         if (*view_name == "WaveForm")
         {
+            const auto c  = this->controller;
+            const auto f  = this->func_playback_sample_rate;
             waveform_view = dynamic_cast<WaveformView*>(view);
+            waveform_view->setAudioBufferFunc([c, f]() {
+                const auto sample_rate = f();
+                return c->collect_region_channel_buffer(sample_rate);
+            });
             onDataChanged();
         }
         else if (*view_name == "Background")
@@ -153,5 +150,6 @@ VstGPTWaveFormController::verifyView(VSTGUI::CView* view,
     }
     return view;
 }
+
 //------------------------------------------------------------------------
 } // namespace mam
