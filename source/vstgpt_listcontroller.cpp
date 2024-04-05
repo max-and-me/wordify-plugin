@@ -4,18 +4,8 @@
 
 #include "vstgpt_listcontroller.h"
 #include "list_entry_controller.h"
-#include "mam/meta_words/meta_word.h"
-#include "meta_words_clip_controller.h"
-#include "vstgui/lib/controls/clistcontrol.h"
-#include "vstgui/lib/controls/cstringlist.h"
-#include "vstgui/lib/controls/ctextlabel.h"
-#include "vstgui/lib/controls/icontrollistener.h"
 #include "vstgui/lib/crowcolumnview.h"
-#include "vstgui/lib/cstring.h"
-#include "vstgui/lib/events.h"
-#include "vstgui/lib/platform/platformfactory.h"
 #include "vstgui/uidescription/iuidescription.h"
-#include "waveform_controller.h"
 #include <string>
 
 using namespace VSTGUI;
