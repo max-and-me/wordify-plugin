@@ -4,6 +4,7 @@
 
 #include "vstgpt_waveformcontroller.h"
 #include "mam/meta_words/meta_word.h"
+#include "meta_words_playback_region.h"
 #include "vstgpt_waveformview.h"
 #include "vstgui/lib/ccolor.h"
 #include "vstgui/lib/cgradientview.h"
@@ -86,15 +87,8 @@ VstGPTWaveFormController::~VstGPTWaveFormController()
 //------------------------------------------------------------------------
 void VstGPTWaveFormController::onDataChanged()
 {
-    if (!controller)
-        return;
-
-    cached_meta_words_data_list =
-        controller->collect_meta_data_words(func_playback_sample_rate());
-    if (cached_meta_words_data_list.empty())
-        return;
-
-    const auto& data = cached_meta_words_data_list.at(0);
+    const auto data =
+        this->playback_region->get_meta_words_data(func_playback_sample_rate());
 
     update_waveform_view(waveform_view, data);
     update_background_view(background_view, data);
@@ -134,12 +128,13 @@ VstGPTWaveFormController::verifyView(VSTGUI::CView* view,
     {
         if (*view_name == "WaveForm")
         {
-            const auto c  = this->controller;
+            const auto pbr  = this->playback_region;
             const auto f  = this->func_playback_sample_rate;
             waveform_view = dynamic_cast<WaveformView*>(view);
-            waveform_view->setAudioBufferFunc([c, f]() {
+            waveform_view->setAudioBufferFunc([pbr, f]() {
                 const auto sample_rate = f();
-                return c->collect_region_channel_buffer(sample_rate);
+                return pbr->get_audio_buffer(sample_rate);
+                ;
             });
             onDataChanged();
         }
@@ -149,6 +144,14 @@ VstGPTWaveFormController::verifyView(VSTGUI::CView* view,
         }
     }
     return view;
+}
+
+//------------------------------------------------------------------------
+void VstGPTWaveFormController::set_playback_region(
+    const meta_words::PlaybackRegion* playback_region)
+{
+    this->playback_region = playback_region;
+    onDataChanged();
 }
 
 //------------------------------------------------------------------------

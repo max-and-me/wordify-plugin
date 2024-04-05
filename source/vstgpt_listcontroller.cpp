@@ -188,6 +188,7 @@ CView* VstGPTListController::verifyView(CView* view,
                     if (!uidescription)
                         return;
 
+                    this->tmp_playback_region = playbackRegion;
                     auto* newView =
                         uidescription->createView("ListEntryTemplate", this);
 
@@ -236,8 +237,10 @@ VSTGUI::IController* VstGPTListController::createSubController(
     }
     else if (VSTGUI::UTF8StringView(name) == "WaveFormController")
     {
-        return new VstGPTWaveFormController(&controller,
-                                            fn_get_playback_sample_rate);
+        auto* tmp_controller = new VstGPTWaveFormController(
+            &controller, fn_get_playback_sample_rate);
+        tmp_controller->set_playback_region(this->tmp_playback_region);
+        return tmp_controller;
     }
 
     return nullptr;

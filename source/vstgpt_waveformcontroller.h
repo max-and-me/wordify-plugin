@@ -15,6 +15,10 @@ class CGradientView;
 } // namespace VSTGUI
 namespace mam {
 class WaveformView;
+namespace meta_words {
+class PlaybackRegion;
+}
+
 //------------------------------------------------------------------------
 // VstGPTWaveFormController
 //------------------------------------------------------------------------
@@ -23,12 +27,11 @@ class VstGPTWaveFormController : public Steinberg::FObject,
 {
 public:
     //--------------------------------------------------------------------
-    using SampleRate = double;
+    using SampleRate        = double;
     using FuncGetSampleRate = std::function<SampleRate()>;
 
-    VstGPTWaveFormController(
-        ARADocumentController* controller,
-        FuncGetSampleRate func_playback_sample_rate);
+    VstGPTWaveFormController(ARADocumentController* controller,
+                             FuncGetSampleRate func_playback_sample_rate);
     virtual ~VstGPTWaveFormController();
 
     void PLUGIN_API update(FUnknown* changedUnknown,
@@ -46,6 +49,8 @@ public:
     // IControlListener
     void valueChanged(VSTGUI::CControl* pControl) override{};
 
+    void set_playback_region(const meta_words::PlaybackRegion* playback_region);
+
     OBJ_METHODS(VstGPTWaveFormController, FObject)
 
     //--------------------------------------------------------------------
@@ -53,10 +58,10 @@ private:
     void onDataChanged();
 
     ARADocumentController* controller = nullptr;
-    ARADocumentController::MetaWordsDataList cached_meta_words_data_list;
     tiny_observer_pattern::ObserverID observer_id = 0;
     ARADocumentController::FnGetSampleRate func_playback_sample_rate;
     WaveformView* waveform_view            = nullptr;
+    const meta_words::PlaybackRegion* playback_region  = nullptr;
     VSTGUI::CGradientView* background_view = nullptr;
 };
 
