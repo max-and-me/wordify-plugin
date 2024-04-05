@@ -99,6 +99,32 @@ public:
     void rendererDidAccessModelGraph(
         meta_words::PlaybackRenderer* playbackRenderer) noexcept;
 
+    template <typename Func>
+    void for_each_playback_region(Func& func)
+    {
+        ARADocumentController::MetaWordsDataList meta_words_data_list;
+        if (auto* document = getDocument())
+        {
+            const auto& audio_sources =
+                document->getAudioSources<meta_words::AudioSource>();
+            for (const auto& audio_source : audio_sources)
+            {
+                const auto& audio_modifications =
+                    audio_source->getAudioModifications();
+                for (const auto audio_modification : audio_modifications)
+                {
+                    const auto& playback_regions =
+                        audio_modification
+                            ->getPlaybackRegions<meta_words::PlaybackRegion>();
+                    for (const auto* playback_region : playback_regions)
+                    {
+                        func(playback_region);
+                    }
+                }
+            }
+        }
+    }
+
     //--------------------------------------------------------------------
 protected:
     auto notify_all_observers() const -> void;

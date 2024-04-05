@@ -178,20 +178,22 @@ CView* VstGPTListController::verifyView(CView* view,
         {
             cached_meta_words_data_list = controller.collect_meta_data_words(
                 fn_get_playback_sample_rate());
-            if (cached_meta_words_data_list.empty())
-                return view;
 
-            for (int i = 0; i < cached_meta_words_data_list.size(); i++)
-            {
-                const IUIDescription* uidescription = description;
-                if (!uidescription)
-                    return view;
+            controller.for_each_playback_region(
+                [&](const meta_words::PlaybackRegion* playbackRegion) {
+                    if (!playbackRegion)
+                        return;
 
-                auto* newView =
-                    uidescription->createView("ListEntryTemplate", this);
-                if (newView)
-                    rowColView->addView(newView);
-            }
+                    const IUIDescription* uidescription = description;
+                    if (!uidescription)
+                        return;
+
+                    auto* newView =
+                        uidescription->createView("ListEntryTemplate", this);
+
+                    if (newView)
+                        rowColView->addView(newView);
+                });
         }
     }
 
