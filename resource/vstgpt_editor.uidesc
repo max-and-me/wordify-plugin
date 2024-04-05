@@ -32,13 +32,13 @@
 			},
 			"UIEditController": {
 				"EditViewScale": "1",
-				"EditorSize": "0, 0, 1187, 549",
-				"SplitViewSize_0_0": "0.359464627151051652198532337934011593461",
-				"SplitViewSize_0_1": "0.6022944550669215857396920910105109214783",
-				"SplitViewSize_1_0": "0.624282982791587004456346221559215337038",
-				"SplitViewSize_1_1": "0.4196940726577437774658108082803664728999",
-				"SplitViewSize_2_0": "0.749789385004212327601180732017382979393",
-				"SplitViewSize_2_1": "0.2493681550126368995368153491654084064066",
+				"EditorSize": "0, 0, 1276, 682",
+				"SplitViewSize_0_0": "0.489329268292682917351754667834029532969",
+				"SplitViewSize_0_1": "0.4801829268292682750818300974060548469424",
+				"SplitViewSize_1_0": "0.6006097560975609539468678121920675039291",
+				"SplitViewSize_1_1": "0.4375",
+				"SplitViewSize_2_0": "0.7672413793103448620414042125048581510782",
+				"SplitViewSize_2_1": "0.2319749216300940330981461556802969425917",
 				"TabSwitchValue": "0",
 				"Version": "1",
 				"ViewBackground": "1"
@@ -135,7 +135,7 @@
 					"spacing": "0",
 					"sub-controller": "MetaWordsClipController",
 					"transparent": "true",
-					"uidesc-label": "MetaWordsClip",
+					"uidesc-label": "MetaWordsClipTemplate",
 					"view-resize-animation-time": "200",
 					"wants-focus": "false"
 				},
@@ -155,7 +155,6 @@
 							"row-style": "true",
 							"size": "300, 100",
 							"spacing": "0",
-							"sub-controller": "MetaWordsClipController",
 							"transparent": "true",
 							"uidesc-label": "VLayout",
 							"view-resize-animation-time": "200",
@@ -353,7 +352,7 @@
 									"sub-controller": "MetaWordsClipController",
 									"template": "MetaWordsClipTemplate",
 									"transparent": "true",
-									"uidesc-label": "MetaWordsClip",
+									"uidesc-label": "MetaWordsClipTemplate",
 									"wants-focus": "false"
 								}
 							},
