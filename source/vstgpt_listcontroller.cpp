@@ -211,7 +211,7 @@ void VstGPTListController::onDataChanged()
         return;
     }
 
-    for (int i = 0; i < subControllerList.size(); i++)
+    for (SubControllerList::size_type i = 0; i < subControllerList.size(); i++)
     {
         auto subCtrl =
             dynamic_cast<VstGPTListEntryController*>(subControllerList.at(i));
