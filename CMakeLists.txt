@@ -44,10 +44,10 @@ smtg_add_vst3plugin(VstGPT
     source/vstgpt_entry.cpp
     source/vstgpt_listcontroller.cpp
     source/vstgpt_listcontroller.h
-    source/vstgpt_waveformcontroller.cpp
-    source/vstgpt_waveformcontroller.h
-    source/vstgpt_waveformview.cpp
-    source/vstgpt_waveformview.h
+    source/waveform_controller.cpp
+    source/waveform_controller.h
+    source/waveform_view.cpp
+    source/waveform_view.h
     source/vstgpt_single_component.cpp
     source/vstgpt_single_component.h
     ${public_sdk_SOURCE_DIR}/source/vst/vstsinglecomponenteffect.cpp

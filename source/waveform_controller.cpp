@@ -2,10 +2,9 @@
 // Copyright(c) 2024 Max And Me.
 //------------------------------------------------------------------------
 
-#include "vstgpt_waveformcontroller.h"
+#include "waveform_controller.h"
 #include "mam/meta_words/meta_word.h"
 #include "meta_words_playback_region.h"
-#include "vstgpt_waveformview.h"
 #include "vstgui/lib/ccolor.h"
 #include "vstgui/lib/cgradientview.h"
 #include "vstgui/lib/controls/icontrollistener.h"
@@ -14,6 +13,7 @@
 #include "vstgui/lib/platform/platformfactory.h"
 #include "vstgui/uidescription/iuidescription.h"
 #include "vstgui/uidescription/uiattributes.h"
+#include "waveform_view.h"
 #include <optional>
 
 //------------------------------------------------------------------------
@@ -74,8 +74,8 @@ VstGPTWaveFormController::VstGPTWaveFormController(
 : subject(subject)
 {
     if (subject)
-        observer_id =
-            subject->add_listener([this](const auto&) { this->onDataChanged(); });
+        observer_id = subject->add_listener(
+            [this](const auto&) { this->onDataChanged(); });
 }
 
 //------------------------------------------------------------------------

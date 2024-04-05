@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------
 // Copyright(c) 2023 Max And Me.
 //------------------------------------------------------------------------
-#include "vstgpt_waveformview.h"
+#include "waveform_view.h"
 #include "mam/wave-draw/wave-draw.h"
 #include "vstgui/lib/cdrawcontext.h"
 #include "vstgui/lib/cgraphicspath.h"
