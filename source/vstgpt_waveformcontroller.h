@@ -4,9 +4,9 @@
 
 #pragma once
 
-#include "tiny_observer_pattern.h"
 #include "base/source/fobject.h"
 #include "gsl/span"
+#include "tiny_observer_pattern.h"
 #include "vstgui/lib/iviewlistener.h"
 #include "vstgui/uidescription/icontroller.h"
 
@@ -27,11 +27,11 @@ public:
     //--------------------------------------------------------------------
     struct Data
     {
-        using Color           = std::tuple<double, double, double>;
-        using AudioBufferSpan = gsl::span<const float>;
+        using Color       = std::tuple<double, double, double>;
+        using AudioBuffer = gsl::span<const float>;
 
         Color color;
-        AudioBufferSpan audio_buffer;
+        AudioBuffer audio_buffer;
     };
 
     using FuncWaveFormData = std::function<const Data()>;
