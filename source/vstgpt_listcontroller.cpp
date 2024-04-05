@@ -79,7 +79,7 @@ public:
     , controller(controller)
     {
     }
-    virtual ~VstGPTListEntryController(){};
+    ~VstGPTListEntryController() override{};
 
     void updateData(MetaWordsData& _data)
     {
