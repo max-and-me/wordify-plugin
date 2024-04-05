@@ -60,8 +60,9 @@ static auto collect_meta_words(const PlaybackRegion& region) -> const MetaWords
 }
 
 //------------------------------------------------------------------------
-auto compute_speed_factor(const PlaybackRegion& region,
-                          ARA::ARASampleRate playback_sample_rate) -> double
+static auto compute_speed_factor(const PlaybackRegion& region,
+                                 ARA::ARASampleRate playback_sample_rate)
+    -> double
 {
     double speed_factor = 1.;
     if (const auto* modification = region.getAudioModification())
@@ -76,7 +77,8 @@ auto compute_speed_factor(const PlaybackRegion& region,
 }
 
 //------------------------------------------------------------------------
-auto modify_time_stamps(const MetaWord& word, double speed_factor) -> MetaWord
+static auto modify_time_stamps(const MetaWord& word, double speed_factor)
+    -> MetaWord
 {
     auto modified_word = word;
     modified_word.begin *= speed_factor;
