@@ -54,7 +54,6 @@ void WaveformView::draw_like_spotify(CDrawContext& pContext,
 void WaveformView::setAudioBufferFunc(FuncAudioBuffer&& func_audio_buffer)
 {
     this->func_audio_buffer = func_audio_buffer;
-    this->setDirty();
 }
 
 //------------------------------------------------------------------------
