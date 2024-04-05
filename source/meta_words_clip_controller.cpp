@@ -44,21 +44,6 @@ static auto update_label_control(CTextLabel& label, const MetaWordsData& data)
 }
 
 //------------------------------------------------------------------------
-static auto onRequestSelectWord(int index,
-                                const mam::MetaWordsData& data,
-                                ARADocumentController& document_controller)
-    -> void
-{
-    const auto& meta_words_data = data;
-    const auto& words           = meta_words_data.words;
-    const auto& selected_word   = words.at(index);
-
-    const auto new_position =
-        selected_word.begin + meta_words_data.project_offset;
-    document_controller.onRequestLocatorPosChanged(new_position);
-}
-
-//------------------------------------------------------------------------
 // VstGPTWaveClipListController
 //------------------------------------------------------------------------
 MetaWordsClipController::MetaWordsClipController(

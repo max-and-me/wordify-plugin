@@ -16,26 +16,11 @@
 #include "vstgui/lib/platform/platformfactory.h"
 #include "vstgui/uidescription/iuidescription.h"
 #include "waveform_controller.h"
-#include <iterator>
+#include <string>
 
 using namespace VSTGUI;
 
 namespace mam {
-
-//------------------------------------------------------------------------
-static auto onRequestSelectWord(int index,
-                                const mam::MetaWordsData& data,
-                                ARADocumentController& document_controller)
-    -> void
-{
-    const auto& meta_words_data = data;
-    const auto& words           = meta_words_data.words;
-    const auto& selected_word   = words.at(index);
-
-    const auto new_position =
-        selected_word.begin + meta_words_data.project_offset;
-    document_controller.onRequestLocatorPosChanged(new_position);
-}
 
 //------------------------------------------------------------------------
 // VstGPTListController
@@ -101,9 +86,12 @@ VSTGUI::IController* VstGPTListController::createSubController(
     if (!this->tmp_playback_region)
         return nullptr;
 
-    return new ListEntryController(&controller, controller,
-                                   this->fn_get_playback_sample_rate,
-                                   this->tmp_playback_region);
+    if (name == std::string("ListEntryController"))
+    {
+        return new ListEntryController(&controller, controller,
+                                       this->fn_get_playback_sample_rate,
+                                       this->tmp_playback_region);
+    }
 
     return nullptr;
 }
