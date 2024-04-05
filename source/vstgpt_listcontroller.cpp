@@ -4,6 +4,7 @@
 
 #include "vstgpt_listcontroller.h"
 #include "mam/meta_words/meta_word.h"
+#include "meta_words_clip_controller.h"
 #include "vstgui/lib/controls/clistcontrol.h"
 #include "vstgui/lib/controls/cstringlist.h"
 #include "vstgui/lib/controls/ctextlabel.h"
@@ -16,39 +17,9 @@
 #include "waveform_controller.h"
 #include <iterator>
 
-//------------------------------------------------------------------------
+using namespace VSTGUI;
+
 namespace mam {
-using namespace ::VSTGUI;
-
-//------------------------------------------------------------------------
-static auto update_list_control_content(CListControl& listControl,
-                                        const meta_words::MetaWords& words)
-    -> void
-{
-    listControl.setMax(words.size() - 1);
-    listControl.recalculateLayout();
-
-    if (auto stringListDrawer =
-            dynamic_cast<StringListControlDrawer*>(listControl.getDrawer()))
-    {
-        stringListDrawer->setStringProvider([words](int32_t row) {
-            const meta_words::MetaWord word = words.at(row);
-            const std::string name          = word.word;
-
-            const UTF8String string(name.data());
-            return getPlatformFactory().createString(string);
-        });
-    }
-}
-
-//------------------------------------------------------------------------
-static auto update_label_control(CTextLabel& label, const MetaWordsData& data)
-    -> void
-{
-    const VSTGUI::CColor color(data.color.r, data.color.g, data.color.b);
-    label.setFontColor(color);
-    label.setText(VSTGUI::UTF8String(data.name));
-}
 
 //------------------------------------------------------------------------
 static auto onRequestSelectWord(int index,
@@ -64,106 +35,6 @@ static auto onRequestSelectWord(int index,
         selected_word.begin + meta_words_data.project_offset;
     document_controller.onRequestLocatorPosChanged(new_position);
 }
-
-//------------------------------------------------------------------------
-// VstGPTWaveClipListController
-//------------------------------------------------------------------------
-class MetaWordsClipController : public Steinberg::FObject,
-                                public VSTGUI::IController
-{
-public:
-    //--------------------------------------------------------------------
-    using FuncMetaWordsData    = std::function<const MetaWordsData()>;
-    using FuncListValueChanged = std::function<void(int)>;
-
-    MetaWordsClipController(tiny_observer_pattern::SimpleSubject* subject)
-    : subject(subject)
-    {
-        if (subject)
-            observer_id = subject->add_listener(
-                [this](const auto&) { this->onDataChanged(); });
-    }
-
-    ~MetaWordsClipController() override
-    {
-        if (subject)
-            subject->remove_listener(observer_id);
-    };
-
-    void onDataChanged()
-    {
-        const auto& data = meta_words_data_func();
-        if (listControl)
-        {
-            update_list_control_content(*listControl, data.words);
-            listControl->setDirty();
-        }
-
-        if (label)
-        {
-            update_label_control(*label, data);
-            label->setDirty();
-        }
-    }
-
-    VSTGUI::CView*
-    verifyView(VSTGUI::CView* view,
-               const VSTGUI::UIAttributes& attributes,
-               const VSTGUI::IUIDescription* description) override
-    {
-
-        if (!listControl)
-        {
-            if (listControl = dynamic_cast<CListControl*>(view))
-            {
-                listControl->registerControlListener(this);
-                update_list_control_content(*listControl,
-                                            meta_words_data_func().words);
-            }
-        }
-        if (!label)
-        {
-            if (label = dynamic_cast<CTextLabel*>(view))
-                update_label_control(*label, meta_words_data_func());
-        }
-
-        return view;
-    };
-
-    // IControlListener
-    void valueChanged(VSTGUI::CControl* pControl) override
-    {
-        if (pControl && pControl == listControl)
-        {
-            list_value_changed_func(listControl->getValue());
-        }
-    }
-
-    auto
-    set_meta_words_data_func(const FuncMetaWordsData&& meta_words_data_func)
-        -> void
-    {
-        this->meta_words_data_func = meta_words_data_func;
-    }
-
-    auto
-    set_list_clicked_func(const FuncListValueChanged&& list_value_changed_func)
-        -> void
-    {
-        this->list_value_changed_func = list_value_changed_func;
-    }
-
-    OBJ_METHODS(MetaWordsClipController, FObject)
-    //--------------------------------------------------------------------
-private:
-    VSTGUI::CListControl* listControl = nullptr;
-    VSTGUI::CTextLabel* label         = nullptr;
-
-    FuncMetaWordsData meta_words_data_func;
-    FuncListValueChanged list_value_changed_func;
-    tiny_observer_pattern::SimpleSubject* subject = nullptr;
-    tiny_observer_pattern::ObserverID observer_id = 0;
-};
 
 //------------------------------------------------------------------------
 // VstGPTListController

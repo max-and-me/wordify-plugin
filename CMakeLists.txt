@@ -44,6 +44,8 @@ smtg_add_vst3plugin(VstGPT
     source/vstgpt_entry.cpp
     source/vstgpt_listcontroller.cpp
     source/vstgpt_listcontroller.h
+    source/meta_words_clip_controller.cpp
+    source/meta_words_clip_controller.h
     source/waveform_controller.cpp
     source/waveform_controller.h
     source/waveform_view.cpp
