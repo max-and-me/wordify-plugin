@@ -32,13 +32,13 @@
 			},
 			"UIEditController": {
 				"EditViewScale": "1",
-				"EditorSize": "0, 0, 1359, 751",
-				"SplitViewSize_0_0": "0.5379310344827585854687868049950338900089",
-				"SplitViewSize_0_1": "0.4344827586206896352649664549971930682659",
-				"SplitViewSize_1_0": "0.5896551724137930605706969799939543008804",
-				"SplitViewSize_1_1": "0.440689655172413818906562710253638215363",
-				"SplitViewSize_2_0": "0.7814569536423841000782886112574487924576",
-				"SplitViewSize_2_1": "0.2178072111846946212754261296140612103045",
+				"EditorSize": "0, 0, 1217, 782",
+				"SplitViewSize_0_0": "0.5568783068783068612717102041642647236586",
+				"SplitViewSize_0_1": "0.4166666666666666851703837437526090070605",
+				"SplitViewSize_1_0": "0.5853174603174603474187165375042241066694",
+				"SplitViewSize_1_1": "0.4437830687830687792505557354161283001304",
+				"SplitViewSize_2_0": "0.7559572719802793994148260026122443377972",
+				"SplitViewSize_2_1": "0.2432210353327855512084454403520794585347",
 				"TabSwitchValue": "0",
 				"Version": "1",
 				"ViewBackground": "1"
@@ -242,6 +242,7 @@
 					"opacity": "1",
 					"origin": "0, 0",
 					"size": "572, 80",
+					"sub-controller": "WaveFormController",
 					"transparent": "true",
 					"uidesc-label": "WaveFormTemplate",
 					"wants-focus": "false"
@@ -257,7 +258,6 @@
 							"opacity": "1",
 							"origin": "0, 0",
 							"size": "572, 80",
-							"sub-controller": "WaveFormController",
 							"transparent": "true",
 							"uidesc-label": "MLayout",
 							"wants-focus": "false"
