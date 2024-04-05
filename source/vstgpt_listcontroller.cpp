@@ -3,6 +3,7 @@
 //------------------------------------------------------------------------
 
 #include "vstgpt_listcontroller.h"
+#include "list_entry_controller.h"
 #include "mam/meta_words/meta_word.h"
 #include "meta_words_clip_controller.h"
 #include "vstgui/lib/controls/clistcontrol.h"
@@ -100,41 +101,9 @@ VSTGUI::IController* VstGPTListController::createSubController(
     if (!this->tmp_playback_region)
         return nullptr;
 
-    auto& subject         = controller.get_subject(this->tmp_playback_region);
-    auto sample_rate_func = fn_get_playback_sample_rate;
-
-    if (VSTGUI::UTF8StringView(name) == "MetaWordsClipController")
-    {
-        auto* subctrl = new MetaWordsClipController(&controller);
-        subctrl->set_meta_words_data_func(
-            [sample_rate_func, region = this->tmp_playback_region]() {
-                return region->get_meta_words_data(sample_rate_func());
-            });
-        subctrl->set_list_clicked_func([&, sample_rate_func,
-                                        region = this->tmp_playback_region](
-                                           int index) {
-            onRequestSelectWord(index,
-                                region->get_meta_words_data(sample_rate_func()),
-                                controller);
-        });
-        return subctrl;
-    }
-    else if (VSTGUI::UTF8StringView(name) == "WaveFormController")
-    {
-        auto* tmp_controller = new WaveFormController(&subject);
-        tmp_controller->set_waveform_data_func(
-            [sample_rate_func, region = this->tmp_playback_region]() {
-                WaveFormController::Data data;
-                data.audio_buffer =
-                    region->get_audio_buffer(sample_rate_func());
-
-                const auto color =
-                    region->get_meta_words_data(sample_rate_func()).color;
-                data.color = std::make_tuple(color.r, color.g, color.b);
-                return data;
-            });
-        return tmp_controller;
-    }
+    return new ListEntryController(&controller, controller,
+                                   this->fn_get_playback_sample_rate,
+                                   this->tmp_playback_region);
 
     return nullptr;
 }
