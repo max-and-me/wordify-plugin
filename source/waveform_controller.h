@@ -20,8 +20,7 @@ class WaveFormView;
 //------------------------------------------------------------------------
 // WaveFormController
 //------------------------------------------------------------------------
-class WaveFormController : public Steinberg::FObject,
-                                 public VSTGUI::IController
+class WaveFormController : public Steinberg::FObject, public VSTGUI::IController
 {
 public:
     //--------------------------------------------------------------------

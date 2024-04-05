@@ -41,8 +41,7 @@ static auto read_view_size(const VSTGUI::UIAttributes& attributes)
 
 //------------------------------------------------------------------------
 static auto update_waveform_view(WaveFormView* view,
-                                 const WaveFormController::Data& data)
-    -> void
+                                 const WaveFormController::Data& data) -> void
 {
     if (!view)
         return;
@@ -55,8 +54,7 @@ static auto update_waveform_view(WaveFormView* view,
 
 //------------------------------------------------------------------------
 static auto update_background_view(CGradientView* view,
-                                   const WaveFormController::Data& data)
-    -> void
+                                   const WaveFormController::Data& data) -> void
 {
     if (!view)
         return;
@@ -95,9 +93,8 @@ void WaveFormController::onDataChanged()
 }
 
 //------------------------------------------------------------------------
-CView*
-WaveFormController::createView(const VSTGUI::UIAttributes& attributes,
-                                     const VSTGUI::IUIDescription* description)
+CView* WaveFormController::createView(const VSTGUI::UIAttributes& attributes,
+                                      const VSTGUI::IUIDescription* description)
 {
     if (const auto* view_name =
             attributes.getAttributeValue("custom-view-name"))
@@ -117,8 +114,8 @@ WaveFormController::createView(const VSTGUI::UIAttributes& attributes,
 //------------------------------------------------------------------------
 VSTGUI::CView*
 WaveFormController::verifyView(VSTGUI::CView* view,
-                                     const VSTGUI::UIAttributes& attributes,
-                                     const VSTGUI::IUIDescription* description)
+                               const VSTGUI::UIAttributes& attributes,
+                               const VSTGUI::IUIDescription* description)
 {
     if (const auto* view_name =
             attributes.getAttributeValue("custom-view-name"))
