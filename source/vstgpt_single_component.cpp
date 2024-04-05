@@ -11,7 +11,7 @@
 #include "pluginterfaces/vst/ivstprocesscontext.h"
 #include "vstgpt_cids.h"
 #include "vstgpt_listcontroller.h"
-#include "vstgpt_waveformcontroller.h"
+#include "waveform_controller.h"
 
 using namespace Steinberg;
 
@@ -212,7 +212,7 @@ VSTGUI::IController* VstGPTSingleComponent::createSubController(
 {
     auto* document_controller =
         _araPlugInExtension.getDocumentController<ARADocumentController>();
-    //auto* editorView = _araPlugInExtension.getEditorView();
+    // auto* editorView = _araPlugInExtension.getEditorView();
 
     if (!document_controller)
         return nullptr;

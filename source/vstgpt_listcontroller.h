@@ -55,11 +55,7 @@ private:
 
     VSTGUI::CRowColumnView* rowColView = nullptr;
 
-    using SubControllerList = std::vector<VSTGUI::IController*>;
-    SubControllerList subControllerList;
-
     ARADocumentController& controller;
-    ARADocumentController::MetaWordsDataList cached_meta_words_data_list;
     tiny_observer_pattern::ObserverID observer_id = 0;
     ARADocumentController::FnGetSampleRate fn_get_playback_sample_rate;
     const meta_words::PlaybackRegion* tmp_playback_region = nullptr;
