@@ -76,7 +76,7 @@ VSTGUI::IController* VstGPTListController::createSubController(
     if (!this->tmp_playback_region)
         return nullptr;
 
-    if (name == std::string("ListEntryController"))
+    if (VSTGUI::UTF8StringView(name) == "ListEntryController")
     {
         return new ListEntryController(&controller, controller,
                                        this->fn_get_playback_sample_rate,
