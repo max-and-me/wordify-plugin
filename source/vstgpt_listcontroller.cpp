@@ -97,8 +97,6 @@ public:
         }
     }
 
-    void PLUGIN_API update(FUnknown* changedUnknown,
-                           Steinberg::int32 message) override{};
     VSTGUI::CView*
     verifyView(VSTGUI::CView* view,
                const VSTGUI::UIAttributes& attributes,
@@ -128,15 +126,6 @@ public:
         {
             onRequestSelectWord(listControl->getValue(), data, controller);
         }
-    }
-    void controlBeginEdit(VSTGUI::CControl* pControl) override{};
-    void controlEndEdit(VSTGUI::CControl* pControl) override{};
-
-    VSTGUI::IController*
-    createSubController(VSTGUI::UTF8StringPtr name,
-                        const VSTGUI::IUIDescription* description) override
-    {
-        return nullptr;
     }
 
     OBJ_METHODS(VstGPTListEntryController, FObject)
