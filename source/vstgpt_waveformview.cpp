@@ -33,10 +33,10 @@ void WaveformView::draw_like_spotify(CDrawContext& pContext,
     // Since we have a fixed view_width, we need to compute the zoom_factor
     // beforehand.
     const auto zoom_factor = wave_draw::compute_zoom_factor(
-        func_audio_buffer(), viewSize.getWidth(), LINE_WIDTH, SPACING);
+        audio_buffer_func(), viewSize.getWidth(), LINE_WIDTH, SPACING);
 
     Drawer()
-        .init(func_audio_buffer(), zoom_factor)
+        .init(audio_buffer_func(), zoom_factor)
         .setup_wave(LINE_WIDTH, SPACING)
         .setup_dimensions(viewSize.getWidth(), viewSize.getHeight())
         .draw([&](const DrawData& data) {
@@ -53,7 +53,7 @@ void WaveformView::draw_like_spotify(CDrawContext& pContext,
 //------------------------------------------------------------------------
 void WaveformView::setAudioBufferFunc(FuncAudioBuffer&& func_audio_buffer)
 {
-    this->func_audio_buffer = func_audio_buffer;
+    this->audio_buffer_func = func_audio_buffer;
 }
 
 //------------------------------------------------------------------------
@@ -62,8 +62,8 @@ void WaveformView::drawFull(CDrawContext* pContext, const CRect& viewSize)
     pContext->setLineWidth(1.0);
 
     const auto amplitude    = viewSize.getHeight() * 0.5;
-    const auto waveFormData = func_audio_buffer();
-    const auto numSamples   = func_audio_buffer().size();
+    const auto waveFormData = audio_buffer_func();
+    const auto numSamples   = audio_buffer_func().size();
     if (numSamples > 1)
     {
         // Calculate the horizontal scale factor
@@ -91,8 +91,8 @@ void WaveformView::drawSimplified(CDrawContext* pContext, const CRect& viewSize)
     pContext->setLineWidth(4.0);
 
     const auto amplitude    = viewSize.getHeight() * 0.5;
-    const auto waveFormData = func_audio_buffer();
-    const auto numSamples   = func_audio_buffer().size();
+    const auto waveFormData = audio_buffer_func();
+    const auto numSamples   = audio_buffer_func().size();
     if (numSamples > 1)
     {
         // Calculate the horizontal scale factor
