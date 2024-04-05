@@ -158,7 +158,7 @@ VstGPTListController::VstGPTListController(
 : controller(controller)
 , fn_get_playback_sample_rate(fn_get_playback_sample_rate)
 {
-    observer_id = controller.add_listener([this]() { this->onDataChanged(); });
+    observer_id = controller.add_listener([this](const auto&) { this->onDataChanged(); });
 }
 
 //------------------------------------------------------------------------
@@ -237,9 +237,21 @@ VSTGUI::IController* VstGPTListController::createSubController(
     }
     else if (VSTGUI::UTF8StringView(name) == "WaveFormController")
     {
-        auto* tmp_controller = new VstGPTWaveFormController(
-            &controller, fn_get_playback_sample_rate);
-        tmp_controller->set_playback_region(this->tmp_playback_region);
+        auto& subject = controller.get_subject(this->tmp_playback_region);
+        auto* tmp_controller = new VstGPTWaveFormController(&subject);
+        auto sample_rate_func = fn_get_playback_sample_rate;
+        tmp_controller->set_waveform_data_func(
+            [sample_rate_func, region = this->tmp_playback_region]() {
+                VstGPTWaveFormController::Data data;
+                data.audio_buffer =
+                    region->get_audio_buffer(sample_rate_func());
+
+                const auto color =
+                    region->get_meta_words_data(sample_rate_func())
+                        .color;
+                data.color = std::make_tuple(color.r, color.g, color.b);
+                return data;
+            });
         return tmp_controller;
     }
 

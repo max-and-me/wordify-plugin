@@ -143,7 +143,7 @@ ARA::PlugIn::AudioSource* ARADocumentController::doCreateAudioSource(
     ARA::ARAAudioSourceHostRef hostRef) noexcept
 {
     return new meta_words::AudioSource(
-        document, hostRef, [this]() { this->notify_all_observers(); });
+        document, hostRef, [this]() { this->notify_listeners({}); });
 }
 
 //------------------------------------------------------------------------
@@ -164,7 +164,7 @@ void ARADocumentController::didUpdateAudioModificationProperties(
     ARA::PlugIn::DocumentController::didUpdateAudioModificationProperties(
         audioModification);
 
-    this->notify_all_observers();
+    this->notify_listeners({});
 }
 
 //------------------------------------------------------------------------
@@ -182,7 +182,7 @@ void ARADocumentController::didUpdateAudioSourceProperties(
         (sampleCount), dataPointers.data ());
     */
 
-    this->notify_all_observers();
+    this->notify_listeners({});
 }
 
 //------------------------------------------------------------------------
@@ -200,7 +200,9 @@ void ARADocumentController::didUpdatePlaybackRegionProperties(
     ARA::PlugIn::DocumentController::didUpdatePlaybackRegionProperties(
         playbackRegion);
 
-    this->notify_all_observers();
+    this->notify_listeners({});
+    for (auto& o : playback_region_observers)
+        o.second.notify_listeners({});
 }
 
 //------------------------------------------------------------------------
@@ -264,12 +266,10 @@ void ARADocumentController::onRequestLocatorPosChanged(double pos)
 }
 
 //------------------------------------------------------------------------
-auto ARADocumentController::notify_all_observers() const -> void
+tiny_observer_pattern::SimpleSubject& ARADocumentController::get_subject(
+    const meta_words::PlaybackRegion* playback_region)
 {
-    for (const auto& observer : observers)
-    {
-        observer.second();
-    }
+    return playback_region_observers[playback_region];
 }
 
 //------------------------------------------------------------------------

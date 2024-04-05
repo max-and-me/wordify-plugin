@@ -4,8 +4,9 @@
 
 #pragma once
 
-#include "ara_document_controller.h"
+#include "tiny_observer_pattern.h"
 #include "base/source/fobject.h"
+#include "gsl/span"
 #include "vstgui/lib/iviewlistener.h"
 #include "vstgui/uidescription/icontroller.h"
 
@@ -15,9 +16,6 @@ class CGradientView;
 } // namespace VSTGUI
 namespace mam {
 class WaveformView;
-namespace meta_words {
-class PlaybackRegion;
-}
 
 //------------------------------------------------------------------------
 // VstGPTWaveFormController
@@ -27,11 +25,18 @@ class VstGPTWaveFormController : public Steinberg::FObject,
 {
 public:
     //--------------------------------------------------------------------
-    using SampleRate        = double;
-    using FuncGetSampleRate = std::function<SampleRate()>;
+    struct Data
+    {
+        using Color           = std::tuple<double, double, double>;
+        using AudioBufferSpan = gsl::span<const float>;
 
-    VstGPTWaveFormController(ARADocumentController* controller,
-                             FuncGetSampleRate func_playback_sample_rate);
+        Color color;
+        AudioBufferSpan audio_buffer;
+    };
+
+    using FuncWaveFormData = std::function<const Data()>;
+
+    VstGPTWaveFormController(tiny_observer_pattern::SimpleSubject* subject);
     virtual ~VstGPTWaveFormController();
 
     void PLUGIN_API update(FUnknown* changedUnknown,
@@ -49,7 +54,7 @@ public:
     // IControlListener
     void valueChanged(VSTGUI::CControl* pControl) override{};
 
-    void set_playback_region(const meta_words::PlaybackRegion* playback_region);
+    void set_waveform_data_func(const FuncWaveFormData&& waveform_data_func);
 
     OBJ_METHODS(VstGPTWaveFormController, FObject)
 
@@ -57,11 +62,10 @@ public:
 private:
     void onDataChanged();
 
-    ARADocumentController* controller = nullptr;
+    tiny_observer_pattern::SimpleSubject* subject = nullptr;
     tiny_observer_pattern::ObserverID observer_id = 0;
-    ARADocumentController::FnGetSampleRate func_playback_sample_rate;
+    FuncWaveFormData waveform_data_func;
     WaveformView* waveform_view            = nullptr;
-    const meta_words::PlaybackRegion* playback_region  = nullptr;
     VSTGUI::CGradientView* background_view = nullptr;
 };
 

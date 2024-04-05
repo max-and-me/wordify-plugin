@@ -16,12 +16,12 @@ using ObserverID = std::uint64_t;
 //------------------------------------------------------------------------
 // Subject
 //------------------------------------------------------------------------
-template <typename Func>
+template <typename CallbackData>
 class Subject
 {
 public:
     //--------------------------------------------------------------------
-    using Callback = Func;
+    using Callback = std::function<void(const CallbackData)>;
 
     auto add_listener(Callback&& cb) -> ObserverID
     {
@@ -40,6 +40,14 @@ public:
         return true;
     }
 
+    void notify_listeners(const CallbackData& data)
+    {
+        for (const auto& observer : observers)
+        {
+            observer.second(data);
+        }
+    }
+
     //--------------------------------------------------------------------
 protected:
     using Observers = std::unordered_map<ObserverID, Callback>;
@@ -53,8 +61,8 @@ protected:
 };
 
 //------------------------------------------------------------------------
-using SimpleCallback = std::function<void()>;
-using SimpleSubject  = Subject<SimpleCallback>;
+using CallbackData = struct {};
+using SimpleSubject  = Subject<CallbackData>;
 //------------------------------------------------------------------------
 
 } // namespace mam::tiny_observer_pattern

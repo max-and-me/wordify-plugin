@@ -125,9 +125,14 @@ public:
         }
     }
 
+    tiny_observer_pattern::SimpleSubject&
+    get_subject(const meta_words::PlaybackRegion* playback_region);
     //--------------------------------------------------------------------
 protected:
-    auto notify_all_observers() const -> void;
+    using PlaybackRegionObservers =
+        std::unordered_map<const meta_words::PlaybackRegion*,
+                           tiny_observer_pattern::SimpleSubject>;
+    PlaybackRegionObservers playback_region_observers;
 
     std::atomic<bool> _renderersCanAccessModelGraph{true};
     std::atomic<int> _countOfRenderersCurrentlyAccessingModelGraph{0};

@@ -40,20 +40,23 @@ static auto read_view_size(const VSTGUI::UIAttributes& attributes)
 }
 
 //------------------------------------------------------------------------
-static auto update_waveform_view(WaveformView* view, const MetaWordsData& data)
+static auto update_waveform_view(WaveformView* view,
+                                 const VstGPTWaveFormController::Data& data)
     -> void
 {
     if (!view)
         return;
 
-    const VSTGUI::CColor color(data.color.r, data.color.g, data.color.b);
+    const auto [r, g, b] = data.color;
+    const VSTGUI::CColor color(r, g, b);
     view->setColor(color);
     view->setDirty();
 }
 
 //------------------------------------------------------------------------
 static auto update_background_view(CGradientView* view,
-                                   const MetaWordsData& data) -> void
+                                   const VstGPTWaveFormController::Data& data)
+    -> void
 {
     if (!view)
         return;
@@ -67,28 +70,25 @@ static auto update_background_view(CGradientView* view,
 // VstGPTWaveFormController
 //------------------------------------------------------------------------
 VstGPTWaveFormController::VstGPTWaveFormController(
-    ARADocumentController* controller,
-    FuncGetSampleRate func_playback_sample_rate)
-: controller(controller)
-, func_playback_sample_rate(func_playback_sample_rate)
+    tiny_observer_pattern::SimpleSubject* subject)
+: subject(subject)
 {
-    if (controller)
+    if (subject)
         observer_id =
-            controller->add_listener([this]() { this->onDataChanged(); });
+            subject->add_listener([this](const auto&) { this->onDataChanged(); });
 }
 
 //------------------------------------------------------------------------
 VstGPTWaveFormController::~VstGPTWaveFormController()
 {
-    if (controller)
-        controller->remove_listener(observer_id);
+    if (subject)
+        subject->remove_listener(observer_id);
 }
 
 //------------------------------------------------------------------------
 void VstGPTWaveFormController::onDataChanged()
 {
-    const auto data =
-        this->playback_region->get_meta_words_data(func_playback_sample_rate());
+    const auto data = this->waveform_data_func();
 
     update_waveform_view(waveform_view, data);
     update_background_view(background_view, data);
@@ -99,9 +99,6 @@ CView*
 VstGPTWaveFormController::createView(const VSTGUI::UIAttributes& attributes,
                                      const VSTGUI::IUIDescription* description)
 {
-    if (!controller)
-        return nullptr;
-
     if (const auto* view_name =
             attributes.getAttributeValue("custom-view-name"))
     {
@@ -128,14 +125,10 @@ VstGPTWaveFormController::verifyView(VSTGUI::CView* view,
     {
         if (*view_name == "WaveForm")
         {
-            const auto pbr  = this->playback_region;
-            const auto f  = this->func_playback_sample_rate;
-            waveform_view = dynamic_cast<WaveformView*>(view);
-            waveform_view->setAudioBufferFunc([pbr, f]() {
-                const auto sample_rate = f();
-                return pbr->get_audio_buffer(sample_rate);
-                ;
-            });
+            const auto func = this->waveform_data_func;
+            waveform_view   = dynamic_cast<WaveformView*>(view);
+            waveform_view->setAudioBufferFunc(
+                [func]() { return func().audio_buffer; });
             onDataChanged();
         }
         else if (*view_name == "Background")
@@ -147,10 +140,10 @@ VstGPTWaveFormController::verifyView(VSTGUI::CView* view,
 }
 
 //------------------------------------------------------------------------
-void VstGPTWaveFormController::set_playback_region(
-    const meta_words::PlaybackRegion* playback_region)
+void VstGPTWaveFormController::set_waveform_data_func(
+    const FuncWaveFormData&& waveform_data_func)
 {
-    this->playback_region = playback_region;
+    this->waveform_data_func = waveform_data_func;
     onDataChanged();
 }
 
