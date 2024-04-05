@@ -9,6 +9,21 @@
 namespace mam {
 
 //------------------------------------------------------------------------
+static auto onRequestSelectWord(int index,
+                                const mam::MetaWordsData& data,
+                                ARADocumentController& document_controller)
+    -> void
+{
+    const auto& meta_words_data = data;
+    const auto& words           = meta_words_data.words;
+    const auto& selected_word   = words.at(index);
+
+    const auto new_position =
+        selected_word.begin + meta_words_data.project_offset;
+    document_controller.onRequestLocatorPosChanged(new_position);
+}
+
+//------------------------------------------------------------------------
 // ListEntryController
 //------------------------------------------------------------------------
 ListEntryController::ListEntryController(
@@ -58,13 +73,12 @@ VSTGUI::IController* ListEntryController::createSubController(
             [sample_rate_func, region = this->playback_region]() {
                 return region->get_meta_words_data(sample_rate_func());
             });
-        subctrl->set_list_clicked_func([&, sample_rate_func,
-                                        region = this->playback_region](
-                                           int index) {
-            //onRequestSelectWord(index,
-              //                  region->get_meta_words_data(sample_rate_func()),
-                //                controller);
-        });
+        subctrl->set_list_clicked_func(
+            [&, sample_rate_func, region = this->playback_region](int index) {
+                onRequestSelectWord(
+                    index, region->get_meta_words_data(sample_rate_func()),
+                    controller);
+            });
         return subctrl;
     }
     else if (VSTGUI::UTF8StringView(name) == "WaveFormController")
