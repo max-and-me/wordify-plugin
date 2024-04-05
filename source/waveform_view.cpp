@@ -12,15 +12,15 @@ using namespace VSTGUI;
 namespace mam {
 
 //------------------------------------------------------------------------
-// WaveformView
+// WaveFormView
 //------------------------------------------------------------------------
-WaveformView::WaveformView(const CRect& size)
+WaveFormView::WaveFormView(const CRect& size)
 : CView(size)
 {
 }
 
 //------------------------------------------------------------------------
-void WaveformView::draw_like_spotify(CDrawContext& pContext,
+void WaveFormView::draw_like_spotify(CDrawContext& pContext,
                                      const CRect& viewSize)
 {
     using Drawer   = wave_draw::Drawer;
@@ -51,13 +51,13 @@ void WaveformView::draw_like_spotify(CDrawContext& pContext,
 }
 
 //------------------------------------------------------------------------
-void WaveformView::setAudioBufferFunc(FuncAudioBuffer&& func_audio_buffer)
+void WaveFormView::setAudioBufferFunc(FuncAudioBuffer&& func_audio_buffer)
 {
     this->audio_buffer_func = func_audio_buffer;
 }
 
 //------------------------------------------------------------------------
-void WaveformView::drawFull(CDrawContext* pContext, const CRect& viewSize)
+void WaveFormView::drawFull(CDrawContext* pContext, const CRect& viewSize)
 {
     pContext->setLineWidth(1.0);
 
@@ -86,7 +86,7 @@ void WaveformView::drawFull(CDrawContext* pContext, const CRect& viewSize)
 }
 
 //------------------------------------------------------------------------
-void WaveformView::drawSimplified(CDrawContext* pContext, const CRect& viewSize)
+void WaveFormView::drawSimplified(CDrawContext* pContext, const CRect& viewSize)
 {
     pContext->setLineWidth(4.0);
 
@@ -126,7 +126,7 @@ void WaveformView::drawSimplified(CDrawContext* pContext, const CRect& viewSize)
 //------------------------------------------------------------------------
 // https://steinbergmedia.github.io/vst3_doc/vstgui/html/the_view_system.html#inherit_from_cview
 //------------------------------------------------------------------------
-void WaveformView::draw(CDrawContext* pContext)
+void WaveFormView::draw(CDrawContext* pContext)
 {
     if (!pContext)
         return;
@@ -143,7 +143,7 @@ void WaveformView::draw(CDrawContext* pContext)
 }
 
 //--------------------------------------------------------------------
-void WaveformView::setColor(CColor color)
+void WaveFormView::setColor(CColor color)
 {
     waveformColor = color;
 }

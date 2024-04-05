@@ -40,8 +40,8 @@ static auto read_view_size(const VSTGUI::UIAttributes& attributes)
 }
 
 //------------------------------------------------------------------------
-static auto update_waveform_view(WaveformView* view,
-                                 const VstGPTWaveFormController::Data& data)
+static auto update_waveform_view(WaveFormView* view,
+                                 const WaveFormController::Data& data)
     -> void
 {
     if (!view)
@@ -55,7 +55,7 @@ static auto update_waveform_view(WaveformView* view,
 
 //------------------------------------------------------------------------
 static auto update_background_view(CGradientView* view,
-                                   const VstGPTWaveFormController::Data& data)
+                                   const WaveFormController::Data& data)
     -> void
 {
     if (!view)
@@ -67,9 +67,9 @@ static auto update_background_view(CGradientView* view,
 }
 
 //------------------------------------------------------------------------
-// VstGPTWaveFormController
+// WaveFormController
 //------------------------------------------------------------------------
-VstGPTWaveFormController::VstGPTWaveFormController(
+WaveFormController::WaveFormController(
     tiny_observer_pattern::SimpleSubject* subject)
 : subject(subject)
 {
@@ -79,14 +79,14 @@ VstGPTWaveFormController::VstGPTWaveFormController(
 }
 
 //------------------------------------------------------------------------
-VstGPTWaveFormController::~VstGPTWaveFormController()
+WaveFormController::~WaveFormController()
 {
     if (subject)
         subject->remove_listener(observer_id);
 }
 
 //------------------------------------------------------------------------
-void VstGPTWaveFormController::onDataChanged()
+void WaveFormController::onDataChanged()
 {
     const auto data = this->waveform_data_func();
 
@@ -96,7 +96,7 @@ void VstGPTWaveFormController::onDataChanged()
 
 //------------------------------------------------------------------------
 CView*
-VstGPTWaveFormController::createView(const VSTGUI::UIAttributes& attributes,
+WaveFormController::createView(const VSTGUI::UIAttributes& attributes,
                                      const VSTGUI::IUIDescription* description)
 {
     if (const auto* view_name =
@@ -107,7 +107,7 @@ VstGPTWaveFormController::createView(const VSTGUI::UIAttributes& attributes,
             const auto view_size =
                 read_view_size(attributes).value_or<CPoint>({320., 240.});
 
-            return new WaveformView(CRect{0, 0, view_size.x, view_size.y});
+            return new WaveFormView(CRect{0, 0, view_size.x, view_size.y});
         }
     }
 
@@ -116,7 +116,7 @@ VstGPTWaveFormController::createView(const VSTGUI::UIAttributes& attributes,
 
 //------------------------------------------------------------------------
 VSTGUI::CView*
-VstGPTWaveFormController::verifyView(VSTGUI::CView* view,
+WaveFormController::verifyView(VSTGUI::CView* view,
                                      const VSTGUI::UIAttributes& attributes,
                                      const VSTGUI::IUIDescription* description)
 {
@@ -126,7 +126,7 @@ VstGPTWaveFormController::verifyView(VSTGUI::CView* view,
         if (*view_name == "WaveForm")
         {
             const auto func = this->waveform_data_func;
-            waveform_view   = dynamic_cast<WaveformView*>(view);
+            waveform_view   = dynamic_cast<WaveFormView*>(view);
             waveform_view->setAudioBufferFunc(
                 [func]() { return func().audio_buffer; });
             onDataChanged();
@@ -140,7 +140,7 @@ VstGPTWaveFormController::verifyView(VSTGUI::CView* view,
 }
 
 //------------------------------------------------------------------------
-void VstGPTWaveFormController::set_waveform_data_func(
+void WaveFormController::set_waveform_data_func(
     const FuncWaveFormData&& waveform_data_func)
 {
     this->waveform_data_func = waveform_data_func;

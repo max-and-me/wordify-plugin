@@ -14,15 +14,15 @@ using SampleType      = float;
 using AudioBufferSpan = gsl::span<const SampleType>;
 
 //------------------------------------------------------------------------
-// WaveformView
+// WaveFormView
 //------------------------------------------------------------------------
-class WaveformView : public VSTGUI::CView
+class WaveFormView : public VSTGUI::CView
 {
 public:
     //--------------------------------------------------------------------
     using FuncAudioBuffer = std::function<AudioBufferSpan()>;
 
-    WaveformView(const VSTGUI::CRect& size);
+    WaveFormView(const VSTGUI::CRect& size);
 
     void draw(VSTGUI::CDrawContext* pContext) override;
     void setColor(VSTGUI::CColor);

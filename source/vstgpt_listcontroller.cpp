@@ -4,7 +4,6 @@
 
 #include "vstgpt_listcontroller.h"
 #include "mam/meta_words/meta_word.h"
-#include "vstgpt_waveformcontroller.h"
 #include "vstgui/lib/controls/clistcontrol.h"
 #include "vstgui/lib/controls/cstringlist.h"
 #include "vstgui/lib/controls/ctextlabel.h"
@@ -14,6 +13,7 @@
 #include "vstgui/lib/events.h"
 #include "vstgui/lib/platform/platformfactory.h"
 #include "vstgui/uidescription/iuidescription.h"
+#include "waveform_controller.h"
 #include <iterator>
 
 //------------------------------------------------------------------------
@@ -158,7 +158,8 @@ VstGPTListController::VstGPTListController(
 : controller(controller)
 , fn_get_playback_sample_rate(fn_get_playback_sample_rate)
 {
-    observer_id = controller.add_listener([this](const auto&) { this->onDataChanged(); });
+    observer_id =
+        controller.add_listener([this](const auto&) { this->onDataChanged(); });
 }
 
 //------------------------------------------------------------------------
@@ -238,17 +239,16 @@ VSTGUI::IController* VstGPTListController::createSubController(
     else if (VSTGUI::UTF8StringView(name) == "WaveFormController")
     {
         auto& subject = controller.get_subject(this->tmp_playback_region);
-        auto* tmp_controller = new VstGPTWaveFormController(&subject);
+        auto* tmp_controller  = new WaveFormController(&subject);
         auto sample_rate_func = fn_get_playback_sample_rate;
         tmp_controller->set_waveform_data_func(
             [sample_rate_func, region = this->tmp_playback_region]() {
-                VstGPTWaveFormController::Data data;
+                WaveFormController::Data data;
                 data.audio_buffer =
                     region->get_audio_buffer(sample_rate_func());
 
                 const auto color =
-                    region->get_meta_words_data(sample_rate_func())
-                        .color;
+                    region->get_meta_words_data(sample_rate_func()).color;
                 data.color = std::make_tuple(color.r, color.g, color.b);
                 return data;
             });

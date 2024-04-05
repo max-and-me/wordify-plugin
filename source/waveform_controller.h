@@ -15,12 +15,12 @@ class CListControl;
 class CGradientView;
 } // namespace VSTGUI
 namespace mam {
-class WaveformView;
+class WaveFormView;
 
 //------------------------------------------------------------------------
-// VstGPTWaveFormController
+// WaveFormController
 //------------------------------------------------------------------------
-class VstGPTWaveFormController : public Steinberg::FObject,
+class WaveFormController : public Steinberg::FObject,
                                  public VSTGUI::IController
 {
 public:
@@ -36,8 +36,8 @@ public:
 
     using FuncWaveFormData = std::function<const Data()>;
 
-    VstGPTWaveFormController(tiny_observer_pattern::SimpleSubject* subject);
-    virtual ~VstGPTWaveFormController();
+    WaveFormController(tiny_observer_pattern::SimpleSubject* subject);
+    virtual ~WaveFormController();
 
     void PLUGIN_API update(FUnknown* changedUnknown,
                            Steinberg::int32 message) override{};
@@ -56,7 +56,7 @@ public:
 
     void set_waveform_data_func(const FuncWaveFormData&& waveform_data_func);
 
-    OBJ_METHODS(VstGPTWaveFormController, FObject)
+    OBJ_METHODS(WaveFormController, FObject)
 
     //--------------------------------------------------------------------
 private:
@@ -65,7 +65,7 @@ private:
     tiny_observer_pattern::SimpleSubject* subject = nullptr;
     tiny_observer_pattern::ObserverID observer_id = 0;
     FuncWaveFormData waveform_data_func;
-    WaveformView* waveform_view            = nullptr;
+    WaveFormView* waveform_view            = nullptr;
     VSTGUI::CGradientView* background_view = nullptr;
 };
 
