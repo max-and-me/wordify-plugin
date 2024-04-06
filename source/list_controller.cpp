@@ -17,7 +17,7 @@ constexpr size_t PLAYBACK_REGION_ID_ATTR = 123456789;
 
 //------------------------------------------------------------------------
 static auto find_view_by_id(const VSTGUI::CRowColumnView* rowColView,
-                            VstGPTListController::PlaybackRegion::Id id)
+                            ListController::PlaybackRegion::Id id)
     -> VSTGUI::CView*
 {
     CView* viewToFind = nullptr;
@@ -25,7 +25,7 @@ static auto find_view_by_id(const VSTGUI::CRowColumnView* rowColView,
         if (viewToFind)
             return;
 
-        auto id = VstGPTListController::PlaybackRegion::INVALID_ID;
+        auto id = ListController::PlaybackRegion::INVALID_ID;
         if (view->getAttribute(PLAYBACK_REGION_ID_ATTR, id))
         {
             if (pbr_id == id)
@@ -37,9 +37,9 @@ static auto find_view_by_id(const VSTGUI::CRowColumnView* rowColView,
 }
 
 //------------------------------------------------------------------------
-// VstGPTListController
+// ListController
 //------------------------------------------------------------------------
-VstGPTListController::VstGPTListController(
+ListController::ListController(
     ARADocumentController& controller,
     ARADocumentController::FnGetSampleRate&& fn_get_playback_sample_rate,
     const VSTGUI::IUIDescription* ui_description)
@@ -55,16 +55,16 @@ VstGPTListController::VstGPTListController(
 }
 
 //------------------------------------------------------------------------
-VstGPTListController::~VstGPTListController()
+ListController::~ListController()
 {
     controller.unregister_playback_region_lifetimes_observer(
         lifetime_observer_id);
 }
 
 //------------------------------------------------------------------------
-CView* VstGPTListController::verifyView(CView* view,
-                                        const UIAttributes& /*attributes*/,
-                                        const IUIDescription* description)
+CView* ListController::verifyView(CView* view,
+                                  const UIAttributes& /*attributes*/,
+                                  const IUIDescription* description)
 {
     if (!rowColView)
     {
@@ -87,7 +87,7 @@ CView* VstGPTListController::verifyView(CView* view,
 }
 
 //------------------------------------------------------------------------
-auto VstGPTListController::create_list_item_view(const PlaybackRegion::Id id)
+auto ListController::create_list_item_view(const PlaybackRegion::Id id)
     -> CView*
 {
     if (!ui_description)
@@ -104,7 +104,7 @@ auto VstGPTListController::create_list_item_view(const PlaybackRegion::Id id)
 }
 
 //------------------------------------------------------------------------
-void VstGPTListController::on_add_remove_playback_region(
+void ListController::on_add_remove_playback_region(
     const PlaybackRegionLifetimeData& data)
 {
     if (!ui_description)
@@ -136,8 +136,9 @@ void VstGPTListController::on_add_remove_playback_region(
 }
 
 //------------------------------------------------------------------------
-VSTGUI::IController* VstGPTListController::createSubController(
-    VSTGUI::UTF8StringPtr name, const VSTGUI::IUIDescription* description)
+VSTGUI::IController*
+ListController::createSubController(VSTGUI::UTF8StringPtr name,
+                                    const VSTGUI::IUIDescription* description)
 {
     if (tmp_playback_region_id == PlaybackRegion::INVALID_ID)
         return nullptr;

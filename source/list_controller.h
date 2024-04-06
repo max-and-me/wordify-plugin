@@ -17,20 +17,19 @@ namespace meta_words {
 class PlaybackRegion;
 }
 //------------------------------------------------------------------------
-// VstGPTListController
+// ListController
 //------------------------------------------------------------------------
-class VstGPTListController : public Steinberg::FObject,
-                             public VSTGUI::IController
+class ListController : public Steinberg::FObject, public VSTGUI::IController
 {
 public:
     //--------------------------------------------------------------------
     using PlaybackRegion = meta_words::PlaybackRegion;
 
-    VstGPTListController(
+    ListController(
         ARADocumentController& controller,
         ARADocumentController::FnGetSampleRate&& fn_get_playback_sample_rate,
         const VSTGUI::IUIDescription* ui_description);
-    ~VstGPTListController() override;
+    ~ListController() override;
 
     void PLUGIN_API update(FUnknown* changedUnknown,
                            Steinberg::int32 message) override{};
@@ -46,7 +45,7 @@ public:
     createSubController(VSTGUI::UTF8StringPtr name,
                         const VSTGUI::IUIDescription* description) override;
 
-    OBJ_METHODS(VstGPTListController, FObject)
+    OBJ_METHODS(ListController, FObject)
 
     //--------------------------------------------------------------------
 private:
