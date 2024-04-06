@@ -15,20 +15,23 @@ namespace mam {
 //------------------------------------------------------------------------
 // VstGPTListController
 //------------------------------------------------------------------------
+constexpr size_t PLAYBACK_REGION_ID_ATTR = 123456789;
 VstGPTListController::VstGPTListController(
     ARADocumentController& controller,
-    ARADocumentController::FnGetSampleRate&& fn_get_playback_sample_rate)
+    ARADocumentController::FnGetSampleRate&& fn_get_playback_sample_rate,
+    const VSTGUI::IUIDescription* ui_description)
 : controller(controller)
 , fn_get_playback_sample_rate(fn_get_playback_sample_rate)
+, ui_description(ui_description)
 {
-    observer_id =
-        controller.add_listener([this](const auto&) { this->onDataChanged(); });
+    observer_id = controller.register_playback_region_lifetimes_observer(
+        [this](const auto& data) { this->onDataChanged(data); });
 }
 
 //------------------------------------------------------------------------
 VstGPTListController::~VstGPTListController()
 {
-    controller.remove_listener(observer_id);
+    controller.unregister_playback_region_lifetimes_observer(observer_id);
 }
 
 //------------------------------------------------------------------------
@@ -52,6 +55,8 @@ CView* VstGPTListController::verifyView(CView* view,
                     tmp_playback_region_id = playbackRegion->get_id();
                     auto* newView =
                         uidescription->createView("ListEntryTemplate", this);
+                    newView->setAttribute(PLAYBACK_REGION_ID_ATTR,
+                                          tmp_playback_region_id);
                     tmp_playback_region_id = PlaybackRegion::INVALID_ID;
 
                     if (newView)
@@ -64,9 +69,49 @@ CView* VstGPTListController::verifyView(CView* view,
 }
 
 //------------------------------------------------------------------------
-void VstGPTListController::onDataChanged()
+void VstGPTListController::onDataChanged(const PlaybackRegionLifetimeData& data)
 {
-    // TODO: Do things when PlaybackRegions are added or removed
+    if (!ui_description)
+        return;
+
+    switch (data.event)
+    {
+        case PlaybackRegionLifetimeData::Event::HasBeenAdded: {
+            tmp_playback_region_id = data.id;
+            auto* newView =
+                ui_description->createView("ListEntryTemplate", this);
+            newView->setAttribute(PLAYBACK_REGION_ID_ATTR,
+                                  tmp_playback_region_id);
+            tmp_playback_region_id = PlaybackRegion::INVALID_ID;
+
+            if (newView)
+                rowColView->addView(newView);
+
+            break;
+        }
+
+        case PlaybackRegionLifetimeData::Event::WillBeRemoved: {
+            if (rowColView)
+            {
+                CView* viewToRemove = nullptr;
+                rowColView->forEachChild([&, pbr_id = data.id](CView* view) {
+                    if (viewToRemove)
+                        return;
+
+                    auto id = PlaybackRegion::INVALID_ID;
+                    if (view->getAttribute(PLAYBACK_REGION_ID_ATTR, id))
+                    {
+                        if (pbr_id == id)
+                            viewToRemove = view;
+                    }
+                });
+
+                if (viewToRemove)
+                    rowColView->removeView(viewToRemove);
+            }
+            break;
+        }
+    }
 }
 
 //------------------------------------------------------------------------

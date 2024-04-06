@@ -20,6 +20,20 @@ class PlaybackRenderer;
 //------------------------------------------------------------------------
 // ARADocumentController
 //------------------------------------------------------------------------
+struct PlaybackRegionLifetimeData
+{
+    using PlaybackRegion = meta_words::PlaybackRegion;
+
+    enum class Event
+    {
+        HasBeenAdded,
+        WillBeRemoved
+    };
+    Event event;
+    PlaybackRegion::Id id{0};
+};
+
+//------------------------------------------------------------------------
 class ARADocumentController : public ARA::PlugIn::DocumentController,
                               public tiny_observer_pattern::SimpleSubject
 {
@@ -139,9 +153,32 @@ public:
         }
     }
 
-    auto
-    get_playback_region_subject(const PlaybackRegion::Id playback_region_id)
-        -> tiny_observer_pattern::SimpleSubject&;
+    auto register_playback_region_changed_observer(
+        const PlaybackRegion::Id playback_region_id,
+        tiny_observer_pattern::SimpleSubject::Callback&& callback)
+        -> tiny_observer_pattern::ObserverID;
+
+    auto unregister_playback_region_changed_observer(
+        const PlaybackRegion::Id playback_region_id,
+        tiny_observer_pattern::ObserverID id);
+
+    auto get_playback_region_changed_subject(
+        const PlaybackRegion::Id playback_region_id)
+        -> tiny_observer_pattern::SimpleSubject&
+    {
+        return playback_region_observers[playback_region_id];
+    }
+
+    using PlaybackRegionLifetimesSubject =
+        tiny_observer_pattern::Subject<PlaybackRegionLifetimeData>;
+
+    auto register_playback_region_lifetimes_observer(
+        PlaybackRegionLifetimesSubject::Callback&& callback)
+        -> tiny_observer_pattern::ObserverID;
+
+    auto unregister_playback_region_lifetimes_observer(
+        tiny_observer_pattern::ObserverID id) -> bool;
+
     //--------------------------------------------------------------------
 protected:
     using PlaybackRegionObservers =
@@ -152,6 +189,8 @@ protected:
     using PlaybackRegions =
         std::unordered_map<PlaybackRegion::Id, PlaybackRegion*>;
     PlaybackRegions playback_regions;
+
+    PlaybackRegionLifetimesSubject playback_region_lifetimes_subject;
 
     std::atomic<bool> _renderersCanAccessModelGraph{true};
     std::atomic<int> _countOfRenderersCurrentlyAccessingModelGraph{0};

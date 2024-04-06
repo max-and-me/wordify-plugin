@@ -29,7 +29,8 @@ public:
 
     VstGPTListController(
         ARADocumentController& controller,
-        ARADocumentController::FnGetSampleRate&& fn_get_playback_sample_rate);
+        ARADocumentController::FnGetSampleRate&& fn_get_playback_sample_rate,
+        const VSTGUI::IUIDescription* ui_description);
     virtual ~VstGPTListController();
 
     void PLUGIN_API update(FUnknown* changedUnknown,
@@ -50,9 +51,10 @@ public:
 
     //--------------------------------------------------------------------
 private:
-    void onDataChanged();
+    void onDataChanged(const PlaybackRegionLifetimeData& data);
 
-    VSTGUI::CRowColumnView* rowColView = nullptr;
+    VSTGUI::CRowColumnView* rowColView    = nullptr;
+    const VSTGUI::IUIDescription* ui_description = nullptr;
 
     ARADocumentController& controller;
     tiny_observer_pattern::ObserverID observer_id = 0;

@@ -108,7 +108,8 @@ VSTGUI::IController* ListEntryController::createSubController(
     if (playback_region_id == meta_words::PlaybackRegion::INVALID_ID)
         return nullptr;
 
-    auto& subject = controller.get_playback_region_subject(playback_region_id);
+    auto& subject =
+        controller.get_playback_region_changed_subject(playback_region_id);
     auto sample_rate_func = fn_get_playback_sample_rate;
     auto pbr_id           = playback_region_id;
 

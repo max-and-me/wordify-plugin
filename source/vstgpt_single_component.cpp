@@ -6,8 +6,8 @@
 #include "ara_document_controller.h"
 #include "base/source/fstreamer.h"
 #include "meta_words_editor_renderer.h"
-#include "meta_words_playback_renderer.h"
 #include "meta_words_editor_view.h"
+#include "meta_words_playback_renderer.h"
 #include "pluginterfaces/vst/ivstparameterchanges.h"
 #include "pluginterfaces/vst/ivstprocesscontext.h"
 #include "vstgpt_cids.h"
@@ -208,7 +208,7 @@ tresult PLUGIN_API VstGPTSingleComponent::getState(IBStream* state)
 //------------------------------------------------------------------------
 VSTGUI::IController* VstGPTSingleComponent::createSubController(
     VSTGUI::UTF8StringPtr name,
-    const VSTGUI::IUIDescription* /*description*/,
+    const VSTGUI::IUIDescription* description,
     VSTGUI::VST3Editor* /*editor*/)
 {
     auto* document_controller =
@@ -221,7 +221,8 @@ VSTGUI::IController* VstGPTSingleComponent::createSubController(
     if (VSTGUI::UTF8StringView(name) == "MetaWordsListController")
         return new VstGPTListController(
             *document_controller,
-            std::move([this]() { return this->processSetup.sampleRate; }));
+            std::move([this]() { return this->processSetup.sampleRate; }),
+            description);
 
     return nullptr;
 }

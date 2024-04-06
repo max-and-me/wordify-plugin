@@ -187,6 +187,8 @@ void ARADocumentController::didAddPlaybackRegionToRegionSequence(
         return;
 
     playback_regions.insert({pbr->get_id(), pbr});
+    playback_region_lifetimes_subject.notify_listeners(
+        {PlaybackRegionLifetimeData::Event::HasBeenAdded, pbr->get_id()});
 }
 
 //------------------------------------------------------------------------
@@ -198,6 +200,8 @@ void ARADocumentController::willRemovePlaybackRegionFromRegionSequence(
     if (!pbr)
         return;
 
+    playback_region_lifetimes_subject.notify_listeners(
+        {PlaybackRegionLifetimeData::Event::WillBeRemoved, pbr->get_id()});
     playback_regions.erase(pbr->get_id());
 }
 
@@ -221,11 +225,37 @@ void ARADocumentController::onRequestLocatorPosChanged(double pos)
 }
 
 //------------------------------------------------------------------------
-auto ARADocumentController::get_playback_region_subject(
-    const PlaybackRegion::Id playback_region_id)
-    -> tiny_observer_pattern::SimpleSubject&
+auto ARADocumentController::register_playback_region_lifetimes_observer(
+    PlaybackRegionLifetimesSubject::Callback&& callback)
+    -> tiny_observer_pattern::ObserverID
 {
-    return playback_region_observers[playback_region_id];
+    return playback_region_lifetimes_subject.add_listener(std::move(callback));
+}
+
+//------------------------------------------------------------------------
+auto ARADocumentController::unregister_playback_region_lifetimes_observer(
+    tiny_observer_pattern::ObserverID id) -> bool
+{
+    return playback_region_lifetimes_subject.remove_listener(id);
+}
+
+//------------------------------------------------------------------------
+auto ARADocumentController::register_playback_region_changed_observer(
+    const PlaybackRegion::Id playback_region_id,
+    tiny_observer_pattern::SimpleSubject::Callback&& callback)
+    -> tiny_observer_pattern::ObserverID
+{
+    auto& subject = playback_region_observers[playback_region_id];
+    return subject.add_listener(std::move(callback));
+}
+
+//------------------------------------------------------------------------
+auto ARADocumentController::unregister_playback_region_changed_observer(
+    const PlaybackRegion::Id playback_region_id,
+    tiny_observer_pattern::ObserverID id)
+{
+    auto& subject = playback_region_observers[playback_region_id];
+    return subject.remove_listener(id);
 }
 
 //------------------------------------------------------------------------
