@@ -47,14 +47,18 @@ VstGPTListController::VstGPTListController(
 , fn_get_playback_sample_rate(fn_get_playback_sample_rate)
 , ui_description(ui_description)
 {
-    observer_id = controller.register_playback_region_lifetimes_observer(
-        [this](const auto& data) { this->onDataChanged(data); });
+    lifetime_observer_id =
+        controller.register_playback_region_lifetimes_observer(
+            [this](const auto& data) {
+                this->on_add_remove_playback_region(data);
+            });
 }
 
 //------------------------------------------------------------------------
 VstGPTListController::~VstGPTListController()
 {
-    controller.unregister_playback_region_lifetimes_observer(observer_id);
+    controller.unregister_playback_region_lifetimes_observer(
+        lifetime_observer_id);
 }
 
 //------------------------------------------------------------------------
@@ -100,7 +104,8 @@ auto VstGPTListController::create_list_item_view(const PlaybackRegion::Id id)
 }
 
 //------------------------------------------------------------------------
-void VstGPTListController::onDataChanged(const PlaybackRegionLifetimeData& data)
+void VstGPTListController::on_add_remove_playback_region(
+    const PlaybackRegionLifetimeData& data)
 {
     if (!ui_description)
         return;
