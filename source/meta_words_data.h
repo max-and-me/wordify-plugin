@@ -6,6 +6,7 @@
 
 #include "mam/meta_words/meta_word.h"
 #include <utility>
+#include <tuple>
 
 namespace mam {
 
@@ -14,12 +15,7 @@ struct MetaWordsData
 {
     using Seconds = double;
     using String  = std::string;
-    struct Color
-    {
-        uint8_t r;
-        uint8_t g;
-        uint8_t b;
-    };
+    using Color = std::tuple<uint8_t, uint8_t, uint8_t>;
 
     String name;
     Color color;

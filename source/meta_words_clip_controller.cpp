@@ -38,7 +38,8 @@ static auto update_list_control_content(CListControl& listControl,
 static auto update_label_control(CTextLabel& label, const MetaWordsData& data)
     -> void
 {
-    const VSTGUI::CColor color(data.color.r, data.color.g, data.color.b);
+    auto [r, g, b] = data.color;
+    const VSTGUI::CColor color(r, g, b);
     label.setFontColor(color);
     label.setText(VSTGUI::UTF8String(data.name));
 }

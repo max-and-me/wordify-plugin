@@ -22,7 +22,7 @@ public:
     //--------------------------------------------------------------------
     struct Data
     {
-        using Color       = std::tuple<double, double, double>;
+        using Color       = std::tuple<uint8_t, uint8_t, uint8_t>;
         using AudioBuffer = gsl::span<const float>;
 
         Color color;

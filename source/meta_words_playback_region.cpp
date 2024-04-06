@@ -135,9 +135,10 @@ const MetaWordsData PlaybackRegion::get_meta_words_data(
     if (const auto& tmp_color = getEffectiveColor())
     {
         static const float RGB_MAX_FLOAT = 255.f;
-        data.color.r = static_cast<uint8_t>(tmp_color->r * RGB_MAX_FLOAT);
-        data.color.g = static_cast<uint8_t>(tmp_color->g * RGB_MAX_FLOAT);
-        data.color.b = static_cast<uint8_t>(tmp_color->b * RGB_MAX_FLOAT);
+        data.color =
+            std::make_tuple(static_cast<uint8_t>(tmp_color->r * RGB_MAX_FLOAT),
+                            static_cast<uint8_t>(tmp_color->g * RGB_MAX_FLOAT),
+                            static_cast<uint8_t>(tmp_color->b * RGB_MAX_FLOAT));
     }
 
     return data;

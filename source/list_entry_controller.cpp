@@ -61,10 +61,7 @@ static auto build_waveform_data(const ARADocumentController& controller,
 
     WaveFormController::Data data;
     data.audio_buffer = opt_region.value()->get_audio_buffer(sample_rate);
-
-    const auto color =
-        opt_region.value()->get_meta_words_data(sample_rate).color;
-    data.color = std::make_tuple(color.r, color.g, color.b);
+    data.color = opt_region.value()->get_meta_words_data(sample_rate).color;
     return data;
 }
 
