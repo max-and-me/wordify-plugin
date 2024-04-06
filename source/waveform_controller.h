@@ -24,6 +24,7 @@ class WaveFormController : public Steinberg::FObject, public VSTGUI::IController
 {
 public:
     //--------------------------------------------------------------------
+    using Subject = tiny_observer_pattern::SimpleSubject;
     struct Data
     {
         using Color       = std::tuple<double, double, double>;
@@ -35,8 +36,10 @@ public:
 
     using FuncWaveFormData = std::function<const Data()>;
 
-    WaveFormController(tiny_observer_pattern::SimpleSubject* subject);
+    WaveFormController();
     virtual ~WaveFormController();
+
+    bool initialize(Subject* subject, FuncWaveFormData&& waveform_data_func);
 
     void PLUGIN_API update(FUnknown* changedUnknown,
                            Steinberg::int32 message) override{};
@@ -53,15 +56,13 @@ public:
     // IControlListener
     void valueChanged(VSTGUI::CControl* pControl) override{};
 
-    void set_waveform_data_func(const FuncWaveFormData&& waveform_data_func);
-
     OBJ_METHODS(WaveFormController, FObject)
 
     //--------------------------------------------------------------------
 private:
     void onDataChanged();
 
-    tiny_observer_pattern::SimpleSubject* subject = nullptr;
+    Subject* subject                              = nullptr;
     tiny_observer_pattern::ObserverID observer_id = 0;
     FuncWaveFormData waveform_data_func;
     WaveFormView* waveform_view            = nullptr;

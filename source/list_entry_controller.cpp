@@ -128,12 +128,17 @@ VSTGUI::IController* ListEntryController::createSubController(
     }
     else if (VSTGUI::UTF8StringView(name) == "WaveFormController")
     {
-        auto* subctrl = new WaveFormController(&subject);
-        subctrl->set_waveform_data_func(
+        auto* subctrl = new WaveFormController();
+        if (!subctrl)
+            return nullptr;
+
+        subctrl->initialize(
+            &subject,
             [pbr_id, this, sample_rate_func]() -> WaveFormController::Data {
                 return build_waveform_data(controller, pbr_id,
                                            sample_rate_func());
             });
+
         return subctrl;
     }
 

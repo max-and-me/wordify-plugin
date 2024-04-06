@@ -67,20 +67,37 @@ static auto update_background_view(CGradientView* view,
 //------------------------------------------------------------------------
 // WaveFormController
 //------------------------------------------------------------------------
-WaveFormController::WaveFormController(
-    tiny_observer_pattern::SimpleSubject* subject)
-: subject(subject)
-{
-    if (subject)
-        observer_id = subject->add_listener(
-            [this](const auto&) { this->onDataChanged(); });
-}
+WaveFormController::WaveFormController() {}
 
 //------------------------------------------------------------------------
 WaveFormController::~WaveFormController()
 {
     if (subject)
         subject->remove_listener(observer_id);
+}
+
+//------------------------------------------------------------------------
+bool WaveFormController::initialize(Subject* subject,
+                                    FuncWaveFormData&& waveform_data_func)
+{
+    if (this->subject)
+    {
+        if (subject)
+            subject->remove_listener(observer_id);
+    }
+
+    this->subject            = subject;
+    this->waveform_data_func = std::move(waveform_data_func);
+
+    if (subject)
+    {
+        observer_id = subject->add_listener(
+            [this](const auto&) { this->onDataChanged(); });
+    }
+
+    onDataChanged();
+
+    return true;
 }
 
 //------------------------------------------------------------------------
@@ -122,10 +139,10 @@ WaveFormController::verifyView(VSTGUI::CView* view,
     {
         if (*view_name == "WaveForm")
         {
-            const auto func = this->waveform_data_func;
-            waveform_view   = dynamic_cast<WaveFormView*>(view);
-            waveform_view->setAudioBufferFunc(
-                [func]() { return func().audio_buffer; });
+            waveform_view = dynamic_cast<WaveFormView*>(view);
+            waveform_view->initialize([func = this->waveform_data_func]() {
+                return func().audio_buffer;
+            });
             onDataChanged();
         }
         else if (*view_name == "Background")
@@ -134,14 +151,6 @@ WaveFormController::verifyView(VSTGUI::CView* view,
         }
     }
     return view;
-}
-
-//------------------------------------------------------------------------
-void WaveFormController::set_waveform_data_func(
-    const FuncWaveFormData&& waveform_data_func)
-{
-    this->waveform_data_func = waveform_data_func;
-    onDataChanged();
 }
 
 //------------------------------------------------------------------------

@@ -20,6 +20,13 @@ WaveFormView::WaveFormView(const CRect& size)
 }
 
 //------------------------------------------------------------------------
+bool WaveFormView::initialize(FuncAudioBuffer&& audio_buffer_func)
+{
+    this->audio_buffer_func = std::move(audio_buffer_func);
+    return true;
+}
+
+//------------------------------------------------------------------------
 void WaveFormView::draw_like_spotify(CDrawContext& pContext,
                                      const CRect& viewSize)
 {
@@ -48,12 +55,6 @@ void WaveFormView::draw_like_spotify(CDrawContext& pContext,
             pContext.setFillColor(waveformColor);
             pContext.drawGraphicsPath(graphics_path);
         });
-}
-
-//------------------------------------------------------------------------
-void WaveFormView::setAudioBufferFunc(FuncAudioBuffer&& func_audio_buffer)
-{
-    this->audio_buffer_func = func_audio_buffer;
 }
 
 //------------------------------------------------------------------------
