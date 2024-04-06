@@ -10,7 +10,7 @@ namespace mam {
 
 //------------------------------------------------------------------------
 static auto onRequestSelectWord(int index,
-                                const mam::MetaWordsData& data,
+                                const const mam::MetaWordsData& data,
                                 ARADocumentController& document_controller)
     -> void
 {
@@ -27,7 +27,7 @@ static auto onRequestSelectWord(int index,
 static auto onRequestSelectWord(int index,
                                 ARADocumentController& controller,
                                 double sample_rate,
-                                meta_words::PlaybackRegion::Id id) -> void
+                                const meta_words::PlaybackRegion::Id id) -> void
 {
     auto opt_region = controller.find_playback_region(id);
     if (!opt_region)
@@ -36,6 +36,36 @@ static auto onRequestSelectWord(int index,
     onRequestSelectWord(index,
                         opt_region.value()->get_meta_words_data(sample_rate),
                         controller);
+}
+
+//------------------------------------------------------------------------
+static auto build_meta_words_data(const ARADocumentController& controller,
+                                  const meta_words::PlaybackRegion::Id id,
+                                  double sample_rate) -> const MetaWordsData
+{
+    auto opt_region = controller.find_playback_region(id);
+    if (!opt_region)
+        return {};
+
+    return opt_region.value()->get_meta_words_data(sample_rate);
+}
+
+//------------------------------------------------------------------------
+static auto build_waveform_data(const ARADocumentController& controller,
+                                const meta_words::PlaybackRegion::Id id,
+                                double sample_rate) -> WaveFormController::Data
+{
+    auto opt_region = controller.find_playback_region(id);
+    if (!opt_region)
+        return {};
+
+    WaveFormController::Data data;
+    data.audio_buffer = opt_region.value()->get_audio_buffer(sample_rate);
+
+    const auto color =
+        opt_region.value()->get_meta_words_data(sample_rate).color;
+    data.color = std::make_tuple(color.r, color.g, color.b);
+    return data;
 }
 
 //------------------------------------------------------------------------
@@ -85,41 +115,25 @@ VSTGUI::IController* ListEntryController::createSubController(
     if (VSTGUI::UTF8StringView(name) == "MetaWordsClipController")
     {
         auto* subctrl = new MetaWordsClipController(&controller);
-        subctrl->set_meta_words_data_func(
-            [this, pbr_id, sample_rate_func]() -> const MetaWordsData {
-                auto opt_region = controller.find_playback_region(pbr_id);
-                if (!opt_region)
-                    return {};
-
-                return opt_region.value()->get_meta_words_data(
-                    sample_rate_func());
-            });
-        subctrl->set_list_clicked_func(
-            [this, pbr_id, sample_rate_func](int index) {
-                onRequestSelectWord(index, controller, sample_rate_func(), pbr_id);
-            });
+        subctrl->set_meta_words_data_func([this, pbr_id, sample_rate_func]() {
+            return build_meta_words_data(controller, pbr_id,
+                                         sample_rate_func());
+        });
+        subctrl->set_list_clicked_func([this, pbr_id,
+                                        sample_rate_func](int index) {
+            onRequestSelectWord(index, controller, sample_rate_func(), pbr_id);
+        });
         return subctrl;
     }
     else if (VSTGUI::UTF8StringView(name) == "WaveFormController")
     {
-        auto* tmp_controller = new WaveFormController(&subject);
-        tmp_controller->set_waveform_data_func(
+        auto* subctrl = new WaveFormController(&subject);
+        subctrl->set_waveform_data_func(
             [pbr_id, this, sample_rate_func]() -> WaveFormController::Data {
-                auto opt_region = controller.find_playback_region(pbr_id);
-                if (!opt_region)
-                    return {};
-
-                WaveFormController::Data data;
-                data.audio_buffer =
-                    opt_region.value()->get_audio_buffer(sample_rate_func());
-
-                const auto color = opt_region.value()
-                                       ->get_meta_words_data(sample_rate_func())
-                                       .color;
-                data.color = std::make_tuple(color.r, color.g, color.b);
-                return data;
+                return build_waveform_data(controller, pbr_id,
+                                           sample_rate_func());
             });
-        return tmp_controller;
+        return subctrl;
     }
 
     return nullptr;
