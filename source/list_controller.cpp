@@ -2,7 +2,7 @@
 // Copyright(c) 2024 Max And Me.
 //------------------------------------------------------------------------
 
-#include "vstgpt_listcontroller.h"
+#include "list_controller.h"
 #include "list_entry_controller.h"
 #include "vstgui/lib/crowcolumnview.h"
 #include "vstgui/uidescription/iuidescription.h"
