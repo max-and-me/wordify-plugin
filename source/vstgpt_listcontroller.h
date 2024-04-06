@@ -25,6 +25,8 @@ class VstGPTListController : public Steinberg::FObject,
 {
 public:
     //--------------------------------------------------------------------
+    using PlaybackRegion = meta_words::PlaybackRegion;
+
     VstGPTListController(
         ARADocumentController& controller,
         ARADocumentController::FnGetSampleRate&& fn_get_playback_sample_rate);
@@ -55,8 +57,7 @@ private:
     ARADocumentController& controller;
     tiny_observer_pattern::ObserverID observer_id = 0;
     ARADocumentController::FnGetSampleRate fn_get_playback_sample_rate;
-    meta_words::PlaybackRegion::Id tmp_playback_region_id =
-        meta_words::PlaybackRegion::INVALID_ID;
+    PlaybackRegion::Id tmp_playback_region_id = PlaybackRegion::INVALID_ID;
 };
 
 //------------------------------------------------------------------------

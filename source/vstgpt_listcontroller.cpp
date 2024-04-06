@@ -41,7 +41,7 @@ CView* VstGPTListController::verifyView(CView* view,
         if (rowColView = dynamic_cast<CRowColumnView*>(view))
         {
             controller.for_each_playback_region(
-                [&](const meta_words::PlaybackRegion* playbackRegion) {
+                [&](const PlaybackRegion* playbackRegion) {
                     if (!playbackRegion)
                         return;
 
@@ -52,8 +52,7 @@ CView* VstGPTListController::verifyView(CView* view,
                     tmp_playback_region_id = playbackRegion->get_id();
                     auto* newView =
                         uidescription->createView("ListEntryTemplate", this);
-                    tmp_playback_region_id =
-                        meta_words::PlaybackRegion::INVALID_ID;
+                    tmp_playback_region_id = PlaybackRegion::INVALID_ID;
 
                     if (newView)
                         rowColView->addView(newView);
@@ -74,7 +73,7 @@ void VstGPTListController::onDataChanged()
 VSTGUI::IController* VstGPTListController::createSubController(
     VSTGUI::UTF8StringPtr name, const VSTGUI::IUIDescription* description)
 {
-    if (tmp_playback_region_id == meta_words::PlaybackRegion::INVALID_ID)
+    if (tmp_playback_region_id == PlaybackRegion::INVALID_ID)
         return nullptr;
 
     if (VSTGUI::UTF8StringView(name) == "ListEntryController")
