@@ -13,9 +13,32 @@ using namespace VSTGUI;
 namespace mam {
 
 //------------------------------------------------------------------------
+constexpr size_t PLAYBACK_REGION_ID_ATTR = 123456789;
+
+//------------------------------------------------------------------------
+static auto find_view_by_id(const VSTGUI::CRowColumnView* rowColView,
+                            VstGPTListController::PlaybackRegion::Id id)
+    -> VSTGUI::CView*
+{
+    CView* viewToFind = nullptr;
+    rowColView->forEachChild([&, pbr_id = id](CView* view) {
+        if (viewToFind)
+            return;
+
+        auto id = VstGPTListController::PlaybackRegion::INVALID_ID;
+        if (view->getAttribute(PLAYBACK_REGION_ID_ATTR, id))
+        {
+            if (pbr_id == id)
+                viewToFind = view;
+        }
+    });
+
+    return viewToFind;
+}
+
+//------------------------------------------------------------------------
 // VstGPTListController
 //------------------------------------------------------------------------
-constexpr size_t PLAYBACK_REGION_ID_ATTR = 123456789;
 VstGPTListController::VstGPTListController(
     ARADocumentController& controller,
     ARADocumentController::FnGetSampleRate&& fn_get_playback_sample_rate,
@@ -48,17 +71,8 @@ CView* VstGPTListController::verifyView(CView* view,
                     if (!playbackRegion)
                         return;
 
-                    const IUIDescription* uidescription = description;
-                    if (!uidescription)
-                        return;
-
-                    tmp_playback_region_id = playbackRegion->get_id();
                     auto* newView =
-                        uidescription->createView("ListEntryTemplate", this);
-                    newView->setAttribute(PLAYBACK_REGION_ID_ATTR,
-                                          tmp_playback_region_id);
-                    tmp_playback_region_id = PlaybackRegion::INVALID_ID;
-
+                        create_list_item_view(playbackRegion->get_id());
                     if (newView)
                         rowColView->addView(newView);
                 });
@@ -66,6 +80,23 @@ CView* VstGPTListController::verifyView(CView* view,
     }
 
     return view;
+}
+
+//------------------------------------------------------------------------
+auto VstGPTListController::create_list_item_view(const PlaybackRegion::Id id)
+    -> CView*
+{
+    if (!ui_description)
+        return nullptr;
+
+    tmp_playback_region_id = id;
+
+    auto* newView = ui_description->createView("ListEntryTemplate", this);
+    newView->setAttribute(PLAYBACK_REGION_ID_ATTR, id);
+
+    tmp_playback_region_id = PlaybackRegion::INVALID_ID;
+
+    return newView;
 }
 
 //------------------------------------------------------------------------
@@ -77,40 +108,19 @@ void VstGPTListController::onDataChanged(const PlaybackRegionLifetimeData& data)
     switch (data.event)
     {
         case PlaybackRegionLifetimeData::Event::HasBeenAdded: {
-            tmp_playback_region_id = data.id;
-            auto* newView =
-                ui_description->createView("ListEntryTemplate", this);
-            newView->setAttribute(PLAYBACK_REGION_ID_ATTR,
-                                  tmp_playback_region_id);
-            tmp_playback_region_id = PlaybackRegion::INVALID_ID;
-
-            if (newView)
-                rowColView->addView(newView);
+            auto* viewToAdd = create_list_item_view(data.id);
+            if (viewToAdd)
+                rowColView->addView(viewToAdd);
 
             break;
         }
 
         case PlaybackRegionLifetimeData::Event::WillBeRemoved: {
-            if (rowColView)
-            {
-                CView* viewToRemove = nullptr;
-                rowColView->forEachChild([&, pbr_id = data.id](CView* view) {
-                    if (viewToRemove)
-                        return;
-
-                    auto id = PlaybackRegion::INVALID_ID;
-                    if (view->getAttribute(PLAYBACK_REGION_ID_ATTR, id))
-                    {
-                        if (pbr_id == id)
-                            viewToRemove = view;
-                    }
-                });
-
-                if (viewToRemove)
-                    rowColView->removeView(viewToRemove);
-            }
-            break;
+            auto* viewToRemove = find_view_by_id(rowColView, data.id);
+            if (viewToRemove)
+                rowColView->removeView(viewToRemove);
         }
+        break;
     }
 }
 

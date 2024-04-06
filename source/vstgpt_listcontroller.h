@@ -52,8 +52,9 @@ public:
     //--------------------------------------------------------------------
 private:
     void onDataChanged(const PlaybackRegionLifetimeData& data);
+    auto create_list_item_view(const PlaybackRegion::Id id) -> VSTGUI::CView*;
 
-    VSTGUI::CRowColumnView* rowColView    = nullptr;
+    VSTGUI::CRowColumnView* rowColView           = nullptr;
     const VSTGUI::IUIDescription* ui_description = nullptr;
 
     ARADocumentController& controller;
