@@ -46,21 +46,37 @@ static auto update_label_control(CTextLabel& label, const MetaWordsData& data)
 //------------------------------------------------------------------------
 // VstGPTWaveClipListController
 //------------------------------------------------------------------------
-MetaWordsClipController::MetaWordsClipController(
-    tiny_observer_pattern::SimpleSubject* subject)
-: subject(subject)
-{
-    if (subject)
-        observer_id = subject->add_listener(
-            [this](const auto&) { this->onDataChanged(); });
-}
+MetaWordsClipController::MetaWordsClipController() {}
 
 //------------------------------------------------------------------------
 MetaWordsClipController::~MetaWordsClipController()
 {
     if (subject)
         subject->remove_listener(observer_id);
-};
+}
+
+//------------------------------------------------------------------------
+bool MetaWordsClipController::initialize(
+    Subject* subject, FuncMetaWordsData&& meta_words_data_func)
+{
+    if (!subject)
+        return false;
+
+    if (this->subject)
+    {
+        this->subject->remove_listener(observer_id);
+    }
+
+    this->subject = subject;
+    this->meta_words_data_func = std::move(meta_words_data_func);
+
+    observer_id = this->subject->add_listener(
+        [this](const auto&) { this->onDataChanged(); });
+
+    onDataChanged();
+
+    return true;
+}
 
 //------------------------------------------------------------------------
 void MetaWordsClipController::onDataChanged()
@@ -109,15 +125,9 @@ void MetaWordsClipController::valueChanged(VSTGUI::CControl* pControl)
 {
     if (pControl && pControl == listControl)
     {
-        list_value_changed_func(listControl->getValue());
+        if (list_value_changed_func)
+            list_value_changed_func(listControl->getValue());
     }
-}
-
-//------------------------------------------------------------------------
-auto MetaWordsClipController::set_meta_words_data_func(
-    const FuncMetaWordsData&& meta_words_data_func) -> void
-{
-    this->meta_words_data_func = meta_words_data_func;
 }
 
 //------------------------------------------------------------------------

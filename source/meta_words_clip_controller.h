@@ -24,11 +24,12 @@ public:
     //--------------------------------------------------------------------
     using FuncMetaWordsData    = std::function<const MetaWordsData()>;
     using FuncListValueChanged = std::function<void(int)>;
+    using Subject              = tiny_observer_pattern::SimpleSubject;
 
-    MetaWordsClipController(tiny_observer_pattern::SimpleSubject* subject);
+    MetaWordsClipController();
     ~MetaWordsClipController() override;
 
-    void onDataChanged();
+    bool initialize(Subject* subject, FuncMetaWordsData&& meta_words_data_func);
 
     VSTGUI::CView*
     verifyView(VSTGUI::CView* view,
@@ -39,15 +40,14 @@ public:
     void valueChanged(VSTGUI::CControl* pControl) override;
 
     auto
-    set_meta_words_data_func(const FuncMetaWordsData&& meta_words_data_func)
-        -> void;
-    auto
     set_list_clicked_func(const FuncListValueChanged&& list_value_changed_func)
         -> void;
 
     OBJ_METHODS(MetaWordsClipController, FObject)
     //--------------------------------------------------------------------
 private:
+    void onDataChanged();
+
     VSTGUI::CListControl* listControl = nullptr;
     VSTGUI::CTextLabel* label         = nullptr;
 

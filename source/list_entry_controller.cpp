@@ -115,11 +115,15 @@ VSTGUI::IController* ListEntryController::createSubController(
 
     if (VSTGUI::UTF8StringView(name) == "MetaWordsClipController")
     {
-        auto* subctrl = new MetaWordsClipController(&controller);
-        subctrl->set_meta_words_data_func([this, pbr_id, sample_rate_func]() {
+        auto* subctrl = new MetaWordsClipController();
+        if (!subctrl)
+            return nullptr;
+
+        subctrl->initialize(&controller, [this, pbr_id, sample_rate_func]() {
             return build_meta_words_data(controller, pbr_id,
                                          sample_rate_func());
         });
+
         subctrl->set_list_clicked_func([this, pbr_id,
                                         sample_rate_func](int index) {
             onRequestSelectWord(index, controller, sample_rate_func(), pbr_id);

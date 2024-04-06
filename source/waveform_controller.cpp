@@ -80,6 +80,9 @@ WaveFormController::~WaveFormController()
 bool WaveFormController::initialize(Subject* subject,
                                     FuncWaveFormData&& waveform_data_func)
 {
+    if (!subject)
+        return false;
+
     if (this->subject)
     {
         if (subject)
@@ -89,11 +92,8 @@ bool WaveFormController::initialize(Subject* subject,
     this->subject            = subject;
     this->waveform_data_func = std::move(waveform_data_func);
 
-    if (subject)
-    {
-        observer_id = subject->add_listener(
-            [this](const auto&) { this->onDataChanged(); });
-    }
+    observer_id =
+        subject->add_listener([this](const auto&) { this->onDataChanged(); });
 
     onDataChanged();
 
