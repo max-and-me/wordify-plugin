@@ -6,13 +6,12 @@
 
 #include "ara_document_controller.h"
 #include "base/source/fobject.h"
-#include "vstgui/lib/iviewlistener.h"
 #include "vstgui/uidescription/icontroller.h"
-#include <functional>
 
 namespace VSTGUI {
-class CListControl;
-}
+class CRowColumnView;
+class IUIDescription;
+} // namespace VSTGUI
 namespace mam {
 namespace meta_words {
 class PlaybackRegion;
