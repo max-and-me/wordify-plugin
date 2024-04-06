@@ -40,19 +40,6 @@ static auto read_view_size(const VSTGUI::UIAttributes& attributes)
 }
 
 //------------------------------------------------------------------------
-static auto update_waveform_view(WaveFormView* view,
-                                 const WaveFormController::Data& data) -> void
-{
-    if (!view)
-        return;
-
-    const auto [r, g, b] = data.color;
-    const VSTGUI::CColor color(r, g, b);
-    view->setColor(color);
-    view->setDirty();
-}
-
-//------------------------------------------------------------------------
 static auto update_background_view(CGradientView* view,
                                    const WaveFormController::Data& data) -> void
 {
@@ -105,7 +92,9 @@ void WaveFormController::onDataChanged()
 {
     const auto data = this->waveform_data_func();
 
-    update_waveform_view(waveform_view, data);
+    if (waveform_view)
+        waveform_view->setDirty();
+
     update_background_view(background_view, data);
 }
 
@@ -140,9 +129,10 @@ WaveFormController::verifyView(VSTGUI::CView* view,
         if (*view_name == "WaveForm")
         {
             waveform_view = dynamic_cast<WaveFormView*>(view);
-            waveform_view->initialize([func = this->waveform_data_func]() {
-                return func().audio_buffer;
-            });
+            waveform_view->initialize(
+                [func = this->waveform_data_func]() -> WaveFormView::Data {
+                    return func();
+                });
             onDataChanged();
         }
         else if (*view_name == "Background")

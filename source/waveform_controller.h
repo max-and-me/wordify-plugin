@@ -9,6 +9,7 @@
 #include "tiny_observer_pattern.h"
 #include "vstgui/lib/iviewlistener.h"
 #include "vstgui/uidescription/icontroller.h"
+#include "waveform_view.h"
 
 namespace VSTGUI {
 class CListControl;
@@ -25,14 +26,7 @@ class WaveFormController : public Steinberg::FObject, public VSTGUI::IController
 public:
     //--------------------------------------------------------------------
     using Subject = tiny_observer_pattern::SimpleSubject;
-    struct Data
-    {
-        using Color       = std::tuple<double, double, double>;
-        using AudioBuffer = gsl::span<const float>;
-
-        Color color;
-        AudioBuffer audio_buffer;
-    };
+    using Data = WaveFormView::Data;
 
     using FuncWaveFormData = std::function<const Data()>;
 

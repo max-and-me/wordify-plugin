@@ -20,9 +20,9 @@ WaveFormView::WaveFormView(const CRect& size)
 }
 
 //------------------------------------------------------------------------
-bool WaveFormView::initialize(FuncAudioBuffer&& audio_buffer_func)
+bool WaveFormView::initialize(FuncWaveFormData&& waveform_data_func)
 {
-    this->audio_buffer_func = std::move(audio_buffer_func);
+    this->waveform_data_func = std::move(waveform_data_func);
     return true;
 }
 
@@ -37,13 +37,14 @@ void WaveFormView::draw_like_spotify(CDrawContext& pContext,
     constexpr auto LINE_WIDTH          = 2.;
     constexpr auto ROUND_CORNER_RADIUS = 1.;
 
+    auto waveform_data = waveform_data_func();
     // Since we have a fixed view_width, we need to compute the zoom_factor
     // beforehand.
     const auto zoom_factor = wave_draw::compute_zoom_factor(
-        audio_buffer_func(), viewSize.getWidth(), LINE_WIDTH, SPACING);
+        waveform_data.audio_buffer, viewSize.getWidth(), LINE_WIDTH, SPACING);
 
     Drawer()
-        .init(audio_buffer_func(), zoom_factor)
+        .init(waveform_data.audio_buffer, zoom_factor)
         .setup_wave(LINE_WIDTH, SPACING)
         .setup_dimensions(viewSize.getWidth(), viewSize.getHeight())
         .draw([&](const DrawData& data) {
@@ -52,7 +53,10 @@ void WaveFormView::draw_like_spotify(CDrawContext& pContext,
             auto graphics_path = owned(pContext.createRoundRectGraphicsPath(
                 rect, ROUND_CORNER_RADIUS));
 
-            pContext.setFillColor(waveformColor);
+            // TODO: Get rid of warning!
+            const auto [r, g, b] = waveform_data.color;
+            const VSTGUI::CColor color(r, g, b);
+            pContext.setFillColor(color);
             pContext.drawGraphicsPath(graphics_path);
         });
 }
@@ -63,8 +67,8 @@ void WaveFormView::drawFull(CDrawContext* pContext, const CRect& viewSize)
     pContext->setLineWidth(1.0);
 
     const auto amplitude    = viewSize.getHeight() * 0.5;
-    const auto waveFormData = audio_buffer_func();
-    const auto numSamples   = audio_buffer_func().size();
+    const auto waveFormData = waveform_data_func().audio_buffer;
+    const auto numSamples   = waveform_data_func().audio_buffer.size();
     if (numSamples > 1)
     {
         // Calculate the horizontal scale factor
@@ -87,44 +91,6 @@ void WaveFormView::drawFull(CDrawContext* pContext, const CRect& viewSize)
 }
 
 //------------------------------------------------------------------------
-void WaveFormView::drawSimplified(CDrawContext* pContext, const CRect& viewSize)
-{
-    pContext->setLineWidth(4.0);
-
-    const auto amplitude    = viewSize.getHeight() * 0.5;
-    const auto waveFormData = audio_buffer_func();
-    const auto numSamples   = audio_buffer_func().size();
-    if (numSamples > 1)
-    {
-        // Calculate the horizontal scale factor
-        const auto xScale =
-            viewSize.getWidth() / static_cast<CCoord>(numSamples - 1);
-
-        size_t stylized = 200; // from 1 up to x to have it more stylized
-        int oldBased    = 0;
-        int offset      = 20;
-
-        // Draw the waveform lines
-        for (size_t i = 0; i < size_t(numSamples) - 1; i += stylized)
-        {
-            if (!waveFormData[i + offset])
-                return;
-
-            const auto x1 = CCoord(i + offset) * xScale;
-            const auto y1 = amplitude * CCoord(waveFormData[i + offset]);
-
-            int based = floor(x1);
-            if (based != oldBased && based % 5 == 0)
-            {
-                pContext->drawLine(CPoint(x1, amplitude + y1 + offset / 2),
-                                   CPoint(x1, amplitude - y1 + offset / 2));
-                oldBased = based;
-            }
-        }
-    }
-}
-
-//------------------------------------------------------------------------
 // https://steinbergmedia.github.io/vst3_doc/vstgui/html/the_view_system.html#inherit_from_cview
 //------------------------------------------------------------------------
 void WaveFormView::draw(CDrawContext* pContext)
@@ -136,17 +102,7 @@ void WaveFormView::draw(CDrawContext* pContext)
     CDrawContext::Transform t(
         *pContext, CGraphicsTransform().translate(viewSize.getTopLeft()));
 
-    pContext->setFillColor({75, 75, 75});
-
-    // drawSimplified(pContext, viewSize);
-    // drawFull(pContext, viewSize);
     draw_like_spotify(*pContext, viewSize);
-}
-
-//--------------------------------------------------------------------
-void WaveFormView::setColor(CColor color)
-{
-    waveformColor = color;
 }
 
 //------------------------------------------------------------------------
