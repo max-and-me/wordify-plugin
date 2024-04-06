@@ -6,6 +6,7 @@
 #include "ara_document_controller.h"
 #include "base/source/fstreamer.h"
 #include "meta_words_editor_renderer.h"
+#include "meta_words_playback_renderer.h"
 #include "meta_words_editor_view.h"
 #include "pluginterfaces/vst/ivstparameterchanges.h"
 #include "pluginterfaces/vst/ivstprocesscontext.h"

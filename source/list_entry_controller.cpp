@@ -10,7 +10,7 @@ namespace mam {
 
 //------------------------------------------------------------------------
 static auto onRequestSelectWord(int index,
-                                const const mam::MetaWordsData& data,
+                                const mam::MetaWordsData& data,
                                 ARADocumentController& document_controller)
     -> void
 {

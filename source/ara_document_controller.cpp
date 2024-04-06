@@ -78,8 +78,8 @@ ARA::PlugIn::AudioSource* ARADocumentController::doCreateAudioSource(
     ARA::PlugIn::Document* document,
     ARA::ARAAudioSourceHostRef hostRef) noexcept
 {
-    return new meta_words::AudioSource(
-        document, hostRef, [this]() { this->notify_listeners({}); });
+    return new AudioSource(document, hostRef,
+                           [this]() { this->notify_listeners({}); });
 }
 
 //------------------------------------------------------------------------
@@ -89,8 +89,8 @@ ARADocumentController::doCreateAudioModification(
     ARA::ARAAudioModificationHostRef hostRef,
     const ARA::PlugIn::AudioModification* optionalModificationToClone) noexcept
 {
-    return new meta_words::AudioModification(audioSource, hostRef,
-                                             optionalModificationToClone);
+    return new AudioModification(audioSource, hostRef,
+                                 optionalModificationToClone);
 }
 
 //------------------------------------------------------------------------
@@ -126,7 +126,7 @@ ARA::PlugIn::PlaybackRegion* ARADocumentController::doCreatePlaybackRegion(
     ARA::PlugIn::AudioModification* modification,
     ARA::ARAPlaybackRegionHostRef hostRef) noexcept
 {
-    return new meta_words::PlaybackRegion(modification, hostRef);
+    return new PlaybackRegion(modification, hostRef);
 }
 
 //------------------------------------------------------------------------
@@ -158,12 +158,12 @@ ARADocumentController::doCreateEditorRenderer() noexcept
 ARA::PlugIn::PlaybackRenderer*
 ARADocumentController::doCreatePlaybackRenderer() noexcept
 {
-    return new meta_words::PlaybackRenderer(this);
+    return new PlaybackRenderer(this);
 }
 
 //------------------------------------------------------------------------
 bool ARADocumentController::rendererWillAccessModelGraph(
-    meta_words::PlaybackRenderer* /*playbackRenderer*/) noexcept
+    PlaybackRenderer* /*playbackRenderer*/) noexcept
 {
     ++_countOfRenderersCurrentlyAccessingModelGraph;
     return _renderersCanAccessModelGraph;
@@ -171,7 +171,7 @@ bool ARADocumentController::rendererWillAccessModelGraph(
 
 //------------------------------------------------------------------------
 void ARADocumentController::rendererDidAccessModelGraph(
-    meta_words::PlaybackRenderer* /*playbackRenderer*/) noexcept
+    PlaybackRenderer* /*playbackRenderer*/) noexcept
 {
     ARA_INTERNAL_ASSERT(_countOfRenderersCurrentlyAccessingModelGraph > 0);
     --_countOfRenderersCurrentlyAccessingModelGraph;
@@ -182,7 +182,7 @@ void ARADocumentController::didAddPlaybackRegionToRegionSequence(
     ARA::PlugIn::RegionSequence* regionSequence,
     ARA::PlugIn::PlaybackRegion* playbackRegion) noexcept
 {
-    auto* pbr = dynamic_cast<meta_words::PlaybackRegion*>(playbackRegion);
+    auto* pbr = dynamic_cast<PlaybackRegion*>(playbackRegion);
     if (!pbr)
         return;
 
@@ -202,8 +202,8 @@ void ARADocumentController::willRemovePlaybackRegionFromRegionSequence(
 }
 
 //------------------------------------------------------------------------
-auto ARADocumentController::find_playback_region(
-    meta_words::PlaybackRegion::Id id) const -> meta_words::OptPlaybackRegionPtr
+auto ARADocumentController::find_playback_region(PlaybackRegion::Id id) const
+    -> OptPlaybackRegionPtr
 {
     auto iter = playback_regions.find(id);
     if (iter == playback_regions.end())
@@ -222,7 +222,7 @@ void ARADocumentController::onRequestLocatorPosChanged(double pos)
 
 //------------------------------------------------------------------------
 auto ARADocumentController::get_playback_region_subject(
-    const meta_words::PlaybackRegion::Id playback_region_id)
+    const PlaybackRegion::Id playback_region_id)
     -> tiny_observer_pattern::SimpleSubject&
 {
     return playback_region_observers[playback_region_id];

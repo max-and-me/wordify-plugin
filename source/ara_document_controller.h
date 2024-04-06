@@ -7,10 +7,15 @@
 #include "ARA_Library/PlugIn/ARAPlug.h"
 #include "meta_words_data.h"
 #include "meta_words_playback_region.h"
-#include "meta_words_playback_renderer.h"
 #include "tiny_observer_pattern.h"
 
 namespace mam {
+namespace meta_words {
+class AudioSource;
+class AudioModification;
+class PlaybackRegion;
+class PlaybackRenderer;
+} // namespace meta_words
 
 //------------------------------------------------------------------------
 // ARADocumentController
@@ -20,7 +25,12 @@ class ARADocumentController : public ARA::PlugIn::DocumentController,
 {
 public:
     //--------------------------------------------------------------------
-    using MetaWordsDataList = std::vector<MetaWordsData>;
+    using AudioModification    = meta_words::AudioModification;
+    using AudioSource          = meta_words::AudioSource;
+    using MetaWordsDataList    = std::vector<MetaWordsData>;
+    using OptPlaybackRegionPtr = meta_words::OptPlaybackRegionPtr;
+    using PlaybackRegion       = meta_words::PlaybackRegion;
+    using PlaybackRenderer     = meta_words::PlaybackRenderer;
 
     using SampleRate      = double;
     using FnGetSampleRate = std::function<SampleRate()>;
@@ -95,13 +105,13 @@ public:
     // to the model while it is being modified. This includes waiting until
     // concurrent renderer model access has completed before starting
     // modifications.
-    bool rendererWillAccessModelGraph(
-        meta_words::PlaybackRenderer* playbackRenderer) noexcept;
-    void rendererDidAccessModelGraph(
-        meta_words::PlaybackRenderer* playbackRenderer) noexcept;
+    bool
+    rendererWillAccessModelGraph(PlaybackRenderer* playbackRenderer) noexcept;
+    void
+    rendererDidAccessModelGraph(PlaybackRenderer* playbackRenderer) noexcept;
 
-    auto find_playback_region(meta_words::PlaybackRegion::Id id) const
-        -> meta_words::OptPlaybackRegionPtr;
+    auto find_playback_region(PlaybackRegion::Id id) const
+        -> OptPlaybackRegionPtr;
 
     template <typename Func>
     void for_each_playback_region(Func& func)
@@ -110,7 +120,7 @@ public:
         if (auto* document = getDocument())
         {
             const auto& audio_sources =
-                document->getAudioSources<meta_words::AudioSource>();
+                document->getAudioSources<AudioSource>();
             for (const auto& audio_source : audio_sources)
             {
                 const auto& audio_modifications =
@@ -119,7 +129,7 @@ public:
                 {
                     const auto& playback_regions =
                         audio_modification
-                            ->getPlaybackRegions<meta_words::PlaybackRegion>();
+                            ->getPlaybackRegions<PlaybackRegion>();
                     for (const auto* playback_region : playback_regions)
                     {
                         func(playback_region);
@@ -129,18 +139,18 @@ public:
         }
     }
 
-    auto get_playback_region_subject(
-        const meta_words::PlaybackRegion::Id playback_region_id)
+    auto
+    get_playback_region_subject(const PlaybackRegion::Id playback_region_id)
         -> tiny_observer_pattern::SimpleSubject&;
     //--------------------------------------------------------------------
 protected:
     using PlaybackRegionObservers =
-        std::unordered_map<meta_words::PlaybackRegion::Id,
+        std::unordered_map<PlaybackRegion::Id,
                            tiny_observer_pattern::SimpleSubject>;
     PlaybackRegionObservers playback_region_observers;
 
-    using PlaybackRegions = std::unordered_map<meta_words::PlaybackRegion::Id,
-                                               meta_words::PlaybackRegion*>;
+    using PlaybackRegions =
+        std::unordered_map<PlaybackRegion::Id, PlaybackRegion*>;
     PlaybackRegions playback_regions;
 
     std::atomic<bool> _renderersCanAccessModelGraph{true};
