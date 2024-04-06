@@ -20,7 +20,6 @@ class ListEntryController : public Steinberg::FObject,
 public:
     //--------------------------------------------------------------------
     ListEntryController(
-        tiny_observer_pattern::SimpleSubject* subject,
         ARADocumentController& controller,
         ARADocumentController::FnGetSampleRate& fn_get_playback_sample_rate,
         const meta_words::PlaybackRegion::Id playback_region_id);
@@ -38,8 +37,6 @@ public:
     OBJ_METHODS(ListEntryController, FObject)
     //--------------------------------------------------------------------
 private:
-    tiny_observer_pattern::SimpleSubject* subject = nullptr;
-    tiny_observer_pattern::ObserverID observer_id = 0;
     ARADocumentController& controller;
     ARADocumentController::FnGetSampleRate fn_get_playback_sample_rate;
     const meta_words::PlaybackRegion::Id playback_region_id =

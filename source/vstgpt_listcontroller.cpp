@@ -123,7 +123,7 @@ VSTGUI::IController* VstGPTListController::createSubController(
 
     if (VSTGUI::UTF8StringView(name) == "ListEntryController")
     {
-        return new ListEntryController(&controller, controller,
+        return new ListEntryController(controller,
                                        this->fn_get_playback_sample_rate,
                                        tmp_playback_region_id);
     }

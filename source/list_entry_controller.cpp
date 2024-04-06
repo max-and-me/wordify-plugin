@@ -72,25 +72,17 @@ static auto build_waveform_data(const ARADocumentController& controller,
 // ListEntryController
 //------------------------------------------------------------------------
 ListEntryController::ListEntryController(
-    tiny_observer_pattern::SimpleSubject* subject,
     ARADocumentController& controller,
     ARADocumentController::FnGetSampleRate& fn_get_playback_sample_rate,
     const meta_words::PlaybackRegion::Id playback_region_id)
-: subject(subject)
-, controller(controller)
+: controller(controller)
 , fn_get_playback_sample_rate(fn_get_playback_sample_rate)
 , playback_region_id(playback_region_id)
 {
-    if (subject)
-        observer_id = subject->add_listener([this](const auto&) {});
 }
 
 //------------------------------------------------------------------------
-ListEntryController::~ListEntryController()
-{
-    if (subject)
-        subject->remove_listener(observer_id);
-};
+ListEntryController::~ListEntryController(){};
 
 //------------------------------------------------------------------------
 VSTGUI::CView*
