@@ -43,7 +43,6 @@ private:
                            const VSTGUI::CRect& viewSize);
 
     FuncWaveFormData waveform_data_func;
-    VSTGUI::CColor waveformColor{0, 0, 0};
 };
 
 } // namespace mam
