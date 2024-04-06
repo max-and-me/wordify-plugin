@@ -31,7 +31,7 @@ public:
         ARADocumentController& controller,
         ARADocumentController::FnGetSampleRate&& fn_get_playback_sample_rate,
         const VSTGUI::IUIDescription* ui_description);
-    virtual ~VstGPTListController();
+    ~VstGPTListController() override;
 
     void PLUGIN_API update(FUnknown* changedUnknown,
                            Steinberg::int32 message) override{};
