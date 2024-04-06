@@ -16,21 +16,23 @@ add_subdirectory(extern)
 smtg_enable_vst3_sdk()
 
 smtg_add_vst3plugin(VstGPT
-    #source/vstgpt_controller.cpp
-    #source/vstgpt_controller.h
-    #source/vstgpt_processor.cpp
-    #source/vstgpt_processor.h
+    ${public_sdk_SOURCE_DIR}/source/vst/vstsinglecomponenteffect.cpp
+    ${public_sdk_SOURCE_DIR}/source/vst/vstsinglecomponenteffect.h
     source/ara_document_controller.cpp
     source/ara_document_controller.h
     source/ara_factory_config.cpp
     source/ara_factory_config.h
     source/audio_buffer_management.h
-    source/meta_words_playback_renderer.cpp
-    source/meta_words_playback_renderer.h
+    source/list_controller.cpp
+    source/list_controller.h
+    source/list_entry_controller.cpp
+    source/list_entry_controller.h
     source/meta_words_audio_modification.cpp
     source/meta_words_audio_modification.h
     source/meta_words_audio_source.cpp
     source/meta_words_audio_source.h
+    source/meta_words_clip_controller.cpp
+    source/meta_words_clip_controller.h
     source/meta_words_data.h
     source/meta_words_editor_renderer.cpp
     source/meta_words_editor_renderer.h
@@ -38,24 +40,18 @@ smtg_add_vst3plugin(VstGPT
     source/meta_words_editor_view.h
     source/meta_words_playback_region.cpp
     source/meta_words_playback_region.h
+    source/meta_words_playback_renderer.cpp
+    source/meta_words_playback_renderer.h
     source/tiny_observer_pattern.h
     source/version.h
     source/vstgpt_cids.h
     source/vstgpt_entry.cpp
-    source/list_controller.cpp
-    source/list_controller.h
-    source/list_entry_controller.cpp
-    source/list_entry_controller.h
-    source/meta_words_clip_controller.cpp
-    source/meta_words_clip_controller.h
+    source/vstgpt_single_component.cpp
+    source/vstgpt_single_component.h
     source/waveform_controller.cpp
     source/waveform_controller.h
     source/waveform_view.cpp
     source/waveform_view.h
-    source/vstgpt_single_component.cpp
-    source/vstgpt_single_component.h
-    ${public_sdk_SOURCE_DIR}/source/vst/vstsinglecomponenteffect.cpp
-    ${public_sdk_SOURCE_DIR}/source/vst/vstsinglecomponenteffect.h
 )
 
 smtg_target_add_plugin_resources(VstGPT
