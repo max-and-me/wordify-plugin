@@ -110,7 +110,10 @@ void VstGPTListController::onDataChanged(const PlaybackRegionLifetimeData& data)
         case PlaybackRegionLifetimeData::Event::HasBeenAdded: {
             auto* viewToAdd = create_list_item_view(data.id);
             if (viewToAdd)
+            {
                 rowColView->addView(viewToAdd);
+                rowColView->invalid();
+            }
 
             break;
         }
@@ -118,7 +121,10 @@ void VstGPTListController::onDataChanged(const PlaybackRegionLifetimeData& data)
         case PlaybackRegionLifetimeData::Event::WillBeRemoved: {
             auto* viewToRemove = find_view_by_id(rowColView, data.id);
             if (viewToRemove)
+            {
                 rowColView->removeView(viewToRemove);
+                rowColView->invalid();
+            }
         }
         break;
     }
