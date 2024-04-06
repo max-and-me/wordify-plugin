@@ -153,6 +153,15 @@ public:
         }
     }
 
+    template <typename Func>
+    void for_each_playback_region_id(Func func)
+    {
+        for_each_playback_region([func](const PlaybackRegion* r) {
+            if (r)
+                func(r->get_id());
+        });
+    }
+
     auto register_playback_region_changed_observer(
         const PlaybackRegion::Id playback_region_id,
         tiny_observer_pattern::SimpleSubject::Callback&& callback)

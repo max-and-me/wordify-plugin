@@ -70,13 +70,9 @@ CView* ListController::verifyView(CView* view,
     {
         if (rowColView = dynamic_cast<CRowColumnView*>(view))
         {
-            controller.for_each_playback_region(
-                [&](const PlaybackRegion* playbackRegion) {
-                    if (!playbackRegion)
-                        return;
-
-                    auto* newView =
-                        create_list_item_view(playbackRegion->get_id());
+            controller.for_each_playback_region_id(
+                [&](const PlaybackRegion::Id id) {
+                    auto* newView = create_list_item_view(id);
                     if (newView)
                         rowColView->addView(newView);
                 });
