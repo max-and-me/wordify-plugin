@@ -17,8 +17,9 @@ class PlaybackRegion : public ARA::PlugIn::PlaybackRegion
 {
 public:
     //--------------------------------------------------------------------
-    using Id = uint64_t;
+    using Id                       = uint64_t;
     static constexpr Id INVALID_ID = -1;
+    using Color                    = MetaWordsData::Color;
 
     using AudioBuf =
         mam::audio_buffer_management::AudioBuffer<AudioSource::SampleType>;
@@ -34,6 +35,8 @@ public:
         -> const AudioBufferSpan;
 
     auto get_id() const -> Id { return id; }
+
+    auto get_effective_color() const -> Color;
     //--------------------------------------------------------------------
 private:
     static Id new_id;

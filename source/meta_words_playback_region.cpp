@@ -121,6 +121,21 @@ PlaybackRegion::PlaybackRegion(
 }
 
 //------------------------------------------------------------------------
+auto PlaybackRegion::get_effective_color() const -> Color
+{
+    Color color = std::make_tuple(0, 0, 0);
+    if (const auto& tmp_color = getEffectiveColor())
+    {
+        static const float RGB_MAX_FLOAT = 255.f;
+        color =
+            std::make_tuple(static_cast<uint8_t>(tmp_color->r * RGB_MAX_FLOAT),
+                            static_cast<uint8_t>(tmp_color->g * RGB_MAX_FLOAT),
+                            static_cast<uint8_t>(tmp_color->b * RGB_MAX_FLOAT));
+    }
+
+    return color;
+}
+//------------------------------------------------------------------------
 const MetaWordsData PlaybackRegion::get_meta_words_data(
     ARA::ARASampleRate playback_sample_rate) const
 {
@@ -131,15 +146,7 @@ const MetaWordsData PlaybackRegion::get_meta_words_data(
     data.words = filter_audible_words(data.words, *this);
     data.project_offset = calculate_project_offset(*this);
     data.name           = getEffectiveName();
-
-    if (const auto& tmp_color = getEffectiveColor())
-    {
-        static const float RGB_MAX_FLOAT = 255.f;
-        data.color =
-            std::make_tuple(static_cast<uint8_t>(tmp_color->r * RGB_MAX_FLOAT),
-                            static_cast<uint8_t>(tmp_color->g * RGB_MAX_FLOAT),
-                            static_cast<uint8_t>(tmp_color->b * RGB_MAX_FLOAT));
-    }
+    data.color          = get_effective_color();
 
     return data;
 }
