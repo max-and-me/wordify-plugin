@@ -48,7 +48,7 @@ static auto update_background_view(CGradientView* view,
 
     // TODO: Create a new gradient and set it to the view!
     // view->setGradient(new VSTGUI::CGradient(...));
-    // view->setDirty();
+    // view->invalid();
 }
 
 //------------------------------------------------------------------------
@@ -93,7 +93,7 @@ void WaveFormController::onDataChanged()
     const auto data = this->waveform_data_func();
 
     if (waveform_view)
-        waveform_view->setDirty();
+        waveform_view->invalid();
 
     update_background_view(background_view, data);
 }
