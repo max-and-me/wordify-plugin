@@ -24,17 +24,32 @@ static auto onRequestSelectWord(int index,
 }
 
 //------------------------------------------------------------------------
+static auto onRequestSelectWord(int index,
+                                ARADocumentController& controller,
+                                double sample_rate,
+                                meta_words::PlaybackRegion::Id id) -> void
+{
+    auto opt_region = controller.find_playback_region(id);
+    if (!opt_region)
+        return;
+
+    onRequestSelectWord(index,
+                        opt_region.value()->get_meta_words_data(sample_rate),
+                        controller);
+}
+
+//------------------------------------------------------------------------
 // ListEntryController
 //------------------------------------------------------------------------
 ListEntryController::ListEntryController(
     tiny_observer_pattern::SimpleSubject* subject,
     ARADocumentController& controller,
     ARADocumentController::FnGetSampleRate& fn_get_playback_sample_rate,
-    const meta_words::PlaybackRegion* playback_region)
+    const meta_words::PlaybackRegion::Id playback_region_id)
 : subject(subject)
 , controller(controller)
 , fn_get_playback_sample_rate(fn_get_playback_sample_rate)
-, playback_region(playback_region)
+, playback_region_id(playback_region_id)
 {
     if (subject)
         observer_id = subject->add_listener([this](const auto&) {});
@@ -60,24 +75,28 @@ ListEntryController::verifyView(VSTGUI::CView* view,
 VSTGUI::IController* ListEntryController::createSubController(
     VSTGUI::UTF8StringPtr name, const VSTGUI::IUIDescription* description)
 {
-    if (!this->playback_region)
+    if (playback_region_id == meta_words::PlaybackRegion::INVALID_ID)
         return nullptr;
 
-    auto& subject         = controller.get_subject(this->playback_region);
+    auto& subject = controller.get_playback_region_subject(playback_region_id);
     auto sample_rate_func = fn_get_playback_sample_rate;
+    auto pbr_id           = playback_region_id;
 
     if (VSTGUI::UTF8StringView(name) == "MetaWordsClipController")
     {
         auto* subctrl = new MetaWordsClipController(&controller);
         subctrl->set_meta_words_data_func(
-            [sample_rate_func, region = this->playback_region]() {
-                return region->get_meta_words_data(sample_rate_func());
+            [this, pbr_id, sample_rate_func]() -> const MetaWordsData {
+                auto opt_region = controller.find_playback_region(pbr_id);
+                if (!opt_region)
+                    return {};
+
+                return opt_region.value()->get_meta_words_data(
+                    sample_rate_func());
             });
         subctrl->set_list_clicked_func(
-            [&, sample_rate_func, region = this->playback_region](int index) {
-                onRequestSelectWord(
-                    index, region->get_meta_words_data(sample_rate_func()),
-                    controller);
+            [this, pbr_id, sample_rate_func](int index) {
+                onRequestSelectWord(index, controller, sample_rate_func(), pbr_id);
             });
         return subctrl;
     }
@@ -85,13 +104,18 @@ VSTGUI::IController* ListEntryController::createSubController(
     {
         auto* tmp_controller = new WaveFormController(&subject);
         tmp_controller->set_waveform_data_func(
-            [sample_rate_func, region = this->playback_region]() {
+            [pbr_id, this, sample_rate_func]() -> WaveFormController::Data {
+                auto opt_region = controller.find_playback_region(pbr_id);
+                if (!opt_region)
+                    return {};
+
                 WaveFormController::Data data;
                 data.audio_buffer =
-                    region->get_audio_buffer(sample_rate_func());
+                    opt_region.value()->get_audio_buffer(sample_rate_func());
 
-                const auto color =
-                    region->get_meta_words_data(sample_rate_func()).color;
+                const auto color = opt_region.value()
+                                       ->get_meta_words_data(sample_rate_func())
+                                       .color;
                 data.color = std::make_tuple(color.r, color.g, color.b);
                 return data;
             });

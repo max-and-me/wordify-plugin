@@ -178,6 +178,41 @@ void ARADocumentController::rendererDidAccessModelGraph(
 }
 
 //------------------------------------------------------------------------
+void ARADocumentController::didAddPlaybackRegionToRegionSequence(
+    ARA::PlugIn::RegionSequence* regionSequence,
+    ARA::PlugIn::PlaybackRegion* playbackRegion) noexcept
+{
+    auto* pbr = dynamic_cast<meta_words::PlaybackRegion*>(playbackRegion);
+    if (!pbr)
+        return;
+
+    playback_regions.insert({pbr->get_id(), pbr});
+}
+
+//------------------------------------------------------------------------
+void ARADocumentController::willRemovePlaybackRegionFromRegionSequence(
+    ARA::PlugIn::RegionSequence* regionSequence,
+    ARA::PlugIn::PlaybackRegion* playbackRegion) noexcept
+{
+    auto* pbr = dynamic_cast<meta_words::PlaybackRegion*>(playbackRegion);
+    if (!pbr)
+        return;
+
+    playback_regions.erase(pbr->get_id());
+}
+
+//------------------------------------------------------------------------
+auto ARADocumentController::find_playback_region(
+    meta_words::PlaybackRegion::Id id) const -> meta_words::OptPlaybackRegionPtr
+{
+    auto iter = playback_regions.find(id);
+    if (iter == playback_regions.end())
+        return std::nullopt;
+
+    return (*iter).second;
+}
+
+//------------------------------------------------------------------------
 void ARADocumentController::onRequestLocatorPosChanged(double pos)
 {
     auto hostPBCtrl = getHostPlaybackController();
@@ -186,10 +221,11 @@ void ARADocumentController::onRequestLocatorPosChanged(double pos)
 }
 
 //------------------------------------------------------------------------
-tiny_observer_pattern::SimpleSubject& ARADocumentController::get_subject(
-    const meta_words::PlaybackRegion* playback_region)
+auto ARADocumentController::get_playback_region_subject(
+    const meta_words::PlaybackRegion::Id playback_region_id)
+    -> tiny_observer_pattern::SimpleSubject&
 {
-    return playback_region_observers[playback_region];
+    return playback_region_observers[playback_region_id];
 }
 
 //------------------------------------------------------------------------

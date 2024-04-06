@@ -50,15 +50,13 @@ public:
 private:
     void onDataChanged();
 
-    VSTGUI::CListControl* listControl = nullptr;
-    VSTGUI::CTextLabel* label         = nullptr;
-
     VSTGUI::CRowColumnView* rowColView = nullptr;
 
     ARADocumentController& controller;
     tiny_observer_pattern::ObserverID observer_id = 0;
     ARADocumentController::FnGetSampleRate fn_get_playback_sample_rate;
-    const meta_words::PlaybackRegion* tmp_playback_region = nullptr;
+    meta_words::PlaybackRegion::Id tmp_playback_region_id =
+        meta_words::PlaybackRegion::INVALID_ID;
 };
 
 //------------------------------------------------------------------------

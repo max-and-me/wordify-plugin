@@ -49,10 +49,11 @@ CView* VstGPTListController::verifyView(CView* view,
                     if (!uidescription)
                         return;
 
-                    this->tmp_playback_region = playbackRegion;
+                    tmp_playback_region_id = playbackRegion->get_id();
                     auto* newView =
                         uidescription->createView("ListEntryTemplate", this);
-                    this->tmp_playback_region = nullptr;
+                    tmp_playback_region_id =
+                        meta_words::PlaybackRegion::INVALID_ID;
 
                     if (newView)
                         rowColView->addView(newView);
@@ -73,14 +74,14 @@ void VstGPTListController::onDataChanged()
 VSTGUI::IController* VstGPTListController::createSubController(
     VSTGUI::UTF8StringPtr name, const VSTGUI::IUIDescription* description)
 {
-    if (!this->tmp_playback_region)
+    if (tmp_playback_region_id == meta_words::PlaybackRegion::INVALID_ID)
         return nullptr;
 
     if (VSTGUI::UTF8StringView(name) == "ListEntryController")
     {
         return new ListEntryController(&controller, controller,
                                        this->fn_get_playback_sample_rate,
-                                       this->tmp_playback_region);
+                                       tmp_playback_region_id);
     }
 
     return nullptr;

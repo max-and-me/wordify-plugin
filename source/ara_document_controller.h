@@ -80,6 +80,14 @@ public:
 
     ARA::PlugIn::PlaybackRenderer* doCreatePlaybackRenderer() noexcept override;
 
+    void didAddPlaybackRegionToRegionSequence(
+        ARA::PlugIn::RegionSequence* regionSequence,
+        ARA::PlugIn::PlaybackRegion* playbackRegion) noexcept override;
+
+    void willRemovePlaybackRegionFromRegionSequence(
+        ARA::PlugIn::RegionSequence* regionSequence,
+        ARA::PlugIn::PlaybackRegion* playbackRegion) noexcept override;
+
     // Render thread synchronization:
     // This is just a test code implementation of handling the threading -
     // proper code will use a more sophisticated threading implementation, which
@@ -91,6 +99,9 @@ public:
         meta_words::PlaybackRenderer* playbackRenderer) noexcept;
     void rendererDidAccessModelGraph(
         meta_words::PlaybackRenderer* playbackRenderer) noexcept;
+
+    auto find_playback_region(meta_words::PlaybackRegion::Id id) const
+        -> meta_words::OptPlaybackRegionPtr;
 
     template <typename Func>
     void for_each_playback_region(Func& func)
@@ -118,14 +129,19 @@ public:
         }
     }
 
-    tiny_observer_pattern::SimpleSubject&
-    get_subject(const meta_words::PlaybackRegion* playback_region);
+    auto get_playback_region_subject(
+        const meta_words::PlaybackRegion::Id playback_region_id)
+        -> tiny_observer_pattern::SimpleSubject&;
     //--------------------------------------------------------------------
 protected:
     using PlaybackRegionObservers =
-        std::unordered_map<const meta_words::PlaybackRegion*,
+        std::unordered_map<meta_words::PlaybackRegion::Id,
                            tiny_observer_pattern::SimpleSubject>;
     PlaybackRegionObservers playback_region_observers;
+
+    using PlaybackRegions = std::unordered_map<meta_words::PlaybackRegion::Id,
+                                               meta_words::PlaybackRegion*>;
+    PlaybackRegions playback_regions;
 
     std::atomic<bool> _renderersCanAccessModelGraph{true};
     std::atomic<int> _countOfRenderersCurrentlyAccessingModelGraph{0};

@@ -8,6 +8,7 @@
 #include "gsl/span"
 #include "meta_words_audio_source.h"
 #include "meta_words_data.h"
+#include <optional>
 
 namespace mam::meta_words {
 
@@ -16,10 +17,13 @@ class PlaybackRegion : public ARA::PlugIn::PlaybackRegion
 {
 public:
     //--------------------------------------------------------------------
+    using Id = uint64_t;
+    static constexpr Id INVALID_ID = -1;
+
     using AudioBuf =
         mam::audio_buffer_management::AudioBuffer<AudioSource::SampleType>;
     using AudioBufferSpan = gsl::span<const AudioSource::SampleType>;
-    
+
     explicit PlaybackRegion(ARA::PlugIn::AudioModification* audioModification,
                             ARA::ARAPlaybackRegionHostRef hostRef) noexcept;
 
@@ -28,9 +32,16 @@ public:
 
     auto get_audio_buffer(ARA::ARASampleRate playback_sample_rate) const
         -> const AudioBufferSpan;
+
+    auto get_id() const -> Id { return id; }
     //--------------------------------------------------------------------
 private:
+    static Id new_id;
+    Id id = INVALID_ID;
 };
+
+//------------------------------------------------------------------------
+using OptPlaybackRegionPtr = std::optional<const PlaybackRegion*>;
 
 //------------------------------------------------------------------------
 } // namespace mam::meta_words

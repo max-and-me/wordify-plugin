@@ -23,7 +23,7 @@ public:
         tiny_observer_pattern::SimpleSubject* subject,
         ARADocumentController& controller,
         ARADocumentController::FnGetSampleRate& fn_get_playback_sample_rate,
-        const meta_words::PlaybackRegion* playback_region);
+        const meta_words::PlaybackRegion::Id playback_region_id);
     ~ListEntryController() override;
 
     VSTGUI::CView*
@@ -42,7 +42,8 @@ private:
     tiny_observer_pattern::ObserverID observer_id = 0;
     ARADocumentController& controller;
     ARADocumentController::FnGetSampleRate fn_get_playback_sample_rate;
-    const meta_words::PlaybackRegion* playback_region = nullptr;
+    const meta_words::PlaybackRegion::Id playback_region_id =
+        meta_words::PlaybackRegion::INVALID_ID;
 };
 
 //------------------------------------------------------------------------

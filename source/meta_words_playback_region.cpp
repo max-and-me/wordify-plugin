@@ -111,10 +111,12 @@ static auto modify_time_stamps(const MetaWords& words,
 }
 
 //------------------------------------------------------------------------
+PlaybackRegion::Id PlaybackRegion::new_id = PlaybackRegion::INVALID_ID;
 PlaybackRegion::PlaybackRegion(
     ARA::PlugIn::AudioModification* audioModification,
     ARA::ARAPlaybackRegionHostRef hostRef) noexcept
 : ARA::PlugIn::PlaybackRegion(audioModification, hostRef)
+, id(++new_id)
 {
 }
 
