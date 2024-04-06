@@ -37,7 +37,7 @@ public:
     using FuncWaveFormData = std::function<const Data()>;
 
     WaveFormController();
-    virtual ~WaveFormController();
+    ~WaveFormController() override;
 
     bool initialize(Subject* subject, FuncWaveFormData&& waveform_data_func);
 
