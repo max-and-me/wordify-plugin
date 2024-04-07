@@ -14,36 +14,28 @@
 namespace mam {
 
 //------------------------------------------------------------------------
-bool sort(ARADocumentController& controller,
-          ARADocumentController::PlaybackRegionOrderedIds& ids)
-{
-    using Id = meta_words::PlaybackRegion::Id;
-
-    bool has_been_reorderd = false;
-    auto sorter = [&](const Id id0, const Id id1) {
-        const auto pbr0 = controller.find_playback_region(id0);
-        const auto pbr1 = controller.find_playback_region(id1);
-        if (!pbr0 || !pbr1)
-            return false;
-
-        bool result = pbr0.value()->getStartInPlaybackTime() <
-            pbr1.value()->getStartInPlaybackTime();
-
-        has_been_reorderd |= result;
-
-        return result;
-    };
-
-    std::sort(ids.begin(), ids.end(), sorter);
-    return has_been_reorderd;
-}
-
+// ARADocumentController
 //------------------------------------------------------------------------
 const ARA::ARAFactory* ARADocumentController::getARAFactory() noexcept
 {
     return ARA::PlugIn::PlugInEntry::getPlugInEntry<ARAFactoryConfig,
                                                     ARADocumentController>()
         ->getFactory();
+}
+
+//------------------------------------------------------------------------
+ARADocumentController::ARADocumentController(
+    const ARA::PlugIn::PlugInEntry* entry,
+    const ARA::ARADocumentControllerHostInstance* instance) noexcept
+: ARA::PlugIn::DocumentController(entry, instance)
+{
+    region_order_manager.initialize([this](PlaybackRegion::Id id) {
+        const auto opt_region = find_playback_region(id);
+        if (opt_region)
+            return opt_region.value()->getStartInPlaybackTime();
+
+        return 0.;
+    });
 }
 
 //------------------------------------------------------------------------
@@ -161,8 +153,7 @@ void ARADocumentController::didUpdatePlaybackRegionProperties(
     ARA::PlugIn::DocumentController::didUpdatePlaybackRegionProperties(
         playbackRegion);
 
-    if (sort(*this, playback_region_ids_ordered))
-        playback_region_order_subject.notify_listeners({});
+    region_order_manager.reorder();
 
     this->notify_listeners({});
     for (auto& o : playback_region_observers)
@@ -215,8 +206,7 @@ void ARADocumentController::didAddPlaybackRegionToRegionSequence(
         return;
 
     playback_regions.insert({pbr->get_id(), pbr});
-    playback_region_ids_ordered.push_back(pbr->get_id());
-    sort(*this, playback_region_ids_ordered);
+    region_order_manager.push_back(pbr->get_id());
 
     playback_region_lifetimes_subject.notify_listeners(
         {PlaybackRegionLifetimeData::Event::HasBeenAdded, pbr->get_id()});
@@ -234,9 +224,7 @@ void ARADocumentController::willRemovePlaybackRegionFromRegionSequence(
     playback_region_lifetimes_subject.notify_listeners(
         {PlaybackRegionLifetimeData::Event::WillBeRemoved, pbr->get_id()});
 
-    auto iter = std::remove(playback_region_ids_ordered.begin(),
-                            playback_region_ids_ordered.end(), pbr->get_id());
-    playback_region_ids_ordered.erase(iter, playback_region_ids_ordered.end());
+    region_order_manager.remove(pbr->get_id());
     playback_regions.erase(pbr->get_id());
 }
 
@@ -292,17 +280,16 @@ auto ARADocumentController::unregister_playback_region_changed_observer(
 
 //------------------------------------------------------------------------
 auto ARADocumentController::register_playback_region_order_observer(
-    PlaybackRegionOrderSuject::Callback&& callback) -> ObserverID
+    RegionOrderManager::OrderSubject::Callback&& callback) -> ObserverID
 {
-    return this->playback_region_order_subject.add_listener(
-        std::move(callback));
+    return region_order_manager.register_observer(std::move(callback));
 }
 
 //------------------------------------------------------------------------
 auto ARADocumentController::unregister_playback_region_order_observer(
     ObserverID id) -> void
 {
-    playback_region_order_subject.remove_listener(id);
+    region_order_manager.unregister_observer(id);
 }
 
 //------------------------------------------------------------------------

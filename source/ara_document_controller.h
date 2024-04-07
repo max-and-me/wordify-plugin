@@ -8,6 +8,7 @@
 #include "meta_words_data.h"
 #include "meta_words_playback_region.h"
 #include "tiny_observer_pattern.h"
+#include "region_order_manager.h"
 
 namespace mam {
 namespace meta_words {
@@ -34,11 +35,7 @@ struct PlaybackRegionLifetimeData
 };
 
 //------------------------------------------------------------------------
-struct PlaybackRegionOrderChangeData
-{
-    // TODO: Nothing to do here
-};
-
+// ARADocumentController
 //------------------------------------------------------------------------
 class ARADocumentController : public ARA::PlugIn::DocumentController,
                               public tiny_observer_pattern::SimpleSubject
@@ -62,13 +59,10 @@ public:
         std::unordered_map<PlaybackRegion::Id, Subject>;
     using PlaybackRegions =
         std::unordered_map<PlaybackRegion::Id, PlaybackRegion*>;
-    using PlaybackRegionOrderedIds = std::vector<PlaybackRegion::Id>;
 
     // Subjects
     using PlaybackRegionLifetimesSubject =
         tiny_observer_pattern::Subject<PlaybackRegionLifetimeData>;
-    using PlaybackRegionOrderSuject =
-        tiny_observer_pattern::Subject<PlaybackRegionOrderChangeData>;
 
     // publish inherited constructor
     using ARA::PlugIn::DocumentController::DocumentController;
@@ -76,6 +70,11 @@ public:
 
     // getter for the companion API implementations
     static const ARA::ARAFactory* getARAFactory() noexcept;
+
+    explicit ARADocumentController(
+        const ARA::PlugIn::PlugInEntry* entry,
+        const ARA::ARADocumentControllerHostInstance* instance) noexcept;
+
     bool doRestoreObjectsFromArchive(
         ARA::PlugIn::HostArchiveReader* archiveReader,
         const ARA::PlugIn::RestoreObjectsFilter* filter) noexcept override;
@@ -184,7 +183,7 @@ public:
         const PlaybackRegion::Id playback_region_id, ObserverID id);
 
     auto register_playback_region_order_observer(
-        PlaybackRegionOrderSuject::Callback&& callback) -> ObserverID;
+        RegionOrderManager::OrderSubject::Callback&& callback) -> ObserverID;
 
     auto unregister_playback_region_order_observer(ObserverID id) -> void;
 
@@ -199,20 +198,18 @@ public:
 
     auto unregister_playback_region_lifetimes_observer(ObserverID id) -> bool;
 
-    auto get_playback_region_ids_ordered() const
-        -> const PlaybackRegionOrderedIds&
+    template <typename Func>
+    auto for_each_playback_region_id_enumerated(Func& func) const
     {
-        return playback_region_ids_ordered;
+        region_order_manager.for_each_playback_region_id_enumerated(func);
     }
-            func(i, playback_region_ids_ordered.at(i));
 
     //--------------------------------------------------------------------
 protected:
     PlaybackRegionObservers playback_region_observers;
     PlaybackRegions playback_regions;
     PlaybackRegionLifetimesSubject playback_region_lifetimes_subject;
-    PlaybackRegionOrderSuject playback_region_order_subject;
-    PlaybackRegionOrderedIds playback_region_ids_ordered;
+    RegionOrderManager region_order_manager;
 
     std::atomic<bool> _renderersCanAccessModelGraph{true};
     std::atomic<int> _countOfRenderersCurrentlyAccessingModelGraph{0};

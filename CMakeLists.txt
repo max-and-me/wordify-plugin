@@ -42,6 +42,8 @@ smtg_add_vst3plugin(VstGPT
     source/meta_words_playback_region.h
     source/meta_words_playback_renderer.cpp
     source/meta_words_playback_renderer.h
+    source/region_order_manager.cpp
+    source/region_order_manager.h
     source/tiny_observer_pattern.h
     source/version.h
     source/vstgpt_cids.h
