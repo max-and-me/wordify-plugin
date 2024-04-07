@@ -29,7 +29,7 @@ public:
     using FuncWaveFormData = std::function<const Data()>;
 
     WaveFormView(const VSTGUI::CRect& size);
-    auto initialize(FuncWaveFormData&& audio_buffer_func) -> bool;
+    auto initialize(FuncWaveFormData&& waveform_data_func) -> bool;
     auto draw(VSTGUI::CDrawContext* pContext) -> void override;
 
     //--------------------------------------------------------------------
