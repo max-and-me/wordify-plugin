@@ -226,24 +226,22 @@ void ARADocumentController::onRequestLocatorPosChanged(double pos)
 
 //------------------------------------------------------------------------
 auto ARADocumentController::register_playback_region_lifetimes_observer(
-    PlaybackRegionLifetimesSubject::Callback&& callback)
-    -> tiny_observer_pattern::ObserverID
+    PlaybackRegionLifetimesSubject::Callback&& callback) -> ObserverID
 {
     return playback_region_lifetimes_subject.add_listener(std::move(callback));
 }
 
 //------------------------------------------------------------------------
 auto ARADocumentController::unregister_playback_region_lifetimes_observer(
-    tiny_observer_pattern::ObserverID id) -> bool
+    ObserverID id) -> bool
 {
     return playback_region_lifetimes_subject.remove_listener(id);
 }
 
 //------------------------------------------------------------------------
 auto ARADocumentController::register_playback_region_changed_observer(
-    const PlaybackRegion::Id playback_region_id,
-    tiny_observer_pattern::SimpleSubject::Callback&& callback)
-    -> tiny_observer_pattern::ObserverID
+    const PlaybackRegion::Id playback_region_id, Subject::Callback&& callback)
+    -> ObserverID
 {
     auto& subject = playback_region_observers[playback_region_id];
     return subject.add_listener(std::move(callback));
@@ -251,8 +249,7 @@ auto ARADocumentController::register_playback_region_changed_observer(
 
 //------------------------------------------------------------------------
 auto ARADocumentController::unregister_playback_region_changed_observer(
-    const PlaybackRegion::Id playback_region_id,
-    tiny_observer_pattern::ObserverID id)
+    const PlaybackRegion::Id playback_region_id, ObserverID id)
 {
     auto& subject = playback_region_observers[playback_region_id];
     return subject.remove_listener(id);
