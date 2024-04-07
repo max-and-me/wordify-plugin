@@ -41,10 +41,10 @@ static auto find_view_by_id(const VSTGUI::CRowColumnView* rowColView,
 //------------------------------------------------------------------------
 ListController::ListController(
     ARADocumentController& controller,
-    ARADocumentController::FnGetSampleRate&& fn_get_playback_sample_rate,
+    ARADocumentController::FnGetSampleRate&& playback_sample_rate_func,
     const VSTGUI::IUIDescription* ui_description)
 : controller(controller)
-, fn_get_playback_sample_rate(fn_get_playback_sample_rate)
+, playback_sample_rate_func(playback_sample_rate_func)
 , ui_description(ui_description)
 {
     lifetime_observer_id =
@@ -162,7 +162,7 @@ ListController::createSubController(VSTGUI::UTF8StringPtr name,
     if (VSTGUI::UTF8StringView(name) == "ListEntryController")
     {
         return new ListEntryController(controller,
-                                       this->fn_get_playback_sample_rate,
+                                       this->playback_sample_rate_func,
                                        tmp_playback_region_id);
     }
 

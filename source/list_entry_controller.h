@@ -21,7 +21,7 @@ public:
     //--------------------------------------------------------------------
     ListEntryController(
         ARADocumentController& controller,
-        ARADocumentController::FnGetSampleRate& fn_get_playback_sample_rate,
+        ARADocumentController::FnGetSampleRate& playback_sample_rate_func,
         const meta_words::PlaybackRegion::Id playback_region_id);
     ~ListEntryController() override;
 
@@ -38,7 +38,7 @@ public:
     //--------------------------------------------------------------------
 private:
     ARADocumentController& controller;
-    ARADocumentController::FnGetSampleRate fn_get_playback_sample_rate;
+    ARADocumentController::FnGetSampleRate playback_sample_rate_func;
     const meta_words::PlaybackRegion::Id playback_region_id =
         meta_words::PlaybackRegion::INVALID_ID;
 };

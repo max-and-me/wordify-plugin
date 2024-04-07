@@ -68,10 +68,10 @@ static auto build_waveform_data(const ARADocumentController& controller,
 //------------------------------------------------------------------------
 ListEntryController::ListEntryController(
     ARADocumentController& controller,
-    ARADocumentController::FnGetSampleRate& fn_get_playback_sample_rate,
+    ARADocumentController::FnGetSampleRate& playback_sample_rate_func,
     const meta_words::PlaybackRegion::Id playback_region_id)
 : controller(controller)
-, fn_get_playback_sample_rate(fn_get_playback_sample_rate)
+, playback_sample_rate_func(playback_sample_rate_func)
 , playback_region_id(playback_region_id)
 {
 }
@@ -97,7 +97,7 @@ VSTGUI::IController* ListEntryController::createSubController(
 
     auto& subject =
         controller.get_playback_region_changed_subject(playback_region_id);
-    auto sample_rate_func = fn_get_playback_sample_rate;
+    auto sample_rate_func = playback_sample_rate_func;
     auto pbr_id           = playback_region_id;
 
     if (VSTGUI::UTF8StringView(name) == "MetaWordsClipController")

@@ -27,7 +27,7 @@ public:
 
     ListController(
         ARADocumentController& controller,
-        ARADocumentController::FnGetSampleRate&& fn_get_playback_sample_rate,
+        ARADocumentController::FnGetSampleRate&& playback_sample_rate_func,
         const VSTGUI::IUIDescription* ui_description);
     ~ListController() override;
 
@@ -59,7 +59,7 @@ private:
     ARADocumentController& controller;
     tiny_observer_pattern::ObserverID lifetime_observer_id = 0;
     tiny_observer_pattern::ObserverID order_observer_id    = 0;
-    ARADocumentController::FnGetSampleRate fn_get_playback_sample_rate;
+    ARADocumentController::FnGetSampleRate playback_sample_rate_func;
     PlaybackRegion::Id tmp_playback_region_id = PlaybackRegion::INVALID_ID;
 };
 
