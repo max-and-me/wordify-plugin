@@ -27,10 +27,16 @@ struct PlaybackRegionLifetimeData
     enum class Event
     {
         HasBeenAdded,
-        WillBeRemoved
+        WillBeRemoved,
     };
     Event event;
     PlaybackRegion::Id id{0};
+};
+
+//------------------------------------------------------------------------
+struct PlaybackRegionOrderChangeData
+{
+    // TODO: Nothing to do here
 };
 
 //------------------------------------------------------------------------
@@ -51,12 +57,18 @@ public:
     using SampleRate      = double;
     using FnGetSampleRate = std::function<SampleRate()>;
 
+    // Containers
     using PlaybackRegionObservers =
         std::unordered_map<PlaybackRegion::Id, Subject>;
     using PlaybackRegions =
         std::unordered_map<PlaybackRegion::Id, PlaybackRegion*>;
+    using PlaybackRegionOrderedIds = std::vector<PlaybackRegion::Id>;
+
+    // Subjects
     using PlaybackRegionLifetimesSubject =
         tiny_observer_pattern::Subject<PlaybackRegionLifetimeData>;
+    using PlaybackRegionOrderSuject =
+        tiny_observer_pattern::Subject<PlaybackRegionOrderChangeData>;
 
     // publish inherited constructor
     using ARA::PlugIn::DocumentController::DocumentController;
@@ -171,6 +183,11 @@ public:
     auto unregister_playback_region_changed_observer(
         const PlaybackRegion::Id playback_region_id, ObserverID id);
 
+    auto register_playback_region_order_observer(
+        PlaybackRegionOrderSuject::Callback&& callback) -> ObserverID;
+
+    auto unregister_playback_region_order_observer(ObserverID id) -> void;
+
     auto get_playback_region_changed_subject(
         const PlaybackRegion::Id playback_region_id) -> Subject&
     {
@@ -182,11 +199,19 @@ public:
 
     auto unregister_playback_region_lifetimes_observer(ObserverID id) -> bool;
 
+    auto get_playback_region_ids_ordered() const
+        -> const PlaybackRegionOrderedIds&
+    {
+        return playback_region_ids_ordered;
+    }
+
     //--------------------------------------------------------------------
 protected:
     PlaybackRegionObservers playback_region_observers;
     PlaybackRegions playback_regions;
     PlaybackRegionLifetimesSubject playback_region_lifetimes_subject;
+    PlaybackRegionOrderSuject playback_region_order_subject;
+    PlaybackRegionOrderedIds playback_region_ids_ordered;
 
     std::atomic<bool> _renderersCanAccessModelGraph{true};
     std::atomic<int> _countOfRenderersCurrentlyAccessingModelGraph{0};

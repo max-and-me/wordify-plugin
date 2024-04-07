@@ -52,6 +52,9 @@ ListController::ListController(
             [this](const auto& data) {
                 this->on_add_remove_playback_region(data);
             });
+
+    order_observer_id = controller.register_playback_region_order_observer(
+        [this](const auto&) { this->on_playback_regions_reordered(); });
 }
 
 //------------------------------------------------------------------------
@@ -59,6 +62,8 @@ ListController::~ListController()
 {
     controller.unregister_playback_region_lifetimes_observer(
         lifetime_observer_id);
+
+    controller.unregister_playback_region_order_observer(order_observer_id);
 }
 
 //------------------------------------------------------------------------
@@ -100,6 +105,22 @@ auto ListController::create_list_item_view(const PlaybackRegion::Id id)
 }
 
 //------------------------------------------------------------------------
+void ListController::on_playback_regions_reordered()
+{
+    if (!rowColView)
+        return;
+
+    const auto& region_ids = controller.get_playback_region_ids_ordered();
+    for (size_t i = 0; i < region_ids.size(); i++)
+    {
+        const auto region_id = region_ids.at(i);
+        auto* viewToMove     = find_view_by_id(rowColView, region_id);
+        rowColView->changeViewZOrder(viewToMove, i);
+    }
+    rowColView->invalid();
+}
+
+//------------------------------------------------------------------------
 void ListController::on_add_remove_playback_region(
     const PlaybackRegionLifetimeData& data)
 {
@@ -118,7 +139,6 @@ void ListController::on_add_remove_playback_region(
 
             break;
         }
-
         case PlaybackRegionLifetimeData::Event::WillBeRemoved: {
             auto* viewToRemove = find_view_by_id(rowColView, data.id);
             if (viewToRemove)
@@ -126,8 +146,8 @@ void ListController::on_add_remove_playback_region(
                 rowColView->removeView(viewToRemove);
                 rowColView->invalid();
             }
+            break;
         }
-        break;
     }
 }
 

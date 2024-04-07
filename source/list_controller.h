@@ -50,6 +50,7 @@ public:
     //--------------------------------------------------------------------
 private:
     void on_add_remove_playback_region(const PlaybackRegionLifetimeData& data);
+    void on_playback_regions_reordered();
     auto create_list_item_view(const PlaybackRegion::Id id) -> VSTGUI::CView*;
 
     VSTGUI::CRowColumnView* rowColView           = nullptr;
@@ -57,6 +58,7 @@ private:
 
     ARADocumentController& controller;
     tiny_observer_pattern::ObserverID lifetime_observer_id = 0;
+    tiny_observer_pattern::ObserverID order_observer_id    = 0;
     ARADocumentController::FnGetSampleRate fn_get_playback_sample_rate;
     PlaybackRegion::Id tmp_playback_region_id = PlaybackRegion::INVALID_ID;
 };
