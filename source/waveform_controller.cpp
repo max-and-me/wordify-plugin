@@ -3,15 +3,7 @@
 //------------------------------------------------------------------------
 
 #include "waveform_controller.h"
-#include "mam/meta_words/meta_word.h"
-#include "meta_words_playback_region.h"
-#include "vstgui/lib/ccolor.h"
 #include "vstgui/lib/cgradientview.h"
-#include "vstgui/lib/controls/icontrollistener.h"
-#include "vstgui/lib/cstring.h"
-#include "vstgui/lib/events.h"
-#include "vstgui/lib/platform/platformfactory.h"
-#include "vstgui/uidescription/iuidescription.h"
 #include "vstgui/uidescription/uiattributes.h"
 #include "waveform_view.h"
 #include <optional>
@@ -79,16 +71,16 @@ bool WaveFormController::initialize(Subject* subject,
     this->subject            = subject;
     this->waveform_data_func = std::move(waveform_data_func);
 
-    observer_id =
-        subject->add_listener([this](const auto&) { this->onDataChanged(); });
+    observer_id = subject->add_listener(
+        [this](const auto&) { this->on_waveform_data_changed(); });
 
-    onDataChanged();
+    on_waveform_data_changed();
 
     return true;
 }
 
 //------------------------------------------------------------------------
-void WaveFormController::onDataChanged()
+void WaveFormController::on_waveform_data_changed()
 {
     const auto data = this->waveform_data_func();
 
@@ -133,7 +125,7 @@ WaveFormController::verifyView(VSTGUI::CView* view,
                 [func = this->waveform_data_func]() -> WaveFormView::Data {
                     return func();
                 });
-            onDataChanged();
+            waveform_view->invalid();
         }
         else if (*view_name == "Background")
         {

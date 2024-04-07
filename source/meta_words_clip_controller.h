@@ -46,7 +46,7 @@ public:
     OBJ_METHODS(MetaWordsClipController, FObject)
     //--------------------------------------------------------------------
 private:
-    void onDataChanged();
+    void on_waveform_data_changed();
 
     VSTGUI::CListControl* listControl = nullptr;
     VSTGUI::CTextLabel* label         = nullptr;

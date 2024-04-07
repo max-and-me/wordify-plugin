@@ -1,11 +1,11 @@
 //------------------------------------------------------------------------
 // Copyright(c) 2023 Max And Me.
 //------------------------------------------------------------------------
+
 #include "waveform_view.h"
 #include "mam/wave-draw/wave-draw.h"
 #include "vstgui/lib/cdrawcontext.h"
 #include "vstgui/lib/cgraphicspath.h"
-#include <algorithm>
 
 using namespace VSTGUI;
 
@@ -20,15 +20,15 @@ WaveFormView::WaveFormView(const CRect& size)
 }
 
 //------------------------------------------------------------------------
-bool WaveFormView::initialize(FuncWaveFormData&& waveform_data_func)
+auto WaveFormView::initialize(FuncWaveFormData&& waveform_data_func) -> bool
 {
     this->waveform_data_func = std::move(waveform_data_func);
     return true;
 }
 
 //------------------------------------------------------------------------
-void WaveFormView::draw_like_spotify(CDrawContext& pContext,
-                                     const CRect& viewSize)
+auto WaveFormView::draw_like_spotify(CDrawContext& pContext,
+                                     const CRect& viewSize) -> void
 {
     using Drawer   = wave_draw::Drawer;
     using DrawData = wave_draw::DrawData;
@@ -62,7 +62,8 @@ void WaveFormView::draw_like_spotify(CDrawContext& pContext,
 }
 
 //------------------------------------------------------------------------
-void WaveFormView::drawFull(CDrawContext* pContext, const CRect& viewSize)
+auto WaveFormView::drawFull(CDrawContext* pContext, const CRect& viewSize)
+    -> void
 {
     pContext->setLineWidth(1.0);
 
@@ -93,7 +94,7 @@ void WaveFormView::drawFull(CDrawContext* pContext, const CRect& viewSize)
 //------------------------------------------------------------------------
 // https://steinbergmedia.github.io/vst3_doc/vstgui/html/the_view_system.html#inherit_from_cview
 //------------------------------------------------------------------------
-void WaveFormView::draw(CDrawContext* pContext)
+auto WaveFormView::draw(CDrawContext* pContext) -> void
 {
     if (!pContext)
         return;

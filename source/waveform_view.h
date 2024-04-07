@@ -9,9 +9,6 @@
 #include "vstgui/lib/cview.h"
 
 namespace mam {
-//------------------------------------------------------------------------
-using SampleType      = float;
-using AudioBufferSpan = gsl::span<const SampleType>;
 
 //------------------------------------------------------------------------
 // WaveFormView
@@ -32,15 +29,15 @@ public:
     using FuncWaveFormData = std::function<Data()>;
 
     WaveFormView(const VSTGUI::CRect& size);
-    bool initialize(FuncWaveFormData&& audio_buffer_func);
-    void draw(VSTGUI::CDrawContext* pContext) override;
+    auto initialize(FuncWaveFormData&& audio_buffer_func) -> bool;
+    auto draw(VSTGUI::CDrawContext* pContext) -> void override;
 
     //--------------------------------------------------------------------
 private:
-    void drawFull(VSTGUI::CDrawContext* pContext,
-                  const VSTGUI::CRect& viewSize);
-    void draw_like_spotify(VSTGUI::CDrawContext& pContext,
-                           const VSTGUI::CRect& viewSize);
+    auto drawFull(VSTGUI::CDrawContext* pContext, const VSTGUI::CRect& viewSize)
+        -> void;
+    auto draw_like_spotify(VSTGUI::CDrawContext& pContext,
+                           const VSTGUI::CRect& viewSize) -> void;
 
     FuncWaveFormData waveform_data_func;
 };

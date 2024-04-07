@@ -72,15 +72,15 @@ bool MetaWordsClipController::initialize(
     this->meta_words_data_func = std::move(meta_words_data_func);
 
     observer_id = this->subject->add_listener(
-        [this](const auto&) { this->onDataChanged(); });
+        [this](const auto&) { this->on_waveform_data_changed(); });
 
-    onDataChanged();
+    on_waveform_data_changed();
 
     return true;
 }
 
 //------------------------------------------------------------------------
-void MetaWordsClipController::onDataChanged()
+void MetaWordsClipController::on_waveform_data_changed()
 {
     const auto& data = meta_words_data_func();
     if (listControl)
