@@ -59,10 +59,8 @@ static auto build_waveform_data(const ARADocumentController& controller,
     if (!opt_region)
         return {};
 
-    WaveFormController::Data data;
-    data.audio_buffer = opt_region.value()->get_audio_buffer(sample_rate);
-    data.color        = opt_region.value()->get_effective_color();
-    return data;
+    return {opt_region.value()->get_effective_color(),
+            opt_region.value()->get_audio_buffer(sample_rate)};
 }
 
 //------------------------------------------------------------------------

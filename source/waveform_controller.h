@@ -27,9 +27,9 @@ public:
     //--------------------------------------------------------------------
     using Subject    = tiny_observer_pattern::SimpleSubject;
     using ObserverId = tiny_observer_pattern::ObserverID;
-    using Data       = WaveFormView::Data;
+    using Data       = const WaveFormView::Data;
 
-    using FuncWaveFormData = std::function<const Data()>;
+    using FuncWaveFormData = std::function<Data()>;
 
     WaveFormController();
     ~WaveFormController() override;

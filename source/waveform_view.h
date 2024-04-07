@@ -26,7 +26,7 @@ public:
         AudioBuffer audio_buffer;
     };
 
-    using FuncWaveFormData = std::function<Data()>;
+    using FuncWaveFormData = std::function<const Data()>;
 
     WaveFormView(const VSTGUI::CRect& size);
     auto initialize(FuncWaveFormData&& audio_buffer_func) -> bool;
