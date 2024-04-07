@@ -17,6 +17,10 @@ struct PlaybackRegionOrderChangeData
 
 //------------------------------------------------------------------------
 // RegionOrderManager
+//
+// Keeps a sorted list of all playback regions IDs. The regions are always
+// sorted to the playback time (no matter in which sequence they are). When IDs
+// have been sorted, all observers will be notified.
 //------------------------------------------------------------------------
 class RegionOrderManager
 {
