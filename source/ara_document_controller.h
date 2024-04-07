@@ -133,21 +133,14 @@ public:
         ARADocumentController::MetaWordsDataList meta_words_data_list;
         if (auto* document = getDocument())
         {
-            const auto& audio_sources =
-                document->getAudioSources<AudioSource>();
-            for (const auto& audio_source : audio_sources)
+            const auto& sequences = document->getRegionSequences();
+            for (const auto sequence : sequences)
             {
-                const auto& audio_modifications =
-                    audio_source->getAudioModifications();
-                for (const auto audio_modification : audio_modifications)
+                const auto& regions =
+                    sequence->getPlaybackRegions<PlaybackRegion>();
+                for (const auto* region : regions)
                 {
-                    const auto& playback_regions =
-                        audio_modification
-                            ->getPlaybackRegions<PlaybackRegion>();
-                    for (const auto* playback_region : playback_regions)
-                    {
-                        func(playback_region);
-                    }
+                    func(region);
                 }
             }
         }
