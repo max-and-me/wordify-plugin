@@ -204,6 +204,7 @@ public:
     {
         return playback_region_ids_ordered;
     }
+            func(i, playback_region_ids_ordered.at(i));
 
     //--------------------------------------------------------------------
 protected:
