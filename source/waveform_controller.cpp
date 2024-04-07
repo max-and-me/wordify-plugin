@@ -5,7 +5,6 @@
 #include "waveform_controller.h"
 #include "vstgui/lib/cgradientview.h"
 #include "vstgui/uidescription/uiattributes.h"
-#include "waveform_view.h"
 #include <optional>
 
 //------------------------------------------------------------------------
