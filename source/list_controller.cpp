@@ -16,9 +16,9 @@ namespace mam {
 constexpr size_t PLAYBACK_REGION_ID_ATTR = 123456789;
 
 //------------------------------------------------------------------------
-static auto find_view_by_id(const VSTGUI::CRowColumnView* rowColView,
-                            ListController::PlaybackRegion::Id id)
-    -> VSTGUI::CView*
+static auto
+find_view_by_id(const VSTGUI::CRowColumnView* rowColView,
+                ListController::PlaybackRegion::Id id) -> VSTGUI::CView*
 {
     CView* viewToFind = nullptr;
     rowColView->forEachChild([&, pbr_id = id](CView* view) {
@@ -79,7 +79,10 @@ CView* ListController::verifyView(CView* view,
                 [&](const PlaybackRegion::Id id) {
                     auto* newView = create_list_item_view(id);
                     if (newView)
+                    {
                         rowColView->addView(newView);
+                        rowColView->sizeToFit();
+                    }
                 });
         }
     }
@@ -133,6 +136,7 @@ void ListController::on_add_remove_playback_region(
             if (viewToAdd)
             {
                 rowColView->addView(viewToAdd);
+                rowColView->sizeToFit();
                 rowColView->invalid();
             }
 
@@ -143,6 +147,7 @@ void ListController::on_add_remove_playback_region(
             if (viewToRemove)
             {
                 rowColView->removeView(viewToRemove);
+                rowColView->sizeToFit();
                 rowColView->invalid();
             }
             break;

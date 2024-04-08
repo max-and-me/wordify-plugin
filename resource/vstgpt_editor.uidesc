@@ -32,13 +32,13 @@
 			},
 			"UIEditController": {
 				"EditViewScale": "1",
-				"EditorSize": "0, 0, 1276, 682",
-				"SplitViewSize_0_0": "0.489329268292682917351754667834029532969",
-				"SplitViewSize_0_1": "0.4801829268292682750818300974060548469424",
-				"SplitViewSize_1_0": "0.6006097560975609539468678121920675039291",
-				"SplitViewSize_1_1": "0.4375",
-				"SplitViewSize_2_0": "0.7672413793103448620414042125048581510782",
-				"SplitViewSize_2_1": "0.2319749216300940330981461556802969425917",
+				"EditorSize": "0, 0, 1219, 550",
+				"SplitViewSize_0_0": "0.3606870229007633765760942878841888159513",
+				"SplitViewSize_0_1": "0.6011450381679389609601571464736480265856",
+				"SplitViewSize_1_0": "0.6259541984732824859705146991473156958818",
+				"SplitViewSize_1_1": "0.4217557251908397031314734704210422933102",
+				"SplitViewSize_2_0": "0.7563576702214930280732119172171223908663",
+				"SplitViewSize_2_1": "0.2428219852337981932155486219926388002932",
 				"TabSwitchValue": "0",
 				"Version": "1",
 				"ViewBackground": "1"
@@ -305,7 +305,7 @@
 			},
 			"ListEntryTemplate": {
 				"attributes": {
-					"autosize": "left right top bottom ",
+					"autosize": "left right ",
 					"background-color": "~ BlackCColor",
 					"background-color-draw-style": "filled and stroked",
 					"class": "CViewContainer",
