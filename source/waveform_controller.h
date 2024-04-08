@@ -55,7 +55,7 @@ public:
 
     //--------------------------------------------------------------------
 private:
-    void on_waveform_data_changed();
+    void on_meta_words_data_changed();
 
     Subject* subject       = nullptr;
     ObserverId observer_id = 0;

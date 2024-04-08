@@ -71,15 +71,15 @@ bool WaveFormController::initialize(Subject* subject,
     this->waveform_data_func = std::move(waveform_data_func);
 
     observer_id = subject->add_listener(
-        [this](const auto&) { this->on_waveform_data_changed(); });
+        [this](const auto&) { this->on_meta_words_data_changed(); });
 
-    on_waveform_data_changed();
+    on_meta_words_data_changed();
 
     return true;
 }
 
 //------------------------------------------------------------------------
-void WaveFormController::on_waveform_data_changed()
+void WaveFormController::on_meta_words_data_changed()
 {
     const auto data = this->waveform_data_func();
 
