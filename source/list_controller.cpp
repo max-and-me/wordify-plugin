@@ -137,7 +137,7 @@ void ListController::on_add_remove_playback_region(
             {
                 rowColView->addView(viewToAdd);
                 rowColView->sizeToFit();
-                rowColView->invalid();
+                on_playback_regions_reordered();
             }
 
             break;
