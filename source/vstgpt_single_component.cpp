@@ -219,7 +219,7 @@ VSTGUI::IController* VstGPTSingleComponent::createSubController(
         return nullptr;
 
     if (VSTGUI::UTF8StringView(name) == "MetaWordsListController")
-        return new ListController(*document_controller, std::move([this]() {
+        return new ListController(document_controller, std::move([this]() {
             return this->processSetup.sampleRate;
         }),
                                   description);

@@ -11,25 +11,30 @@ namespace mam {
 //------------------------------------------------------------------------
 static auto onRequestSelectWord(int index,
                                 const mam::MetaWordsData& data,
-                                ARADocumentController& document_controller)
-    -> void
+                                ARADocumentController* controller) -> void
 {
+    if (!controller)
+        return;
+
     const auto& meta_words_data = data;
     const auto& words           = meta_words_data.words;
     const auto& selected_word   = words.at(index);
 
     const auto new_position =
         selected_word.begin + meta_words_data.project_offset;
-    document_controller.onRequestLocatorPosChanged(new_position);
+    controller->onRequestLocatorPosChanged(new_position);
 }
 
 //------------------------------------------------------------------------
 static auto onRequestSelectWord(int index,
-                                ARADocumentController& controller,
+                                ARADocumentController* controller,
                                 double sample_rate,
                                 const meta_words::PlaybackRegion::Id id) -> void
 {
-    auto opt_region = controller.find_playback_region(id);
+    if (!controller)
+        return;
+
+    auto opt_region = controller->find_playback_region(id);
     if (!opt_region)
         return;
 
@@ -39,11 +44,14 @@ static auto onRequestSelectWord(int index,
 }
 
 //------------------------------------------------------------------------
-static auto build_meta_words_data(const ARADocumentController& controller,
+static auto build_meta_words_data(const ARADocumentController* controller,
                                   const meta_words::PlaybackRegion::Id id,
                                   double sample_rate) -> const MetaWordsData
 {
-    auto opt_region = controller.find_playback_region(id);
+    if (!controller)
+        return {};
+
+    auto opt_region = controller->find_playback_region(id);
     if (!opt_region)
         return {};
 
@@ -51,11 +59,14 @@ static auto build_meta_words_data(const ARADocumentController& controller,
 }
 
 //------------------------------------------------------------------------
-static auto build_waveform_data(const ARADocumentController& controller,
+static auto build_waveform_data(const ARADocumentController* controller,
                                 const meta_words::PlaybackRegion::Id id,
                                 double sample_rate) -> WaveFormController::Data
 {
-    auto opt_region = controller.find_playback_region(id);
+    if (!controller)
+        return {};
+
+    auto opt_region = controller->find_playback_region(id);
     if (!opt_region)
         return {};
 
@@ -67,7 +78,7 @@ static auto build_waveform_data(const ARADocumentController& controller,
 // ListEntryController
 //------------------------------------------------------------------------
 ListEntryController::ListEntryController(
-    ARADocumentController& controller,
+    ARADocumentController* controller,
     ARADocumentController::FnGetSampleRate& playback_sample_rate_func,
     const meta_words::PlaybackRegion::Id playback_region_id)
 : controller(controller)
@@ -95,10 +106,14 @@ VSTGUI::IController* ListEntryController::createSubController(
     if (playback_region_id == meta_words::PlaybackRegion::INVALID_ID)
         return nullptr;
 
+    if (!controller)
+        return nullptr;
+
     auto& subject =
-        controller.get_playback_region_changed_subject(playback_region_id);
+        controller->get_playback_region_changed_subject(playback_region_id);
     auto sample_rate_func = playback_sample_rate_func;
     auto pbr_id           = playback_region_id;
+    auto ctler            = this->controller;
 
     if (VSTGUI::UTF8StringView(name) == "MetaWordsClipController")
     {
@@ -106,15 +121,14 @@ VSTGUI::IController* ListEntryController::createSubController(
         if (!subctrl)
             return nullptr;
 
-        subctrl->initialize(&controller, [this, pbr_id, sample_rate_func]() {
-            return build_meta_words_data(controller, pbr_id,
-                                         sample_rate_func());
+        subctrl->initialize(controller, [ctler, pbr_id, sample_rate_func]() {
+            return build_meta_words_data(ctler, pbr_id, sample_rate_func());
         });
 
-        subctrl->set_list_clicked_func([this, pbr_id,
-                                        sample_rate_func](int index) {
-            onRequestSelectWord(index, controller, sample_rate_func(), pbr_id);
-        });
+        subctrl->set_list_clicked_func(
+            [ctler, pbr_id, sample_rate_func](int index) {
+                onRequestSelectWord(index, ctler, sample_rate_func(), pbr_id);
+            });
         return subctrl;
     }
     else if (VSTGUI::UTF8StringView(name) == "WaveFormController")
@@ -125,9 +139,8 @@ VSTGUI::IController* ListEntryController::createSubController(
 
         subctrl->initialize(
             &subject,
-            [pbr_id, this, sample_rate_func]() -> WaveFormController::Data {
-                return build_waveform_data(controller, pbr_id,
-                                           sample_rate_func());
+            [pbr_id, ctler, sample_rate_func]() -> WaveFormController::Data {
+                return build_waveform_data(ctler, pbr_id, sample_rate_func());
             });
 
         return subctrl;

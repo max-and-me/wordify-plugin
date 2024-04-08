@@ -20,7 +20,7 @@ class ListEntryController : public Steinberg::FObject,
 public:
     //--------------------------------------------------------------------
     ListEntryController(
-        ARADocumentController& controller,
+        ARADocumentController* controller,
         ARADocumentController::FnGetSampleRate& playback_sample_rate_func,
         const meta_words::PlaybackRegion::Id playback_region_id);
     ~ListEntryController() override;
@@ -29,15 +29,16 @@ public:
     verifyView(VSTGUI::CView* view,
                const VSTGUI::UIAttributes& attributes,
                const VSTGUI::IUIDescription* description) override;
-    VSTGUI::IController* createSubController(
-        VSTGUI::UTF8StringPtr name, const VSTGUI::IUIDescription* description) override;
+    VSTGUI::IController*
+    createSubController(VSTGUI::UTF8StringPtr name,
+                        const VSTGUI::IUIDescription* description) override;
 
     void valueChanged(VSTGUI::CControl* pControl) override {}
 
     OBJ_METHODS(ListEntryController, FObject)
     //--------------------------------------------------------------------
 private:
-    ARADocumentController& controller;
+    ARADocumentController* controller = nullptr;
     ARADocumentController::FnGetSampleRate playback_sample_rate_func;
     const meta_words::PlaybackRegion::Id playback_region_id =
         meta_words::PlaybackRegion::INVALID_ID;

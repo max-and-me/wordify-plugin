@@ -26,7 +26,7 @@ public:
     using PlaybackRegion = meta_words::PlaybackRegion;
 
     ListController(
-        ARADocumentController& controller,
+        ARADocumentController* controller,
         ARADocumentController::FnGetSampleRate&& playback_sample_rate_func,
         const VSTGUI::IUIDescription* ui_description);
     ~ListController() override;
@@ -56,7 +56,7 @@ private:
     VSTGUI::CRowColumnView* rowColView           = nullptr;
     const VSTGUI::IUIDescription* ui_description = nullptr;
 
-    ARADocumentController& controller;
+    ARADocumentController* controller = nullptr;
     tiny_observer_pattern::ObserverID lifetime_observer_id = 0;
     tiny_observer_pattern::ObserverID order_observer_id    = 0;
     ARADocumentController::FnGetSampleRate playback_sample_rate_func;
