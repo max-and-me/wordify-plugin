@@ -9,8 +9,66 @@
 #include "vstgui/lib/controls/ctextlabel.h"
 #include "vstgui/lib/platform/platformfactory.h"
 
+#include "vstgui/lib/cview.h"
+#include "vstgui/lib/cframe.h"
+#include "vstgui/lib/cdrawcontext.h"
+#include "vstgui/lib/ccolor.h"
+#include "vstgui/lib/cpoint.h"
+#include "vstgui/lib/crect.h"
+#include "vstgui/lib/cfont.h"
+
 namespace mam {
 using namespace ::VSTGUI;
+
+#ifndef kPI
+#define kPI 3.14159265358979323846
+#endif
+
+//------------------------------------------------------------------------
+class SpinningLoadingView : public CView {
+public:
+    SpinningLoadingView(const CRect& size)
+    : CView(size)
+    {
+        setWantsIdle (true);
+    }
+
+    void onIdle () override
+    {
+        rotationAngle += 5.0f;
+        if (rotationAngle >= 360.0f)
+            rotationAngle -= 360.0f;
+        invalid();
+    }
+
+    void draw(CDrawContext* context) override {
+        CView::draw(context);
+
+        CRect bounds = getViewSize();
+        const CPoint center = bounds.getCenter();
+
+        context->setDrawMode(kAntiAliasing);
+        context->setLineWidth(2.0);
+
+        constexpr int numLines = 12;
+        constexpr float lineLength = 10.0;
+        constexpr float lineThickness = 2.0;
+        constexpr CColor lineColor(255, 255, 255);
+
+        context->setFrameColor(lineColor);
+        context->setFillColor(lineColor);
+
+        for (int i = 0; i < numLines; ++i) {
+            const float angle = (i * 30.0f + rotationAngle) * (kPI / 180.0f);
+            const CPoint start(center.x + cos(angle) * (bounds.getWidth() * 0.3f), center.y + sin(angle) * (bounds.getHeight() * 0.3f));
+            const CPoint end(start.x + cos(angle) * lineLength, start.y + sin(angle) * lineLength);
+            context->drawLine(start, end);
+        }
+    }
+
+private:
+    float rotationAngle = 0.0f;
+};
 
 //------------------------------------------------------------------------
 static auto update_list_control_content(CListControl& listControl,
@@ -101,6 +159,16 @@ MetaWordsClipController::verifyView(VSTGUI::CView* view,
                                     const VSTGUI::UIAttributes& attributes,
                                     const VSTGUI::IUIDescription* description)
 {
+    if (auto container = view->asViewContainer ())
+    {
+        if (!spinner)
+        {
+            const auto view_size = CPoint({65., 65.});
+            spinner = new SpinningLoadingView(CRect{0, 0, view_size.x, view_size.y});
+            container->addView (spinner);
+        }
+    }
+    
 
     if (!listControl)
     {

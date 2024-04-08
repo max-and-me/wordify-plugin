@@ -49,6 +49,7 @@ private:
 
     VSTGUI::CListControl* listControl = nullptr;
     VSTGUI::CTextLabel* label         = nullptr;
+    VSTGUI::CView* spinner            = nullptr;
 
     FuncMetaWordsData meta_words_data_func;
     FuncListValueChanged list_value_changed_func;
