@@ -148,32 +148,12 @@ public:
         -> OptPlaybackRegionPtr;
 
     template <typename Func>
-    void for_each_playback_region(Func&& func)
-    {
-        ARADocumentController::MetaWordsDataList meta_words_data_list;
-        if (auto* document = getDocument())
-        {
-            const auto& sequences = document->getRegionSequences();
-            for (const auto sequence : sequences)
-            {
-                const auto& regions =
-                    sequence->getPlaybackRegions<PlaybackRegion>();
-                for (const auto* region : regions)
-                {
-                    func(region);
-                }
-            }
-        }
-    }
-
-    template <typename Func>
     void for_each_playback_region_id(Func&& func)
     {
-        auto tmp_func = [func](const PlaybackRegion* r) -> void {
-            if (r)
-                func(r->get_id());
+        auto tmp_func = [func](size_t /*index*/, const PlaybackRegion::Id id) {
+            func(id);
         };
-        this->for_each_playback_region(tmp_func);
+        region_order_manager.for_each_playback_region_id_enumerated(tmp_func);
     }
 
     auto register_playback_region_changed_observer(
@@ -214,6 +194,26 @@ protected:
 
     std::atomic<bool> _renderersCanAccessModelGraph{true};
     std::atomic<int> _countOfRenderersCurrentlyAccessingModelGraph{0};
+
+private:
+    template <typename Func>
+    void for_each_playback_region(Func&& func)
+    {
+        ARADocumentController::MetaWordsDataList meta_words_data_list;
+        if (auto* document = getDocument())
+        {
+            const auto& sequences = document->getRegionSequences();
+            for (const auto sequence : sequences)
+            {
+                const auto& regions =
+                    sequence->getPlaybackRegions<PlaybackRegion>();
+                for (const auto* region : regions)
+                {
+                    func(region);
+                }
+            }
+        }
+    }
 };
 
 //------------------------------------------------------------------------
