@@ -7,8 +7,8 @@
 #include "ARA_Library/PlugIn/ARAPlug.h"
 #include "meta_words_data.h"
 #include "meta_words_playback_region.h"
-#include "tiny_observer_pattern.h"
 #include "region_order_manager.h"
+#include "tiny_observer_pattern.h"
 
 namespace mam {
 namespace meta_words {
@@ -148,7 +148,7 @@ public:
         -> OptPlaybackRegionPtr;
 
     template <typename Func>
-    void for_each_playback_region(Func& func)
+    void for_each_playback_region(Func&& func)
     {
         ARADocumentController::MetaWordsDataList meta_words_data_list;
         if (auto* document = getDocument())
@@ -167,12 +167,13 @@ public:
     }
 
     template <typename Func>
-    void for_each_playback_region_id(Func func)
+    void for_each_playback_region_id(Func&& func)
     {
-        for_each_playback_region([func](const PlaybackRegion* r) {
+        auto tmp_func = [func](const PlaybackRegion* r) -> void {
             if (r)
                 func(r->get_id());
-        });
+        };
+        this->for_each_playback_region(tmp_func);
     }
 
     auto register_playback_region_changed_observer(
@@ -199,7 +200,7 @@ public:
     auto unregister_playback_region_lifetimes_observer(ObserverID id) -> bool;
 
     template <typename Func>
-    auto for_each_playback_region_id_enumerated(Func& func) const
+    auto for_each_playback_region_id_enumerated(Func& func) const -> void
     {
         region_order_manager.for_each_playback_region_id_enumerated(func);
     }

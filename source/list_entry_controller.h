@@ -29,8 +29,8 @@ public:
     verifyView(VSTGUI::CView* view,
                const VSTGUI::UIAttributes& attributes,
                const VSTGUI::IUIDescription* description) override;
-    VSTGUI::IController* ListEntryController::createSubController(
-        VSTGUI::UTF8StringPtr name, const VSTGUI::IUIDescription* description);
+    VSTGUI::IController* createSubController(
+        VSTGUI::UTF8StringPtr name, const VSTGUI::IUIDescription* description) override;
 
     void valueChanged(VSTGUI::CControl* pControl) override {}
 

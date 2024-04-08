@@ -110,12 +110,11 @@ void ListController::on_playback_regions_reordered()
     if (!rowColView)
         return;
 
-    controller.for_each_playback_region_id_enumerated(
-        [&](size_t index, meta_words::PlaybackRegion::Id id) {
-            auto* viewToMove = find_view_by_id(rowColView, id);
-            rowColView->changeViewZOrder(viewToMove,
-                                         static_cast<uint32_t>(index));
-        });
+    auto func = [&](size_t index, meta_words::PlaybackRegion::Id id) {
+        auto* viewToMove = find_view_by_id(rowColView, id);
+        rowColView->changeViewZOrder(viewToMove, static_cast<uint32_t>(index));
+    };
+    controller.for_each_playback_region_id_enumerated(func);
 
     rowColView->invalid();
 }
