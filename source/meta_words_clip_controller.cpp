@@ -3,7 +3,6 @@
 //------------------------------------------------------------------------
 
 #include "meta_words_clip_controller.h"
-#include "ara_document_controller.h"
 #include "list_entry_controller.h"
 #include "meta_words_data.h"
 #include "vstgui/lib/controls/cstringlist.h"
@@ -68,19 +67,19 @@ bool MetaWordsClipController::initialize(
         this->subject->remove_listener(observer_id);
     }
 
-    this->subject = subject;
+    this->subject              = subject;
     this->meta_words_data_func = std::move(meta_words_data_func);
 
     observer_id = this->subject->add_listener(
-        [this](const auto&) { this->on_waveform_data_changed(); });
+        [this](const auto&) { this->on_meta_words_data_changed(); });
 
-    on_waveform_data_changed();
+    on_meta_words_data_changed();
 
     return true;
 }
 
 //------------------------------------------------------------------------
-void MetaWordsClipController::on_waveform_data_changed()
+void MetaWordsClipController::on_meta_words_data_changed()
 {
     const auto& data = meta_words_data_func();
     if (listControl)

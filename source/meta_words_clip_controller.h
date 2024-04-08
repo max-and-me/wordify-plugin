@@ -4,7 +4,6 @@
 
 #pragma once
 
-#include "ara_document_controller.h"
 #include "list_entry_controller.h"
 #include "meta_words_clip_controller.h"
 #include "meta_words_data.h"
@@ -46,7 +45,7 @@ public:
     OBJ_METHODS(MetaWordsClipController, FObject)
     //--------------------------------------------------------------------
 private:
-    void on_waveform_data_changed();
+    void on_meta_words_data_changed();
 
     VSTGUI::CListControl* listControl = nullptr;
     VSTGUI::CTextLabel* label         = nullptr;
