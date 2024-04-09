@@ -108,10 +108,10 @@ VSTGUI::IController* ListEntryController::createSubController(
             return build_meta_words_data(ctler, pbr_id, sample_rate_func());
         });
 
-        subctrl->set_list_clicked_func(
-            [ctler, pbr_id, sample_rate_func](int index) {
+        subctrl->list_value_changed_func = [ctler, pbr_id,
+                                            sample_rate_func](int index) {
                 onRequestSelectWord(index, ctler, sample_rate_func(), pbr_id);
-            });
+        };
         return subctrl;
     }
 

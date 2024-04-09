@@ -240,11 +240,4 @@ void MetaWordsClipController::valueChanged(VSTGUI::CControl* pControl)
 }
 
 //------------------------------------------------------------------------
-auto MetaWordsClipController::set_list_clicked_func(
-    const FuncListValueChanged&& list_value_changed_func) -> void
-{
-    this->list_value_changed_func = list_value_changed_func;
-}
-
-//------------------------------------------------------------------------
 } // namespace mam

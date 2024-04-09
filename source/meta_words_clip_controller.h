@@ -38,8 +38,7 @@ public:
     // IControlListener
     void valueChanged(VSTGUI::CControl* pControl) override;
 
-    auto set_list_clicked_func(
-        const FuncListValueChanged&& list_value_changed_func) -> void;
+    FuncListValueChanged list_value_changed_func;
 
     OBJ_METHODS(MetaWordsClipController, FObject)
     //--------------------------------------------------------------------
@@ -52,7 +51,6 @@ private:
     VSTGUI::CView* spinner            = nullptr;
 
     FuncMetaWordsData meta_words_data_func;
-    FuncListValueChanged list_value_changed_func;
     tiny_observer_pattern::SimpleSubject* subject = nullptr;
     tiny_observer_pattern::ObserverID observer_id = 0;
 };
