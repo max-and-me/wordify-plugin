@@ -5,17 +5,18 @@
 #include "meta_words_clip_controller.h"
 #include "list_entry_controller.h"
 #include "meta_words_data.h"
+#include "vstgui/lib/ccolor.h"
+#include "vstgui/lib/cdrawcontext.h"
+#include "vstgui/lib/cfont.h"
+#include "vstgui/lib/cframe.h"
 #include "vstgui/lib/controls/cstringlist.h"
 #include "vstgui/lib/controls/ctextlabel.h"
-#include "vstgui/lib/platform/platformfactory.h"
-
-#include "vstgui/lib/cview.h"
-#include "vstgui/lib/cframe.h"
-#include "vstgui/lib/cdrawcontext.h"
-#include "vstgui/lib/ccolor.h"
 #include "vstgui/lib/cpoint.h"
 #include "vstgui/lib/crect.h"
-#include "vstgui/lib/cfont.h"
+#include "vstgui/lib/cview.h"
+#include "vstgui/lib/platform/platformfactory.h"
+#include "vstgui/uidescription/detail/uiviewcreatorattributes.h"
+#include "vstgui/uidescription/uiattributes.h"
 
 namespace mam {
 using namespace ::VSTGUI;
@@ -25,15 +26,16 @@ using namespace ::VSTGUI;
 #endif
 
 //------------------------------------------------------------------------
-class SpinningLoadingView : public CView {
+class SpinningLoadingView : public CView
+{
 public:
     SpinningLoadingView(const CRect& size)
     : CView(size)
     {
-        setWantsIdle (true);
+        setWantsIdle(true);
     }
 
-    void onIdle () override
+    void onIdle() override
     {
         rotationAngle += 5.0f;
         if (rotationAngle >= 360.0f)
@@ -41,27 +43,32 @@ public:
         invalid();
     }
 
-    void draw(CDrawContext* context) override {
+    void draw(CDrawContext* context) override
+    {
         CView::draw(context);
 
-        CRect bounds = getViewSize();
+        CRect bounds        = getViewSize();
         const CPoint center = bounds.getCenter();
 
         context->setDrawMode(kAntiAliasing);
         context->setLineWidth(2.0);
 
-        constexpr int numLines = 12;
-        constexpr float lineLength = 10.0;
+        constexpr int numLines        = 12;
+        constexpr float lineLength    = 10.0;
         constexpr float lineThickness = 2.0;
         constexpr CColor lineColor(255, 255, 255);
 
         context->setFrameColor(lineColor);
         context->setFillColor(lineColor);
 
-        for (int i = 0; i < numLines; ++i) {
+        for (int i = 0; i < numLines; ++i)
+        {
             const float angle = (i * 30.0f + rotationAngle) * (kPI / 180.0f);
-            const CPoint start(center.x + cos(angle) * (bounds.getWidth() * 0.3f), center.y + sin(angle) * (bounds.getHeight() * 0.3f));
-            const CPoint end(start.x + cos(angle) * lineLength, start.y + sin(angle) * lineLength);
+            const CPoint start(
+                center.x + cos(angle) * (bounds.getWidth() * 0.3f),
+                center.y + sin(angle) * (bounds.getHeight() * 0.3f));
+            const CPoint end(start.x + cos(angle) * lineLength,
+                             start.y + sin(angle) * lineLength);
             context->drawLine(start, end);
         }
     }
@@ -71,9 +78,9 @@ private:
 };
 
 //------------------------------------------------------------------------
-static auto update_list_control_content(CListControl& listControl,
-                                        const meta_words::MetaWords& words)
-    -> void
+static auto
+update_list_control_content(CListControl& listControl,
+                            const meta_words::MetaWords& words) -> void
 {
     listControl.setMax(words.size() - 1);
     listControl.recalculateLayout();
@@ -92,13 +99,21 @@ static auto update_list_control_content(CListControl& listControl,
 }
 
 //------------------------------------------------------------------------
-static auto update_label_control(CTextLabel& label, const MetaWordsData& data)
-    -> void
+static auto update_label_control(CTextLabel& listTitle,
+                                 const MetaWordsData& data) -> void
 {
     auto [r, g, b] = data.color;
     const VSTGUI::CColor color(r, g, b);
-    label.setFontColor(color);
-    label.setText(VSTGUI::UTF8String(data.name));
+    listTitle.setFontColor(color);
+    listTitle.setText(VSTGUI::UTF8String(data.name));
+}
+
+//------------------------------------------------------------------------
+static auto update_time_display_control(CTextLabel& timeDisplay,
+                                        const MetaWordsData& data) -> void
+{
+    // std::dtos();
+    timeDisplay.setText(VSTGUI::UTF8String("12:34")); // data.project_offset));
 }
 
 //------------------------------------------------------------------------
@@ -146,10 +161,16 @@ void MetaWordsClipController::on_meta_words_data_changed()
         listControl->setDirty();
     }
 
-    if (label)
+    if (listTitle)
     {
-        update_label_control(*label, data);
-        label->setDirty();
+        update_label_control(*listTitle, data);
+        listTitle->setDirty();
+    }
+
+    if (timeDisplay)
+    {
+        update_time_display_control(*timeDisplay, data);
+        timeDisplay->invalid();
     }
 }
 
@@ -159,16 +180,16 @@ MetaWordsClipController::verifyView(VSTGUI::CView* view,
                                     const VSTGUI::UIAttributes& attributes,
                                     const VSTGUI::IUIDescription* description)
 {
-    if (auto container = view->asViewContainer ())
+    if (auto container = view->asViewContainer())
     {
         if (!spinner)
         {
             const auto view_size = CPoint({65., 65.});
-            spinner = new SpinningLoadingView(CRect{0, 0, view_size.x, view_size.y});
-            container->addView (spinner);
+            spinner =
+                new SpinningLoadingView(CRect{0, 0, view_size.x, view_size.y});
+            container->addView(spinner);
         }
     }
-    
 
     if (!listControl)
     {
@@ -179,10 +200,30 @@ MetaWordsClipController::verifyView(VSTGUI::CView* view,
                                         meta_words_data_func().words);
         }
     }
-    if (!label)
+    if (!listTitle)
     {
-        if (label = dynamic_cast<CTextLabel*>(view))
-            update_label_control(*label, meta_words_data_func());
+        if (auto viewLabel =
+                attributes.getAttributeValue(UIViewCreator::kAttrUIDescLabel))
+        {
+            if (*viewLabel == "ListTitle")
+            {
+                if (listTitle = dynamic_cast<CTextLabel*>(view))
+                    update_label_control(*listTitle, meta_words_data_func());
+            }
+        }
+    }
+    if (!timeDisplay)
+    {
+        if (auto viewLabel =
+                attributes.getAttributeValue(UIViewCreator::kAttrUIDescLabel))
+        {
+            if (*viewLabel == "TimeDisplay")
+            {
+                if (timeDisplay = dynamic_cast<CTextLabel*>(view))
+                    update_time_display_control(*timeDisplay,
+                                                meta_words_data_func());
+            }
+        }
     }
 
     return view;

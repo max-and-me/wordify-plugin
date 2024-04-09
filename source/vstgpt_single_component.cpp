@@ -60,6 +60,22 @@ static auto on_editor_view(meta_words::EditorView& editorView,
 }
 
 //------------------------------------------------------------------------
+static auto build_waveform_data(const ARADocumentController* controller,
+                                const meta_words::PlaybackRegion::Id id,
+                                double sample_rate) -> WaveFormController::Data
+{
+    if (!controller)
+        return {};
+
+    auto opt_region = controller->find_playback_region(id);
+    if (!opt_region)
+        return {};
+
+    return {opt_region.value()->get_effective_color(),
+            opt_region.value()->get_audio_buffer(sample_rate)};
+}
+
+//------------------------------------------------------------------------
 // VstGPTProcessor
 //------------------------------------------------------------------------
 VstGPTSingleComponent::VstGPTSingleComponent() {}
@@ -220,9 +236,27 @@ VSTGUI::IController* VstGPTSingleComponent::createSubController(
 
     if (VSTGUI::UTF8StringView(name) == "MetaWordsListController")
         return new ListController(document_controller, std::move([this]() {
-            return this->processSetup.sampleRate;
-        }),
+                                      return this->processSetup.sampleRate;
+                                  }),
                                   description);
+    else if (VSTGUI::UTF8StringView(name) == "WaveFormController")
+    {
+        auto* subctrl = new WaveFormController();
+        if (!subctrl)
+            return nullptr;
+
+        auto sample_rate_func = [this]() {
+            return this->processSetup.sampleRate;
+        };
+        subctrl->initialize(document_controller,
+                            [pbr_id = 0, ctler = document_controller,
+                             sample_rate_func]() -> WaveFormController::Data {
+                                return build_waveform_data(ctler, pbr_id,
+                                                           sample_rate_func());
+                            });
+
+        return subctrl;
+    }
 
     return nullptr;
 }

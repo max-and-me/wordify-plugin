@@ -2,7 +2,21 @@
 	"vstgui-ui-description": {
 		"version": "1",
 		"bitmaps": {},
-		"fonts": {},
+		"fonts": {
+			"ListTitleFont": {
+				"bold": "true",
+				"font-name": "Arial",
+				"size": "14"
+			},
+			"ListEntryFont": {
+				"font-name": "Arial",
+				"size": "15"
+			},
+			"TimeDisplayFont": {
+				"font-name": "Arial",
+				"size": "14"
+			}
+		},
 		"colors": {
 			"main_background": "#25282bff"
 		},
@@ -25,38 +39,43 @@
 				"Path": "Z:\\Private\\mam\\vst-gpt\\resource\\vstgpt_editor.uidesc"
 			},
 			"UIGridController": {
-				"Grids": "1x 1,5x 5,8x 8,10x 10,12x 12,15x 15"
+				"Grids": "1x 1,5x 5,8x 8,10x 10,12x 12,15x 15",
+				"Size": "1, 1"
 			},
 			"UITemplateController": {
 				"SelectedTemplate": "view"
 			},
 			"UIEditController": {
 				"EditViewScale": "1",
-				"EditorSize": "0, 0, 1430, 689",
-				"SplitViewSize_0_0": "0.653092006033182514990187428338686004281",
-				"SplitViewSize_0_1": "0.3167420814479637858340765887987799942493",
-				"SplitViewSize_1_0": "0.5995475113122171739732380046916659921408",
-				"SplitViewSize_1_1": "0.4396681749622926016485280342749319970608",
-				"SplitViewSize_2_0": "0.79230769230769226840749297480215318501",
-				"SplitViewSize_2_1": "0.2069930069930069893580082407424924895167",
-				"TabSwitchValue": "0",
+				"EditorSize": "0, 0, 1527, 843",
+				"SplitViewSize_0_0": "0.6548347613219094309755519134341739118099",
+				"SplitViewSize_0_1": "0.3219094247246022111319518899108516052365",
+				"SplitViewSize_1_0": "0.5881272949816401807154875314154196530581",
+				"SplitViewSize_1_1": "0.4596083231334149310498560225823894143105",
+				"SplitViewSize_2_0": "0.7557301899148657353677549508574884384871",
+				"SplitViewSize_2_1": "0.2436149312377210163216290084164938889444",
+				"TabSwitchValue": "6",
 				"Version": "1",
 				"ViewBackground": "1"
 			},
 			"UIAttributesController": {},
 			"UIViewCreatorDataSource": {
-				"SelectedRow": "18"
+				"SelectedRow": "9"
 			},
 			"UIGradientsDataSource": {
 				"SelectedRow": "0"
 			},
 			"UIColorsDataSource": {
 				"SelectedRow": "0"
+			},
+			"UIFontsDataSource": {
+				"SelectedRow": "1"
 			}
 		},
 		"templates": {
 			"view": {
 				"attributes": {
+					"autosize": "left right top bottom ",
 					"background-color": "main_background",
 					"background-color-draw-style": "filled and stroked",
 					"class": "CViewContainer",
@@ -68,29 +87,23 @@
 					"wants-focus": "false"
 				},
 				"children": {
-					"CScrollView": {
+					"CRowColumnView": {
 						"attributes": {
-							"auto-drag-scrolling": "false",
-							"auto-hide-scrollbars": "true",
-							"background-color": "main_background",
+							"animate-view-resizing": "false",
+							"background-color": "~ BlackCColor",
 							"background-color-draw-style": "filled and stroked",
-							"bordered": "false",
-							"class": "CScrollView",
-							"container-size": "840, 600",
-							"follow-focus-view": "false",
-							"horizontal-scrollbar": "false",
+							"class": "CRowColumnView",
+							"equal-size-layout": "left-top",
+							"hide-clipped-subviews": "false",
+							"margin": "0, 0, 0, 0",
 							"mouse-enabled": "true",
 							"opacity": "1",
-							"origin": "10, 20",
-							"overlay-scrollbars": "false",
-							"scrollbar-background-color": "~ TransparentCColor",
-							"scrollbar-frame-color": "~ TransparentCColor",
-							"scrollbar-scroller-color": "~ GreyCColor",
-							"scrollbar-width": "16",
-							"size": "860, 320",
-							"sub-controller": "MetaWordsListController",
-							"transparent": "false",
-							"vertical-scrollbar": "true",
+							"origin": "0, 0",
+							"row-style": "true",
+							"size": "860, 360",
+							"spacing": "0",
+							"transparent": "true",
+							"view-resize-animation-time": "200",
 							"wants-focus": "false"
 						},
 						"children": {
@@ -107,11 +120,142 @@
 									"opacity": "1",
 									"origin": "0, 0",
 									"row-style": "true",
-									"size": "840, 600",
-									"spacing": "24",
+									"size": "860, 48",
+									"spacing": "0",
 									"transparent": "true",
+									"uidesc-label": "Header",
 									"view-resize-animation-time": "200",
 									"wants-focus": "false"
+								},
+								"children": {
+									"CSearchTextEdit": {
+										"attributes": {
+											"back-color": "~ TransparentCColor",
+											"background-offset": "0, 0",
+											"class": "CSearchTextEdit",
+											"clearmark-inset": "2, 2",
+											"default-value": "0.5",
+											"font": "~ NormalFontBig",
+											"font-antialias": "true",
+											"font-color": "~ WhiteCColor",
+											"frame-color": "~ BlackCColor",
+											"frame-width": "2",
+											"immediate-text-change": "false",
+											"max-value": "1",
+											"min-value": "0",
+											"mouse-enabled": "true",
+											"opacity": "1",
+											"origin": "0, 0",
+											"placeholder-title": "Search",
+											"round-rect-radius": "16",
+											"secure-style": "false",
+											"shadow-color": "~ RedCColor",
+											"size": "141, 40",
+											"style-3D-in": "false",
+											"style-3D-out": "false",
+											"style-doubleclick": "false",
+											"style-no-draw": "false",
+											"style-no-frame": "true",
+											"style-no-text": "false",
+											"style-round-rect": "true",
+											"style-shadow-text": "false",
+											"text-alignment": "center",
+											"text-inset": "0, 0",
+											"text-rotation": "0",
+											"text-shadow-offset": "1, 1",
+											"transparent": "false",
+											"value-precision": "2",
+											"wants-focus": "true",
+											"wheel-inc-value": "0.1"
+										}
+									}
+								}
+							},
+							"CScrollView": {
+								"attributes": {
+									"auto-drag-scrolling": "false",
+									"auto-hide-scrollbars": "true",
+									"background-color": "main_background",
+									"background-color-draw-style": "filled and stroked",
+									"bordered": "false",
+									"class": "CScrollView",
+									"container-size": "600, 124",
+									"follow-focus-view": "false",
+									"horizontal-scrollbar": "false",
+									"mouse-enabled": "true",
+									"opacity": "1",
+									"origin": "0, 48",
+									"overlay-scrollbars": "false",
+									"scrollbar-background-color": "~ TransparentCColor",
+									"scrollbar-frame-color": "~ TransparentCColor",
+									"scrollbar-scroller-color": "~ GreyCColor",
+									"scrollbar-width": "16",
+									"size": "860, 264",
+									"sub-controller": "MetaWordsListController",
+									"transparent": "false",
+									"vertical-scrollbar": "true",
+									"wants-focus": "false"
+								},
+								"children": {
+									"CRowColumnView": {
+										"attributes": {
+											"animate-view-resizing": "false",
+											"background-color": "~ BlackCColor",
+											"background-color-draw-style": "filled and stroked",
+											"class": "CRowColumnView",
+											"equal-size-layout": "left-top",
+											"hide-clipped-subviews": "false",
+											"margin": "0, 0, 0, 0",
+											"mouse-enabled": "true",
+											"opacity": "1",
+											"origin": "0, 0",
+											"row-style": "true",
+											"size": "600, 124",
+											"spacing": "24",
+											"transparent": "true",
+											"view-resize-animation-time": "200",
+											"wants-focus": "false"
+										}
+									}
+								}
+							},
+							"CRowColumnView": {
+								"attributes": {
+									"animate-view-resizing": "false",
+									"background-color": "~ BlackCColor",
+									"background-color-draw-style": "filled and stroked",
+									"class": "CRowColumnView",
+									"equal-size-layout": "left-top",
+									"hide-clipped-subviews": "false",
+									"margin": "0, 0, 0, 0",
+									"mouse-enabled": "true",
+									"opacity": "1",
+									"origin": "0, 312",
+									"row-style": "true",
+									"size": "860, 52",
+									"spacing": "0",
+									"transparent": "true",
+									"uidesc-label": "Footer",
+									"view-resize-animation-time": "200",
+									"wants-focus": "false"
+								},
+								"children": {
+									"CViewContainer": {
+										"attributes": {
+											"background-color": "~ BlackCColor",
+											"background-color-draw-style": "filled and stroked",
+											"class": "CViewContainer",
+											"mouse-enabled": "true",
+											"opacity": "1",
+											"origin": "0, 0",
+											"size": "862, 48",
+											"sub-controller": "WaveFormController",
+											"template": "WaveFormTemplate",
+											"transparent": "true",
+											"uidesc-label": "WaveFormTemplate",
+											"wants-focus": "false"
+										}
+									}
 								}
 							}
 						}
@@ -131,7 +275,7 @@
 					"opacity": "1",
 					"origin": "0, 0",
 					"row-style": "true",
-					"size": "300, 100",
+					"size": "600, 100",
 					"spacing": "0",
 					"sub-controller": "MetaWordsClipController",
 					"transparent": "true",
@@ -152,11 +296,11 @@
 							"mouse-enabled": "true",
 							"opacity": "1",
 							"origin": "0, 0",
-							"row-style": "true",
-							"size": "300, 100",
-							"spacing": "0",
+							"row-style": "false",
+							"size": "600, 100",
+							"spacing": "8",
 							"transparent": "true",
-							"uidesc-label": "VLayout",
+							"uidesc-label": "HLayout",
 							"view-resize-animation-time": "200",
 							"wants-focus": "false"
 						},
@@ -167,7 +311,7 @@
 									"background-offset": "0, 0",
 									"class": "CTextLabel",
 									"default-value": "0.5",
-									"font": "~ NormalFont",
+									"font": "TimeDisplayFont",
 									"font-antialias": "true",
 									"font-color": "~ WhiteCColor",
 									"frame-color": "~ BlackCColor",
@@ -179,7 +323,7 @@
 									"origin": "0, 0",
 									"round-rect-radius": "6",
 									"shadow-color": "~ RedCColor",
-									"size": "300, 20",
+									"size": "56, 24",
 									"style-3D-in": "false",
 									"style-3D-out": "false",
 									"style-no-draw": "false",
@@ -187,44 +331,108 @@
 									"style-no-text": "false",
 									"style-round-rect": "false",
 									"style-shadow-text": "false",
-									"text-alignment": "left",
+									"text-alignment": "right",
 									"text-inset": "0, 0",
 									"text-rotation": "0",
 									"text-shadow-offset": "1, 1",
-									"title": "Test Titel",
+									"title": "00:00:00",
 									"transparent": "true",
-									"uidesc-label": "ListLabel",
+									"uidesc-label": "TimeDisplay",
 									"value-precision": "2",
 									"wants-focus": "false",
 									"wheel-inc-value": "0.1"
 								}
 							},
-							"CStringListControl": {
+							"CRowColumnView": {
 								"attributes": {
-									"back-color": "~ WhiteCColor",
-									"back-color-selected": "~ GreyCColor",
-									"class": "CStringListControl",
-									"default-value": "0.5",
-									"font": "~ NormalFont",
-									"font-color": "~ WhiteCColor",
-									"font-color-selected": "~ WhiteCColor",
-									"hover-color": "#00000064",
-									"line-color": "~ TransparentCColor",
-									"line-width": "1",
-									"max-value": "1",
-									"min-value": "0",
+									"animate-view-resizing": "false",
+									"autosize": "left right ",
+									"background-color": "~ BlackCColor",
+									"background-color-draw-style": "filled and stroked",
+									"class": "CRowColumnView",
+									"equal-size-layout": "left-top",
+									"hide-clipped-subviews": "false",
+									"margin": "0, 0, 0, 0",
 									"mouse-enabled": "true",
 									"opacity": "1",
-									"origin": "0, 20",
-									"row-height": "20",
-									"size": "300, 40",
-									"style-hover": "true",
-									"text-alignment": "left",
-									"text-inset": "25",
+									"origin": "64, 0",
+									"row-style": "true",
+									"size": "600, 100",
+									"spacing": "8",
 									"transparent": "true",
-									"uidesc-label": "ListEntries",
-									"wants-focus": "false",
-									"wheel-inc-value": "0.1"
+									"uidesc-label": "VLayout",
+									"view-resize-animation-time": "200",
+									"wants-focus": "false"
+								},
+								"children": {
+									"CTextLabel": {
+										"attributes": {
+											"autosize": "left right ",
+											"back-color": "~ BlackCColor",
+											"background-offset": "0, 0",
+											"class": "CTextLabel",
+											"default-value": "0.5",
+											"font": "ListTitleFont",
+											"font-antialias": "true",
+											"font-color": "~ WhiteCColor",
+											"frame-color": "~ BlackCColor",
+											"frame-width": "1",
+											"max-value": "1",
+											"min-value": "0",
+											"mouse-enabled": "true",
+											"opacity": "1",
+											"origin": "0, 0",
+											"round-rect-radius": "6",
+											"shadow-color": "~ RedCColor",
+											"size": "536, 24",
+											"style-3D-in": "false",
+											"style-3D-out": "false",
+											"style-no-draw": "false",
+											"style-no-frame": "false",
+											"style-no-text": "false",
+											"style-round-rect": "false",
+											"style-shadow-text": "false",
+											"text-alignment": "left",
+											"text-inset": "0, 0",
+											"text-rotation": "0",
+											"text-shadow-offset": "1, 1",
+											"title": "Test Titel",
+											"transparent": "true",
+											"uidesc-label": "ListTitle",
+											"value-precision": "2",
+											"wants-focus": "false",
+											"wheel-inc-value": "0.1"
+										}
+									},
+									"CStringListControl": {
+										"attributes": {
+											"autosize": "left right ",
+											"back-color": "~ WhiteCColor",
+											"back-color-selected": "~ TransparentCColor",
+											"class": "CStringListControl",
+											"default-value": "0.5",
+											"font": "ListEntryFont",
+											"font-color": "~ WhiteCColor",
+											"font-color-selected": "~ WhiteCColor",
+											"hover-color": "#00000064",
+											"line-color": "~ TransparentCColor",
+											"line-width": "1",
+											"max-value": "1",
+											"min-value": "0",
+											"mouse-enabled": "true",
+											"opacity": "1",
+											"origin": "0, 32",
+											"row-height": "20",
+											"size": "536, 40",
+											"style-hover": "true",
+											"text-alignment": "left",
+											"text-inset": "0",
+											"transparent": "true",
+											"uidesc-label": "ListEntries",
+											"wants-focus": "false",
+											"wheel-inc-value": "0.1"
+										}
+									}
 								}
 							}
 						}
@@ -233,14 +441,13 @@
 			},
 			"WaveFormTemplate": {
 				"attributes": {
-					"autosize": "left right top bottom ",
 					"background-color": "~ BlackCColor",
 					"background-color-draw-style": "filled and stroked",
 					"class": "CViewContainer",
 					"mouse-enabled": "true",
 					"opacity": "1",
 					"origin": "0, 0",
-					"size": "532, 40",
+					"size": "532, 28",
 					"sub-controller": "WaveFormController",
 					"transparent": "true",
 					"uidesc-label": "WaveFormTemplate",
@@ -256,7 +463,7 @@
 							"mouse-enabled": "true",
 							"opacity": "1",
 							"origin": "0, 0",
-							"size": "532, 40",
+							"size": "532, 28",
 							"transparent": "true",
 							"uidesc-label": "MLayout",
 							"wants-focus": "false"
@@ -279,7 +486,7 @@
 									"radial-center": "0.5, 0.5",
 									"radial-radius": "8",
 									"round-rect-radius": "8",
-									"size": "532, 40",
+									"size": "532, 28",
 									"transparent": "true",
 									"uidesc-label": "Background",
 									"wants-focus": "false"
@@ -293,7 +500,7 @@
 									"mouse-enabled": "true",
 									"opacity": "1",
 									"origin": "0, 0",
-									"size": "532, 40",
+									"size": "532, 28",
 									"transparent": "true",
 									"uidesc-label": "WaveForm",
 									"wants-focus": "true"
@@ -303,7 +510,7 @@
 					}
 				}
 			},
-			"ListEntryTemplate": {
+			"ListEntryTemplate_old": {
 				"attributes": {
 					"autosize": "left right ",
 					"background-color": "~ BlackCColor",
@@ -373,6 +580,39 @@
 									"wants-focus": "false"
 								}
 							}
+						}
+					}
+				}
+			},
+			"ListEntryTemplate": {
+				"attributes": {
+					"autosize": "left right ",
+					"background-color": "~ BlackCColor",
+					"background-color-draw-style": "filled and stroked",
+					"class": "CViewContainer",
+					"mouse-enabled": "true",
+					"opacity": "1",
+					"origin": "0, 0",
+					"size": "600, 100",
+					"sub-controller": "ListEntryController",
+					"transparent": "true",
+					"wants-focus": "false"
+				},
+				"children": {
+					"CViewContainer": {
+						"attributes": {
+							"background-color": "~ BlackCColor",
+							"background-color-draw-style": "filled and stroked",
+							"class": "CViewContainer",
+							"mouse-enabled": "true",
+							"opacity": "1",
+							"origin": "0, 0",
+							"size": "600, 100",
+							"sub-controller": "MetaWordsClipController",
+							"template": "MetaWordsClipTemplate",
+							"transparent": "true",
+							"uidesc-label": "MetaWordsClipTemplate",
+							"wants-focus": "false"
 						}
 					}
 				}

@@ -4,7 +4,6 @@
 
 #include "list_entry_controller.h"
 #include "meta_words_clip_controller.h"
-#include "waveform_controller.h"
 
 namespace mam {
 
@@ -56,22 +55,6 @@ static auto build_meta_words_data(const ARADocumentController* controller,
         return {};
 
     return opt_region.value()->get_meta_words_data(sample_rate);
-}
-
-//------------------------------------------------------------------------
-static auto build_waveform_data(const ARADocumentController* controller,
-                                const meta_words::PlaybackRegion::Id id,
-                                double sample_rate) -> WaveFormController::Data
-{
-    if (!controller)
-        return {};
-
-    auto opt_region = controller->find_playback_region(id);
-    if (!opt_region)
-        return {};
-
-    return {opt_region.value()->get_effective_color(),
-            opt_region.value()->get_audio_buffer(sample_rate)};
 }
 
 //------------------------------------------------------------------------
@@ -129,20 +112,6 @@ VSTGUI::IController* ListEntryController::createSubController(
             [ctler, pbr_id, sample_rate_func](int index) {
                 onRequestSelectWord(index, ctler, sample_rate_func(), pbr_id);
             });
-        return subctrl;
-    }
-    else if (VSTGUI::UTF8StringView(name) == "WaveFormController")
-    {
-        auto* subctrl = new WaveFormController();
-        if (!subctrl)
-            return nullptr;
-
-        subctrl->initialize(
-            &subject,
-            [pbr_id, ctler, sample_rate_func]() -> WaveFormController::Data {
-                return build_waveform_data(ctler, pbr_id, sample_rate_func());
-            });
-
         return subctrl;
     }
 
