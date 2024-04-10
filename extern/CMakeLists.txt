@@ -8,5 +8,6 @@ add_subdirectory(libsamplerate)
 add_subdirectory(meta-words)
 add_subdirectory(ms-gsl)
 add_subdirectory(wave-draw)
+add_subdirectory(fmt)
 
 

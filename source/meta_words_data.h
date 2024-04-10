@@ -20,6 +20,7 @@ struct MetaWordsData
     String name;
     Color color;
     Seconds project_offset;
+    Seconds project_time_start;
     meta_words::MetaWords words;
 };
 
