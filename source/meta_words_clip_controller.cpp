@@ -136,6 +136,23 @@ static auto update_time_display_control(CTextLabel& timeDisplay,
 }
 
 //------------------------------------------------------------------------
+static auto size_to_fit_recursively(CViewContainer* view) -> void
+{
+    if (!view)
+        return;
+
+    view->forEachChild([](CView* v){
+        if (auto vc = dynamic_cast<CViewContainer*>(v))
+        {
+            size_to_fit_recursively(vc);
+            vc->sizeToFit();
+        }
+    });
+
+    view->sizeToFit();
+}
+
+//------------------------------------------------------------------------
 // VstGPTWaveClipListController
 //------------------------------------------------------------------------
 MetaWordsClipController::MetaWordsClipController() {}
@@ -178,6 +195,7 @@ void MetaWordsClipController::on_meta_words_data_changed()
     {
         update_list_control_content(*listControl, data.words);
         listControl->setDirty();
+        size_to_fit_recursively(root_view);
     }
 
     if (listTitle)
@@ -206,7 +224,7 @@ MetaWordsClipController::verifyView(VSTGUI::CView* view,
             const auto view_size = CPoint({65., 65.});
             spinner =
                 new SpinningLoadingView(CRect{0, 0, view_size.x, view_size.y});
-            container->addView(spinner);
+            // container->addView(spinner);
         }
     }
 
@@ -241,6 +259,18 @@ MetaWordsClipController::verifyView(VSTGUI::CView* view,
                 if (timeDisplay = dynamic_cast<CTextLabel*>(view))
                     update_time_display_control(*timeDisplay,
                                                 meta_words_data_func());
+            }
+        }
+    }
+
+    if (!root_view)
+    {
+        if (auto viewLabel =
+                attributes.getAttributeValue(UIViewCreator::kAttrUIDescLabel))
+        {
+            if (*viewLabel == "MetaWordsClipTemplate")
+            {
+                root_view = dynamic_cast<CViewContainer*>(view);
             }
         }
     }

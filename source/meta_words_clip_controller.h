@@ -49,6 +49,7 @@ private:
     VSTGUI::CTextLabel* listTitle     = nullptr;
     VSTGUI::CTextLabel* timeDisplay   = nullptr;
     VSTGUI::CView* spinner            = nullptr;
+    VSTGUI::CViewContainer* root_view = nullptr;
 
     FuncMetaWordsData meta_words_data_func;
     tiny_observer_pattern::SimpleSubject* subject = nullptr;
