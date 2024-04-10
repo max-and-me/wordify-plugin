@@ -14,6 +14,7 @@
 #include "vstgui/lib/controls/ctextlabel.h"
 #include "vstgui/lib/cpoint.h"
 #include "vstgui/lib/crect.h"
+#include "vstgui/lib/crowcolumnview.h"
 #include "vstgui/lib/cview.h"
 #include "vstgui/lib/platform/platformfactory.h"
 #include "vstgui/uidescription/detail/uiviewcreatorattributes.h"
@@ -125,6 +126,7 @@ static auto update_label_control(CTextLabel& listTitle,
     const VSTGUI::CColor color(r, g, b);
     listTitle.setFontColor(color);
     listTitle.setText(VSTGUI::UTF8String(data.name));
+    listTitle.sizeToFit();
 }
 
 //------------------------------------------------------------------------
@@ -136,20 +138,18 @@ static auto update_time_display_control(CTextLabel& timeDisplay,
 }
 
 //------------------------------------------------------------------------
-static auto size_to_fit_recursively(CViewContainer* view) -> void
+static auto size_to_fit_parent(CRowColumnView* row_column_view) -> void
 {
-    if (!view)
+    if (!row_column_view)
         return;
 
-    view->forEachChild([](CView* v){
-        if (auto vc = dynamic_cast<CViewContainer*>(v))
-        {
-            size_to_fit_recursively(vc);
-            vc->sizeToFit();
-        }
-    });
+    if (!row_column_view->sizeToFit())
+        return;
 
-    view->sizeToFit();
+    auto* parent =
+        dynamic_cast<CRowColumnView*>(row_column_view->getParentView());
+
+    size_to_fit_parent(parent);
 }
 
 //------------------------------------------------------------------------
@@ -195,7 +195,9 @@ void MetaWordsClipController::on_meta_words_data_changed()
     {
         update_list_control_content(*listControl, data.words);
         listControl->setDirty();
-        size_to_fit_recursively(root_view);
+        auto* parent =
+            dynamic_cast<CRowColumnView*>(listControl->getParentView());
+        size_to_fit_parent(parent);
     }
 
     if (listTitle)
