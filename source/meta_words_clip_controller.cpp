@@ -98,27 +98,6 @@ private:
 };
 
 //------------------------------------------------------------------------
-static auto
-update_list_control_content(CListControl& listControl,
-                            const meta_words::MetaWords& words) -> void
-{
-    listControl.setMax(words.size() - 1);
-    listControl.recalculateLayout();
-
-    if (auto stringListDrawer =
-            dynamic_cast<StringListControlDrawer*>(listControl.getDrawer()))
-    {
-        stringListDrawer->setStringProvider([words](int32_t row) {
-            const meta_words::MetaWord word = words.at(row);
-            const std::string name          = word.word;
-
-            const UTF8String string(name.data());
-            return getPlatformFactory().createString(string);
-        });
-    }
-}
-
-//------------------------------------------------------------------------
 static auto update_label_control(CTextLabel& listTitle,
                                  const MetaWordsData& data) -> void
 {
@@ -150,6 +129,39 @@ static auto size_to_fit_parent(CRowColumnView* row_column_view) -> void
         dynamic_cast<CRowColumnView*>(row_column_view->getParentView());
 
     size_to_fit_parent(parent);
+}
+
+//------------------------------------------------------------------------
+static auto size_to_fit_parent(CView* view) -> void
+{
+    if (!view)
+        return;
+
+    auto* parent = dynamic_cast<CRowColumnView*>(view->getParentView());
+
+    size_to_fit_parent(parent);
+}
+
+//------------------------------------------------------------------------
+static auto
+update_list_control_content(CListControl* listControl,
+                            const meta_words::MetaWords& words) -> void
+{
+    listControl->setMax(words.size() - 1);
+    listControl->recalculateLayout();
+
+    if (auto stringListDrawer =
+            dynamic_cast<StringListControlDrawer*>(listControl->getDrawer()))
+    {
+        stringListDrawer->setStringProvider([words](int32_t row) {
+            const meta_words::MetaWord word = words.at(row);
+            const std::string name          = word.word;
+
+            const UTF8String string(name.data());
+            return getPlatformFactory().createString(string);
+        });
+    }
+    size_to_fit_parent(listControl);
 }
 
 //------------------------------------------------------------------------
@@ -193,11 +205,8 @@ void MetaWordsClipController::on_meta_words_data_changed()
     const auto& data = meta_words_data_func();
     if (listControl)
     {
-        update_list_control_content(*listControl, data.words);
+        update_list_control_content(listControl, data.words);
         listControl->setDirty();
-        auto* parent =
-            dynamic_cast<CRowColumnView*>(listControl->getParentView());
-        size_to_fit_parent(parent);
     }
 
     if (listTitle)
@@ -235,7 +244,7 @@ MetaWordsClipController::verifyView(VSTGUI::CView* view,
         if (listControl = dynamic_cast<CListControl*>(view))
         {
             listControl->registerControlListener(this);
-            update_list_control_content(*listControl,
+            update_list_control_content(listControl,
                                         meta_words_data_func().words);
         }
     }
