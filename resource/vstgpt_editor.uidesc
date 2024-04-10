@@ -48,13 +48,13 @@
 			},
 			"UIEditController": {
 				"EditViewScale": "1",
-				"EditorSize": "0, 0, 1354, 642",
-				"SplitViewSize_0_0": "0.5422077922077922496058022261422593146563",
-				"SplitViewSize_0_1": "0.4269480519480519653541250590933486819267",
-				"SplitViewSize_1_0": "0.620941558441558405512239460222190245986",
-				"SplitViewSize_1_1": "0.4504870129870129913385312647733371704817",
-				"SplitViewSize_2_0": "0.7651403249630723824026290458277799189091",
-				"SplitViewSize_2_1": "0.2341211225997045786151318225165596231818",
+				"EditorSize": "0, 0, 1329, 656",
+				"SplitViewSize_0_0": "0.5523809523809524169024598450050689280033",
+				"SplitViewSize_0_1": "0.4174603174603174760015633637522114440799",
+				"SplitViewSize_1_0": "0.6190476190476190687661528500029817223549",
+				"SplitViewSize_1_1": "0.4523809523809523835957691062503727152944",
+				"SplitViewSize_2_0": "0.7607223476297968467463306296849623322487",
+				"SplitViewSize_2_1": "0.2385252069224981230632920414791442453861",
 				"TabSwitchValue": "2",
 				"Version": "1",
 				"ViewBackground": "1"
@@ -180,7 +180,7 @@
 									"background-color-draw-style": "filled and stroked",
 									"bordered": "false",
 									"class": "CScrollView",
-									"container-size": "608, 124",
+									"container-size": "608, 104",
 									"follow-focus-view": "false",
 									"horizontal-scrollbar": "false",
 									"mouse-enabled": "true",
@@ -212,7 +212,7 @@
 											"opacity": "1",
 											"origin": "0, 0",
 											"row-style": "true",
-											"size": "608, 124",
+											"size": "608, 104",
 											"spacing": "24",
 											"transparent": "true",
 											"uidesc-label": "VLayout",
@@ -349,7 +349,6 @@
 							"CRowColumnView": {
 								"attributes": {
 									"animate-view-resizing": "false",
-									"autosize": "left right ",
 									"background-color": "~ BlackCColor",
 									"background-color-draw-style": "filled and stroked",
 									"class": "CRowColumnView",
@@ -370,7 +369,6 @@
 								"children": {
 									"CTextLabel": {
 										"attributes": {
-											"autosize": "left right ",
 											"back-color": "~ BlackCColor",
 											"background-offset": "0, 0",
 											"class": "CTextLabel",
@@ -409,7 +407,6 @@
 									},
 									"CStringListControl": {
 										"attributes": {
-											"autosize": "left right ",
 											"back-color": "~ WhiteCColor",
 											"back-color-selected": "~ TransparentCColor",
 											"class": "CStringListControl",
