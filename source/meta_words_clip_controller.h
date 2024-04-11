@@ -9,7 +9,9 @@
 #include "meta_words_data.h"
 #include "vstgui/lib/controls/cstringlist.h"
 #include "vstgui/lib/controls/ctextlabel.h"
+#include "vstgui/lib/iviewlistener.h"
 #include "vstgui/lib/platform/platformfactory.h"
+#include <memory>
 
 namespace mam {
 
@@ -50,6 +52,7 @@ private:
     VSTGUI::CTextLabel* timeDisplay   = nullptr;
     VSTGUI::CView* spinner            = nullptr;
     VSTGUI::CViewContainer* root_view = nullptr;
+    std::unique_ptr<VSTGUI::ViewListenerAdapter> view_listener;
 
     FuncMetaWordsData meta_words_data_func;
     tiny_observer_pattern::SimpleSubject* subject = nullptr;

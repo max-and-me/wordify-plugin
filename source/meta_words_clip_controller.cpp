@@ -117,32 +117,6 @@ static auto update_time_display_control(CTextLabel& timeDisplay,
 }
 
 //------------------------------------------------------------------------
-static auto size_to_fit_parent(CRowColumnView* row_column_view) -> void
-{
-    if (!row_column_view)
-        return;
-
-    if (!row_column_view->sizeToFit())
-        return;
-
-    auto* parent =
-        dynamic_cast<CRowColumnView*>(row_column_view->getParentView());
-
-    size_to_fit_parent(parent);
-}
-
-//------------------------------------------------------------------------
-static auto size_to_fit_parent(CView* view) -> void
-{
-    if (!view)
-        return;
-
-    auto* parent = dynamic_cast<CRowColumnView*>(view->getParentView());
-
-    size_to_fit_parent(parent);
-}
-
-//------------------------------------------------------------------------
 static auto
 update_list_control_content(CListControl* listControl,
                             const meta_words::MetaWords& words) -> void
@@ -161,17 +135,56 @@ update_list_control_content(CListControl* listControl,
             return getPlatformFactory().createString(string);
         });
     }
-    size_to_fit_parent(listControl);
 }
+
+//------------------------------------------------------------------------
+// Helper class to call sizeToFit to all parents up the hierarchy
+// AFTER a view has been attached or resized itself.
+//------------------------------------------------------------------------
+class FitContent : public VSTGUI::ViewListenerAdapter
+{
+public:
+    //--------------------------------------------------------------------
+    void viewAttached(CView* view) override
+    {
+        fit_content(view->getParentView());
+    }
+
+    void viewSizeChanged(CView* view, const CRect& oldSize) override
+    {
+        fit_content(view->getParentView());
+    }
+
+    //--------------------------------------------------------------------
+private:
+    static auto fit_content(CView* view) -> void
+    {
+        // Only call sizeToFit, when view is a CRowColumnView
+        if (auto* rc_view = dynamic_cast<CRowColumnView*>(view))
+        {
+            // Return immediately, if there is nothing more to resize
+            if (!rc_view->sizeToFit())
+                return;
+
+            fit_content(rc_view->getParentView());
+        }
+    }
+};
 
 //------------------------------------------------------------------------
 // VstGPTWaveClipListController
 //------------------------------------------------------------------------
-MetaWordsClipController::MetaWordsClipController() {}
+MetaWordsClipController::MetaWordsClipController()
+{
+    view_listener = std::make_unique<FitContent>();
+}
 
 //------------------------------------------------------------------------
 MetaWordsClipController::~MetaWordsClipController()
 {
+    if (listControl)
+        listControl->unregisterViewListener(view_listener.get());
+
     if (subject)
         subject->remove_listener(observer_id);
 }
@@ -206,7 +219,7 @@ void MetaWordsClipController::on_meta_words_data_changed()
     if (listControl)
     {
         update_list_control_content(listControl, data.words);
-        listControl->setDirty();
+        listControl->invalid();
     }
 
     if (listTitle)
@@ -243,6 +256,7 @@ MetaWordsClipController::verifyView(VSTGUI::CView* view,
     {
         if (listControl = dynamic_cast<CListControl*>(view))
         {
+            listControl->registerViewListener(view_listener.get());
             listControl->registerControlListener(this);
             update_list_control_content(listControl,
                                         meta_words_data_func().words);
