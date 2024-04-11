@@ -104,13 +104,12 @@ VSTGUI::IController* ListEntryController::createSubController(
         if (!subctrl)
             return nullptr;
 
-        subctrl->initialize(controller, [ctler, pbr_id, sample_rate_func]() {
+        subctrl->initialize(controller, [=]() {
             return build_meta_words_data(ctler, pbr_id, sample_rate_func());
         });
 
-        subctrl->list_value_changed_func = [ctler, pbr_id,
-                                            sample_rate_func](int index) {
-                onRequestSelectWord(index, ctler, sample_rate_func(), pbr_id);
+        subctrl->list_value_changed_func = [=](int index) {
+            onRequestSelectWord(index, ctler, sample_rate_func(), pbr_id);
         };
         return subctrl;
     }
