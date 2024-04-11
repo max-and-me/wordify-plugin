@@ -24,26 +24,32 @@ class ListController : public Steinberg::FObject, public VSTGUI::IController
 public:
     //--------------------------------------------------------------------
     using PlaybackRegion = meta_words::PlaybackRegion;
+    using Control        = VSTGUI::CControl;
+    using View           = VSTGUI::CView;
+    using RowColumnView  = VSTGUI::CRowColumnView;
+    using UIAttributes   = VSTGUI::UIAttributes;
+    using IUIDescription = VSTGUI::IUIDescription;
+    using UTF8StringPtr  = VSTGUI::UTF8StringPtr;
+    using IController    = VSTGUI::IController;
 
     ListController(
         ARADocumentController* controller,
         ARADocumentController::FnGetSampleRate&& playback_sample_rate_func,
-        const VSTGUI::IUIDescription* ui_description);
+        const IUIDescription* ui_description);
     ~ListController() override;
 
     void PLUGIN_API update(FUnknown* changedUnknown,
-                           Steinberg::int32 message) override{};
-    VSTGUI::CView*
-    verifyView(VSTGUI::CView* view,
-               const VSTGUI::UIAttributes& attributes,
-               const VSTGUI::IUIDescription* description) override;
+                           Steinberg::int32 message) override {};
+    View* verifyView(View* view,
+                     const UIAttributes& attributes,
+                     const IUIDescription* description) override;
     // IControlListener
-    void valueChanged(VSTGUI::CControl* pControl) override{};
-    void controlBeginEdit(VSTGUI::CControl* pControl) override{};
-    void controlEndEdit(VSTGUI::CControl* pControl) override{};
-    VSTGUI::IController*
-    createSubController(VSTGUI::UTF8StringPtr name,
-                        const VSTGUI::IUIDescription* description) override;
+    void valueChanged(Control* pControl) override {};
+    void controlBeginEdit(Control* pControl) override {};
+    void controlEndEdit(Control* pControl) override {};
+    IController*
+    createSubController(UTF8StringPtr name,
+                        const IUIDescription* description) override;
 
     OBJ_METHODS(ListController, FObject)
 
@@ -53,10 +59,10 @@ private:
     void on_playback_regions_reordered();
     auto create_list_item_view(const PlaybackRegion::Id id) -> VSTGUI::CView*;
 
-    VSTGUI::CRowColumnView* rowColView           = nullptr;
-    const VSTGUI::IUIDescription* ui_description = nullptr;
+    RowColumnView* rowColView            = nullptr;
+    const IUIDescription* ui_description = nullptr;
 
-    ARADocumentController* controller = nullptr;
+    ARADocumentController* controller                      = nullptr;
     tiny_observer_pattern::ObserverID lifetime_observer_id = 0;
     tiny_observer_pattern::ObserverID order_observer_id    = 0;
     ARADocumentController::FnGetSampleRate playback_sample_rate_func;
