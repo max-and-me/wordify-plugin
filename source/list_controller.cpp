@@ -41,7 +41,7 @@ find_view_by_id(const VSTGUI::CRowColumnView* rowColView,
 //------------------------------------------------------------------------
 ListController::ListController(
     ARADocumentController* controller,
-    ARADocumentController::FnGetSampleRate&& playback_sample_rate_func,
+    ARADocumentController::FuncSampleRate&& playback_sample_rate_func,
     const VSTGUI::IUIDescription* ui_description)
 : controller(controller)
 , playback_sample_rate_func(playback_sample_rate_func)

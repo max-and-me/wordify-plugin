@@ -52,7 +52,7 @@ public:
     using ObserverID           = tiny_observer_pattern::ObserverID;
 
     using SampleRate      = double;
-    using FnGetSampleRate = std::function<SampleRate()>;
+    using FuncSampleRate = std::function<SampleRate()>;
 
     // Containers
     using PlaybackRegionObservers =

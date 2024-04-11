@@ -62,7 +62,7 @@ static auto build_meta_words_data(const ARADocumentController* controller,
 //------------------------------------------------------------------------
 ListEntryController::ListEntryController(
     ARADocumentController* controller,
-    ARADocumentController::FnGetSampleRate& playback_sample_rate_func,
+    ARADocumentController::FuncSampleRate& playback_sample_rate_func,
     const meta_words::PlaybackRegion::Id playback_region_id)
 : controller(controller)
 , playback_sample_rate_func(playback_sample_rate_func)
