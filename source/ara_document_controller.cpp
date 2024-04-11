@@ -143,7 +143,25 @@ ARA::PlugIn::PlaybackRegion* ARADocumentController::doCreatePlaybackRegion(
     ARA::PlugIn::AudioModification* modification,
     ARA::ARAPlaybackRegionHostRef hostRef) noexcept
 {
-    return new PlaybackRegion(modification, hostRef);
+    auto* region = new PlaybackRegion(modification, hostRef);
+
+    // Do stuff!
+    this->on_add_playback_region(region);
+
+    return region;
+}
+
+//------------------------------------------------------------------------
+
+void ARADocumentController::doDestroyPlaybackRegion(
+    ARA::PlugIn::PlaybackRegion* playbackRegion) noexcept
+{
+    // Do stuff
+    auto* pbr = dynamic_cast<PlaybackRegion*>(playbackRegion);
+    if (pbr)
+        this->on_remove_playback_region(pbr->get_id());
+
+    ARA::PlugIn::DocumentController::doDestroyPlaybackRegion(playbackRegion);
 }
 
 //------------------------------------------------------------------------
@@ -205,11 +223,7 @@ void ARADocumentController::didAddPlaybackRegionToRegionSequence(
     if (!pbr)
         return;
 
-    playback_regions.insert({pbr->get_id(), pbr});
-    region_order_manager.push_back(pbr->get_id());
-
-    playback_region_lifetimes_subject.notify_listeners(
-        {PlaybackRegionLifetimeData::Event::HasBeenAdded, pbr->get_id()});
+    // on_add_playback_region(pbr);
 }
 
 //------------------------------------------------------------------------
@@ -221,11 +235,7 @@ void ARADocumentController::willRemovePlaybackRegionFromRegionSequence(
     if (!pbr)
         return;
 
-    playback_region_lifetimes_subject.notify_listeners(
-        {PlaybackRegionLifetimeData::Event::WillBeRemoved, pbr->get_id()});
-
-    region_order_manager.remove(pbr->get_id());
-    playback_regions.erase(pbr->get_id());
+    // on_remove_playback_region(pbr->get_id());
 }
 
 //------------------------------------------------------------------------
@@ -263,8 +273,8 @@ auto ARADocumentController::unregister_playback_region_lifetimes_observer(
 
 //------------------------------------------------------------------------
 auto ARADocumentController::register_playback_region_changed_observer(
-    const PlaybackRegion::Id playback_region_id, Subject::Callback&& callback)
-    -> ObserverID
+    const PlaybackRegion::Id playback_region_id,
+    Subject::Callback&& callback) -> ObserverID
 {
     auto& subject = playback_region_observers[playback_region_id];
     return subject.add_listener(std::move(callback));
@@ -292,5 +302,24 @@ auto ARADocumentController::unregister_playback_region_order_observer(
     region_order_manager.unregister_observer(id);
 }
 
+//------------------------------------------------------------------------
+void ARADocumentController::on_add_playback_region(PlaybackRegion* region)
+{
+    playback_regions.insert({region->get_id(), region});
+    region_order_manager.push_back(region->get_id());
+
+    playback_region_lifetimes_subject.notify_listeners(
+        {PlaybackRegionLifetimeData::Event::HasBeenAdded, region->get_id()});
+}
+
+//------------------------------------------------------------------------
+void ARADocumentController::on_remove_playback_region(PlaybackRegion::Id id)
+{
+    playback_region_lifetimes_subject.notify_listeners(
+        {PlaybackRegionLifetimeData::Event::WillBeRemoved, id});
+
+    region_order_manager.remove(id);
+    playback_regions.erase(id);
+}
 //------------------------------------------------------------------------
 } // namespace mam

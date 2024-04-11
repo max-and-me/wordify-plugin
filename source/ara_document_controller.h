@@ -114,6 +114,9 @@ public:
         ARA::PlugIn::AudioModification* modification,
         ARA::ARAPlaybackRegionHostRef hostRef) noexcept override;
 
+    void doDestroyPlaybackRegion(
+        ARA::PlugIn::PlaybackRegion* playbackRegion) noexcept override;
+
     void didUpdatePlaybackRegionProperties(
         ARA::PlugIn::PlaybackRegion* playbackRegion) noexcept override;
 
@@ -144,8 +147,8 @@ public:
     void
     rendererDidAccessModelGraph(PlaybackRenderer* playbackRenderer) noexcept;
 
-    auto find_playback_region(PlaybackRegion::Id id) const
-        -> OptPlaybackRegionPtr;
+    auto
+    find_playback_region(PlaybackRegion::Id id) const -> OptPlaybackRegionPtr;
 
     template <typename Func>
     void for_each_playback_region_id(Func&& func)
@@ -196,6 +199,9 @@ protected:
     std::atomic<int> _countOfRenderersCurrentlyAccessingModelGraph{0};
 
 private:
+    void on_add_playback_region(PlaybackRegion* region);
+    void on_remove_playback_region(PlaybackRegion::Id id);
+
     template <typename Func>
     void for_each_playback_region(Func&& func)
     {
