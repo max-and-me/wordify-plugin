@@ -146,8 +146,12 @@ const MetaWordsData PlaybackRegion::get_meta_words_data(
     data.words = filter_audible_words(data.words, *this);
     data.project_offset     = calculate_project_offset(*this);
     data.project_time_start = this->getStartInPlaybackTime();
-    data.name               = getEffectiveName();
-    data.color              = get_effective_color();
+
+    if (getRegionSequence())
+    {
+        data.name  = getEffectiveName();
+        data.color = get_effective_color();
+    }
 
     return data;
 }
