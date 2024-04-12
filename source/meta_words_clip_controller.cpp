@@ -5,6 +5,7 @@
 #include "meta_words_clip_controller.h"
 #include "fmt/format.h"
 #include "list_entry_controller.h"
+#include "little_helpers.h"
 #include "meta_words_data.h"
 #include "vstgui/lib/ccolor.h"
 #include "vstgui/lib/cdrawcontext.h"
@@ -101,8 +102,8 @@ private:
 static auto update_label_control(CTextLabel& listTitle,
                                  const MetaWordsData& data) -> void
 {
-    auto [r, g, b] = data.color;
-    const VSTGUI::CColor color(r, g, b);
+    auto [r, g, b]             = data.color;
+    const VSTGUI::CColor color = make_color<float>(r, g, b, std::nullopt);
     listTitle.setFontColor(color);
     listTitle.setText(VSTGUI::UTF8String(data.name));
     listTitle.sizeToFit();
