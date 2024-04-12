@@ -3,42 +3,16 @@
 //------------------------------------------------------------------------
 
 #include "waveform_view.h"
+#include "little_helpers.h"
 #include "mam/wave-draw/wave-draw.h"
 #include "vstgui/lib/cdrawcontext.h"
 #include "vstgui/lib/cgraphicspath.h"
+#include <optional>
 
 using namespace VSTGUI;
 
 namespace mam {
 
-//------------------------------------------------------------------------
-// WaveFormView
-//------------------------------------------------------------------------
-template <typename T>
-class BoundsCheck
-{
-public:
-    //--------------------------------------------------------------------
-    using Range = std::pair<T, T>;
-    BoundsCheck(const Range& range)
-    : lo(range.first)
-    , hi(range.first + range.second)
-    {
-    }
-
-    bool is_in(const T& value) const { return is_in(value, lo, hi); }
-
-    //--------------------------------------------------------------------
-
-private:
-    const T lo{0};
-    const T hi{0};
-
-    bool is_in(const T& value, const T& lo, const T& hi) const
-    {
-        return !(value < lo) && !(hi < value);
-    }
-};
 //------------------------------------------------------------------------
 WaveFormView::WaveFormView(const CRect& size)
 : CView(size)
@@ -76,8 +50,12 @@ auto WaveFormView::draw_like_spotify(CDrawContext& pContext,
 
     // TODO: Get rid of warning!
     const auto [r, g, b] = waveform_data.color;
-    const VSTGUI::CColor color_normal(r, g, b);
-    const VSTGUI::CColor color_highlight(255, 255, 255);
+    const VSTGUI::CColor color_normal =
+        make_color<float>(r, g, b, std::nullopt);
+
+    constexpr auto TINT_FACTOR = 2.f / 3.f;
+    const VSTGUI::CColor color_highlight =
+        make_color<float>(r, g, b, TINT_FACTOR);
 
     Drawer()
         .init(waveform_data.audio_buffer, zoom_factor)

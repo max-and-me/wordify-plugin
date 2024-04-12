@@ -15,7 +15,7 @@ struct MetaWordsData
 {
     using Seconds = double;
     using String  = std::string;
-    using Color = std::tuple<uint8_t, uint8_t, uint8_t>;
+    using Color = std::tuple<float, float, float>;
 
     String name;
     Color color;

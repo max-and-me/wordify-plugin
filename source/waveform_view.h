@@ -19,7 +19,7 @@ public:
     //--------------------------------------------------------------------
     struct Data
     {
-        using Color       = std::tuple<uint8_t, uint8_t, uint8_t>;
+        using Color       = std::tuple<float, float, float>;
         using AudioBuffer = gsl::span<const float>;
         using Range       = std::pair<size_t, size_t>; // start and duration
 

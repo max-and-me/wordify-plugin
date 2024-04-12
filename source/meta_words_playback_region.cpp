@@ -140,11 +140,7 @@ auto PlaybackRegion::get_effective_color() const -> Color
     Color color = std::make_tuple(0, 0, 0);
     if (const auto& tmp_color = getEffectiveColor())
     {
-        static const float RGB_MAX_FLOAT = 255.f;
-        color =
-            std::make_tuple(static_cast<uint8_t>(tmp_color->r * RGB_MAX_FLOAT),
-                            static_cast<uint8_t>(tmp_color->g * RGB_MAX_FLOAT),
-                            static_cast<uint8_t>(tmp_color->b * RGB_MAX_FLOAT));
+        color = std::make_tuple(tmp_color->r, tmp_color->g, tmp_color->b);
     }
 
     return color;
