@@ -19,7 +19,8 @@
 		},
 		"colors": {
 			"main_background": "#25282bff",
-			"time_display_color": "#818181ff"
+			"time_display_color": "#818181ff",
+			"meta_words_text_color": "#afb5bbff"
 		},
 		"gradients": {
 			"waveform_background": [
@@ -48,13 +49,13 @@
 			},
 			"UIEditController": {
 				"EditViewScale": "1",
-				"EditorSize": "0, 0, 1228, 683",
-				"SplitViewSize_0_0": "0.7640791476407914339930016467405948787928",
-				"SplitViewSize_0_1": "0.2070015220700152092092594102723523974419",
-				"SplitViewSize_1_0": "0.6164383561643835829357840339071117341518",
-				"SplitViewSize_1_1": "0.4566210045662100203145428167772479355335",
-				"SplitViewSize_2_0": "0.7410423452768729601913832993886899203062",
-				"SplitViewSize_2_1": "0.2581433224755700361896515460102818906307",
+				"EditorSize": "0, 0, 1275, 625",
+				"SplitViewSize_0_0": "0.7412353923205342587365862527803983539343",
+				"SplitViewSize_0_1": "0.2270450751252086896148085770619218237698",
+				"SplitViewSize_1_0": "0.6285475792988314269749139384657610207796",
+				"SplitViewSize_1_1": "0.4532554257095158800616729877219768241048",
+				"SplitViewSize_2_0": "0.7505882352941176671734524461498949676752",
+				"SplitViewSize_2_1": "0.2486274509803921561879036516984342597425",
 				"TabSwitchValue": "2",
 				"Version": "1",
 				"ViewBackground": "1"
@@ -67,7 +68,7 @@
 				"SelectedRow": "0"
 			},
 			"UIColorsDataSource": {
-				"SelectedRow": "1"
+				"SelectedRow": "2"
 			},
 			"UIFontsDataSource": {
 				"SelectedRow": "1"
@@ -180,7 +181,7 @@
 									"background-color-draw-style": "filled and stroked",
 									"bordered": "false",
 									"class": "CScrollView",
-									"container-size": "619.496, 392",
+									"container-size": "619.496, 144",
 									"follow-focus-view": "false",
 									"horizontal-scrollbar": "false",
 									"mouse-enabled": "true",
@@ -212,7 +213,7 @@
 											"opacity": "1",
 											"origin": "0, 0",
 											"row-style": "true",
-											"size": "619.496, 392",
+											"size": "619.496, 144",
 											"spacing": "24",
 											"transparent": "true",
 											"uidesc-label": "VLayout",
@@ -483,8 +484,8 @@
 											"class": "CStringListControl",
 											"default-value": "0.5",
 											"font": "ListEntryFont",
-											"font-color": "~ WhiteCColor",
-											"font-color-selected": "~ WhiteCColor",
+											"font-color": "meta_words_text_color",
+											"font-color-selected": "meta_words_text_color",
 											"hover-color": "#00000064",
 											"line-color": "~ TransparentCColor",
 											"line-width": "1",
