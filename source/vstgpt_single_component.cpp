@@ -235,24 +235,25 @@ VSTGUI::IController* VstGPTSingleComponent::createSubController(
         return nullptr;
 
     if (VSTGUI::UTF8StringView(name) == "MetaWordsListController")
+    {
         return new ListController(document_controller, std::move([this]() {
-                                      return this->processSetup.sampleRate;
+                                      return processSetup.sampleRate;
                                   }),
                                   description);
+    }
     else if (VSTGUI::UTF8StringView(name) == "WaveFormController")
     {
         auto* subctrl = new WaveFormController();
         if (!subctrl)
             return nullptr;
 
-        subctrl->initialize(
-            document_controller, [=]() -> WaveFormController::Data {
-                auto id = document_controller->get_region_selection_model()
-                              .get_data()
-                              .region_id;
-                return build_waveform_data(document_controller, id,
-                                           processSetup.sampleRate);
-            });
+        subctrl->initialize(document_controller, [=]() {
+            auto id = document_controller->get_region_selection_model()
+                          .get_data()
+                          .region_id;
+            return build_waveform_data(document_controller, id,
+                                       processSetup.sampleRate);
+        });
 
         return subctrl;
     }
