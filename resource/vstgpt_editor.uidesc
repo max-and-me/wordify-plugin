@@ -6,11 +6,11 @@
 			"ListTitleFont": {
 				"bold": "true",
 				"font-name": "Arial",
-				"size": "15"
+				"size": "14"
 			},
 			"ListEntryFont": {
 				"font-name": "Arial",
-				"size": "16"
+				"size": "15"
 			},
 			"TimeDisplayFont": {
 				"font-name": "Arial",
