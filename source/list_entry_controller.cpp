@@ -33,13 +33,23 @@ static auto onRequestSelectWord(int index,
     if (!controller)
         return;
 
+    // Region should be normally always valid (but who knows ;))
     auto opt_region = controller->find_playback_region(id);
-    if (!opt_region)
+    auto region     = opt_region.value_or(nullptr);
+    if (!region)
         return;
 
-    onRequestSelectWord(index,
-                        opt_region.value()->get_meta_words_data(sample_rate),
-                        controller);
+    // Get the selected word
+    const auto words_data = region->get_meta_words_data(sample_rate);
+    const auto& words     = words_data.words;
+    const auto& word      = words.at(index);
+
+    // Compute its time position, BUT limit it to the region start time
+    // so the locator will always jump to the beginning of the region
+    // no matter if the word start position is already partly outside
+    auto pos = word.begin + words_data.project_offset;
+    pos      = std::max(pos, region->getStartInPlaybackTime());
+    controller->onRequestLocatorPosChanged(pos);
 }
 
 //------------------------------------------------------------------------
