@@ -43,31 +43,34 @@ auto WaveFormView::draw_like_spotify(CDrawContext& pContext,
     const auto zoom_factor = wave_draw::compute_zoom_factor(
         waveform_data.audio_buffer, viewSize.getWidth(), LINE_WIDTH, SPACING);
 
-    ///////
+    // TODO: Improve that
     const auto samples_per_bucket = static_cast<size_t>(zoom_factor);
-    const auto range_a = waveform_data.highlight_range.first / samples_per_bucket;
-    const auto range_b = waveform_data.highlight_range.second / samples_per_bucket;
-    size_t bucket_counter = 0;
+    const auto range_a =
+        waveform_data.highlight_range.first / samples_per_bucket;
+    const auto range_b =
+        waveform_data.highlight_range.second / samples_per_bucket;
     ///////
+
+    // TODO: Get rid of warning!
+    const auto [r, g, b] = waveform_data.color;
+    const VSTGUI::CColor color_normal(r, g, b);
+    const VSTGUI::CColor color_highlight(255, 255, 255);
 
     Drawer()
         .init(waveform_data.audio_buffer, zoom_factor)
         .setup_wave(LINE_WIDTH, SPACING)
         .setup_dimensions(viewSize.getWidth(), viewSize.getHeight())
-        .draw([&](const DrawData& data) {
+        .draw([&](const DrawData& data, size_t count) {
             const auto rect =
                 CRect({data.x, data.y}, {data.width, data.height});
             auto graphics_path = owned(pContext.createRoundRectGraphicsPath(
                 rect, ROUND_CORNER_RADIUS));
 
-            // TODO: Get rid of warning!
-            const auto [r, g, b] = waveform_data.color;
-            const VSTGUI::CColor color(r, g, b);
-            const VSTGUI::CColor color_highlight(255, 255, 255);
-            const bool is_highlight = range_a <= bucket_counter && bucket_counter < (range_a + range_b);
-            pContext.setFillColor(is_highlight ? color_highlight : color);
+            const bool is_highlight =
+                range_a <= count && count < (range_a + range_b);
+            pContext.setFillColor(is_highlight ? color_highlight
+                                               : color_normal);
             pContext.drawGraphicsPath(graphics_path);
-            bucket_counter++;
         });
 }
 
