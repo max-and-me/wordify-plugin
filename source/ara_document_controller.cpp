@@ -321,5 +321,24 @@ void ARADocumentController::on_remove_playback_region(PlaybackRegion::Id id)
     region_order_manager.remove(id);
     playback_regions.erase(id);
 }
+
+//------------------------------------------------------------------------
+auto ARADocumentController::get_region_selection_model()
+    -> RegionSelectionModel&
+{
+    if (!region_selection_model.on_select_func)
+    {
+        region_selection_model.on_select_func =
+            [&](const RegionSelectionModel::DataType&) {
+                // TODO: a bit overkill here to notify all observers without
+                // context. But hey, it s trial and error ;) At least observers
+                // should know that it is the 'selection' which changed.
+                this->notify_listeners({});
+            };
+    }
+
+    return region_selection_model;
+}
+
 //------------------------------------------------------------------------
 } // namespace mam

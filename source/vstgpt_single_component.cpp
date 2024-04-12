@@ -245,15 +245,14 @@ VSTGUI::IController* VstGPTSingleComponent::createSubController(
         if (!subctrl)
             return nullptr;
 
-        auto sample_rate_func = [this]() {
-            return this->processSetup.sampleRate;
-        };
-        subctrl->initialize(document_controller,
-                            [pbr_id = 0, ctler = document_controller,
-                             sample_rate_func]() -> WaveFormController::Data {
-                                return build_waveform_data(ctler, pbr_id,
-                                                           sample_rate_func());
-                            });
+        subctrl->initialize(
+            document_controller, [=]() -> WaveFormController::Data {
+                auto id = document_controller->get_region_selection_model()
+                              .get_data()
+                              .region_id;
+                return build_waveform_data(document_controller, id,
+                                           processSetup.sampleRate);
+            });
 
         return subctrl;
     }

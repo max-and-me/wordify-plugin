@@ -9,6 +9,7 @@
 #include "meta_words_playback_region.h"
 #include "region_order_manager.h"
 #include "tiny_observer_pattern.h"
+#include "tiny_selection_model.h"
 
 namespace mam {
 namespace meta_words {
@@ -35,6 +36,20 @@ struct PlaybackRegionLifetimeData
 };
 
 //------------------------------------------------------------------------
+//  RegionData
+//------------------------------------------------------------------------
+struct RegionData
+{
+    using RegionId  = uint64_t;
+    using WordIndex = int;
+
+    RegionId region_id;
+    WordIndex word_index;
+};
+
+using RegionSelectionModel = SelectionModel<RegionData>;
+
+//------------------------------------------------------------------------
 // ARADocumentController
 //------------------------------------------------------------------------
 class ARADocumentController : public ARA::PlugIn::DocumentController,
@@ -51,7 +66,7 @@ public:
     using Subject              = tiny_observer_pattern::SimpleSubject;
     using ObserverID           = tiny_observer_pattern::ObserverID;
 
-    using SampleRate      = double;
+    using SampleRate     = double;
     using FuncSampleRate = std::function<SampleRate()>;
 
     // Containers
@@ -188,12 +203,14 @@ public:
         region_order_manager.for_each_playback_region_id_enumerated(func);
     }
 
+    auto get_region_selection_model() -> RegionSelectionModel&;
     //--------------------------------------------------------------------
 protected:
     PlaybackRegionObservers playback_region_observers;
     PlaybackRegions playback_regions;
     PlaybackRegionLifetimesSubject playback_region_lifetimes_subject;
     RegionOrderManager region_order_manager;
+    RegionSelectionModel region_selection_model;
 
     std::atomic<bool> _renderersCanAccessModelGraph{true};
     std::atomic<int> _countOfRenderersCurrentlyAccessingModelGraph{0};
