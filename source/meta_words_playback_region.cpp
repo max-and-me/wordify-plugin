@@ -21,12 +21,12 @@ static auto calculate_project_offset(const PlaybackRegion& region) -> Seconds
 static auto is_in_playback_region(const PlaybackRegion& region,
                                   const meta_words::MetaWord& word) -> bool
 {
-    const auto startInAudioModificationTime =
+    auto startInAudioModificationTime =
         region.getStartInAudioModificationTime();
 
     // Hack
     if (startInAudioModificationTime < 0.001)
-        startInAudioModificationTime;
+        startInAudioModificationTime = 0.;
 
     const auto endInAudioModificationTime =
         (region.getStartInAudioModificationTime() +
