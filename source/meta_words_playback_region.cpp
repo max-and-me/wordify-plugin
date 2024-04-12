@@ -19,10 +19,8 @@ static auto calculate_project_offset(const PlaybackRegion& region) -> Seconds
 
 //------------------------------------------------------------------------
 static auto is_in_playback_region(const PlaybackRegion& region,
-                                  const ARA::ARATimePosition pos) -> bool
+                                  const meta_words::MetaWord& word) -> bool
 {
-    constexpr auto SAFETY_DELTA = 0.01;
-
     const auto startInAudioModificationTime =
         region.getStartInAudioModificationTime();
 
@@ -30,8 +28,12 @@ static auto is_in_playback_region(const PlaybackRegion& region,
         (region.getStartInAudioModificationTime() +
          region.getDurationInAudioModificationTime());
 
-    return (pos + SAFETY_DELTA) >= startInAudioModificationTime &&
-           pos < endInAudioModificationTime;
+    const auto word_end = word.begin + word.duration;
+
+    return (word.begin >= startInAudioModificationTime &&
+            word.begin < endInAudioModificationTime) ||
+           (word_end >= startInAudioModificationTime &&
+            word_end < endInAudioModificationTime);
 }
 
 //------------------------------------------------------------------------
@@ -42,7 +44,7 @@ static auto filter_audible_words(const MetaWords& words,
 
     auto is_in_range = [&](const meta_words::MetaWord& word) {
         static const auto SAFETY_DELTA = 0.01;
-        return is_in_playback_region(region, word.begin);
+        return is_in_playback_region(region, word);
     };
 
     std::copy_if(words.begin(), words.end(), std::back_inserter(filtered_words),
