@@ -24,6 +24,9 @@ static auto is_in_playback_region(const PlaybackRegion& region,
     const auto startInAudioModificationTime =
         region.getStartInAudioModificationTime();
 
+    // Hack
+    if (startInAudioModificationTime < 0.001)
+        startInAudioModificationTime;
     const auto endInAudioModificationTime =
         (region.getStartInAudioModificationTime() +
          region.getDurationInAudioModificationTime());
