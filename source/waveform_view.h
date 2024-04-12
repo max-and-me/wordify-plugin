@@ -21,9 +21,11 @@ public:
     {
         using Color       = std::tuple<uint8_t, uint8_t, uint8_t>;
         using AudioBuffer = gsl::span<const float>;
+        using Range       = std::pair<size_t, size_t>; // start and duration
 
         Color color;
         AudioBuffer audio_buffer;
+        Range highlight_range;
     };
 
     using FuncWaveFormData = std::function<const Data()>;
@@ -34,8 +36,8 @@ public:
 
     //--------------------------------------------------------------------
 private:
-    auto drawFull(VSTGUI::CDrawContext* pContext, const VSTGUI::CRect& viewSize)
-        -> void;
+    auto drawFull(VSTGUI::CDrawContext* pContext,
+                  const VSTGUI::CRect& viewSize) -> void;
     auto draw_like_spotify(VSTGUI::CDrawContext& pContext,
                            const VSTGUI::CRect& viewSize) -> void;
 

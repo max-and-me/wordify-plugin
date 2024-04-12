@@ -117,7 +117,8 @@ VSTGUI::IController* ListEntryController::createSubController(
         });
 
         subctrl->list_value_changed_func = [=](int index) {
-            controller->get_region_selection_model().select({pbr_id, index});
+            controller->get_region_selection_model().select(
+                {pbr_id, static_cast<size_t>(index)});
             onRequestSelectWord(index, ctler, sample_rate_func(), pbr_id);
         };
         return subctrl;

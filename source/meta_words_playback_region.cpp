@@ -27,6 +27,7 @@ static auto is_in_playback_region(const PlaybackRegion& region,
     // Hack
     if (startInAudioModificationTime < 0.001)
         startInAudioModificationTime;
+
     const auto endInAudioModificationTime =
         (region.getStartInAudioModificationTime() +
          region.getDurationInAudioModificationTime());
@@ -171,7 +172,7 @@ const MetaWordsData PlaybackRegion::get_meta_words_data(
 
 //------------------------------------------------------------------------
 auto PlaybackRegion::get_audio_buffer(
-    ARA::ARASampleRate playback_sample_rate) const -> const AudioBufferSpan
+    ARA::ARASampleRate playback_sample_rate) const -> const AudioBufferSpanData
 {
     const auto& audioSrc = this->getAudioModification()
                                ->getAudioSource<mam::meta_words::AudioSource>();
@@ -185,7 +186,11 @@ auto PlaybackRegion::get_audio_buffer(
     const auto duration_samples =
         size_t(this->getDurationInPlaybackTime() * playback_sample_rate);
 
-    return buffer_span.subspan(start_samples, duration_samples);
+    const AudioBufferSpanData data{
+        start_samples,
+        AudioBufferSpan(left_channel).subspan(start_samples, duration_samples)};
+
+    return data;
 }
 //------------------------------------------------------------------------
 } // namespace mam::meta_words

@@ -60,19 +60,54 @@ static auto on_editor_view(meta_words::EditorView& editorView,
 }
 
 //------------------------------------------------------------------------
-static auto build_waveform_data(const ARADocumentController* controller,
-                                const meta_words::PlaybackRegion::Id id,
+using Range = std::pair<size_t, size_t>;
+static auto to_sample_range(const meta_words::MetaWord& word,
+                            double sample_rate) -> const Range
+{
+    return {word.begin * sample_rate, word.duration * sample_rate};
+}
+
+//------------------------------------------------------------------------
+static auto build_waveform_data(ARADocumentController* controller,
                                 double sample_rate) -> WaveFormController::Data
 {
     if (!controller)
         return {};
 
-    auto opt_region = controller->find_playback_region(id);
-    if (!opt_region)
+    auto selection  = controller->get_region_selection_model().get_data();
+    auto opt_region = controller->find_playback_region(selection.region_id);
+    auto region     = opt_region.value_or(nullptr);
+    if (!region)
         return {};
 
-    return {opt_region.value()->get_effective_color(),
-            opt_region.value()->get_audio_buffer(sample_rate)};
+    const auto words = region->get_meta_words_data(sample_rate).words;
+    if (!(selection.word_index < words.size()))
+        return {};
+
+    const auto span_data = region->get_audio_buffer(sample_rate);
+    const auto word_sample_range =
+        to_sample_range(words.at(selection.word_index), sample_rate);
+
+    size_t a = 0;
+    size_t b = 0;
+
+    // Wow, wild calculations here. But it seems to work for now :)
+    const auto span_begin_samples = span_data.offset_samples;
+    const auto span_end_samples =
+        span_data.offset_samples + span_data.audio_buffer_span.size();
+    const auto word_begin_samples = word_sample_range.first;
+    const auto word_end_samples =
+        word_sample_range.first + word_sample_range.second;
+
+    a = std::clamp(word_begin_samples, span_begin_samples, span_end_samples);
+    b = std::clamp(word_end_samples, span_begin_samples, span_end_samples);
+
+    a -= span_data.offset_samples;
+    b -= span_data.offset_samples;
+    b -= a;
+    //
+
+    return {region->get_effective_color(), span_data.audio_buffer_span, {a, b}};
 }
 
 //------------------------------------------------------------------------
@@ -106,8 +141,8 @@ tresult PLUGIN_API VstGPTSingleComponent::initialize(FUnknown* context)
 //------------------------------------------------------------------------
 tresult PLUGIN_API VstGPTSingleComponent::terminate()
 {
-    // Here the Plug-in will be de-instantiated, last possibility to remove some
-    // memory!
+    // Here the Plug-in will be de-instantiated, last possibility to remove
+    // some memory!
 
     //---do not forget to call parent ------
     return SingleComponentEffect::terminate();
@@ -161,18 +196,18 @@ tresult PLUGIN_API VstGPTSingleComponent::process(Vst::ProcessData& data)
     }
     else
     {
-        // if we're no ARA playback renderer, we're just copying the inputs to
-        // the outputs, which is appropriate both when being only an ARA editor
-        // renderer, or when being used in non-ARA mode.
+        // if we're no ARA playback renderer, we're just copying the inputs
+        // to the outputs, which is appropriate both when being only an ARA
+        // editor renderer, or when being used in non-ARA mode.
         for (int32 c = 0; c < data.outputs[0].numChannels; ++c)
             std::memcpy(data.outputs[0].channelBuffers32[c],
                         data.inputs[0].channelBuffers32[c],
                         sizeof(float) * static_cast<size_t>(data.numSamples));
     }
 
-    // if we are an ARA editor renderer, we now would add out preview signal to
-    // the output, but our test implementation does not support editing and thus
-    // never generates any preview signal.
+    // if we are an ARA editor renderer, we now would add out preview signal
+    // to the output, but our test implementation does not support editing
+    // and thus never generates any preview signal.
     //  if (auto editorRenderer =
     //  _araPlugInExtension.getEditorRenderer<ARATestEditorRenderer*> ())
     //      editorRenderer->addEditorSignal (...);
@@ -248,10 +283,7 @@ VSTGUI::IController* VstGPTSingleComponent::createSubController(
             return nullptr;
 
         subctrl->initialize(document_controller, [=]() {
-            auto id = document_controller->get_region_selection_model()
-                          .get_data()
-                          .region_id;
-            return build_waveform_data(document_controller, id,
+            return build_waveform_data(document_controller,
                                        processSetup.sampleRate);
         });
 

@@ -25,6 +25,12 @@ public:
         mam::audio_buffer_management::AudioBuffer<AudioSource::SampleType>;
     using AudioBufferSpan = gsl::span<const AudioSource::SampleType>;
 
+    struct AudioBufferSpanData
+    {
+        size_t offset_samples = 0;
+        AudioBufferSpan audio_buffer_span;
+    };
+
     explicit PlaybackRegion(ARA::PlugIn::AudioModification* audioModification,
                             ARA::ARAPlaybackRegionHostRef hostRef) noexcept;
 
@@ -32,7 +38,7 @@ public:
         -> const MetaWordsData;
 
     auto get_audio_buffer(ARA::ARASampleRate playback_sample_rate) const
-        -> const AudioBufferSpan;
+        -> const AudioBufferSpanData;
 
     auto get_id() const -> Id { return id; }
 

@@ -43,6 +43,13 @@ auto WaveFormView::draw_like_spotify(CDrawContext& pContext,
     const auto zoom_factor = wave_draw::compute_zoom_factor(
         waveform_data.audio_buffer, viewSize.getWidth(), LINE_WIDTH, SPACING);
 
+    ///////
+    const auto samples_per_bucket = static_cast<size_t>(zoom_factor);
+    const auto range_a = waveform_data.highlight_range.first / samples_per_bucket;
+    const auto range_b = waveform_data.highlight_range.second / samples_per_bucket;
+    size_t bucket_counter = 0;
+    ///////
+
     Drawer()
         .init(waveform_data.audio_buffer, zoom_factor)
         .setup_wave(LINE_WIDTH, SPACING)
@@ -56,14 +63,17 @@ auto WaveFormView::draw_like_spotify(CDrawContext& pContext,
             // TODO: Get rid of warning!
             const auto [r, g, b] = waveform_data.color;
             const VSTGUI::CColor color(r, g, b);
-            pContext.setFillColor(color);
+            const VSTGUI::CColor color_highlight(255, 255, 255);
+            const bool is_highlight = range_a <= bucket_counter && bucket_counter < (range_a + range_b);
+            pContext.setFillColor(is_highlight ? color_highlight : color);
             pContext.drawGraphicsPath(graphics_path);
+            bucket_counter++;
         });
 }
 
 //------------------------------------------------------------------------
-auto WaveFormView::drawFull(CDrawContext* pContext, const CRect& viewSize)
-    -> void
+auto WaveFormView::drawFull(CDrawContext* pContext,
+                            const CRect& viewSize) -> void
 {
     pContext->setLineWidth(1.0);
 

@@ -40,8 +40,8 @@ struct PlaybackRegionLifetimeData
 //------------------------------------------------------------------------
 struct RegionData
 {
-    using RegionId  = uint64_t;
-    using WordIndex = int;
+    using RegionId  = size_t;
+    using WordIndex = size_t;
 
     RegionId region_id;
     WordIndex word_index;
