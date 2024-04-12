@@ -102,8 +102,6 @@ VSTGUI::IController* ListEntryController::createSubController(
     if (!controller)
         return nullptr;
 
-    auto& subject =
-        controller->get_playback_region_changed_subject(playback_region_id);
     auto sample_rate_func = playback_sample_rate_func;
     auto pbr_id           = playback_region_id;
     auto ctler            = this->controller;
