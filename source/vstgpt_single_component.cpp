@@ -80,32 +80,31 @@ static auto build_waveform_data(ARADocumentController* controller,
     if (!region)
         return {};
 
-    const auto words = region->get_meta_words_data(sample_rate).words;
-    if (!(selection.word_index < words.size()))
-        return {};
-
     const auto span_data = region->get_audio_buffer(sample_rate);
-    const auto word_sample_range =
-        to_sample_range(words.at(selection.word_index), sample_rate);
+    const auto words     = region->get_meta_words_data(sample_rate).words;
+    size_t a             = 0;
+    size_t b             = 0;
+    if ((selection.word_index < words.size()))
+    {
+        const auto word_sample_range =
+            to_sample_range(words.at(selection.word_index), sample_rate);
 
-    size_t a = 0;
-    size_t b = 0;
+        // Wow, wild calculations here. But it seems to work for now :)
+        const auto span_begin_samples = span_data.offset_samples;
+        const auto span_end_samples =
+            span_data.offset_samples + span_data.audio_buffer_span.size();
+        const auto word_begin_samples = word_sample_range.first;
+        const auto word_end_samples =
+            word_sample_range.first + word_sample_range.second;
 
-    // Wow, wild calculations here. But it seems to work for now :)
-    const auto span_begin_samples = span_data.offset_samples;
-    const auto span_end_samples =
-        span_data.offset_samples + span_data.audio_buffer_span.size();
-    const auto word_begin_samples = word_sample_range.first;
-    const auto word_end_samples =
-        word_sample_range.first + word_sample_range.second;
+        a = std::clamp(word_begin_samples, span_begin_samples,
+                       span_end_samples);
+        b = std::clamp(word_end_samples, span_begin_samples, span_end_samples);
 
-    a = std::clamp(word_begin_samples, span_begin_samples, span_end_samples);
-    b = std::clamp(word_end_samples, span_begin_samples, span_end_samples);
-
-    a -= span_data.offset_samples;
-    b -= span_data.offset_samples;
-    b -= a;
-    //
+        a -= span_data.offset_samples;
+        b -= span_data.offset_samples;
+        b -= a;
+    }
 
     return {region->get_effective_color(), span_data.audio_buffer_span, {a, b}};
 }
