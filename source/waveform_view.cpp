@@ -14,6 +14,32 @@ namespace mam {
 //------------------------------------------------------------------------
 // WaveFormView
 //------------------------------------------------------------------------
+template <typename T>
+class BoundsCheck
+{
+public:
+    //--------------------------------------------------------------------
+    using Range = std::pair<T, T>;
+    BoundsCheck(const Range& range)
+    : lo(range.first)
+    , hi(range.first + range.second)
+    {
+    }
+
+    bool is_in(const T& value) const { return is_in(value, lo, hi); }
+
+    //--------------------------------------------------------------------
+
+private:
+    const T lo{0};
+    const T hi{0};
+
+    bool is_in(const T& value, const T& lo, const T& hi) const
+    {
+        return !(value < lo) && !(hi < value);
+    }
+};
+//------------------------------------------------------------------------
 WaveFormView::WaveFormView(const CRect& size)
 : CView(size)
 {
@@ -43,13 +69,10 @@ auto WaveFormView::draw_like_spotify(CDrawContext& pContext,
     const auto zoom_factor = wave_draw::compute_zoom_factor(
         waveform_data.audio_buffer, viewSize.getWidth(), LINE_WIDTH, SPACING);
 
-    // TODO: Improve that
     const auto samples_per_bucket = static_cast<size_t>(zoom_factor);
-    const auto range_a =
-        waveform_data.highlight_range.first / samples_per_bucket;
-    const auto range_b =
-        waveform_data.highlight_range.second / samples_per_bucket;
-    ///////
+    const BoundsCheck<size_t> bounds_check(
+        {waveform_data.highlight_range.first / samples_per_bucket,
+         waveform_data.highlight_range.second / samples_per_bucket});
 
     // TODO: Get rid of warning!
     const auto [r, g, b] = waveform_data.color;
@@ -66,10 +89,8 @@ auto WaveFormView::draw_like_spotify(CDrawContext& pContext,
             auto graphics_path = owned(pContext.createRoundRectGraphicsPath(
                 rect, ROUND_CORNER_RADIUS));
 
-            const bool is_highlight =
-                range_a <= count && count < (range_a + range_b);
-            pContext.setFillColor(is_highlight ? color_highlight
-                                               : color_normal);
+            pContext.setFillColor(bounds_check.is_in(count) ? color_highlight
+                                                            : color_normal);
             pContext.drawGraphicsPath(graphics_path);
         });
 }
