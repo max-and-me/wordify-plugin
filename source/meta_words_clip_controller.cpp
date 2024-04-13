@@ -175,7 +175,9 @@ private:
 //------------------------------------------------------------------------
 // VstGPTWaveClipListController
 //------------------------------------------------------------------------
-MetaWordsClipController::MetaWordsClipController()
+MetaWordsClipController::MetaWordsClipController(
+    const VSTGUI::IUIDescription* description)
+: description(description)
 {
     view_listener = std::make_unique<FitContent>();
 }

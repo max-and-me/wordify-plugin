@@ -20,6 +20,7 @@ class ListEntryController : public Steinberg::FObject,
 public:
     //--------------------------------------------------------------------
     ListEntryController(
+        const VSTGUI::IUIDescription* description,
         ARADocumentController* controller,
         ARADocumentController::FuncSampleRate& playback_sample_rate_func,
         const meta_words::PlaybackRegion::Id playback_region_id);
@@ -38,6 +39,7 @@ public:
     OBJ_METHODS(ListEntryController, FObject)
     //--------------------------------------------------------------------
 private:
+    const VSTGUI::IUIDescription* description = nullptr;
     ARADocumentController* controller = nullptr;
     ARADocumentController::FuncSampleRate playback_sample_rate_func;
     const meta_words::PlaybackRegion::Id playback_region_id =

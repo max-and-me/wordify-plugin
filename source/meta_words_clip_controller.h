@@ -27,7 +27,7 @@ public:
     using FuncListValueChanged = std::function<void(int)>;
     using Subject              = tiny_observer_pattern::SimpleSubject;
 
-    MetaWordsClipController();
+    MetaWordsClipController(const VSTGUI::IUIDescription* description);
     ~MetaWordsClipController() override;
 
     bool initialize(Subject* subject, FuncMetaWordsData&& meta_words_data_func);

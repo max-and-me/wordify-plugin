@@ -179,7 +179,7 @@ ListController::createSubController(VSTGUI::UTF8StringPtr name,
 
     if (VSTGUI::UTF8StringView(name) == "ListEntryController")
     {
-        return new ListEntryController(controller,
+        return new ListEntryController(description, controller,
                                        this->playback_sample_rate_func,
                                        tmp_playback_region_id);
     }
