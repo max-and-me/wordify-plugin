@@ -32,6 +32,16 @@
 					"rgba": "#9b9b9b7f",
 					"start": "1"
 				}
+			],
+			"play_head_color": [
+				{
+					"rgba": "#FFFFFFFF",
+					"start": "0"
+				},
+				{
+					"rgba": "#FFFFFFFF",
+					"start": "1"
+				}
 			]
 		},
 		"control-tags": {},
@@ -49,14 +59,14 @@
 			},
 			"UIEditController": {
 				"EditViewScale": "1",
-				"EditorSize": "0, 0, 1275, 625",
-				"SplitViewSize_0_0": "0.7412353923205342587365862527803983539343",
-				"SplitViewSize_0_1": "0.2270450751252086896148085770619218237698",
-				"SplitViewSize_1_0": "0.6285475792988314269749139384657610207796",
-				"SplitViewSize_1_1": "0.4532554257095158800616729877219768241048",
-				"SplitViewSize_2_0": "0.7505882352941176671734524461498949676752",
-				"SplitViewSize_2_1": "0.2486274509803921561879036516984342597425",
-				"TabSwitchValue": "2",
+				"EditorSize": "0, 0, 1235, 716",
+				"SplitViewSize_0_0": "0.7753623188405797117539464125002268701792",
+				"SplitViewSize_0_1": "0.1971014492753623281728891925013158470392",
+				"SplitViewSize_1_0": "0.6137681159420289578321217049960978329182",
+				"SplitViewSize_1_1": "0.4615942028985507428195944612525636330247",
+				"SplitViewSize_2_0": "0.7425101214574898467191133022424764931202",
+				"SplitViewSize_2_1": "0.2566801619433198289321751417446648702025",
+				"TabSwitchValue": "3",
 				"Version": "1",
 				"ViewBackground": "1"
 			},
@@ -65,7 +75,7 @@
 				"SelectedRow": "9"
 			},
 			"UIGradientsDataSource": {
-				"SelectedRow": "0"
+				"SelectedRow": "1"
 			},
 			"UIColorsDataSource": {
 				"SelectedRow": "2"
@@ -181,7 +191,7 @@
 									"background-color-draw-style": "filled and stroked",
 									"bordered": "false",
 									"class": "CScrollView",
-									"container-size": "619.496, 144",
+									"container-size": "619.496, 432",
 									"follow-focus-view": "false",
 									"horizontal-scrollbar": "false",
 									"mouse-enabled": "true",
@@ -213,7 +223,7 @@
 											"opacity": "1",
 											"origin": "0, 0",
 											"row-style": "true",
-											"size": "619.496, 144",
+											"size": "619.496, 432",
 											"spacing": "24",
 											"transparent": "true",
 											"uidesc-label": "VLayout",
@@ -253,11 +263,27 @@
 											"opacity": "1",
 											"origin": "0, 0",
 											"size": "860, 48",
-											"sub-controller": "WaveFormController",
-											"template": "WaveFormTemplate",
 											"transparent": "true",
-											"uidesc-label": "WaveFormTemplate",
+											"uidesc-label": "MLayout",
 											"wants-focus": "false"
+										},
+										"children": {
+											"CViewContainer": {
+												"attributes": {
+													"background-color": "~ BlackCColor",
+													"background-color-draw-style": "filled and stroked",
+													"class": "CViewContainer",
+													"mouse-enabled": "true",
+													"opacity": "1",
+													"origin": "0, 0",
+													"size": "860, 48",
+													"sub-controller": "WaveFormController",
+													"template": "WaveFormTemplate",
+													"transparent": "true",
+													"uidesc-label": "WaveFormTemplate",
+													"wants-focus": "false"
+												}
+											}
 										}
 									}
 								}
@@ -554,6 +580,62 @@
 							"uidesc-label": "MetaWordsClipTemplate",
 							"view-resize-animation-time": "200",
 							"wants-focus": "false"
+						}
+					}
+				}
+			},
+			"PlayPosTemplate": {
+				"attributes": {
+					"background-color": "~ BlackCColor",
+					"background-color-draw-style": "filled and stroked",
+					"class": "CViewContainer",
+					"mouse-enabled": "true",
+					"opacity": "1",
+					"origin": "0, 0",
+					"size": "860, 48",
+					"sub-controller": "PlayPositionController",
+					"transparent": "true",
+					"uidesc-label": "PlayPosTemplate",
+					"wants-focus": "false"
+				},
+				"children": {
+					"CViewContainer": {
+						"attributes": {
+							"autosize": "left right top bottom ",
+							"background-color": "~ BlackCColor",
+							"background-color-draw-style": "filled and stroked",
+							"class": "CViewContainer",
+							"mouse-enabled": "true",
+							"opacity": "1",
+							"origin": "0, 0",
+							"size": "860, 48",
+							"transparent": "true",
+							"uidesc-label": "MLayout",
+							"wants-focus": "false"
+						},
+						"children": {
+							"CGradientView": {
+								"attributes": {
+									"class": "CGradientView",
+									"custom-view-name": "Background",
+									"draw-antialiased": "true",
+									"frame-color": "~ BlackCColor",
+									"frame-width": "0",
+									"gradient": "play_head_color",
+									"gradient-angle": "0",
+									"gradient-style": "linear",
+									"mouse-enabled": "true",
+									"opacity": "1",
+									"origin": "0, 0",
+									"radial-center": "0.5, 0.5",
+									"radial-radius": "8",
+									"round-rect-radius": "2",
+									"size": "4, 48",
+									"transparent": "true",
+									"uidesc-label": "Background",
+									"wants-focus": "false"
+								}
+							}
 						}
 					}
 				}
