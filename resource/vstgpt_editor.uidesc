@@ -23,13 +23,23 @@
 			"meta_words_text_color": "#afb5bbff"
 		},
 		"gradients": {
-			"waveform_background": [
+			"Default TextButton Gradient": [
 				{
-					"rgba": "#cccccc7f",
+					"rgba": "#dcdcdcff",
 					"start": "0"
 				},
 				{
-					"rgba": "#9b9b9b7f",
+					"rgba": "#b4b4b4ff",
+					"start": "1"
+				}
+			],
+			"Default TextButton Gradient Highlighted": [
+				{
+					"rgba": "#b4b4b4ff",
+					"start": "0"
+				},
+				{
+					"rgba": "#646464ff",
 					"start": "1"
 				}
 			],
@@ -40,6 +50,16 @@
 				},
 				{
 					"rgba": "#FFFFFFFF",
+					"start": "1"
+				}
+			],
+			"waveform_background": [
+				{
+					"rgba": "#cccccc7f",
+					"start": "0"
+				},
+				{
+					"rgba": "#9b9b9b7f",
 					"start": "1"
 				}
 			]
@@ -59,20 +79,20 @@
 			},
 			"UIEditController": {
 				"EditViewScale": "1",
-				"EditorSize": "0, 0, 1235, 716",
-				"SplitViewSize_0_0": "0.7753623188405797117539464125002268701792",
-				"SplitViewSize_0_1": "0.1971014492753623281728891925013158470392",
-				"SplitViewSize_1_0": "0.6137681159420289578321217049960978329182",
-				"SplitViewSize_1_1": "0.4615942028985507428195944612525636330247",
-				"SplitViewSize_2_0": "0.7425101214574898467191133022424764931202",
-				"SplitViewSize_2_1": "0.2566801619433198289321751417446648702025",
-				"TabSwitchValue": "3",
+				"EditorSize": "0, 0, 1150, 595",
+				"SplitViewSize_0_0": "0.7275922671353250992254402262915391474962",
+				"SplitViewSize_0_1": "0.2390158172231985900246797882573446258903",
+				"SplitViewSize_1_0": "0.6388400702987697687973422944196499884129",
+				"SplitViewSize_1_1": "0.454305799648506147825344214652432128787",
+				"SplitViewSize_2_0": "0.7234782608695652372787776585028041154146",
+				"SplitViewSize_2_1": "0.2756521739130434744957653947494691237807",
+				"TabSwitchValue": "0",
 				"Version": "1",
 				"ViewBackground": "1"
 			},
 			"UIAttributesController": {},
 			"UIViewCreatorDataSource": {
-				"SelectedRow": "9"
+				"SelectedRow": "26"
 			},
 			"UIGradientsDataSource": {
 				"SelectedRow": "1"
@@ -191,7 +211,7 @@
 									"background-color-draw-style": "filled and stroked",
 									"bordered": "false",
 									"class": "CScrollView",
-									"container-size": "619.496, 432",
+									"container-size": "619.496, 144",
 									"follow-focus-view": "false",
 									"horizontal-scrollbar": "false",
 									"mouse-enabled": "true",
@@ -223,7 +243,7 @@
 											"opacity": "1",
 											"origin": "0, 0",
 											"row-style": "true",
-											"size": "619.496, 432",
+											"size": "619.496, 144",
 											"spacing": "24",
 											"transparent": "true",
 											"uidesc-label": "VLayout",
@@ -634,6 +654,304 @@
 									"transparent": "true",
 									"uidesc-label": "Background",
 									"wants-focus": "false"
+								}
+							}
+						}
+					}
+				}
+			},
+			"TestBenchTemplate": {
+				"attributes": {
+					"background-color": "~ BlackCColor",
+					"background-color-draw-style": "filled and stroked",
+					"class": "CViewContainer",
+					"mouse-enabled": "true",
+					"opacity": "1",
+					"origin": "0, 0",
+					"size": "600, 400",
+					"transparent": "false",
+					"wants-focus": "false"
+				},
+				"children": {
+					"CRowColumnView": {
+						"attributes": {
+							"animate-view-resizing": "false",
+							"background-color": "~ BlackCColor",
+							"background-color-draw-style": "filled and stroked",
+							"class": "CRowColumnView",
+							"equal-size-layout": "left-top",
+							"hide-clipped-subviews": "false",
+							"margin": "0, 0, 0, 0",
+							"mouse-enabled": "true",
+							"opacity": "1",
+							"origin": "0, 0",
+							"row-style": "true",
+							"size": "600, 400",
+							"spacing": "0",
+							"transparent": "true",
+							"uidesc-label": "VLayout",
+							"view-resize-animation-time": "200",
+							"wants-focus": "false"
+						},
+						"children": {
+							"CRowColumnView": {
+								"attributes": {
+									"animate-view-resizing": "false",
+									"background-color": "~ BlackCColor",
+									"background-color-draw-style": "filled and stroked",
+									"class": "CRowColumnView",
+									"equal-size-layout": "left-top",
+									"hide-clipped-subviews": "false",
+									"margin": "0, 0, 0, 0",
+									"mouse-enabled": "true",
+									"opacity": "1",
+									"origin": "0, 0",
+									"row-style": "false",
+									"size": "600, 24",
+									"spacing": "4",
+									"transparent": "true",
+									"uidesc-label": "HLayout",
+									"view-resize-animation-time": "200",
+									"wants-focus": "false"
+								},
+								"children": {
+									"CTextLabel": {
+										"attributes": {
+											"back-color": "~ BlackCColor",
+											"background-offset": "0, 0",
+											"class": "CTextLabel",
+											"default-value": "0.5",
+											"font": "ListEntryFont",
+											"font-antialias": "true",
+											"font-color": "~ WhiteCColor",
+											"frame-color": "~ BlackCColor",
+											"frame-width": "1",
+											"max-value": "1",
+											"min-value": "0",
+											"mouse-enabled": "true",
+											"opacity": "1",
+											"origin": "0, 0",
+											"round-rect-radius": "6",
+											"shadow-color": "~ RedCColor",
+											"size": "26.6895, 20",
+											"style-3D-in": "false",
+											"style-3D-out": "false",
+											"style-no-draw": "false",
+											"style-no-frame": "false",
+											"style-no-text": "false",
+											"style-round-rect": "false",
+											"style-shadow-text": "false",
+											"text-alignment": "center",
+											"text-inset": "0, 0",
+											"text-rotation": "0",
+											"text-shadow-offset": "1, 1",
+											"title": "And",
+											"transparent": "false",
+											"value-precision": "2",
+											"wants-focus": "false",
+											"wheel-inc-value": "0.1"
+										}
+									},
+									"CTextLabel": {
+										"attributes": {
+											"back-color": "~ BlackCColor",
+											"background-offset": "0, 0",
+											"class": "CTextLabel",
+											"default-value": "0.5",
+											"font": "ListEntryFont",
+											"font-antialias": "true",
+											"font-color": "~ WhiteCColor",
+											"frame-color": "~ BlackCColor",
+											"frame-width": "1",
+											"max-value": "1",
+											"min-value": "0",
+											"mouse-enabled": "true",
+											"opacity": "1",
+											"origin": "30.6895, 0",
+											"round-rect-radius": "6",
+											"shadow-color": "~ RedCColor",
+											"size": "15.8423, 20",
+											"style-3D-in": "false",
+											"style-3D-out": "false",
+											"style-no-draw": "false",
+											"style-no-frame": "false",
+											"style-no-text": "false",
+											"style-round-rect": "false",
+											"style-shadow-text": "false",
+											"text-alignment": "center",
+											"text-inset": "0, 0",
+											"text-rotation": "0",
+											"text-shadow-offset": "1, 1",
+											"title": "so",
+											"transparent": "false",
+											"value-precision": "2",
+											"wants-focus": "false",
+											"wheel-inc-value": "0.1"
+										}
+									},
+									"CTextLabel": {
+										"attributes": {
+											"back-color": "~ BlackCColor",
+											"background-offset": "0, 0",
+											"class": "CTextLabel",
+											"default-value": "0.5",
+											"font": "ListEntryFont",
+											"font-antialias": "true",
+											"font-color": "~ WhiteCColor",
+											"frame-color": "~ BlackCColor",
+											"frame-width": "1",
+											"max-value": "1",
+											"min-value": "0",
+											"mouse-enabled": "true",
+											"opacity": "1",
+											"origin": "50.5318, 0",
+											"round-rect-radius": "6",
+											"shadow-color": "~ RedCColor",
+											"size": "19.9951, 20",
+											"style-3D-in": "false",
+											"style-3D-out": "false",
+											"style-no-draw": "false",
+											"style-no-frame": "false",
+											"style-no-text": "false",
+											"style-round-rect": "false",
+											"style-shadow-text": "false",
+											"text-alignment": "center",
+											"text-inset": "0, 0",
+											"text-rotation": "0",
+											"text-shadow-offset": "1, 1",
+											"title": "my",
+											"transparent": "false",
+											"value-precision": "2",
+											"wants-focus": "false",
+											"wheel-inc-value": "0.1"
+										}
+									},
+									"CTextLabel": {
+										"attributes": {
+											"back-color": "~ BlackCColor",
+											"background-offset": "0, 0",
+											"class": "CTextLabel",
+											"default-value": "0.5",
+											"font": "ListEntryFont",
+											"font-antialias": "true",
+											"font-color": "~ WhiteCColor",
+											"frame-color": "~ BlackCColor",
+											"frame-width": "1",
+											"max-value": "1",
+											"min-value": "0",
+											"mouse-enabled": "true",
+											"opacity": "1",
+											"origin": "74.5269, 0",
+											"round-rect-radius": "6",
+											"shadow-color": "~ RedCColor",
+											"size": "38.3496, 20",
+											"style-3D-in": "false",
+											"style-3D-out": "false",
+											"style-no-draw": "false",
+											"style-no-frame": "false",
+											"style-no-text": "false",
+											"style-round-rect": "false",
+											"style-shadow-text": "false",
+											"text-alignment": "center",
+											"text-inset": "0, 0",
+											"text-rotation": "0",
+											"text-shadow-offset": "1, 1",
+											"title": "fellow",
+											"transparent": "false",
+											"value-precision": "2",
+											"wants-focus": "false",
+											"wheel-inc-value": "0.1"
+										}
+									},
+									"CTextButton": {
+										"attributes": {
+											"class": "CTextButton",
+											"default-value": "0.5",
+											"font": "ListEntryFont",
+											"frame-color": "~ BlackCColor",
+											"frame-color-highlighted": "~ BlackCColor",
+											"frame-width": "0",
+											"gradient": "Default TextButton Gradient",
+											"gradient-highlighted": "Default TextButton Gradient Highlighted",
+											"icon-position": "left",
+											"icon-text-margin": "0",
+											"kick-style": "true",
+											"max-value": "1",
+											"min-value": "0",
+											"mouse-enabled": "true",
+											"opacity": "1",
+											"origin": "116.876, 0",
+											"round-radius": "0",
+											"size": "70.8545, 20",
+											"text-alignment": "center",
+											"text-color": "~ BlackCColor",
+											"text-color-highlighted": "~ WhiteCColor",
+											"title": "Americans",
+											"transparent": "false",
+											"wants-focus": "true",
+											"wheel-inc-value": "0.1"
+										}
+									}
+								}
+							},
+							"CRowColumnView": {
+								"attributes": {
+									"animate-view-resizing": "false",
+									"background-color": "~ BlackCColor",
+									"background-color-draw-style": "filled and stroked",
+									"class": "CRowColumnView",
+									"equal-size-layout": "left-top",
+									"hide-clipped-subviews": "false",
+									"margin": "0, 0, 0, 0",
+									"mouse-enabled": "true",
+									"opacity": "1",
+									"origin": "0, 24",
+									"row-style": "true",
+									"size": "600, 24",
+									"spacing": "0",
+									"transparent": "false",
+									"uidesc-label": "HLayout",
+									"view-resize-animation-time": "200",
+									"wants-focus": "false"
+								},
+								"children": {
+									"CTextLabel": {
+										"attributes": {
+											"back-color": "~ BlackCColor",
+											"background-offset": "0, 0",
+											"class": "CTextLabel",
+											"default-value": "0.5",
+											"font": "ListEntryFont",
+											"font-antialias": "true",
+											"font-color": "~ WhiteCColor",
+											"frame-color": "~ BlackCColor",
+											"frame-width": "1",
+											"max-value": "1",
+											"min-value": "0",
+											"mouse-enabled": "true",
+											"opacity": "1",
+											"origin": "0, 0",
+											"round-rect-radius": "6",
+											"shadow-color": "~ RedCColor",
+											"size": "187.573, 20",
+											"style-3D-in": "false",
+											"style-3D-out": "false",
+											"style-no-draw": "false",
+											"style-no-frame": "false",
+											"style-no-text": "false",
+											"style-round-rect": "false",
+											"style-shadow-text": "false",
+											"text-alignment": "center",
+											"text-inset": "0, 0",
+											"text-rotation": "0",
+											"text-shadow-offset": "1, 1",
+											"title": "And so my fellow Americans",
+											"transparent": "false",
+											"value-precision": "2",
+											"wants-focus": "false",
+											"wheel-inc-value": "0.1"
+										}
+									}
 								}
 							}
 						}
