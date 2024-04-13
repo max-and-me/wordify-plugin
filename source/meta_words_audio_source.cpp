@@ -2,6 +2,7 @@
 // Copyright(c) 2024 Max And Me.
 //------------------------------------------------------------------------
 #include "meta_words_audio_source.h"
+#include "little_helpers.h"
 #include "mam/meta_words/runner.h"
 #include "samplerate.h"
 #include "sndfile.h"
@@ -130,12 +131,14 @@ auto create_whisper_cmd(const PathType& file_path) -> const Command
     const OneValArgs one_val_args = {
         // model file resp. binary
         {"-m", MAM_WHISPER_CPP_MODEL_DOWNLOAD_DIR "/ggml-base.en.bin"},
+        //{"-m", MAM_WHISPER_CPP_MODEL_DOWNLOAD_DIR "/ggml-medium.bin"},
         // audio file to analyse
         {"-f", file_path},
         // maximum segment length in characters: "1" mains one word
-        {"-ml", "30"}};
+        {"-ml", "12"}};
 
-    Command cmd{MAM_WHISPER_CPP_EXECUTABLE, options, one_val_args};
+    static constexpr auto EXE_PATH = "Z:\\Private\\mam\\vst-gpt_build\\bin\\Release\\main.exe";
+    Command cmd{ EXE_PATH, options, one_val_args};
     return cmd;
 }
 
@@ -157,6 +160,17 @@ auto transform_to_seconds(MetaWords& meta_words) -> void
                        word.duration *= 0.001;
                        return word;
                    });
+}
+
+//------------------------------------------------------------------------
+auto trim_meta_words(MetaWords& meta_words) -> MetaWords
+{
+    for (auto& meta_word : meta_words)
+    {
+        meta_word.word = trim(meta_word.word);
+    }
+
+    return meta_words;
 }
 
 //------------------------------------------------------------------------
@@ -232,6 +246,7 @@ void AudioSource::perform_analysis()
 void AudioSource::end_analysis()
 {
     this->meta_words = future_meta_words.get();
+    this->meta_words = trim_meta_words(this->meta_words);
     transform_to_seconds(this->meta_words);
 
     if (timer)

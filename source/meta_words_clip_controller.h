@@ -11,6 +11,7 @@
 #include "vstgui/lib/controls/ctextlabel.h"
 #include "vstgui/lib/iviewlistener.h"
 #include "vstgui/lib/platform/platformfactory.h"
+#include "vstgui/uidescription/uiattributes.h"
 #include <memory>
 
 namespace mam {
@@ -47,12 +48,15 @@ public:
 private:
     void on_meta_words_data_changed();
 
-    VSTGUI::CListControl* listControl = nullptr;
-    VSTGUI::CTextLabel* listTitle     = nullptr;
-    VSTGUI::CTextLabel* timeDisplay   = nullptr;
-    VSTGUI::CView* spinner            = nullptr;
-    VSTGUI::CViewContainer* root_view = nullptr;
+    const VSTGUI::IUIDescription* description = nullptr;
+    VSTGUI::CListControl* listControl         = nullptr;
+    VSTGUI::CTextLabel* listTitle             = nullptr;
+    VSTGUI::CTextLabel* timeDisplay           = nullptr;
+    VSTGUI::CView* spinner                    = nullptr;
+    VSTGUI::CViewContainer* root_view         = nullptr;
+    VSTGUI::CViewContainer* text_document     = nullptr;
     std::unique_ptr<VSTGUI::ViewListenerAdapter> view_listener;
+    VSTGUI::UIAttributes meta_word_button_attributes;
 
     FuncMetaWordsData meta_words_data_func;
     tiny_observer_pattern::SimpleSubject* subject = nullptr;

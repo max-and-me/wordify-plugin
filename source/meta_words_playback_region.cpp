@@ -34,43 +34,54 @@ static auto is_in_playback_region(const PlaybackRegion& region,
 
     const auto word_end = word.begin + word.duration;
 
-    return (word.begin >= startInAudioModificationTime &&
-            word.begin < endInAudioModificationTime) ||
-           (word_end >= startInAudioModificationTime &&
-            word_end < endInAudioModificationTime);
+    const bool is_in = (word.begin >= startInAudioModificationTime &&
+                        word.begin < endInAudioModificationTime) ||
+                       (word_end >= startInAudioModificationTime &&
+                        word_end < endInAudioModificationTime);
+
+    return is_in;
 }
 
 //------------------------------------------------------------------------
-static auto filter_audible_words(const MetaWords& words,
-                                 const PlaybackRegion& region) -> MetaWords
+static auto
+filter_audible_words(const MetaWordDataset& words,
+                     const PlaybackRegion& region) -> MetaWordDataset
 {
-    MetaWords filtered_words;
+    MetaWordDataset filtered_words;
 
-    auto is_in_range = [&](const meta_words::MetaWord& word) {
-        static const auto SAFETY_DELTA = 0.01;
-        return is_in_playback_region(region, word);
-    };
-
-    std::copy_if(words.begin(), words.end(), std::back_inserter(filtered_words),
-                 is_in_range);
+    for (auto& word_data : words)
+    {
+        auto new_word_data = word_data;
+        new_word_data.is_audible =
+            is_in_playback_region(region, word_data.word);
+        filtered_words.emplace_back(new_word_data);
+    }
 
     return filtered_words;
 }
 
 //------------------------------------------------------------------------
-static auto collect_meta_words(const PlaybackRegion& region) -> const MetaWords
+static auto
+collect_meta_words(const PlaybackRegion& region) -> const MetaWordDataset
 {
-    MetaWords words;
+    MetaWordDataset word_dataset;
 
     if (const auto* modification = region.getAudioModification())
     {
         if (const auto* source = modification->getAudioSource<AudioSource>())
         {
-            words = source->get_meta_words();
+            const auto meta_words = source->get_meta_words();
+            for (const auto& meta_word : meta_words)
+            {
+                MetaWordData word_data;
+                word_data.word       = meta_word;
+                word_data.is_audible = true;
+                word_dataset.push_back(word_data);
+            }
         }
     }
 
-    return words;
+    return word_dataset;
 }
 
 //------------------------------------------------------------------------
@@ -91,13 +102,13 @@ compute_speed_factor(const PlaybackRegion& region,
 }
 
 //------------------------------------------------------------------------
-static auto modify_time_stamps(const MetaWord& word,
-                               double speed_factor) -> MetaWord
+static auto modify_time_stamps(const MetaWordData& word,
+                               double speed_factor) -> MetaWordData
 {
-    auto modified_word = word;
-    modified_word.begin *= speed_factor;
-    modified_word.duration *= speed_factor;
-    return modified_word;
+    auto word_data = word;
+    word_data.word.begin *= speed_factor;
+    word_data.word.duration *= speed_factor;
+    return word_data;
 }
 
 //------------------------------------------------------------------------
@@ -105,23 +116,23 @@ static auto modify_time_stamps(const MetaWord& word,
 // played back in 44.1Khz but the original sample is in 16kHz. We need to
 // modify the timestamps then.
 //------------------------------------------------------------------------
-static auto
-modify_time_stamps(const MetaWords& words,
-                   const PlaybackRegion& region,
-                   ARA::ARASampleRate playback_sample_rate) -> const MetaWords
+static auto modify_time_stamps(const MetaWordDataset& word_dataset,
+                               const PlaybackRegion& region,
+                               ARA::ARASampleRate playback_sample_rate)
+    -> const MetaWordDataset
 {
-    MetaWords modified_words;
+    MetaWordDataset modified_word_dataset;
 
     const auto speed_factor =
         compute_speed_factor(region, playback_sample_rate);
 
-    for (const auto& word : words)
+    for (const auto& word : word_dataset)
     {
         auto modified_word = modify_time_stamps(word, speed_factor);
-        modified_words.emplace_back(std::move(modified_word));
+        modified_word_dataset.emplace_back(std::move(modified_word));
     }
 
-    return modified_words;
+    return modified_word_dataset;
 }
 
 //------------------------------------------------------------------------

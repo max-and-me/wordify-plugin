@@ -20,7 +20,7 @@ static auto onRequestSelectWord(int index,
     const auto& selected_word   = words.at(index);
 
     const auto new_position =
-        selected_word.begin + meta_words_data.project_offset;
+        selected_word.word.begin + meta_words_data.project_offset;
     controller->onRequestLocatorPosChanged(new_position);
 }
 
@@ -47,7 +47,7 @@ static auto onRequestSelectWord(int index,
     // Compute its time position, BUT limit it to the region start time
     // so the locator will always jump to the beginning of the region
     // no matter if the word start position is already partly outside
-    auto pos = word.begin + words_data.project_offset;
+    auto pos = word.word.begin + words_data.project_offset;
     pos      = std::max(pos, region->getStartInPlaybackTime());
     controller->onRequestLocatorPosChanged(pos);
 }

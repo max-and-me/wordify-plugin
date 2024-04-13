@@ -11,14 +11,17 @@
 #include "vstgui/lib/cdrawcontext.h"
 #include "vstgui/lib/cfont.h"
 #include "vstgui/lib/cframe.h"
+#include "vstgui/lib/controls/cbuttons.h"
 #include "vstgui/lib/controls/cstringlist.h"
 #include "vstgui/lib/controls/ctextlabel.h"
 #include "vstgui/lib/cpoint.h"
 #include "vstgui/lib/crect.h"
 #include "vstgui/lib/crowcolumnview.h"
 #include "vstgui/lib/cview.h"
+#include "vstgui/lib/platform/iplatformfont.h"
 #include "vstgui/lib/platform/platformfactory.h"
 #include "vstgui/uidescription/detail/uiviewcreatorattributes.h"
+#include "vstgui/uidescription/iviewfactory.h"
 #include "vstgui/uidescription/uiattributes.h"
 #include <chrono>
 
@@ -120,22 +123,131 @@ static auto update_time_display_control(CTextLabel& timeDisplay,
 //------------------------------------------------------------------------
 static auto
 update_list_control_content(CListControl* listControl,
-                            const meta_words::MetaWords& words) -> void
+                            const MetaWordDataset& word_dataset) -> void
 {
-    listControl->setMax(words.size() - 1);
+    listControl->setMax(word_dataset.size() - 1);
     listControl->recalculateLayout();
 
     if (auto stringListDrawer =
             dynamic_cast<StringListControlDrawer*>(listControl->getDrawer()))
     {
-        stringListDrawer->setStringProvider([words](int32_t row) {
-            const meta_words::MetaWord word = words.at(row);
-            const std::string name          = word.word;
+        stringListDrawer->setStringProvider([word_dataset](int32_t row) {
+            const auto word_data   = word_dataset.at(row);
+            const std::string name = word_data.word.word;
 
             const UTF8String string(name.data());
             return getPlatformFactory().createString(string);
         });
     }
+}
+
+//------------------------------------------------------------------------
+static auto fit_content(CView* view) -> void
+{
+    // Only call sizeToFit, when view is a CRowColumnView
+    if (auto* rc_view = dynamic_cast<CRowColumnView*>(view))
+    {
+        // Return immediately, if there is nothing more to resize
+        if (!rc_view->sizeToFit())
+            return;
+
+        fit_content(rc_view->getParentView());
+    }
+}
+
+//------------------------------------------------------------------------
+using CRects = std::vector<CRect>;
+static auto layout_row_stack(const CPoint parent,
+                             CRects& rects,
+                             double hspacing,
+                             double vspacing) -> const CPoint
+{
+    if (rects.empty())
+        return {};
+
+    CPoint offset(0, 0);
+    const CPoint origin(0, 0);
+    const auto default_height = rects.at(0).getHeight();
+    for (auto& rect : rects)
+    {
+        rect.setHeight(default_height);
+        rect.moveTo(origin);
+        if (!(offset.x + rect.getWidth() < parent.x))
+        {
+            offset.x = 0.;
+            offset.y += default_height + vspacing;
+        }
+
+        rect.moveTo(offset);
+        offset.x += rect.getWidth() + hspacing;
+    }
+
+    return {parent.x, offset.y + default_height};
+}
+
+//------------------------------------------------------------------------
+static auto update_text_document(const VSTGUI::IUIDescription* description,
+                                 const VSTGUI::UIAttributes& attributes,
+                                 IControlListener* listener,
+                                 CViewContainer* text_document,
+                                 const MetaWordsData& data) -> void
+{
+    if (!text_document)
+        return;
+
+    text_document->removeAll();
+
+    CRects rects;
+    auto font_desc    = description->getFont("ListEntryFont");
+    auto font_painter = font_desc->getPlatformFont()->getPainter();
+
+    for (const auto& word : data.words)
+    {
+        constexpr CCoord height = 24;
+        if (!word.is_audible)
+        {
+            rects.push_back({0, 0, 0, height});
+            continue;
+        }
+
+        auto text          = UTF8String(word.word.word);
+        const CCoord width = font_painter->getStringWidth(
+                                 nullptr, text.getPlatformString(), true) +
+                             4.;
+
+        rects.push_back({0, 0, width, height});
+    }
+
+    const auto parent_size =
+        layout_row_stack(text_document->getViewSize().getSize(), rects, 0, 0);
+
+    for (size_t i = 0; i < data.words.size(); ++i)
+    {
+        if (!data.words.at(i).is_audible)
+            continue;
+
+        auto new_view =
+            description->getViewFactory()->createView(attributes, description);
+        auto new_word = dynamic_cast<CTextButton*>(new_view);
+        new_word->setViewSize(rects.at(i));
+
+        // auto* new_word =
+        //     new CTextButton(rects.at(i), getViewController(text_document));
+
+        new_word->setTitle(UTF8String(data.words.at(i).word.word));
+        // new_word->setTransparency(true);
+        new_word->setListener(getViewController(text_document));
+        // new_word->setFont(font_desc);
+        new_word->setTag(i);
+        new_word->setListener(listener);
+        text_document->addView(new_word);
+    }
+
+    auto s = text_document->getViewSize();
+    s.setHeight(parent_size.y);
+    text_document->setViewSize(s);
+    fit_content(text_document->getParentView());
+    text_document->invalid();
 }
 
 //------------------------------------------------------------------------
@@ -158,18 +270,6 @@ public:
 
     //--------------------------------------------------------------------
 private:
-    static auto fit_content(CView* view) -> void
-    {
-        // Only call sizeToFit, when view is a CRowColumnView
-        if (auto* rc_view = dynamic_cast<CRowColumnView*>(view))
-        {
-            // Return immediately, if there is nothing more to resize
-            if (!rc_view->sizeToFit())
-                return;
-
-            fit_content(rc_view->getParentView());
-        }
-    }
 };
 
 //------------------------------------------------------------------------
@@ -210,6 +310,10 @@ bool MetaWordsClipController::initialize(
     observer_id = this->subject->add_listener(
         [this](const auto&) { this->on_meta_words_data_changed(); });
 
+    auto view = description->createView("TextWordTemplate", this);
+    if (view)
+        view->forget();
+
     on_meta_words_data_changed();
 
     return true;
@@ -235,6 +339,12 @@ void MetaWordsClipController::on_meta_words_data_changed()
     {
         update_time_display_control(*timeDisplay, data);
         timeDisplay->invalid();
+    }
+
+    if (text_document)
+    {
+        update_text_document(description, meta_word_button_attributes, this,
+                             text_document, data);
     }
 }
 
@@ -303,6 +413,30 @@ MetaWordsClipController::verifyView(VSTGUI::CView* view,
         }
     }
 
+    if (!text_document)
+    {
+        if (auto viewLabel =
+                attributes.getAttributeValue(UIViewCreator::kAttrUIDescLabel))
+        {
+            if (*viewLabel == "TextDocument")
+            {
+                text_document = dynamic_cast<CViewContainer*>(view);
+                update_text_document(description, meta_word_button_attributes,
+                                     this, text_document,
+                                     meta_words_data_func());
+            }
+        }
+    }
+
+    if (auto viewLabel =
+            attributes.getAttributeValue(UIViewCreator::kAttrUIDescLabel))
+    {
+        if (*viewLabel == "MetaWordButton")
+        {
+            meta_word_button_attributes = attributes;
+        }
+    }
+
     return view;
 };
 
@@ -313,6 +447,11 @@ void MetaWordsClipController::valueChanged(VSTGUI::CControl* pControl)
     {
         if (list_value_changed_func)
             list_value_changed_func(listControl->getValue());
+    }
+    else
+    {
+        if (pControl)
+            list_value_changed_func(pControl->getTag());
     }
 }
 

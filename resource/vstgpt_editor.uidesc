@@ -53,6 +53,26 @@
 					"start": "1"
 				}
 			],
+			"transparent_gradient": [
+				{
+					"rgba": "#00000000",
+					"start": "0"
+				},
+				{
+					"rgba": "#00000000",
+					"start": "1"
+				}
+			],
+			"meta_word_text_gradient": [
+				{
+					"rgba": "#afb5bbff",
+					"start": "0"
+				},
+				{
+					"rgba": "#afb5bbff",
+					"start": "1"
+				}
+			],
 			"waveform_background": [
 				{
 					"rgba": "#cccccc7f",
@@ -79,20 +99,20 @@
 			},
 			"UIEditController": {
 				"EditViewScale": "1",
-				"EditorSize": "0, 0, 1150, 595",
-				"SplitViewSize_0_0": "0.7275922671353250992254402262915391474962",
-				"SplitViewSize_0_1": "0.2390158172231985900246797882573446258903",
-				"SplitViewSize_1_0": "0.6388400702987697687973422944196499884129",
-				"SplitViewSize_1_1": "0.454305799648506147825344214652432128787",
-				"SplitViewSize_2_0": "0.7234782608695652372787776585028041154146",
-				"SplitViewSize_2_1": "0.2756521739130434744957653947494691237807",
+				"EditorSize": "0, 0, 1223, 639",
+				"SplitViewSize_0_0": "0.5791190864600326282385367449023760855198",
+				"SplitViewSize_0_1": "0.3915171288743882760385872643382754176855",
+				"SplitViewSize_1_0": "0.6199021207177813908018038091540802270174",
+				"SplitViewSize_1_1": "0.4698205546492659201440744709543650969863",
+				"SplitViewSize_2_0": "0.7399836467702370912391529600427020341158",
+				"SplitViewSize_2_1": "0.2591986917416189695195782860537292435765",
 				"TabSwitchValue": "0",
 				"Version": "1",
 				"ViewBackground": "1"
 			},
 			"UIAttributesController": {},
 			"UIViewCreatorDataSource": {
-				"SelectedRow": "26"
+				"SelectedRow": "11"
 			},
 			"UIGradientsDataSource": {
 				"SelectedRow": "1"
@@ -211,7 +231,7 @@
 									"background-color-draw-style": "filled and stroked",
 									"bordered": "false",
 									"class": "CScrollView",
-									"container-size": "619.496, 144",
+									"container-size": "608, 104",
 									"follow-focus-view": "false",
 									"horizontal-scrollbar": "false",
 									"mouse-enabled": "true",
@@ -243,7 +263,7 @@
 											"opacity": "1",
 											"origin": "0, 0",
 											"row-style": "true",
-											"size": "619.496, 144",
+											"size": "608, 104",
 											"spacing": "24",
 											"transparent": "true",
 											"uidesc-label": "VLayout",
@@ -544,7 +564,7 @@
 											"size": "541, 40",
 											"style-hover": "true",
 											"text-alignment": "left",
-											"text-inset": "-4",
+											"text-inset": "0",
 											"transparent": "true",
 											"uidesc-label": "ListEntries",
 											"wants-focus": "false",
@@ -582,7 +602,7 @@
 					"CRowColumnView": {
 						"attributes": {
 							"animate-view-resizing": "false",
-							"background-color": "~ BlackCColor",
+							"background-color": "main_background",
 							"background-color-draw-style": "filled and stroked",
 							"class": "CRowColumnView",
 							"equal-size-layout": "left-top",
@@ -595,8 +615,8 @@
 							"size": "608, 80",
 							"spacing": "0",
 							"sub-controller": "MetaWordsClipController",
-							"template": "MetaWordsClipTemplate",
-							"transparent": "true",
+							"template": "MetaWordsClipTemplateNG",
+							"transparent": "false",
 							"uidesc-label": "MetaWordsClipTemplate",
 							"view-resize-animation-time": "200",
 							"wants-focus": "false"
@@ -954,6 +974,210 @@
 									}
 								}
 							}
+						}
+					}
+				}
+			},
+			"MetaWordsClipTemplateNG": {
+				"attributes": {
+					"animate-view-resizing": "false",
+					"background-color": "main_background",
+					"background-color-draw-style": "filled and stroked",
+					"class": "CRowColumnView",
+					"equal-size-layout": "left-top",
+					"hide-clipped-subviews": "false",
+					"margin": "0, 0, 0, 0",
+					"mouse-enabled": "true",
+					"opacity": "1",
+					"origin": "0, 0",
+					"row-style": "true",
+					"size": "608, 80",
+					"spacing": "0",
+					"sub-controller": "MetaWordsClipController",
+					"transparent": "false",
+					"uidesc-label": "MetaWordsClipTemplate",
+					"view-resize-animation-time": "200",
+					"wants-focus": "false"
+				},
+				"children": {
+					"CRowColumnView": {
+						"attributes": {
+							"animate-view-resizing": "false",
+							"background-color": "main_background",
+							"background-color-draw-style": "filled and stroked",
+							"class": "CRowColumnView",
+							"equal-size-layout": "left-top",
+							"hide-clipped-subviews": "false",
+							"margin": "0, 0, 0, 0",
+							"mouse-enabled": "true",
+							"opacity": "1",
+							"origin": "0, 0",
+							"row-style": "false",
+							"size": "608, 80",
+							"spacing": "12",
+							"transparent": "false",
+							"uidesc-label": "HLayout",
+							"view-resize-animation-time": "200",
+							"wants-focus": "false"
+						},
+						"children": {
+							"CTextLabel": {
+								"attributes": {
+									"back-color": "~ BlackCColor",
+									"background-offset": "0, 0",
+									"class": "CTextLabel",
+									"default-value": "0.5",
+									"font": "TimeDisplayFont",
+									"font-antialias": "true",
+									"font-color": "time_display_color",
+									"frame-color": "~ BlackCColor",
+									"frame-width": "1",
+									"max-value": "1",
+									"min-value": "0",
+									"mouse-enabled": "true",
+									"opacity": "1",
+									"origin": "0, 0",
+									"round-rect-radius": "6",
+									"shadow-color": "~ RedCColor",
+									"size": "54.4961, 24",
+									"style-3D-in": "false",
+									"style-3D-out": "false",
+									"style-no-draw": "false",
+									"style-no-frame": "false",
+									"style-no-text": "false",
+									"style-round-rect": "false",
+									"style-shadow-text": "false",
+									"text-alignment": "right",
+									"text-inset": "0, 0",
+									"text-rotation": "0",
+									"text-shadow-offset": "1, 1",
+									"title": "00:00:00",
+									"transparent": "true",
+									"uidesc-label": "TimeDisplay",
+									"value-precision": "2",
+									"wants-focus": "false",
+									"wheel-inc-value": "0.1"
+								}
+							},
+							"CRowColumnView": {
+								"attributes": {
+									"animate-view-resizing": "false",
+									"background-color": "~ BlackCColor",
+									"background-color-draw-style": "filled and stroked",
+									"class": "CRowColumnView",
+									"equal-size-layout": "left-top",
+									"hide-clipped-subviews": "false",
+									"margin": "0, 0, 0, 0",
+									"mouse-enabled": "true",
+									"opacity": "1",
+									"origin": "66.4961, 0",
+									"row-style": "true",
+									"size": "541, 80",
+									"spacing": "8",
+									"transparent": "true",
+									"uidesc-label": "VLayout",
+									"view-resize-animation-time": "200",
+									"wants-focus": "false"
+								},
+								"children": {
+									"CTextLabel": {
+										"attributes": {
+											"back-color": "~ BlackCColor",
+											"background-offset": "0, 0",
+											"class": "CTextLabel",
+											"default-value": "0.5",
+											"font": "ListTitleFont",
+											"font-antialias": "true",
+											"font-color": "~ WhiteCColor",
+											"frame-color": "~ BlackCColor",
+											"frame-width": "1",
+											"max-value": "1",
+											"min-value": "0",
+											"mouse-enabled": "true",
+											"opacity": "1",
+											"origin": "0, 0",
+											"round-rect-radius": "6",
+											"shadow-color": "~ RedCColor",
+											"size": "29.729, 24",
+											"style-3D-in": "false",
+											"style-3D-out": "false",
+											"style-no-draw": "false",
+											"style-no-frame": "false",
+											"style-no-text": "false",
+											"style-round-rect": "false",
+											"style-shadow-text": "false",
+											"text-alignment": "left",
+											"text-inset": "0, 0",
+											"text-rotation": "0",
+											"text-shadow-offset": "1, 1",
+											"title": "Test",
+											"transparent": "true",
+											"uidesc-label": "ListTitle",
+											"value-precision": "2",
+											"wants-focus": "false",
+											"wheel-inc-value": "0.1"
+										}
+									},
+									"CViewContainer": {
+										"attributes": {
+											"background-color": "~ BlackCColor",
+											"background-color-draw-style": "filled and stroked",
+											"class": "CViewContainer",
+											"mouse-enabled": "true",
+											"opacity": "1",
+											"origin": "0, 32",
+											"size": "541, 40",
+											"transparent": "true",
+											"uidesc-label": "TextDocument",
+											"wants-focus": "false"
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			},
+			"TextWordTemplate": {
+				"attributes": {
+					"background-color": "~ BlackCColor",
+					"background-color-draw-style": "filled and stroked",
+					"class": "CViewContainer",
+					"mouse-enabled": "true",
+					"opacity": "1",
+					"origin": "0, 0",
+					"size": "65.8887, 20",
+					"transparent": "true",
+					"wants-focus": "false"
+				},
+				"children": {
+					"CTextButton": {
+						"attributes": {
+							"class": "CTextButton",
+							"default-value": "0.5",
+							"font": "ListEntryFont",
+							"frame-color": "~ BlackCColor",
+							"frame-color-highlighted": "~ WhiteCColor",
+							"frame-width": "0",
+							"gradient": "transparent_gradient",
+							"gradient-highlighted": "transparent_gradient",
+							"icon-position": "left",
+							"icon-text-margin": "0",
+							"kick-style": "true",
+							"max-value": "1",
+							"min-value": "0",
+							"mouse-enabled": "true",
+							"opacity": "1",
+							"origin": "0, 0",
+							"round-radius": "0",
+							"size": "65.8887, 20",
+							"text-alignment": "center",
+							"text-color": "meta_words_text_color",
+							"text-color-highlighted": "~ WhiteCColor",
+							"transparent": "true",
+							"uidesc-label": "MetaWordButton",
+							"wants-focus": "false",
+							"wheel-inc-value": "0.1"
 						}
 					}
 				}
