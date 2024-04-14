@@ -88,7 +88,7 @@
 		"custom": {
 			"FocusDrawing": {},
 			"VST3Editor": {
-				"Path": "Z:\\Private\\mam\\vst-gpt\\resource\\vstgpt_editor.uidesc"
+				"Path": "/Users/max/Documents/Code/vst-gpt/vst-gpt/resource/vstgpt_editor.uidesc"
 			},
 			"UIGridController": {
 				"Grids": "1x 1,5x 5,8x 8,10x 10,12x 12,15x 15",
@@ -134,7 +134,7 @@
 					"mouse-enabled": "true",
 					"opacity": "1",
 					"origin": "0, 0",
-					"size": "860, 370",
+					"size": "860, 320",
 					"transparent": "false",
 					"wants-focus": "false"
 				},
@@ -242,7 +242,7 @@
 									"scrollbar-frame-color": "~ TransparentCColor",
 									"scrollbar-scroller-color": "~ GreyCColor",
 									"scrollbar-width": "16",
-									"size": "860, 270",
+									"size": "860, 220",
 									"sub-controller": "MetaWordsListController",
 									"transparent": "false",
 									"uidesc-label": "Content",
@@ -284,7 +284,7 @@
 									"margin": "0, 0, 0, 0",
 									"mouse-enabled": "true",
 									"opacity": "1",
-									"origin": "0, 322",
+									"origin": "0, 270",
 									"row-style": "true",
 									"size": "860, 48",
 									"spacing": "0",
