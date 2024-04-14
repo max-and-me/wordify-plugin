@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include "fmt/format.h"
 #include "vstgui/lib/ccolor.h"
 #include <optional>
 #include <string>
@@ -61,6 +62,24 @@ inline std::string trim(const std::string& source)
     s.erase(0, s.find_first_not_of(" \n\r\t"));
     s.erase(s.find_last_not_of(" \n\r\t") + 1);
     return s;
+}
+
+//------------------------------------------------------------------------
+using TimeDisplayString = std::string;
+template <typename T>
+auto to_time_display_string(T seconds) -> TimeDisplayString
+{
+    namespace chrono = std::chrono;
+
+    chrono::seconds total(static_cast<size_t>(seconds));
+    const auto h = chrono::duration_cast<chrono::hours>(total);
+    const auto m = chrono::duration_cast<chrono::minutes>(total - h);
+    const auto s = chrono::duration_cast<chrono::seconds>(total - h - m);
+
+    auto output =
+        fmt::format("{:02}:{:02}:{:02}", h.count(), m.count(), s.count());
+
+    return output;
 }
 
 //------------------------------------------------------------------------

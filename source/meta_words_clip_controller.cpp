@@ -3,7 +3,6 @@
 //------------------------------------------------------------------------
 
 #include "meta_words_clip_controller.h"
-#include "fmt/format.h"
 #include "list_entry_controller.h"
 #include "little_helpers.h"
 #include "meta_words_data.h"
@@ -31,23 +30,6 @@ using namespace ::VSTGUI;
 #ifndef kPI
 #define kPI 3.14159265358979323846
 #endif
-
-//------------------------------------------------------------------------
-auto to_time_display_string(MetaWordsData::Seconds seconds)
-    -> MetaWordsData::String
-{
-    namespace chrono = std::chrono;
-
-    chrono::seconds total(static_cast<int>(seconds));
-    const auto h = chrono::duration_cast<chrono::hours>(total);
-    const auto m = chrono::duration_cast<chrono::minutes>(total - h);
-    const auto s = chrono::duration_cast<chrono::seconds>(total - h - m);
-
-    auto output =
-        fmt::format("{:02}:{:02}:{:02}", h.count(), m.count(), s.count());
-
-    return output;
-}
 
 //------------------------------------------------------------------------
 class SpinningLoadingView : public CView
