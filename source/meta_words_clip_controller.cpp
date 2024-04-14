@@ -3,6 +3,7 @@
 //------------------------------------------------------------------------
 
 #include "meta_words_clip_controller.h"
+#include "hstack_layout.h"
 #include "list_entry_controller.h"
 #include "little_helpers.h"
 #include "meta_words_data.h"
@@ -139,36 +140,7 @@ static auto fit_content(CView* view) -> void
 }
 
 //------------------------------------------------------------------------
-using CRects = std::vector<CRect>;
-static auto layout_row_stack(const CPoint parent,
-                             CRects& rects,
-                             double hspacing,
-                             double vspacing) -> const CCoord
-{
-    if (rects.empty())
-        return {};
-
-    CPoint offset(0, 0);
-    const CPoint origin(0, 0);
-    const auto default_height = rects.at(0).getHeight();
-    for (auto& rect : rects)
-    {
-        rect.setHeight(default_height);
-        rect.moveTo(origin);
-        if (!(offset.x + rect.getWidth() < parent.x))
-        {
-            offset.x = 0.;
-            offset.y += default_height + vspacing;
-        }
-
-        rect.moveTo(offset);
-        offset.x += rect.getWidth() + hspacing;
-    }
-
-    return offset.y + default_height;
-}
-
-//------------------------------------------------------------------------
+using CRects          = std::vector<CRect>;
 using StringType      = std::string;
 using FuncStringWidth = std::function<size_t(const StringType&)>;
 auto collect_string_size_rects(const MetaWordsData& meta_words_data,
@@ -206,6 +178,8 @@ static auto update_text_document(const VSTGUI::IUIDescription* description,
 
     text_document->removeAll();
 
+    HStackLayout layout(text_document);
+
     auto font_desc         = description->getFont("ListEntryFont");
     auto font_painter      = font_desc->getPlatformFont()->getPainter();
     auto string_width_func = [&](const StringType& text) {
@@ -215,9 +189,7 @@ static auto update_text_document(const VSTGUI::IUIDescription* description,
     };
     auto rects = collect_string_size_rects(meta_words_data, string_width_func);
 
-    const auto parent_height =
-        layout_row_stack(text_document->getViewSize().getSize(), rects, 0, 0);
-
+    std::vector<CView*> new_views;
     for (size_t i = 0; i < meta_words_data.words.size(); ++i)
     {
         if (!meta_words_data.words.at(i).is_audible)
@@ -232,12 +204,14 @@ static auto update_text_document(const VSTGUI::IUIDescription* description,
         new_word->setListener(getViewController(text_document));
         new_word->setTag(i);
         new_word->setListener(listener);
-        text_document->addView(new_word);
+        new_views.push_back(new_word);
     }
 
-    auto s = text_document->getViewSize();
-    s.setHeight(parent_height);
-    text_document->setViewSize(s);
+    for (auto* view : new_views)
+    {
+        text_document->addView(view);
+    }
+
     fit_content(text_document->getParentView());
     text_document->invalid();
 }

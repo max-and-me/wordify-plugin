@@ -23,6 +23,8 @@ smtg_add_vst3plugin(VstGPT
     source/ara_factory_config.cpp
     source/ara_factory_config.h
     source/audio_buffer_management.h
+    source/hstack_layout.cpp
+    source/hstack_layout.h
     source/list_controller.cpp
     source/list_controller.h
     source/list_entry_controller.cpp
