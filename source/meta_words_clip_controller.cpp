@@ -169,7 +169,7 @@ auto collect_string_size_rects(const MetaWordsData& meta_words_data,
 //------------------------------------------------------------------------
 auto find_view_after(CViewContainer* container, size_t tag) -> CView*
 {
-    for (size_t i = 0; i < container->getNbViews(); i++)
+    for (auto i = 0; i < container->getNbViews(); i++)
     {
         auto* view = container->getView(i);
         if (auto control = dynamic_cast<CControl*>(view))
@@ -185,7 +185,7 @@ auto find_view_after(CViewContainer* container, size_t tag) -> CView*
 //------------------------------------------------------------------------
 auto find_view_with_tag(CViewContainer* container, size_t tag) -> CView*
 {
-    for (size_t i = 0; i < container->getNbViews(); i++)
+    for (auto i = 0; i < container->getNbViews(); i++)
     {
         auto* view = container->getView(i);
         if (auto control = dynamic_cast<CControl*>(view))
@@ -230,8 +230,7 @@ static auto update_text_document(const VSTGUI::IUIDescription* description,
         text_document->removeView(child);
 
     // Add new views
-    std::vector<CView*> new_views;
-    for (size_t i = 0; i < meta_words_data.words.size(); ++i)
+    for (auto i = 0; i < meta_words_data.words.size(); ++i)
     {
         const auto word_data = meta_words_data.words.at(i);
         if (!word_data.is_audible)
