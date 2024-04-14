@@ -17,29 +17,37 @@ using CRects   = std::vector<CRect>;
 static auto layout_row_stack(const CPoint parent,
                              CRects& rects,
                              double hspacing,
-                             double vspacing) -> const CCoord
+                             double vspacing,
+                             double padding) -> const CCoord
 {
     if (rects.empty())
         return {};
 
-    CPoint offset(0, 0);
-    const CPoint origin(0, 0);
-    const auto default_height = rects.at(0).getHeight();
-    for (auto& rect : rects)
-    {
+    CPoint offset(padding, padding);
+    const CPoint origin(padding, padding);
+
+    // The first rect needs to be treated in a special way. No matter if it fits
+    // into the first line or not, it needs to stay at origin! Even if the
+    // parent container is very narrow.
+    auto& first_rect          = rects.at(0);
+    const auto default_height = first_rect.getHeight();
+    first_rect.moveTo(offset);
+    offset.x += first_rect.getWidth() + hspacing;
+
+    // Start from the 2nd element (if there is one of course)
+    std::for_each(std::next(rects.begin(), 1), rects.end(), [&](auto& rect) {
         rect.setHeight(default_height);
-        rect.moveTo(origin);
-        if (!(offset.x + rect.getWidth() < parent.x))
+        if (!((offset.x + rect.getWidth() + padding) < parent.x))
         {
-            offset.x = 0.;
+            offset.x = padding;
             offset.y += default_height + vspacing;
         }
 
         rect.moveTo(offset);
         offset.x += rect.getWidth() + hspacing;
-    }
+    });
 
-    return offset.y + default_height;
+    return offset.y + default_height + padding;
 }
 
 //------------------------------------------------------------------------
@@ -70,12 +78,16 @@ static auto apply_view_size(HStackLayout::ViewContainer* container,
 }
 
 //------------------------------------------------------------------------
-static auto do_layout(HStackLayout::ViewContainer* container) -> void
+static auto do_layout(HStackLayout::ViewContainer* container,
+                      HStackLayout::Coord hspacing,
+                      HStackLayout::Coord vspacing,
+                      HStackLayout::Coord padding) -> void
 {
     auto parent_size = container->getViewSize();
     CRects sizes     = collect_view_size(container);
-    auto new_height  = layout_row_stack(
-        {parent_size.getWidth(), parent_size.getHeight()}, sizes, 0, 0);
+    auto new_height =
+        layout_row_stack({parent_size.getWidth(), parent_size.getHeight()},
+                         sizes, hspacing, vspacing, padding);
 
     parent_size.setHeight(new_height);
     container->setViewSize(parent_size);
@@ -108,20 +120,28 @@ HStackLayout::~HStackLayout()
 //------------------------------------------------------------------------
 void HStackLayout::viewContainerViewAdded(ViewContainer* container, View* view)
 {
-    do_layout(container);
+    do_layout(container, hspacing, vspacing, padding);
 }
 
 //------------------------------------------------------------------------
 void HStackLayout::viewContainerViewRemoved(ViewContainer* container,
                                             View* view)
 {
-    do_layout(container);
+    do_layout(container, hspacing, vspacing, padding);
 }
 
 //------------------------------------------------------------------------
 void HStackLayout::viewSizeChanged(View* view, const Rect& oldSize)
 {
-    do_layout(container);
+    do_layout(container, hspacing, vspacing, padding);
+}
+
+//------------------------------------------------------------------------
+void HStackLayout::setup(Coord hspacing, Coord vspacing, Coord padding)
+{
+    this->hspacing = hspacing;
+    this->vspacing = vspacing;
+    this->padding  = padding;
 }
 
 //------------------------------------------------------------------------

@@ -8,7 +8,7 @@
 namespace VSTGUI {
 class CViewContainer;
 class CView;
-class CRect;
+struct CRect;
 } // namespace VSTGUI
 
 namespace mam {
@@ -23,9 +23,12 @@ public:
     using ViewContainer = VSTGUI::CViewContainer;
     using View          = VSTGUI::CView;
     using Rect          = VSTGUI::CRect;
+    using Coord         = VSTGUI::CCoord;
 
     HStackLayout(ViewContainer* container);
     ~HStackLayout() override;
+
+    void setup(Coord hspacing, Coord vspacing, Coord padding);
 
     void viewContainerViewAdded(ViewContainer* container, View* view) override;
     void viewContainerViewRemoved(ViewContainer* container,
@@ -35,6 +38,9 @@ public:
     //--------------------------------------------------------------------
 private:
     ViewContainer* container = nullptr;
+    Coord hspacing{0.};
+    Coord vspacing{0.};
+    Coord padding{0.};
 };
 //------------------------------------------------------------------------
 
