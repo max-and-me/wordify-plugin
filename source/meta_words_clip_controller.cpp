@@ -85,20 +85,21 @@ private:
 
 //------------------------------------------------------------------------
 static auto update_label_control(CTextLabel& listTitle,
-                                 const MetaWordsData& data) -> void
+                                 const MetaWordsData& meta_words_data) -> void
 {
-    auto [r, g, b]             = data.color;
+    auto [r, g, b]             = meta_words_data.color;
     const VSTGUI::CColor color = make_color<float>(r, g, b, std::nullopt);
     listTitle.setFontColor(color);
-    listTitle.setText(VSTGUI::UTF8String(data.name));
+    listTitle.setText(VSTGUI::UTF8String(meta_words_data.name));
     listTitle.sizeToFit();
 }
 
 //------------------------------------------------------------------------
-static auto update_time_display_control(CTextLabel& timeDisplay,
-                                        const MetaWordsData& data) -> void
+static auto
+update_time_display_control(CTextLabel& timeDisplay,
+                            const MetaWordsData& meta_words_data) -> void
 {
-    const auto str = to_time_display_string(data.project_time_start);
+    const auto str = to_time_display_string(meta_words_data.project_time_start);
     timeDisplay.setText(VSTGUI::UTF8String(str));
 }
 
@@ -142,7 +143,7 @@ using CRects = std::vector<CRect>;
 static auto layout_row_stack(const CPoint parent,
                              CRects& rects,
                              double hspacing,
-                             double vspacing) -> const CPoint
+                             double vspacing) -> const CCoord
 {
     if (rects.empty())
         return {};
@@ -164,7 +165,33 @@ static auto layout_row_stack(const CPoint parent,
         offset.x += rect.getWidth() + hspacing;
     }
 
-    return {parent.x, offset.y + default_height};
+    return offset.y + default_height;
+}
+
+//------------------------------------------------------------------------
+using StringType      = std::string;
+using FuncStringWidth = std::function<size_t(const StringType&)>;
+auto collect_string_size_rects(const MetaWordsData& meta_words_data,
+                               FuncStringWidth&& string_width_func) -> CRects
+{
+    CRects rects;
+    for (const auto& meta_word_data : meta_words_data.words)
+    {
+        constexpr CCoord height   = 24.;
+        constexpr CCoord vspacing = 4.;
+        if (!meta_word_data.is_audible)
+        {
+            rects.push_back({0, 0, 0, height});
+            continue;
+        }
+
+        const CCoord width =
+            string_width_func(meta_word_data.word.word) + vspacing;
+
+        rects.push_back({0, 0, width, height});
+    }
+
+    return rects;
 }
 
 //------------------------------------------------------------------------
@@ -172,40 +199,28 @@ static auto update_text_document(const VSTGUI::IUIDescription* description,
                                  const VSTGUI::UIAttributes& attributes,
                                  IControlListener* listener,
                                  CViewContainer* text_document,
-                                 const MetaWordsData& data) -> void
+                                 const MetaWordsData& meta_words_data) -> void
 {
     if (!text_document)
         return;
 
     text_document->removeAll();
 
-    CRects rects;
-    auto font_desc    = description->getFont("ListEntryFont");
-    auto font_painter = font_desc->getPlatformFont()->getPainter();
+    auto font_desc         = description->getFont("ListEntryFont");
+    auto font_painter      = font_desc->getPlatformFont()->getPainter();
+    auto string_width_func = [&](const StringType& text) {
+        const auto t = UTF8String(text);
+        return font_painter->getStringWidth(nullptr, t.getPlatformString(),
+                                            true);
+    };
+    auto rects = collect_string_size_rects(meta_words_data, string_width_func);
 
-    for (const auto& word : data.words)
-    {
-        constexpr CCoord height = 24;
-        if (!word.is_audible)
-        {
-            rects.push_back({0, 0, 0, height});
-            continue;
-        }
-
-        auto text          = UTF8String(word.word.word);
-        const CCoord width = font_painter->getStringWidth(
-                                 nullptr, text.getPlatformString(), true) +
-                             4.;
-
-        rects.push_back({0, 0, width, height});
-    }
-
-    const auto parent_size =
+    const auto parent_height =
         layout_row_stack(text_document->getViewSize().getSize(), rects, 0, 0);
 
-    for (size_t i = 0; i < data.words.size(); ++i)
+    for (size_t i = 0; i < meta_words_data.words.size(); ++i)
     {
-        if (!data.words.at(i).is_audible)
+        if (!meta_words_data.words.at(i).is_audible)
             continue;
 
         auto new_view =
@@ -213,20 +228,15 @@ static auto update_text_document(const VSTGUI::IUIDescription* description,
         auto new_word = dynamic_cast<CTextButton*>(new_view);
         new_word->setViewSize(rects.at(i));
 
-        // auto* new_word =
-        //     new CTextButton(rects.at(i), getViewController(text_document));
-
-        new_word->setTitle(UTF8String(data.words.at(i).word.word));
-        // new_word->setTransparency(true);
+        new_word->setTitle(UTF8String(meta_words_data.words.at(i).word.word));
         new_word->setListener(getViewController(text_document));
-        // new_word->setFont(font_desc);
         new_word->setTag(i);
         new_word->setListener(listener);
         text_document->addView(new_word);
     }
 
     auto s = text_document->getViewSize();
-    s.setHeight(parent_size.y);
+    s.setHeight(parent_height);
     text_document->setViewSize(s);
     fit_content(text_document->getParentView());
     text_document->invalid();
