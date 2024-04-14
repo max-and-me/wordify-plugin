@@ -101,7 +101,7 @@ HStackLayout::~HStackLayout()
     if (container)
     {
         container->unregisterViewContainerListener(this);
-        container->registerViewListener(this);
+        container->unregisterViewListener(this);
     }
 }
 
