@@ -90,7 +90,7 @@ HStackLayout::HStackLayout(ViewContainer* container)
 {
     if (container)
     {
-        // container->registerViewListener(this);
+        container->registerViewListener(this);
         container->registerViewContainerListener(this);
     }
 }
@@ -101,7 +101,7 @@ HStackLayout::~HStackLayout()
     if (container)
     {
         container->unregisterViewContainerListener(this);
-        // container->registerViewListener(this);
+        container->registerViewListener(this);
     }
 }
 

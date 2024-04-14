@@ -258,8 +258,6 @@ static auto update_text_document2(const VSTGUI::IUIDescription* description,
     if (!text_document)
         return;
 
-    HStackLayout layout(text_document);
-
     auto font_desc         = description->getFont("ListEntryFont");
     auto font_painter      = font_desc->getPlatformFont()->getPainter();
     auto string_width_func = [&](const StringType& text) {
@@ -495,6 +493,7 @@ MetaWordsClipController::verifyView(VSTGUI::CView* view,
             if (*viewLabel == "TextDocument")
             {
                 text_document = dynamic_cast<CViewContainer*>(view);
+                stack_layout = std::make_unique<HStackLayout>(text_document);
                 update_text_document2(description, meta_word_button_attributes,
                                       this, text_document,
                                       meta_words_data_func());

@@ -1,7 +1,15 @@
 // Copyright(c) 2023 Max And Me.
 
+#pragma once
+
 #include "vstgui/lib/cviewcontainer.h"
 #include "vstgui/lib/iviewlistener.h"
+
+namespace VSTGUI {
+class CViewContainer;
+class CView;
+class CRect;
+} // namespace VSTGUI
 
 namespace mam {
 //------------------------------------------------------------------------

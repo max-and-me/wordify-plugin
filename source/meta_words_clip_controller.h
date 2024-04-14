@@ -16,6 +16,8 @@
 
 namespace mam {
 
+class HStackLayout;
+
 //------------------------------------------------------------------------
 // VstGPTWaveClipListController
 //------------------------------------------------------------------------
@@ -56,6 +58,7 @@ private:
     VSTGUI::CViewContainer* root_view         = nullptr;
     VSTGUI::CViewContainer* text_document     = nullptr;
     std::unique_ptr<VSTGUI::ViewListenerAdapter> view_listener;
+    std::unique_ptr<HStackLayout> stack_layout;
     VSTGUI::UIAttributes meta_word_button_attributes;
 
     FuncMetaWordsData meta_words_data_func;
