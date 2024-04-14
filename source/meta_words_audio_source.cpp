@@ -137,8 +137,10 @@ auto create_whisper_cmd(const PathType& file_path) -> const Command
         // maximum segment length in characters: "1" mains one word
         {"-ml", "12"}};
 
-    static constexpr auto EXE_PATH = "Z:\\Private\\mam\\vst-gpt_build\\bin\\Release\\main.exe";
-    Command cmd{ EXE_PATH, options, one_val_args};
+    // static constexpr auto EXE_PATH =
+    // "Z:\\Private\\mam\\vst-gpt_build\\bin\\Release\\main.exe"; Command cmd{
+    // EXE_PATH, options, one_val_args};
+    Command cmd{MAM_WHISPER_CPP_EXECUTABLE, options, one_val_args};
     return cmd;
 }
 
