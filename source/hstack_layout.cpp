@@ -1,15 +1,17 @@
 // Copyright(c) 2023 Max And Me.
 
 #include "hstack_layout.h"
+#include "vstgui/lib/controls/ccontrol.h"
 #include <vector>
 
 namespace mam {
 
 //------------------------------------------------------------------------
-using CCoord = VSTGUI::CCoord;
-using CRect  = VSTGUI::CRect;
-using CPoint = VSTGUI::CPoint;
-using CRects = std::vector<CRect>;
+using CCoord   = VSTGUI::CCoord;
+using CRect    = VSTGUI::CRect;
+using CPoint   = VSTGUI::CPoint;
+using CControl = VSTGUI::CControl;
+using CRects   = std::vector<CRect>;
 
 //------------------------------------------------------------------------
 static auto layout_row_stack(const CPoint parent,
@@ -45,7 +47,8 @@ static auto collect_view_size(HStackLayout::ViewContainer* container) -> CRects
 {
     CRects rects;
     container->forEachChild([&](HStackLayout::View* child) {
-        rects.push_back(child->getViewSize());
+        if (child->isSubview())
+            rects.push_back(child->getViewSize());
     });
 
     return rects;
@@ -57,6 +60,9 @@ static auto apply_view_size(HStackLayout::ViewContainer* container,
 {
     size_t count = 0;
     container->forEachChild([&](HStackLayout::View* child) {
+        if (!child->isSubview())
+            return;
+
         auto rect = child->getViewSize();
         rect      = rects.at(count++);
         child->setViewSize(rect);
@@ -84,7 +90,7 @@ HStackLayout::HStackLayout(ViewContainer* container)
 {
     if (container)
     {
-       // container->registerViewListener(this);
+        // container->registerViewListener(this);
         container->registerViewContainerListener(this);
     }
 }
@@ -95,7 +101,7 @@ HStackLayout::~HStackLayout()
     if (container)
     {
         container->unregisterViewContainerListener(this);
-        //container->registerViewListener(this);
+        // container->registerViewListener(this);
     }
 }
 
