@@ -167,56 +167,6 @@ auto collect_string_size_rects(const MetaWordsData& meta_words_data,
 }
 
 //------------------------------------------------------------------------
-static auto update_text_document(const VSTGUI::IUIDescription* description,
-                                 const VSTGUI::UIAttributes& attributes,
-                                 IControlListener* listener,
-                                 CViewContainer* text_document,
-                                 const MetaWordsData& meta_words_data) -> void
-{
-    if (!text_document)
-        return;
-
-    text_document->removeAll();
-
-    HStackLayout layout(text_document);
-
-    auto font_desc         = description->getFont("ListEntryFont");
-    auto font_painter      = font_desc->getPlatformFont()->getPainter();
-    auto string_width_func = [&](const StringType& text) {
-        const auto t = UTF8String(text);
-        return font_painter->getStringWidth(nullptr, t.getPlatformString(),
-                                            true);
-    };
-    auto rects = collect_string_size_rects(meta_words_data, string_width_func);
-
-    std::vector<CView*> new_views;
-    for (size_t i = 0; i < meta_words_data.words.size(); ++i)
-    {
-        if (!meta_words_data.words.at(i).is_audible)
-            continue;
-
-        auto new_view =
-            description->getViewFactory()->createView(attributes, description);
-        auto new_word = dynamic_cast<CTextButton*>(new_view);
-        new_word->setViewSize(rects.at(i));
-
-        new_word->setTitle(UTF8String(meta_words_data.words.at(i).word.word));
-        new_word->setListener(getViewController(text_document));
-        new_word->setTag(i);
-        new_word->setListener(listener);
-        new_views.push_back(new_word);
-    }
-
-    for (auto* view : new_views)
-    {
-        text_document->addView(view);
-    }
-
-    fit_content(text_document->getParentView());
-    text_document->invalid();
-}
-
-//------------------------------------------------------------------------
 auto find_view_after(CViewContainer* container, size_t tag) -> CView*
 {
     for (size_t i = 0; i < container->getNbViews(); i++)
@@ -249,11 +199,11 @@ auto find_view_with_tag(CViewContainer* container, size_t tag) -> CView*
 }
 
 //------------------------------------------------------------------------
-static auto update_text_document2(const VSTGUI::IUIDescription* description,
-                                  const VSTGUI::UIAttributes& attributes,
-                                  IControlListener* listener,
-                                  CViewContainer* text_document,
-                                  const MetaWordsData& meta_words_data) -> void
+static auto update_text_document(const VSTGUI::IUIDescription* description,
+                                 const VSTGUI::UIAttributes& attributes,
+                                 IControlListener* listener,
+                                 CViewContainer* text_document,
+                                 const MetaWordsData& meta_words_data) -> void
 {
     if (!text_document)
         return;
@@ -415,8 +365,8 @@ void MetaWordsClipController::on_meta_words_data_changed()
 
     if (text_document)
     {
-        update_text_document2(description, meta_word_button_attributes, this,
-                              text_document, data);
+        update_text_document(description, meta_word_button_attributes, this,
+                             text_document, data);
     }
 }
 
@@ -493,10 +443,10 @@ MetaWordsClipController::verifyView(VSTGUI::CView* view,
             if (*viewLabel == "TextDocument")
             {
                 text_document = dynamic_cast<CViewContainer*>(view);
-                stack_layout = std::make_unique<HStackLayout>(text_document);
-                update_text_document2(description, meta_word_button_attributes,
-                                      this, text_document,
-                                      meta_words_data_func());
+                stack_layout  = std::make_unique<HStackLayout>(text_document);
+                update_text_document(description, meta_word_button_attributes,
+                                     this, text_document,
+                                     meta_words_data_func());
 
                 view_listener = std::make_unique<FitContent>(text_document);
             }
