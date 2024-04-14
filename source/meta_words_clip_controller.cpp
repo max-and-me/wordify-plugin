@@ -298,9 +298,7 @@ static auto update_text_document2(const VSTGUI::IUIDescription* description,
             description->getViewFactory()->createView(attributes, description);
         auto new_word = dynamic_cast<CTextButton*>(new_view);
         new_word->setViewSize(rects.at(i));
-
         new_word->setTitle(UTF8String(meta_words_data.words.at(i).word.word));
-        new_word->setListener(getViewController(text_document));
         new_word->setTag(i);
         new_word->setListener(listener);
         text_document->addView(new_word, view_after);
@@ -318,6 +316,19 @@ class FitContent : public VSTGUI::ViewListenerAdapter
 {
 public:
     //--------------------------------------------------------------------
+    FitContent(CViewContainer* container)
+    : container(container)
+    {
+        if (container)
+            container->registerViewListener(this);
+    }
+
+    ~FitContent() override
+    {
+        if (container)
+            container->unregisterViewListener(this);
+    }
+
     void viewAttached(CView* view) override
     {
         fit_content(view->getParentView());
@@ -330,6 +341,7 @@ public:
 
     //--------------------------------------------------------------------
 private:
+    CViewContainer* container = nullptr;
 };
 
 //------------------------------------------------------------------------
@@ -339,7 +351,6 @@ MetaWordsClipController::MetaWordsClipController(
     const VSTGUI::IUIDescription* description)
 : description(description)
 {
-    view_listener = std::make_unique<FitContent>();
 }
 
 //------------------------------------------------------------------------
@@ -347,6 +358,9 @@ MetaWordsClipController::~MetaWordsClipController()
 {
     if (listControl)
         listControl->unregisterViewListener(view_listener.get());
+
+    if (text_document)
+        text_document->unregisterViewListener(view_listener.get());
 
     if (subject)
         subject->remove_listener(observer_id);
@@ -484,6 +498,8 @@ MetaWordsClipController::verifyView(VSTGUI::CView* view,
                 update_text_document2(description, meta_word_button_attributes,
                                       this, text_document,
                                       meta_words_data_func());
+
+                view_listener = std::make_unique<FitContent>(text_document);
             }
         }
     }
