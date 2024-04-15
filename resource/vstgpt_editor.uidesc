@@ -99,13 +99,13 @@
 			},
 			"UIEditController": {
 				"EditViewScale": "1",
-				"EditorSize": "0, 0, 1223, 639",
-				"SplitViewSize_0_0": "0.5791190864600326282385367449023760855198",
-				"SplitViewSize_0_1": "0.3915171288743882760385872643382754176855",
-				"SplitViewSize_1_0": "0.6199021207177813908018038091540802270174",
-				"SplitViewSize_1_1": "0.4698205546492659201440744709543650969863",
-				"SplitViewSize_2_0": "0.7399836467702370912391529600427020341158",
-				"SplitViewSize_2_1": "0.2591986917416189695195782860537292435765",
+				"EditorSize": "0, 0, 1129, 765",
+				"SplitViewSize_0_0": "0.6508795669824086749244429483951535075903",
+				"SplitViewSize_0_1": "0.3247631935047361473323235259158536791801",
+				"SplitViewSize_1_0": "0.6001353179972936935371308209141716361046",
+				"SplitViewSize_1_1": "0.4756427604871447667456152430531801655889",
+				"SplitViewSize_2_0": "0.7183348095659876086926942662103101611137",
+				"SplitViewSize_2_1": "0.280779450841452615783566670870641246438",
 				"TabSwitchValue": "0",
 				"Version": "1",
 				"ViewBackground": "1"
@@ -142,6 +142,7 @@
 					"CRowColumnView": {
 						"attributes": {
 							"animate-view-resizing": "false",
+							"autosize": "left right top bottom ",
 							"background-color": "~ BlackCColor",
 							"background-color-draw-style": "filled and stroked",
 							"class": "CRowColumnView",
@@ -162,6 +163,7 @@
 							"CRowColumnView": {
 								"attributes": {
 									"animate-view-resizing": "false",
+									"autosize": "left right top ",
 									"background-color": "~ BlackCColor",
 									"background-color-draw-style": "filled and stroked",
 									"class": "CRowColumnView",
@@ -251,11 +253,12 @@
 								"attributes": {
 									"auto-drag-scrolling": "false",
 									"auto-hide-scrollbars": "true",
+									"autosize": "left right top bottom ",
 									"background-color": "main_background",
 									"background-color-draw-style": "filled and stroked",
 									"bordered": "false",
 									"class": "CScrollView",
-									"container-size": "608, 104",
+									"container-size": "619.496, 616",
 									"follow-focus-view": "false",
 									"horizontal-scrollbar": "false",
 									"mouse-enabled": "true",
@@ -287,7 +290,7 @@
 											"opacity": "1",
 											"origin": "0, 0",
 											"row-style": "true",
-											"size": "608, 104",
+											"size": "619.496, 616",
 											"spacing": "24",
 											"transparent": "true",
 											"uidesc-label": "VLayout",
@@ -300,6 +303,7 @@
 							"CRowColumnView": {
 								"attributes": {
 									"animate-view-resizing": "false",
+									"autosize": "left right bottom ",
 									"background-color": "~ BlackCColor",
 									"background-color-draw-style": "filled and stroked",
 									"class": "CRowColumnView",
@@ -320,6 +324,7 @@
 								"children": {
 									"CViewContainer": {
 										"attributes": {
+											"autosize": "left right ",
 											"background-color": "~ BlackCColor",
 											"background-color-draw-style": "filled and stroked",
 											"class": "CViewContainer",
@@ -334,6 +339,7 @@
 										"children": {
 											"CViewContainer": {
 												"attributes": {
+													"autosize": "left right top bottom ",
 													"background-color": "~ BlackCColor",
 													"background-color-draw-style": "filled and stroked",
 													"class": "CViewContainer",
@@ -358,6 +364,7 @@
 			},
 			"WaveFormTemplate": {
 				"attributes": {
+					"autosize": "left right top bottom ",
 					"background-color": "~ BlackCColor",
 					"background-color-draw-style": "filled and stroked",
 					"class": "CViewContainer",
@@ -1122,7 +1129,7 @@
 											"origin": "0, 0",
 											"round-rect-radius": "6",
 											"shadow-color": "~ RedCColor",
-											"size": "29.729, 24",
+											"size": "31.7471, 24",
 											"style-3D-in": "false",
 											"style-3D-out": "false",
 											"style-no-draw": "false",
@@ -1131,7 +1138,7 @@
 											"style-round-rect": "false",
 											"style-shadow-text": "false",
 											"text-alignment": "left",
-											"text-inset": "0, 0",
+											"text-inset": "2, 0",
 											"text-rotation": "0",
 											"text-shadow-offset": "1, 1",
 											"title": "Test",
