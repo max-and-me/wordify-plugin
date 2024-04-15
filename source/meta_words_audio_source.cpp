@@ -231,6 +231,7 @@ auto AudioSource::idle() -> void
 //------------------------------------------------------------------------
 void AudioSource::begin_analysis()
 {
+    fn_start_stop_changed(true);
     timer = Steinberg::owned(Steinberg::Timer::create(
         Steinberg::newTimerCallback(
             [this](Steinberg::Timer* timer) { this->idle(); }),
@@ -253,6 +254,8 @@ void AudioSource::end_analysis()
 
     if (timer)
         timer->stop();
+
+    fn_start_stop_changed(false);
 }
 
 //------------------------------------------------------------------------

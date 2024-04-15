@@ -34,8 +34,8 @@ public:
 
     using FuncStartInPlaybackTime = std::function<double(PlaybackRegion::Id)>;
 
-    auto initialize(FuncStartInPlaybackTime&& start_in_playback_time_func)
-        -> bool;
+    auto
+    initialize(FuncStartInPlaybackTime&& start_in_playback_time_func) -> bool;
     auto register_observer(OrderSubject::Callback&& callback) -> ObserverID;
     auto unregister_observer(ObserverID id) -> void;
     auto push_back(PlaybackRegion::Id id) -> void;

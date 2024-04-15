@@ -5,6 +5,7 @@
 #include "vstgpt_single_component.h"
 #include "ara_document_controller.h"
 #include "base/source/fstreamer.h"
+#include "header_controller.h"
 #include "list_controller.h"
 #include "meta_words_editor_renderer.h"
 #include "meta_words_editor_view.h"
@@ -285,6 +286,14 @@ VSTGUI::IController* VstGPTSingleComponent::createSubController(
             return build_waveform_data(document_controller,
                                        processSetup.sampleRate);
         });
+
+        return subctrl;
+    }
+    else if (VSTGUI::UTF8StringView(name) == "HeaderController")
+    {
+        auto* subctrl = new HeaderController(document_controller);
+        if (!subctrl)
+            return nullptr;
 
         return subctrl;
     }

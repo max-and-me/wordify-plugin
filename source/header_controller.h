@@ -4,37 +4,24 @@
 
 #pragma once
 
+#include "ara_document_controller.h"
 #include "base/source/fobject.h"
-#include "gsl/span"
-#include "tiny_observer_pattern.h"
-#include "vstgui/lib/iviewlistener.h"
 #include "vstgui/uidescription/icontroller.h"
-#include "waveform_view.h"
 
 namespace VSTGUI {
-class CListControl;
-class CGradientView;
-} // namespace VSTGUI
+class CRowColLayout;
+}
 namespace mam {
-class WaveFormView;
-
+class SpinnerView;
 //------------------------------------------------------------------------
-// WaveFormController
+// HeaderController
 //------------------------------------------------------------------------
-class WaveFormController : public Steinberg::FObject, public VSTGUI::IController
+class HeaderController : public Steinberg::FObject, public VSTGUI::IController
 {
 public:
     //--------------------------------------------------------------------
-    using Subject    = tiny_observer_pattern::SimpleSubject;
-    using ObserverId = tiny_observer_pattern::ObserverID;
-    using Data       = const WaveFormView::Data;
-
-    using FuncWaveFormData = std::function<Data()>;
-
-    WaveFormController();
-    ~WaveFormController() override;
-
-    bool initialize(Subject* subject, FuncWaveFormData&& waveform_data_func);
+    HeaderController(ARADocumentController* controller);
+    ~HeaderController() override;
 
     void PLUGIN_API update(FUnknown* changedUnknown,
                            Steinberg::int32 message) override {};
@@ -51,17 +38,16 @@ public:
     // IControlListener
     void valueChanged(VSTGUI::CControl* pControl) override {};
 
-    OBJ_METHODS(WaveFormController, FObject)
+    OBJ_METHODS(HeaderController, FObject)
 
     //--------------------------------------------------------------------
 private:
-    void on_meta_words_data_changed();
+    void on_word_analysis_start_stop(const WordAnalysisStartStopData& data);
 
-    Subject* subject       = nullptr;
-    ObserverId observer_id = 0;
-    FuncWaveFormData waveform_data_func;
-    WaveFormView* waveform_view            = nullptr;
-    VSTGUI::CGradientView* background_view = nullptr;
+    ARADocumentController* controller    = nullptr;
+    SpinnerView* spinner_view            = nullptr;
+    VSTGUI::CRowColLayout* rowcol_parent = nullptr;
+    tiny_observer_pattern::ObserverID word_analysis_start_stop_observer_id = 0;
 };
 
 //------------------------------------------------------------------------

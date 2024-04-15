@@ -47,7 +47,23 @@ struct RegionData
     WordIndex word_index;
 };
 
+//------------------------------------------------------------------------
+
 using RegionSelectionModel = SelectionModel<RegionData>;
+
+//------------------------------------------------------------------------
+//  WordAnalysisStartStopData
+//------------------------------------------------------------------------
+struct WordAnalysisStartStopData
+{
+    enum class State
+    {
+        kAnalysisStarted,
+        kAnalysisStopped,
+    };
+
+    State state;
+};
 
 //------------------------------------------------------------------------
 // ARADocumentController
@@ -78,6 +94,9 @@ public:
     // Subjects
     using PlaybackRegionLifetimesSubject =
         tiny_observer_pattern::Subject<PlaybackRegionLifetimeData>;
+
+    using AnalysisStartStopSubject =
+        tiny_observer_pattern::Subject<WordAnalysisStartStopData>;
 
     // publish inherited constructor
     using ARA::PlugIn::DocumentController::DocumentController;
@@ -197,6 +216,11 @@ public:
 
     auto unregister_playback_region_lifetimes_observer(ObserverID id) -> bool;
 
+    auto register_word_analysis_start_stop_observer(
+        AnalysisStartStopSubject::Callback&& callback) -> ObserverID;
+
+    auto unregister_word_analysis_start_stop_observer(ObserverID id) -> bool;
+
     template <typename Func>
     auto for_each_playback_region_id_enumerated(Func& func) const -> void
     {
@@ -209,6 +233,7 @@ protected:
     PlaybackRegionObservers playback_region_observers;
     PlaybackRegions playback_regions;
     PlaybackRegionLifetimesSubject playback_region_lifetimes_subject;
+    AnalysisStartStopSubject word_analysis_start_stop_subject;
     RegionOrderManager region_order_manager;
     RegionSelectionModel region_selection_model;
 
@@ -218,6 +243,7 @@ protected:
 private:
     void on_add_playback_region(PlaybackRegion* region);
     void on_remove_playback_region(PlaybackRegion::Id id);
+    void on_word_analysis_start_stop(bool state);
 
     template <typename Func>
     void for_each_playback_region(Func&& func)

@@ -30,7 +30,7 @@ void SpinnerView::onIdle()
 }
 
 //------------------------------------------------------------------------
- void SpinnerView::draw(CDrawContext* context)
+void SpinnerView::draw(CDrawContext* context)
 {
     CView::draw(context);
 
@@ -51,11 +51,10 @@ void SpinnerView::onIdle()
     for (int i = 0; i < numLines; ++i)
     {
         const float angle = (i * 30.0f + rotationAngle) * (kPI / 180.0f);
-        const CPoint start(
-            center.x + cos(angle) * (bounds.getWidth() * 0.3f),
-            center.y + sin(angle) * (bounds.getHeight() * 0.3f));
+        const CPoint start(center.x + cos(angle) * (bounds.getWidth() * 0.3f),
+                           center.y + sin(angle) * (bounds.getHeight() * 0.3f));
         const CPoint end(start.x + cos(angle) * lineLength,
-                            start.y + sin(angle) * lineLength);
+                         start.y + sin(angle) * lineLength);
         context->drawLine(start, end);
     }
 }

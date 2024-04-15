@@ -61,8 +61,10 @@ protected:
 };
 
 //------------------------------------------------------------------------
-using CallbackData = struct {};
-using SimpleSubject  = Subject<CallbackData>;
+using CallbackData = struct
+{
+};
+using SimpleSubject = Subject<CallbackData>;
 //------------------------------------------------------------------------
 
 } // namespace mam::tiny_observer_pattern

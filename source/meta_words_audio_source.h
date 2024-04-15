@@ -19,14 +19,17 @@ public:
     using SampleType = float;
     using MultiChannelBufferType =
         mam::audio_buffer_management::MultiChannelBuffers<SampleType>;
-    using MetaWords = mam::meta_words::MetaWords;
-    using FnChanged = std::function<void()>;
+    using MetaWords          = mam::meta_words::MetaWords;
+    using FnChanged          = std::function<void()>;
+    using FnStartStopChanged = std::function<void(bool status)>;
 
     AudioSource(ARA::PlugIn::Document* document,
                 ARA::ARAAudioSourceHostRef hostRef,
-                FnChanged&& fn_changed)
+                FnChanged&& fn_changed,
+                FnStartStopChanged&& fn_start_stop_changed)
     : ARA::PlugIn::AudioSource{document, hostRef}
     , fn_changed(fn_changed)
+    , fn_start_stop_changed(fn_start_stop_changed)
     {
     }
     virtual ~AudioSource(){};
@@ -58,6 +61,7 @@ protected:
     MultiChannelBufferType audio_buffers;
     MetaWords meta_words;
     FnChanged fn_changed;
+    FnStartStopChanged fn_start_stop_changed;
 
     using MetaWordsFuture = std::future<MetaWords>;
     Steinberg::IPtr<Steinberg::Timer> timer;

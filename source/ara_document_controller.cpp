@@ -95,8 +95,9 @@ ARA::PlugIn::AudioSource* ARADocumentController::doCreateAudioSource(
     ARA::PlugIn::Document* document,
     ARA::ARAAudioSourceHostRef hostRef) noexcept
 {
-    return new AudioSource(document, hostRef,
-                           [this]() { this->notify_listeners({}); });
+    return new AudioSource(
+        document, hostRef, [this]() { this->notify_listeners({}); },
+        [this](bool state) { this->on_word_analysis_start_stop(state); });
 }
 
 //------------------------------------------------------------------------
@@ -272,6 +273,20 @@ auto ARADocumentController::unregister_playback_region_lifetimes_observer(
 }
 
 //------------------------------------------------------------------------
+auto ARADocumentController::register_word_analysis_start_stop_observer(
+    AnalysisStartStopSubject::Callback&& callback) -> ObserverID
+{
+    return word_analysis_start_stop_subject.add_listener(std::move(callback));
+}
+
+//------------------------------------------------------------------------
+auto ARADocumentController::unregister_word_analysis_start_stop_observer(
+    ObserverID id) -> bool
+{
+    return word_analysis_start_stop_subject.remove_listener(id);
+}
+
+//------------------------------------------------------------------------
 auto ARADocumentController::register_playback_region_changed_observer(
     const PlaybackRegion::Id playback_region_id,
     Subject::Callback&& callback) -> ObserverID
@@ -320,6 +335,16 @@ void ARADocumentController::on_remove_playback_region(PlaybackRegion::Id id)
 
     region_order_manager.remove(id);
     playback_regions.erase(id);
+}
+
+//------------------------------------------------------------------------
+void ARADocumentController::on_word_analysis_start_stop(bool state)
+{
+    // TODO: add static count to data
+    state ? word_analysis_start_stop_subject.notify_listeners(
+                {WordAnalysisStartStopData::State::kAnalysisStarted})
+          : word_analysis_start_stop_subject.notify_listeners(
+                {WordAnalysisStartStopData::State::kAnalysisStopped});
 }
 
 //------------------------------------------------------------------------

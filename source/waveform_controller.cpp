@@ -13,8 +13,8 @@ using namespace ::VSTGUI;
 
 //------------------------------------------------------------------------
 using CPointOptional = std::optional<CPoint>;
-static auto read_view_size(const VSTGUI::UIAttributes& attributes)
-    -> CPointOptional
+static auto
+read_view_size(const VSTGUI::UIAttributes& attributes) -> CPointOptional
 {
     if (!attributes.hasAttribute("size"))
         return std::nullopt;
