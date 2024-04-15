@@ -60,7 +60,7 @@ update_list_control_content(CListControl* listControl,
             dynamic_cast<StringListControlDrawer*>(listControl->getDrawer()))
     {
         stringListDrawer->setStringProvider([word_dataset](int32_t row) {
-            const auto word_data   = word_dataset.at(row);
+            const auto word_data   = word_dataset[row];
             const std::string name = word_data.word.word;
 
             const UTF8String string(name.data());
@@ -152,21 +152,22 @@ static auto update_text_document(const VSTGUI::IUIDescription* description,
     if (!text_document)
         return;
 
-    auto font_desc         = description->getFont("ListEntryFont");
-    auto font_painter      = font_desc->getPlatformFont()->getPainter();
-    auto string_width_func = [&](const StringType& text) {
+    const auto font_desc    = description->getFont("ListEntryFont");
+    const auto font_painter = font_desc->getPlatformFont()->getPainter();
+    auto string_width_func  = [&](const StringType& text) {
         const auto t = UTF8String(text);
         return font_painter->getStringWidth(nullptr, t.getPlatformString(),
-                                            true);
+                                             true);
     };
-    auto rects = collect_string_size_rects(meta_words_data, string_width_func);
+    const auto rects =
+        collect_string_size_rects(meta_words_data, string_width_func);
 
     // Remove views
     std::vector<CControl*> views_to_remove;
     text_document->forEachChild([&](CView* child) {
         if (auto* control = dynamic_cast<CControl*>(child))
         {
-            if (!meta_words_data.words.at(control->getTag()).is_audible)
+            if (!meta_words_data.words[control->getTag()].is_audible)
                 views_to_remove.push_back(control);
         }
     });
@@ -176,7 +177,7 @@ static auto update_text_document(const VSTGUI::IUIDescription* description,
     // Add new views
     for (auto i = 0; i < meta_words_data.words.size(); ++i)
     {
-        const auto word_data = meta_words_data.words.at(i);
+        const auto word_data = meta_words_data.words[i];
         if (!word_data.is_audible)
             continue;
 
@@ -185,14 +186,14 @@ static auto update_text_document(const VSTGUI::IUIDescription* description,
 
         auto* view_after = find_view_after(text_document, i);
 
-        auto new_view =
+        auto view =
             description->getViewFactory()->createView(attributes, description);
-        auto new_word = dynamic_cast<CTextButton*>(new_view);
-        new_word->setViewSize(rects.at(i));
-        new_word->setTitle(UTF8String(meta_words_data.words.at(i).word.word));
-        new_word->setTag(i);
-        new_word->setListener(listener);
-        text_document->addView(new_word, view_after);
+        auto but = dynamic_cast<CTextButton*>(view);
+        but->setViewSize(rects[i]);
+        but->setTitle(UTF8String(meta_words_data.words[i].word.word));
+        but->setTag(i);
+        but->setListener(listener);
+        text_document->addView(but, view_after);
     }
 
     fit_content(text_document->getParentView());

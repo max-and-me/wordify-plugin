@@ -29,7 +29,7 @@ static auto layout_row_stack(const CPoint parent,
     // The first rect needs to be treated in a special way. No matter if it fits
     // into the first line or not, it needs to stay at origin! Even if the
     // parent container is very narrow.
-    auto& first_rect          = rects.at(0);
+    auto& first_rect          = rects[0];
     const auto default_height = first_rect.getHeight();
     first_rect.moveTo(offset);
     offset.x += first_rect.getWidth() + hspacing;
@@ -72,7 +72,7 @@ static auto apply_view_size(HStackLayout::ViewContainer* container,
             return;
 
         auto rect = child->getViewSize();
-        rect      = rects.at(count++);
+        rect      = rects[count++];
         child->setViewSize(rect);
     });
 }
