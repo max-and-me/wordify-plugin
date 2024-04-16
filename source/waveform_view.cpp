@@ -14,6 +14,12 @@ using namespace VSTGUI;
 namespace mam {
 
 //------------------------------------------------------------------------
+constexpr auto HITLITE_TINT_FACTOR = 2.f / 3.f;
+constexpr auto SPACING             = 1.;
+constexpr auto LINE_WIDTH          = 2.;
+constexpr auto ROUND_CORNER_RADIUS = 1.;
+
+//------------------------------------------------------------------------
 WaveFormView::WaveFormView(const CRect& size)
 : CView(size)
 {
@@ -32,10 +38,7 @@ auto WaveFormView::draw_like_spotify(CDrawContext& pContext,
 {
     using Drawer   = wave_draw::Drawer;
     using DrawData = wave_draw::DrawData;
-
-    constexpr auto SPACING             = 1.;
-    constexpr auto LINE_WIDTH          = 2.;
-    constexpr auto ROUND_CORNER_RADIUS = 1.;
+    using Color    = VSTGUI::CColor;
 
     auto waveform_data = waveform_data_func();
     // Since we have a fixed view_width, we need to compute the zoom_factor
@@ -45,32 +48,34 @@ auto WaveFormView::draw_like_spotify(CDrawContext& pContext,
 
     const auto samples_per_bucket = static_cast<size_t>(zoom_factor);
     const BoundsCheck<size_t> bounds_check(
-        {waveform_data.highlight_range.first / samples_per_bucket,
-         waveform_data.highlight_range.second / samples_per_bucket});
+        {waveform_data.hilite_range.first / samples_per_bucket,
+         waveform_data.hilite_range.second / samples_per_bucket});
 
     // TODO: Get rid of warning!
-    const auto [r, g, b] = waveform_data.color;
-    const VSTGUI::CColor color_normal =
-        make_color<float>(r, g, b, std::nullopt);
+    const auto& [r, g, b]     = waveform_data.color;
+    const Color color_normal = make_color<float>(r, g, b, std::nullopt);
+    const Color color_hilite = make_color<float>(r, g, b, HITLITE_TINT_FACTOR);
 
-    constexpr auto TINT_FACTOR = 2.f / 3.f;
-    const VSTGUI::CColor color_highlight =
-        make_color<float>(r, g, b, TINT_FACTOR);
+    auto normal_graphics_path = owned(pContext.createGraphicsPath());
+    auto hilite_graphics_path = owned(pContext.createGraphicsPath());
 
-    Drawer()
-        .init(waveform_data.audio_buffer, zoom_factor)
+    Drawer(waveform_data.audio_buffer, zoom_factor)
         .setup_wave(LINE_WIDTH, SPACING)
         .setup_dimensions(viewSize.getWidth(), viewSize.getHeight())
         .draw([&](const DrawData& data, size_t count) {
             const auto rect =
                 CRect({data.x, data.y}, {data.width, data.height});
-            auto graphics_path = owned(pContext.createRoundRectGraphicsPath(
-                rect, ROUND_CORNER_RADIUS));
 
-            pContext.setFillColor(bounds_check.is_in(count) ? color_highlight
-                                                            : color_normal);
-            pContext.drawGraphicsPath(graphics_path);
+            if (bounds_check.is_in(count))
+                hilite_graphics_path->addRoundRect(rect, ROUND_CORNER_RADIUS);
+            else
+                normal_graphics_path->addRoundRect(rect, ROUND_CORNER_RADIUS);
         });
+
+    pContext.setFillColor(color_normal);
+    pContext.drawGraphicsPath(normal_graphics_path);
+    pContext.setFillColor(color_hilite);
+    pContext.drawGraphicsPath(hilite_graphics_path);
 }
 
 //------------------------------------------------------------------------

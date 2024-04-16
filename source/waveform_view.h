@@ -25,7 +25,7 @@ public:
 
         Color color;
         AudioBuffer audio_buffer;
-        Range highlight_range;
+        Range hilite_range;
     };
 
     using FuncWaveFormData = std::function<const Data()>;
