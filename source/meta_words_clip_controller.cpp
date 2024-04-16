@@ -197,7 +197,7 @@ static auto update_text_document(const VSTGUI::IUIDescription* description,
     }
 
     fit_content(text_document->getParentView());
-    text_document->invalid();
+   // text_document->invalid();
 }
 
 //------------------------------------------------------------------------
