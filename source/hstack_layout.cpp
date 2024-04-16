@@ -71,9 +71,10 @@ static auto apply_view_size(HStackLayout::ViewContainer* container,
         if (!child->isSubview())
             return;
 
-        auto rect = child->getViewSize();
-        rect      = rects[count++];
-        child->setViewSize(rect);
+        const auto rect     = child->getViewSize();
+        const auto new_rect = rects[count++];
+        if (rect != new_rect)
+            child->setViewSize(new_rect);
     });
 }
 
@@ -83,12 +84,14 @@ static auto do_layout(HStackLayout::ViewContainer* container,
                       HStackLayout::Coord vspacing,
                       HStackLayout::Coord padding) -> void
 {
+    // Layout children
     auto parent_size = container->getViewSize();
     CRects sizes     = collect_view_size(container);
-    auto new_height =
+    const auto new_height =
         layout_row_stack({parent_size.getWidth(), parent_size.getHeight()},
                          sizes, hspacing, vspacing, padding);
 
+    // Adjust parent container height
     parent_size.setHeight(new_height);
     container->setViewSize(parent_size);
     apply_view_size(container, sizes);
