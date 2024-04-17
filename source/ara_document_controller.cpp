@@ -175,8 +175,12 @@ void ARADocumentController::didUpdatePlaybackRegionProperties(
     region_order_manager.reorder();
 
     this->notify_listeners({});
-    for (auto& o : playback_region_observers)
-        o.second.notify_listeners({});
+    if (auto* pbr = dynamic_cast<PlaybackRegion*>(playbackRegion))
+    {
+        auto obj = playback_region_observers.find(pbr->get_id());
+        if(obj != playback_region_observers.end())
+            obj->second.notify_listeners({});
+    }
 }
 
 //------------------------------------------------------------------------
