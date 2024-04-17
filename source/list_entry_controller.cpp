@@ -114,7 +114,8 @@ VSTGUI::IController* ListEntryController::createSubController(
         if (!subctrl)
             return nullptr;
 
-        subctrl->initialize(controller, [=]() {
+        auto& subject = controller->get_playback_region_changed_subject(pbr_id);
+        subctrl->initialize(&subject, [=]() {
             return build_meta_words_data(ctler, pbr_id, sample_rate_func());
         });
 
