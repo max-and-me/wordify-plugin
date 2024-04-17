@@ -135,7 +135,7 @@ auto create_whisper_cmd(const PathType& file_path) -> const Command
         // audio file to analyse
         {"-f", file_path},
         // maximum segment length in characters: "1" mains one word
-        {"-ml", "12"}};
+        {"-ml", "1"}};
 
     // static constexpr auto EXE_PATH =
     // "Z:\\Private\\mam\\vst-gpt_build\\bin\\Release\\main.exe"; Command cmd{
