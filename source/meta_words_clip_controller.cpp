@@ -193,6 +193,11 @@ static auto update_text_document(const VSTGUI::IUIDescription* description,
         but->setTitle(UTF8String(meta_words_data.words[i].word.word));
         but->setTag(i);
         but->setListener(listener);
+
+        // Set gradients to nullptr. This drastically speeds up the performance!!!
+        but->setGradient(nullptr);
+        but->setGradientHighlighted(nullptr);
+
         text_document->addView(but, view_after);
     }
 
