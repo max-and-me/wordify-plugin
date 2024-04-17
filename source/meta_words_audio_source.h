@@ -20,12 +20,11 @@ public:
     using MultiChannelBufferType =
         mam::audio_buffer_management::MultiChannelBuffers<SampleType>;
     using MetaWords          = mam::meta_words::MetaWords;
-    using FnChanged          = std::function<void()>;
+    using FnChanged          = std::function<void(AudioSource*)>;
     using FnStartStopChanged = std::function<void(bool status)>;
 
     AudioSource(ARA::PlugIn::Document* document,
                 ARA::ARAAudioSourceHostRef hostRef,
-                FnChanged&& fn_changed,
                 FnStartStopChanged&& fn_start_stop_changed)
     : ARA::PlugIn::AudioSource{document, hostRef}
     , fn_changed(fn_changed)
@@ -50,6 +49,7 @@ public:
     MultiChannelBufferType& get_audio_buffers() { return audio_buffers; }
 
     const MetaWords& get_meta_words() const;
+    FnChanged changed_func;
 
 protected:
     void idle();

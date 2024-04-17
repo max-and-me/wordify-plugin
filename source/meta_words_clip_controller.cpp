@@ -315,6 +315,7 @@ void MetaWordsClipController::on_meta_words_data_changed()
     {
         update_text_document(description, meta_word_button_attributes, this,
                              text_document, data);
+        text_document->invalid();
     }
 }
 

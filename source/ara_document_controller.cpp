@@ -95,9 +95,33 @@ ARA::PlugIn::AudioSource* ARADocumentController::doCreateAudioSource(
     ARA::PlugIn::Document* document,
     ARA::ARAAudioSourceHostRef hostRef) noexcept
 {
-    return new AudioSource(
-        document, hostRef, [this]() { this->notify_listeners({}); },
-        [this](bool state) { this->on_word_analysis_start_stop(state); });
+    auto* new_audio_source =
+        new AudioSource(document, hostRef, [this](bool state) {
+            this->on_word_analysis_start_stop(state);
+        });
+
+    if (!new_audio_source)
+        return nullptr;
+
+    new_audio_source->changed_func = [this](AudioSource* audio_source) {
+        if (!audio_source)
+            return;
+
+        auto audio_modifications = audio_source->getAudioModifications();
+        for (auto& am : audio_modifications)
+        {
+            auto regions = am->getPlaybackRegions<PlaybackRegion>();
+            for (auto& region : regions)
+            {
+                auto obj = playback_region_observers.find(region->get_id());
+                if (obj != playback_region_observers.end())
+                    obj->second.notify_listeners({});
+            }
+        }
+        this->notify_listeners({});
+    };
+
+    return new_audio_source;
 }
 
 //------------------------------------------------------------------------
@@ -178,7 +202,7 @@ void ARADocumentController::didUpdatePlaybackRegionProperties(
     if (auto* pbr = dynamic_cast<PlaybackRegion*>(playbackRegion))
     {
         auto obj = playback_region_observers.find(pbr->get_id());
-        if(obj != playback_region_observers.end())
+        if (obj != playback_region_observers.end())
             obj->second.notify_listeners({});
     }
 }
