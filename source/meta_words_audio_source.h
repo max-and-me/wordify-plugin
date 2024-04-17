@@ -17,18 +17,26 @@ class AudioSource : public ARA::PlugIn::AudioSource
 {
 public:
     using SampleType = float;
+    using Identifier = int;
     using MultiChannelBufferType =
         mam::audio_buffer_management::MultiChannelBuffers<SampleType>;
-    using MetaWords          = mam::meta_words::MetaWords;
-    using FnChanged          = std::function<void(AudioSource*)>;
-    using FnStartStopChanged = std::function<void(bool status)>;
+    using MetaWords = mam::meta_words::MetaWords;
+    using FnChanged = std::function<void(AudioSource*)>;
+    using FnStartStopChanged =
+        std::function<void(const AudioSource& source, bool status)>;
+    using FnProgressChanged =
+        std::function<void(const AudioSource& source, double progress)>;
 
     AudioSource(ARA::PlugIn::Document* document,
                 ARA::ARAAudioSourceHostRef hostRef,
-                FnStartStopChanged&& fn_start_stop_changed)
+                FnStartStopChanged&& fn_start_stop_changed,
+                FnProgressChanged&& fn_progress_changed,
+                Identifier identifier)
     : ARA::PlugIn::AudioSource{document, hostRef}
     , fn_changed(fn_changed)
     , fn_start_stop_changed(fn_start_stop_changed)
+    , fn_progress_changed(fn_progress_changed)
+    , identifier(identifier)
     {
     }
     virtual ~AudioSource(){};
@@ -51,6 +59,8 @@ public:
     const MetaWords& get_meta_words() const;
     FnChanged changed_func;
 
+    const Identifier getIdentifier() const { return identifier; }
+
 protected:
     void idle();
     void begin_analysis();
@@ -62,10 +72,12 @@ protected:
     MetaWords meta_words;
     FnChanged fn_changed;
     FnStartStopChanged fn_start_stop_changed;
+    FnProgressChanged fn_progress_changed;
 
     using MetaWordsFuture = std::future<MetaWords>;
     Steinberg::IPtr<Steinberg::Timer> timer;
     MetaWordsFuture future_meta_words;
+    Identifier identifier = -1;
 };
 
 //------------------------------------------------------------------------

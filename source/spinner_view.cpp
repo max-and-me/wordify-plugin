@@ -40,10 +40,10 @@ void SpinnerView::draw(CDrawContext* context)
     context->setDrawMode(kAntiAliasing);
     context->setLineWidth(2.0);
 
-    constexpr int numLines        = 12;
-    constexpr float lineLength    = 10.0;
-    constexpr float lineThickness = 2.0;
-    constexpr CColor lineColor(255, 255, 255);
+    constexpr int numLines     = 12;
+    constexpr float lineLength = 5.0;
+    constexpr CColor lineColor(150, 150, 150);
+    constexpr float factor = 0.2f;
 
     context->setFrameColor(lineColor);
     context->setFillColor(lineColor);
@@ -51,8 +51,9 @@ void SpinnerView::draw(CDrawContext* context)
     for (int i = 0; i < numLines; ++i)
     {
         const float angle = (i * 30.0f + rotationAngle) * (kPI / 180.0f);
-        const CPoint start(center.x + cos(angle) * (bounds.getWidth() * 0.3f),
-                           center.y + sin(angle) * (bounds.getHeight() * 0.3f));
+        const CPoint start(center.x + cos(angle) * (bounds.getWidth() * factor),
+                           center.y +
+                               sin(angle) * (bounds.getHeight() * factor));
         const CPoint end(start.x + cos(angle) * lineLength,
                          start.y + sin(angle) * lineLength);
         context->drawLine(start, end);

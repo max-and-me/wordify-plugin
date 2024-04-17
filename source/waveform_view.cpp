@@ -52,7 +52,7 @@ auto WaveFormView::draw_like_spotify(CDrawContext& pContext,
          waveform_data.hilite_range.second / samples_per_bucket});
 
     // TODO: Get rid of warning!
-    const auto& [r, g, b]     = waveform_data.color;
+    const auto& [r, g, b]    = waveform_data.color;
     const Color color_normal = make_color<float>(r, g, b, std::nullopt);
     const Color color_hilite = make_color<float>(r, g, b, HITLITE_TINT_FACTOR);
 

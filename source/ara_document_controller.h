@@ -52,16 +52,19 @@ struct RegionData
 using RegionSelectionModel = SelectionModel<RegionData>;
 
 //------------------------------------------------------------------------
-//  WordAnalysisStartStopData
+//  WordAnalysisProgressData
 //------------------------------------------------------------------------
-struct WordAnalysisStartStopData
+struct WordAnalysisProgressData
 {
     enum class State
     {
         kAnalysisStarted,
+        kAnalysisRunning,
         kAnalysisStopped,
     };
 
+    meta_words::AudioSource::Identifier identifier;
+    double progress_val = 0.;
     State state;
 };
 
@@ -95,8 +98,8 @@ public:
     using PlaybackRegionLifetimesSubject =
         tiny_observer_pattern::Subject<PlaybackRegionLifetimeData>;
 
-    using AnalysisStartStopSubject =
-        tiny_observer_pattern::Subject<WordAnalysisStartStopData>;
+    using AnalysisProgressSubject =
+        tiny_observer_pattern::Subject<WordAnalysisProgressData>;
 
     // publish inherited constructor
     using ARA::PlugIn::DocumentController::DocumentController;
@@ -216,10 +219,10 @@ public:
 
     auto unregister_playback_region_lifetimes_observer(ObserverID id) -> bool;
 
-    auto register_word_analysis_start_stop_observer(
-        AnalysisStartStopSubject::Callback&& callback) -> ObserverID;
+    auto register_word_analysis_progress_observer(
+        AnalysisProgressSubject::Callback&& callback) -> ObserverID;
 
-    auto unregister_word_analysis_start_stop_observer(ObserverID id) -> bool;
+    auto unregister_word_analysis_progress_observer(ObserverID id) -> bool;
 
     template <typename Func>
     auto for_each_playback_region_id_enumerated(Func& func) const -> void
@@ -233,7 +236,7 @@ protected:
     PlaybackRegionObservers playback_region_observers;
     PlaybackRegions playback_regions;
     PlaybackRegionLifetimesSubject playback_region_lifetimes_subject;
-    AnalysisStartStopSubject word_analysis_start_stop_subject;
+    AnalysisProgressSubject word_analysis_progress_subject;
     RegionOrderManager region_order_manager;
     RegionSelectionModel region_selection_model;
 
@@ -243,7 +246,8 @@ protected:
 private:
     void on_add_playback_region(PlaybackRegion* region);
     void on_remove_playback_region(PlaybackRegion::Id id);
-    void on_word_analysis_start_stop(bool state);
+    void on_word_analysis_progress(const AudioSource& source, bool state);
+    void on_word_analysis_progress(const AudioSource& source, double progress);
 
     template <typename Func>
     void for_each_playback_region(Func&& func)

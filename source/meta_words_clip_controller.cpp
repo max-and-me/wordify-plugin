@@ -194,7 +194,8 @@ static auto update_text_document(const VSTGUI::IUIDescription* description,
         but->setTag(i);
         but->setListener(listener);
 
-        // Set gradients to nullptr. This drastically speeds up the performance!!!
+        // Set gradients to nullptr. This drastically speeds up the
+        // performance!!!
         but->setGradient(nullptr);
         but->setGradientHighlighted(nullptr);
 

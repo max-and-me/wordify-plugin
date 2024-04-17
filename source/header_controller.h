@@ -42,12 +42,13 @@ public:
 
     //--------------------------------------------------------------------
 private:
-    void on_word_analysis_start_stop(const WordAnalysisStartStopData& data);
+    void on_word_analysis_progress(const WordAnalysisProgressData& data);
 
     ARADocumentController* controller    = nullptr;
+    VSTGUI::CViewContainer* container    = nullptr;
     SpinnerView* spinner_view            = nullptr;
     VSTGUI::CRowColLayout* rowcol_parent = nullptr;
-    tiny_observer_pattern::ObserverID word_analysis_start_stop_observer_id = 0;
+    tiny_observer_pattern::ObserverID word_analysis_progress_observer_id = 0;
 };
 
 //------------------------------------------------------------------------

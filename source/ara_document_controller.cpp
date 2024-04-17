@@ -95,10 +95,19 @@ ARA::PlugIn::AudioSource* ARADocumentController::doCreateAudioSource(
     ARA::PlugIn::Document* document,
     ARA::ARAAudioSourceHostRef hostRef) noexcept
 {
-    auto* new_audio_source =
-        new AudioSource(document, hostRef, [this](bool state) {
-            this->on_word_analysis_start_stop(state);
-        });
+
+    static AudioSource::Identifier id = 0;
+
+    auto* new_audio_source = new AudioSource(
+        document, hostRef,
+        [this](const AudioSource& source, bool state) {
+            this->on_word_analysis_progress(source, state);
+        },
+        [this](const AudioSource& source, double progress) {
+            this->on_word_analysis_progress(source, progress);
+        },
+        id);
+    id++;
 
     if (!new_audio_source)
         return nullptr;
@@ -301,17 +310,17 @@ auto ARADocumentController::unregister_playback_region_lifetimes_observer(
 }
 
 //------------------------------------------------------------------------
-auto ARADocumentController::register_word_analysis_start_stop_observer(
-    AnalysisStartStopSubject::Callback&& callback) -> ObserverID
+auto ARADocumentController::register_word_analysis_progress_observer(
+    AnalysisProgressSubject::Callback&& callback) -> ObserverID
 {
-    return word_analysis_start_stop_subject.add_listener(std::move(callback));
+    return word_analysis_progress_subject.add_listener(std::move(callback));
 }
 
 //------------------------------------------------------------------------
-auto ARADocumentController::unregister_word_analysis_start_stop_observer(
+auto ARADocumentController::unregister_word_analysis_progress_observer(
     ObserverID id) -> bool
 {
-    return word_analysis_start_stop_subject.remove_listener(id);
+    return word_analysis_progress_subject.remove_listener(id);
 }
 
 //------------------------------------------------------------------------
@@ -366,13 +375,26 @@ void ARADocumentController::on_remove_playback_region(PlaybackRegion::Id id)
 }
 
 //------------------------------------------------------------------------
-void ARADocumentController::on_word_analysis_start_stop(bool state)
+void ARADocumentController::on_word_analysis_progress(const AudioSource& source,
+                                                      bool state)
 {
-    // TODO: add static count to data
-    state ? word_analysis_start_stop_subject.notify_listeners(
-                {WordAnalysisStartStopData::State::kAnalysisStarted})
-          : word_analysis_start_stop_subject.notify_listeners(
-                {WordAnalysisStartStopData::State::kAnalysisStopped});
+    WordAnalysisProgressData data{
+        source.getIdentifier(), -1.,
+        state ? WordAnalysisProgressData::State::kAnalysisStarted
+              : WordAnalysisProgressData::State::kAnalysisStopped};
+
+    word_analysis_progress_subject.notify_listeners(data);
+}
+
+//------------------------------------------------------------------------
+void ARADocumentController::on_word_analysis_progress(const AudioSource& source,
+                                                      double progress)
+{
+    WordAnalysisProgressData data{
+        source.getIdentifier(), progress,
+        WordAnalysisProgressData::State::kAnalysisRunning};
+
+    word_analysis_progress_subject.notify_listeners(data);
 }
 
 //------------------------------------------------------------------------

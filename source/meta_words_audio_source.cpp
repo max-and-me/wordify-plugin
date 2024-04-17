@@ -219,8 +219,8 @@ auto AudioSource::idle() -> void
     {
         end_analysis();
 
-        if (fn_changed)
-            fn_changed();
+        // if (fn_changed)
+        //   fn_changed();
     }
     else
     {
@@ -231,7 +231,7 @@ auto AudioSource::idle() -> void
 //------------------------------------------------------------------------
 void AudioSource::begin_analysis()
 {
-    fn_start_stop_changed(true);
+    fn_start_stop_changed(*this, true);
     timer = Steinberg::owned(Steinberg::Timer::create(
         Steinberg::newTimerCallback(
             [this](Steinberg::Timer* timer) { this->idle(); }),
@@ -242,7 +242,7 @@ void AudioSource::begin_analysis()
 void AudioSource::perform_analysis()
 {
     double progress_val = analysis_progress;
-    // TODO: update progress bar
+    fn_progress_changed(*this, progress_val);
 }
 
 //------------------------------------------------------------------------
@@ -255,7 +255,7 @@ void AudioSource::end_analysis()
     if (timer)
         timer->stop();
 
-    fn_start_stop_changed(false);
+    fn_start_stop_changed(*this, false);
 }
 
 //------------------------------------------------------------------------

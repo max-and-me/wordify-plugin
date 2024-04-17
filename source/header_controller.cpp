@@ -20,26 +20,43 @@ HeaderController::HeaderController(ARADocumentController* controller)
     if (!controller)
         return;
 
-    word_analysis_start_stop_observer_id =
-        controller->register_word_analysis_start_stop_observer(
+    word_analysis_progress_observer_id =
+        controller->register_word_analysis_progress_observer(
             [this](const auto& data) {
-                this->on_word_analysis_start_stop(data);
+                this->on_word_analysis_progress(data);
             });
 }
 
 //------------------------------------------------------------------------
 HeaderController::~HeaderController()
 {
-    controller->unregister_word_analysis_start_stop_observer(
-        word_analysis_start_stop_observer_id);
+    controller->unregister_word_analysis_progress_observer(
+        word_analysis_progress_observer_id);
 }
 
 //------------------------------------------------------------------------
-void HeaderController::on_word_analysis_start_stop(
-    const WordAnalysisStartStopData& data)
+void HeaderController::on_word_analysis_progress(
+    const WordAnalysisProgressData& data)
 {
-    bool test = true;
-    test      = false;
+
+    if (data.state != WordAnalysisProgressData::State::kAnalysisStopped)
+    {
+        if (container)
+        {
+            if (!spinner_view)
+            {
+                const auto view_size = CPoint({40., 40.});
+                spinner_view =
+                    new SpinnerView(CRect{0, 0, view_size.x, view_size.y});
+                container->addView(spinner_view);
+            }
+        }
+    }
+    else
+    {
+        if (container && spinner_view)
+            container->removeView(spinner_view);
+    }
 }
 
 //------------------------------------------------------------------------
@@ -62,16 +79,8 @@ HeaderController::verifyView(VSTGUI::CView* view,
         if (*view_name != "HeaderHLayout")
             return view;
 
-        if (auto container = view->asViewContainer())
-        {
-            if (!spinner_view)
-            {
-                /*const auto view_size = CPoint({65., 65.});
-                spinner_view =
-                    new SpinnerView(CRect{0, 0, view_size.x, view_size.y});
-                container->addView(spinner_view);*/
-            }
-        }
+        if (auto cnt = view->asViewContainer())
+            container = cnt;
     }
 
     return view;
