@@ -1140,7 +1140,7 @@
 											"style-round-rect": "false",
 											"style-shadow-text": "false",
 											"text-alignment": "left",
-											"text-inset": "2, 0",
+											"text-inset": "0, 0",
 											"text-rotation": "0",
 											"text-shadow-offset": "1, 1",
 											"title": "Test",
