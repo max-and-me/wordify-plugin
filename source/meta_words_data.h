@@ -15,6 +15,7 @@ namespace mam {
 struct MetaWordData
 {
     bool is_clipped_by_region = true;
+    bool is_punctuation_mark  = false;
     meta_words::MetaWord word;
 };
 

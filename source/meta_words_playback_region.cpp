@@ -5,8 +5,25 @@
 #include "meta_words_playback_region.h"
 #include "ARA_Library/PlugIn/ARAPlug.h"
 #include "meta_words_audio_source.h"
+#include <array>
 
 namespace mam::meta_words {
+
+//------------------------------------------------------------------------
+using Word                                      = std::string;
+using PunctuationMarks                          = std::array<Word, 15>;
+static const PunctuationMarks PUNCTUATION_MARKS = {".", "?", "!", ",",  ";",
+                                                   "-", "(", ")", "[",  "]",
+                                                   "{", "}", "'", "\"", "..."};
+static auto is_puntuation_mark(const Word& word) -> bool
+{
+    for (auto& el : PUNCTUATION_MARKS)
+    {
+        if (el == word)
+            return true;
+    }
+    return false;
+}
 
 //------------------------------------------------------------------------
 using Seconds = const MetaWordsData::Seconds;
@@ -34,9 +51,8 @@ static auto is_in_playback_region(const PlaybackRegion& region,
 }
 
 //------------------------------------------------------------------------
-static auto
-filter_audible_words(MetaWordDataset& words,
-                     const PlaybackRegion& region) -> MetaWordDataset
+static auto mark_clipped_words(MetaWordDataset& words,
+                               const PlaybackRegion& region) -> MetaWordDataset
 {
     for (auto& word_data : words)
     {
@@ -63,6 +79,8 @@ collect_meta_words(const PlaybackRegion& region) -> const MetaWordDataset
                 MetaWordData word_data;
                 word_data.word                 = meta_word;
                 word_data.is_clipped_by_region = true;
+                word_data.is_punctuation_mark =
+                    is_puntuation_mark(meta_word.word);
                 word_dataset.push_back(word_data);
             }
         }
@@ -145,9 +163,9 @@ const MetaWordsData PlaybackRegion::get_meta_words_data(
 
     data.words = collect_meta_words(*this);
     data.words = modify_time_stamps(data.words, *this, playback_sample_rate);
-    data.words = filter_audible_words(data.words, *this);
+    data.words = mark_clipped_words(data.words, *this);
     data.project_offset     = calculate_project_offset(*this);
-    data.project_time_start = this->getStartInPlaybackTime();
+    data.project_time_start = getStartInPlaybackTime();
 
     if (getRegionSequence())
     {

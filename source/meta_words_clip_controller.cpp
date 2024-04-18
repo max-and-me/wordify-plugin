@@ -171,7 +171,8 @@ static auto update_text_document(const IUIDescription* description,
         auto but_size = but->getViewSize();
         but_size.setWidth(word_widths[i]);
         but->setViewSize(but_size);
-        but->setTitle(UTF8String(meta_words_data.words[i].word.word));
+        but->setTitle(UTF8String(word_data.word.word));
+        but->setMouseEnabled(!word_data.is_punctuation_mark);
         // Set gradients to nullptr. This drastically speeds up the
         // performance!!!
         but->setGradient(nullptr);
