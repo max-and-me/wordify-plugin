@@ -384,6 +384,7 @@ MetaWordsClipController::verifyView(VSTGUI::CView* view,
             {
                 text_document = dynamic_cast<CViewContainer*>(view);
                 stack_layout  = std::make_unique<HStackLayout>(text_document);
+                stack_layout->setup(4., 0., 0.);
                 update_text_document(description, meta_word_button_attributes,
                                      this, text_document,
                                      meta_words_data_func());
