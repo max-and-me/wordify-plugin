@@ -167,6 +167,14 @@ auto transform_to_seconds(MetaWords& meta_words) -> void
 //------------------------------------------------------------------------
 auto trim_meta_words(MetaWords& meta_words) -> MetaWords
 {
+    // Check the first entry, which can be empty. If so, remove it.
+    auto iter = meta_words.begin();
+    if (iter != meta_words.end())
+    {
+        if (iter->word.empty())
+            iter = meta_words.erase(iter);
+    }
+
     for (auto& meta_word : meta_words)
     {
         meta_word.word = trim(meta_word.word);
