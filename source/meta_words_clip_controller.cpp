@@ -93,16 +93,14 @@ auto collect_string_size_rects(const MetaWordsData& meta_words_data,
     CRects rects;
     for (const auto& meta_word_data : meta_words_data.words)
     {
-        constexpr CCoord height   = 24.;
-        constexpr CCoord vspacing = 4.;
+        constexpr CCoord height = 24.;
         if (!meta_word_data.is_audible)
         {
             rects.push_back({0, 0, 0, height});
             continue;
         }
 
-        const CCoord width =
-            string_width_func(meta_word_data.word.word) + vspacing;
+        const CCoord width = string_width_func(meta_word_data.word.word);
 
         rects.push_back({0, 0, width, height});
     }
