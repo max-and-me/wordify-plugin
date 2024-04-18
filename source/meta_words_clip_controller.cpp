@@ -67,18 +67,19 @@ static auto fit_content(CView* view) -> void
 using WordWidths = std::vector<CCoord>;
 template <typename Func>
 static auto compute_word_widths(const MetaWordsData& meta_words_data,
-                                const Func& width_func)
+                                const Func& width_func) -> WordWidths
 {
     WordWidths widths;
     for (const auto& meta_word_data : meta_words_data.words)
     {
-        if (!meta_word_data.is_clipped_by_region)
+        if (meta_word_data.is_clipped_by_region)
         {
             widths.push_back(0.);
             continue;
         }
 
-        widths.push_back(width_func(meta_word_data.word.word));
+        const auto width = width_func(meta_word_data.word.word);
+        widths.push_back(width);
     }
 
     return widths;
@@ -148,7 +149,7 @@ static auto update_text_document(const IUIDescription* description,
     text_document->forEachChild([&](CView* child) {
         if (auto* control = dynamic_cast<CControl*>(child))
         {
-            if (!meta_words_data.words[control->getTag()].is_clipped_by_region)
+            if (meta_words_data.words[control->getTag()].is_clipped_by_region)
                 views_to_remove.push_back(control);
         }
     });
@@ -159,7 +160,7 @@ static auto update_text_document(const IUIDescription* description,
     for (size_t i = 0; i < meta_words_data.words.size(); ++i)
     {
         const auto word_data = meta_words_data.words[i];
-        if (!word_data.is_clipped_by_region)
+        if (word_data.is_clipped_by_region)
             continue;
 
         if (find_view_with_tag(text_document, i))

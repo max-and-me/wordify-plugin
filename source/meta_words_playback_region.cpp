@@ -57,7 +57,7 @@ static auto mark_clipped_words(MetaWordDataset& words,
     for (auto& word_data : words)
     {
         word_data.is_clipped_by_region =
-            is_in_playback_region(region, word_data.word);
+            !is_in_playback_region(region, word_data.word);
     }
 
     return words;
