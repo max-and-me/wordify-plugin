@@ -25,17 +25,18 @@
 #include "vstgui/uidescription/uiattributes.h"
 #include <chrono>
 
+using namespace VSTGUI;
+
 namespace mam {
-using namespace ::VSTGUI;
 
 //------------------------------------------------------------------------
 static auto update_label_control(CTextLabel& listTitle,
                                  const MetaWordsData& meta_words_data) -> void
 {
-    auto [r, g, b]             = meta_words_data.color;
-    const VSTGUI::CColor color = make_color<float>(r, g, b, std::nullopt);
+    auto [r, g, b]     = meta_words_data.color;
+    const CColor color = make_color<float>(r, g, b, std::nullopt);
     listTitle.setFontColor(color);
-    listTitle.setText(VSTGUI::UTF8String(meta_words_data.name));
+    listTitle.setText(UTF8String(meta_words_data.name));
     listTitle.sizeToFit();
 }
 
@@ -45,28 +46,7 @@ update_time_display_control(CTextLabel& timeDisplay,
                             const MetaWordsData& meta_words_data) -> void
 {
     const auto str = to_time_display_string(meta_words_data.project_time_start);
-    timeDisplay.setText(VSTGUI::UTF8String(str));
-}
-
-//------------------------------------------------------------------------
-static auto
-update_list_control_content(CListControl* listControl,
-                            const MetaWordDataset& word_dataset) -> void
-{
-    listControl->setMax(word_dataset.size() - 1);
-    listControl->recalculateLayout();
-
-    if (auto stringListDrawer =
-            dynamic_cast<StringListControlDrawer*>(listControl->getDrawer()))
-    {
-        stringListDrawer->setStringProvider([word_dataset](int32_t row) {
-            const auto word_data   = word_dataset[row];
-            const std::string name = word_data.word.word;
-
-            const UTF8String string(name.data());
-            return getPlatformFactory().createString(string);
-        });
-    }
+    timeDisplay.setText(UTF8String(str));
 }
 
 //------------------------------------------------------------------------
@@ -84,39 +64,35 @@ static auto fit_content(CView* view) -> void
 }
 
 //------------------------------------------------------------------------
-using CRects          = std::vector<CRect>;
-using StringType      = std::string;
-using FuncStringWidth = std::function<size_t(const StringType&)>;
-auto collect_string_size_rects(const MetaWordsData& meta_words_data,
-                               FuncStringWidth&& string_width_func) -> CRects
+using WordWidths = std::vector<CCoord>;
+template <typename Func>
+static auto compute_word_widths(const MetaWordsData& meta_words_data,
+                                const Func& width_func)
 {
-    CRects rects;
+    WordWidths widths;
     for (const auto& meta_word_data : meta_words_data.words)
     {
-        constexpr CCoord height = 24.;
         if (!meta_word_data.is_audible)
         {
-            rects.push_back({0, 0, 0, height});
+            widths.push_back(0.);
             continue;
         }
 
-        const CCoord width = string_width_func(meta_word_data.word.word);
-
-        rects.push_back({0, 0, width, height});
+        widths.push_back(width_func(meta_word_data.word.word));
     }
 
-    return rects;
+    return widths;
 }
 
 //------------------------------------------------------------------------
-auto find_view_after(CViewContainer* container, size_t tag) -> CView*
+static auto find_view_after(CViewContainer* container, size_t tag) -> CView*
 {
-    for (auto i = 0; i < container->getNbViews(); i++)
+    for (uint32_t i = 0; i < container->getNbViews(); i++)
     {
         auto* view = container->getView(i);
         if (auto control = dynamic_cast<CControl*>(view))
         {
-            if (tag < control->getTag())
+            if (int32_t(tag) < control->getTag())
                 return control;
         }
     }
@@ -125,14 +101,14 @@ auto find_view_after(CViewContainer* container, size_t tag) -> CView*
 }
 
 //------------------------------------------------------------------------
-auto find_view_with_tag(CViewContainer* container, size_t tag) -> CView*
+static auto find_view_with_tag(CViewContainer* container, size_t tag) -> CView*
 {
-    for (auto i = 0; i < container->getNbViews(); i++)
+    for (uint32_t i = 0; i < container->getNbViews(); i++)
     {
         auto* view = container->getView(i);
         if (auto control = dynamic_cast<CControl*>(view))
         {
-            if (control->getTag() == tag)
+            if (control->getTag() == uint32_t(tag))
                 return control;
         }
     }
@@ -141,8 +117,20 @@ auto find_view_with_tag(CViewContainer* container, size_t tag) -> CView*
 }
 
 //------------------------------------------------------------------------
-static auto update_text_document(const VSTGUI::IUIDescription* description,
-                                 const VSTGUI::UIAttributes& attributes,
+using Word = std::string;
+static auto compute_word_width(const IUIDescription* description,
+                               Word word) -> CCoord
+{
+    static constexpr auto FONT_ID = "ListEntryFont";
+    return description->getFont(FONT_ID)
+        ->getPlatformFont()
+        ->getPainter()
+        ->getStringWidth(nullptr, UTF8String(word).getPlatformString(), true);
+}
+
+//------------------------------------------------------------------------
+static auto update_text_document(const IUIDescription* description,
+                                 const UIAttributes& attributes,
                                  IControlListener* listener,
                                  CViewContainer* text_document,
                                  const MetaWordsData& meta_words_data) -> void
@@ -150,15 +138,10 @@ static auto update_text_document(const VSTGUI::IUIDescription* description,
     if (!text_document)
         return;
 
-    const auto font_desc    = description->getFont("ListEntryFont");
-    const auto font_painter = font_desc->getPlatformFont()->getPainter();
-    auto string_width_func  = [&](const StringType& text) {
-        const auto t = UTF8String(text);
-        return font_painter->getStringWidth(nullptr, t.getPlatformString(),
-                                             true);
-    };
-    const auto rects =
-        collect_string_size_rects(meta_words_data, string_width_func);
+    const auto word_widths =
+        compute_word_widths(meta_words_data, [&](const Word& word) {
+            return compute_word_width(description, word);
+        });
 
     // Remove views
     std::vector<CControl*> views_to_remove;
@@ -173,7 +156,7 @@ static auto update_text_document(const VSTGUI::IUIDescription* description,
         text_document->removeView(child);
 
     // Add new views
-    for (auto i = 0; i < meta_words_data.words.size(); ++i)
+    for (size_t i = 0; i < meta_words_data.words.size(); ++i)
     {
         const auto word_data = meta_words_data.words[i];
         if (!word_data.is_audible)
@@ -182,21 +165,21 @@ static auto update_text_document(const VSTGUI::IUIDescription* description,
         if (find_view_with_tag(text_document, i))
             continue;
 
-        auto* view_after = find_view_after(text_document, i);
-
         auto view =
             description->getViewFactory()->createView(attributes, description);
-        auto but = dynamic_cast<CTextButton*>(view);
-        but->setViewSize(rects[i]);
+        auto but      = dynamic_cast<CTextButton*>(view);
+        auto but_size = but->getViewSize();
+        but_size.setWidth(word_widths[i]);
+        but->setViewSize(but_size);
         but->setTitle(UTF8String(meta_words_data.words[i].word.word));
-        but->setTag(i);
-        but->setListener(listener);
-
         // Set gradients to nullptr. This drastically speeds up the
         // performance!!!
         but->setGradient(nullptr);
         but->setGradientHighlighted(nullptr);
 
+        but->setTag(int32_t(i));
+        but->setListener(listener);
+        auto* view_after = find_view_after(text_document, i);
         text_document->addView(but, view_after);
     }
 
@@ -207,7 +190,7 @@ static auto update_text_document(const VSTGUI::IUIDescription* description,
 // Helper class to call sizeToFit to all parents up the hierarchy
 // AFTER a view has been attached or resized itself.
 //------------------------------------------------------------------------
-class FitContent : public VSTGUI::ViewListenerAdapter
+class FitContent : public ViewListenerAdapter
 {
 public:
     //--------------------------------------------------------------------
@@ -243,7 +226,7 @@ private:
 // VstGPTWaveClipListController
 //------------------------------------------------------------------------
 MetaWordsClipController::MetaWordsClipController(
-    const VSTGUI::IUIDescription* description)
+    const IUIDescription* description)
 : description(description)
 {
 }
@@ -251,9 +234,6 @@ MetaWordsClipController::MetaWordsClipController(
 //------------------------------------------------------------------------
 MetaWordsClipController::~MetaWordsClipController()
 {
-    if (listControl)
-        listControl->unregisterViewListener(view_listener.get());
-
     if (text_document)
         text_document->unregisterViewListener(view_listener.get());
 
@@ -292,22 +272,17 @@ bool MetaWordsClipController::initialize(
 void MetaWordsClipController::on_meta_words_data_changed()
 {
     const auto& data = meta_words_data_func();
-    if (listControl)
-    {
-        update_list_control_content(listControl, data.words);
-        listControl->invalid();
-    }
-
-    if (listTitle)
-    {
-        update_label_control(*listTitle, data);
-        listTitle->setDirty();
-    }
 
     if (timeDisplay)
     {
         update_time_display_control(*timeDisplay, data);
         timeDisplay->invalid();
+    }
+
+    if (listTitle)
+    {
+        update_label_control(*listTitle, data);
+        listTitle->invalid();
     }
 
     if (text_document)
@@ -319,34 +294,10 @@ void MetaWordsClipController::on_meta_words_data_changed()
 }
 
 //------------------------------------------------------------------------
-VSTGUI::CView*
-MetaWordsClipController::verifyView(VSTGUI::CView* view,
-                                    const VSTGUI::UIAttributes& attributes,
-                                    const VSTGUI::IUIDescription* description)
+CView* MetaWordsClipController::verifyView(CView* view,
+                                           const UIAttributes& attributes,
+                                           const IUIDescription* description)
 {
-
-    if (!listControl)
-    {
-        if (listControl = dynamic_cast<CListControl*>(view))
-        {
-            listControl->registerViewListener(view_listener.get());
-            listControl->registerControlListener(this);
-            update_list_control_content(listControl,
-                                        meta_words_data_func().words);
-        }
-    }
-    if (!listTitle)
-    {
-        if (auto viewLabel =
-                attributes.getAttributeValue(UIViewCreator::kAttrUIDescLabel))
-        {
-            if (*viewLabel == "ListTitle")
-            {
-                if (listTitle = dynamic_cast<CTextLabel*>(view))
-                    update_label_control(*listTitle, meta_words_data_func());
-            }
-        }
-    }
     if (!timeDisplay)
     {
         if (auto viewLabel =
@@ -361,14 +312,15 @@ MetaWordsClipController::verifyView(VSTGUI::CView* view,
         }
     }
 
-    if (!root_view)
+    if (!listTitle)
     {
         if (auto viewLabel =
                 attributes.getAttributeValue(UIViewCreator::kAttrUIDescLabel))
         {
-            if (*viewLabel == "MetaWordsClipTemplate")
+            if (*viewLabel == "ListTitle")
             {
-                root_view = dynamic_cast<CViewContainer*>(view);
+                if (listTitle = dynamic_cast<CTextLabel*>(view))
+                    update_label_control(*listTitle, meta_words_data_func());
             }
         }
     }
@@ -405,17 +357,11 @@ MetaWordsClipController::verifyView(VSTGUI::CView* view,
 };
 
 //------------------------------------------------------------------------
-void MetaWordsClipController::valueChanged(VSTGUI::CControl* pControl)
+void MetaWordsClipController::valueChanged(CControl* pControl)
 {
-    if (pControl && pControl == listControl)
+    if (pControl)
     {
-        if (list_value_changed_func)
-            list_value_changed_func(listControl->getValue());
-    }
-    else
-    {
-        if (pControl)
-            list_value_changed_func(pControl->getTag());
+        list_value_changed_func(pControl->getTag());
     }
 }
 

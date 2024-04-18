@@ -51,12 +51,11 @@ private:
     void on_meta_words_data_changed();
 
     const VSTGUI::IUIDescription* description = nullptr;
-    VSTGUI::CListControl* listControl         = nullptr;
     VSTGUI::CTextLabel* listTitle             = nullptr;
     VSTGUI::CTextLabel* timeDisplay           = nullptr;
-    VSTGUI::CView* spinner                    = nullptr;
-    VSTGUI::CViewContainer* root_view         = nullptr;
     VSTGUI::CViewContainer* text_document     = nullptr;
+    VSTGUI::CView* spinner                    = nullptr;
+
     std::unique_ptr<VSTGUI::ViewListenerAdapter> view_listener;
     std::unique_ptr<HStackLayout> stack_layout;
     VSTGUI::UIAttributes meta_word_button_attributes;
