@@ -21,43 +21,30 @@ static auto calculate_project_offset(const PlaybackRegion& region) -> Seconds
 static auto is_in_playback_region(const PlaybackRegion& region,
                                   const meta_words::MetaWord& word) -> bool
 {
-    auto startInAudioModificationTime =
-        region.getStartInAudioModificationTime();
-
-    // Hack
-    if (startInAudioModificationTime < 0.001)
-        startInAudioModificationTime = 0.;
-
-    const auto endInAudioModificationTime =
-        (region.getStartInAudioModificationTime() +
-         region.getDurationInAudioModificationTime());
+    const auto start_time = region.getStartInAudioModificationTime();
+    const auto end_time   = (region.getStartInAudioModificationTime() +
+                           region.getDurationInAudioModificationTime());
 
     const auto word_end = word.begin + word.duration;
 
-    const bool is_in = (word.begin >= startInAudioModificationTime &&
-                        word.begin < endInAudioModificationTime) ||
-                       (word_end >= startInAudioModificationTime &&
-                        word_end < endInAudioModificationTime);
+    const bool is_in = (word.begin >= start_time && word.begin < end_time) ||
+                       (word_end >= start_time && word_end < end_time);
 
     return is_in;
 }
 
 //------------------------------------------------------------------------
 static auto
-filter_audible_words(const MetaWordDataset& words,
+filter_audible_words(MetaWordDataset& words,
                      const PlaybackRegion& region) -> MetaWordDataset
 {
-    MetaWordDataset filtered_words;
-
     for (auto& word_data : words)
     {
-        auto new_word_data = word_data;
-        new_word_data.is_audible =
+        word_data.is_clipped_by_region =
             is_in_playback_region(region, word_data.word);
-        filtered_words.emplace_back(new_word_data);
     }
 
-    return filtered_words;
+    return words;
 }
 
 //------------------------------------------------------------------------
@@ -74,8 +61,8 @@ collect_meta_words(const PlaybackRegion& region) -> const MetaWordDataset
             for (const auto& meta_word : meta_words)
             {
                 MetaWordData word_data;
-                word_data.word       = meta_word;
-                word_data.is_audible = true;
+                word_data.word                 = meta_word;
+                word_data.is_clipped_by_region = true;
                 word_dataset.push_back(word_data);
             }
         }
@@ -102,13 +89,12 @@ compute_speed_factor(const PlaybackRegion& region,
 }
 
 //------------------------------------------------------------------------
-static auto modify_time_stamps(const MetaWordData& word,
-                               double speed_factor) -> MetaWordData
+static auto modify_time_stamps(MetaWordData& word,
+                               double speed_factor) -> MetaWordData&
 {
-    auto word_data = word;
-    word_data.word.begin *= speed_factor;
-    word_data.word.duration *= speed_factor;
-    return word_data;
+    word.word.begin *= speed_factor;
+    word.word.duration *= speed_factor;
+    return word;
 }
 
 //------------------------------------------------------------------------
@@ -116,23 +102,18 @@ static auto modify_time_stamps(const MetaWordData& word,
 // played back in 44.1Khz but the original sample is in 16kHz. We need to
 // modify the timestamps then.
 //------------------------------------------------------------------------
-static auto modify_time_stamps(const MetaWordDataset& word_dataset,
+static auto modify_time_stamps(MetaWordDataset& word_dataset,
                                const PlaybackRegion& region,
                                ARA::ARASampleRate playback_sample_rate)
     -> const MetaWordDataset
 {
-    MetaWordDataset modified_word_dataset;
-
     const auto speed_factor =
         compute_speed_factor(region, playback_sample_rate);
 
-    for (const auto& word : word_dataset)
-    {
-        auto modified_word = modify_time_stamps(word, speed_factor);
-        modified_word_dataset.emplace_back(std::move(modified_word));
-    }
+    for (auto& word : word_dataset)
+        word = modify_time_stamps(word, speed_factor);
 
-    return modified_word_dataset;
+    return word_dataset;
 }
 
 //------------------------------------------------------------------------

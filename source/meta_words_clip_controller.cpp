@@ -72,7 +72,7 @@ static auto compute_word_widths(const MetaWordsData& meta_words_data,
     WordWidths widths;
     for (const auto& meta_word_data : meta_words_data.words)
     {
-        if (!meta_word_data.is_audible)
+        if (!meta_word_data.is_clipped_by_region)
         {
             widths.push_back(0.);
             continue;
@@ -148,7 +148,7 @@ static auto update_text_document(const IUIDescription* description,
     text_document->forEachChild([&](CView* child) {
         if (auto* control = dynamic_cast<CControl*>(child))
         {
-            if (!meta_words_data.words[control->getTag()].is_audible)
+            if (!meta_words_data.words[control->getTag()].is_clipped_by_region)
                 views_to_remove.push_back(control);
         }
     });
@@ -159,7 +159,7 @@ static auto update_text_document(const IUIDescription* description,
     for (size_t i = 0; i < meta_words_data.words.size(); ++i)
     {
         const auto word_data = meta_words_data.words[i];
-        if (!word_data.is_audible)
+        if (!word_data.is_clipped_by_region)
             continue;
 
         if (find_view_with_tag(text_document, i))

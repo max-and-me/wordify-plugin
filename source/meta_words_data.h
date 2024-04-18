@@ -14,7 +14,7 @@ namespace mam {
 //------------------------------------------------------------------------
 struct MetaWordData
 {
-    bool is_audible = true;
+    bool is_clipped_by_region = true;
     meta_words::MetaWord word;
 };
 
