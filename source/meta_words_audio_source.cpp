@@ -227,8 +227,8 @@ auto AudioSource::idle() -> void
     {
         end_analysis();
 
-        // if (fn_changed)
-        //   fn_changed();
+        if (changed_func)
+            changed_func(this);
     }
     else
     {
