@@ -132,8 +132,8 @@ tresult PLUGIN_API VstGPTSingleComponent::initialize(FUnknown* context)
     }
 
     //--- create Audio IO ------
-    addAudioInput(STR16("Stereo In"), Steinberg::Vst::SpeakerArr::kStereo);
-    addAudioOutput(STR16("Stereo Out"), Steinberg::Vst::SpeakerArr::kStereo);
+    addAudioInput(STR16("Stereo In"), Steinberg::Vst::SpeakerArr::kMono);
+    addAudioOutput(STR16("Stereo Out"), Steinberg::Vst::SpeakerArr::kMono);
 
     return kResultOk;
 }
