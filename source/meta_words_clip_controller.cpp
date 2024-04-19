@@ -124,6 +124,71 @@ static auto compute_word_width(const IUIDescription* description,
 }
 
 //------------------------------------------------------------------------
+static auto remove_word_views(CViewContainer& text_document,
+                              const MetaWordsData& meta_words_data)
+{
+    // Remove views
+    std::vector<CControl*> views_to_remove;
+    text_document.forEachChild([&](CView* child) {
+        if (auto* control = dynamic_cast<CControl*>(child))
+        {
+            const auto word_index = control->getTag();
+            if (meta_words_data.words[word_index].is_clipped_by_region)
+                views_to_remove.push_back(control);
+        }
+    });
+
+    for (auto* child : views_to_remove)
+        text_document.removeView(child);
+}
+
+//------------------------------------------------------------------------
+void insert_word_views(const mam::MetaWordsClipController::Cache& cache,
+                       const mam::MetaWordsData& meta_words_data,
+                       VSTGUI::CViewContainer* text_document,
+                       const VSTGUI::IUIDescription* description,
+                       const VSTGUI::UIAttributes& attributes,
+                       VSTGUI::IControlListener* listener)
+{
+    const auto& word_widths = cache.word_widths;
+    for (size_t word_index = 0; word_index < meta_words_data.words.size();
+         ++word_index)
+    {
+        const auto word_data = meta_words_data.words[word_index];
+        if (word_data.is_clipped_by_region)
+            continue;
+
+        // Continue if button already exists
+        if (find_view_with_tag(text_document, word_index))
+            continue;
+
+        // Set gradients to nullptr to improves performance quite a lot when
+        // redrawing
+        const auto but_gradient = nullptr;
+        const auto but_title    = UTF8String(word_data.word.word);
+        const auto but_width    = word_widths[word_index];
+        const auto but_enabled  = !word_data.is_punctuation_mark;
+        const auto but_tag      = int32_t(word_index);
+        const auto but_factory  = description->getViewFactory();
+
+        auto view     = but_factory->createView(attributes, description);
+        auto button   = dynamic_cast<CTextButton*>(view);
+        auto but_size = button->getViewSize();
+        button->setViewSize(but_size.setWidth(but_width));
+        button->setTitle(but_title);
+        button->setMouseEnabled(but_enabled);
+        button->setGradient(but_gradient);
+        button->setGradientHighlighted(but_gradient);
+        button->setTag(but_tag);
+        button->setListener(listener);
+
+        // Insert the button at position
+        auto* view_after = find_view_after(text_document, but_tag);
+        text_document->addView(button, view_after);
+    }
+}
+
+//------------------------------------------------------------------------
 static auto
 update_text_document(const IUIDescription* description,
                      const UIAttributes& attributes,
@@ -135,48 +200,9 @@ update_text_document(const IUIDescription* description,
     if (!text_document)
         return;
 
-    const auto& word_widths = cache.word_widths;
-
-    // Remove views
-    std::vector<CControl*> views_to_remove;
-    text_document->forEachChild([&](CView* child) {
-        if (auto* control = dynamic_cast<CControl*>(child))
-        {
-            if (meta_words_data.words[control->getTag()].is_clipped_by_region)
-                views_to_remove.push_back(control);
-        }
-    });
-    for (auto* child : views_to_remove)
-        text_document->removeView(child);
-
-    // Add new views
-    for (size_t i = 0; i < meta_words_data.words.size(); ++i)
-    {
-        const auto word_data = meta_words_data.words[i];
-        if (word_data.is_clipped_by_region)
-            continue;
-
-        if (find_view_with_tag(text_document, i))
-            continue;
-
-        auto view =
-            description->getViewFactory()->createView(attributes, description);
-        auto but      = dynamic_cast<CTextButton*>(view);
-        auto but_size = but->getViewSize();
-        but_size.setWidth(word_widths[i]);
-        but->setViewSize(but_size);
-        but->setTitle(UTF8String(word_data.word.word));
-        but->setMouseEnabled(!word_data.is_punctuation_mark);
-        // Set gradients to nullptr. This drastically speeds up the
-        // performance!!!
-        but->setGradient(nullptr);
-        but->setGradientHighlighted(nullptr);
-
-        but->setTag(int32_t(i));
-        but->setListener(listener);
-        auto* view_after = find_view_after(text_document, i);
-        text_document->addView(but, view_after);
-    }
+    remove_word_views(*text_document, meta_words_data);
+    insert_word_views(cache, meta_words_data, text_document, description,
+                      attributes, listener);
 
     fit_content(text_document->getParentView());
 }
