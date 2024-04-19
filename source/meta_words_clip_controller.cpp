@@ -72,12 +72,6 @@ static auto compute_word_widths(const MetaWordsData& meta_words_data,
     WordWidths widths;
     for (const auto& meta_word_data : meta_words_data.words)
     {
-        if (meta_word_data.is_clipped_by_region)
-        {
-            widths.push_back(0.);
-            continue;
-        }
-
         const auto width = width_func(meta_word_data.word.word);
         widths.push_back(width);
     }
@@ -130,19 +124,18 @@ static auto compute_word_width(const IUIDescription* description,
 }
 
 //------------------------------------------------------------------------
-static auto update_text_document(const IUIDescription* description,
-                                 const UIAttributes& attributes,
-                                 IControlListener* listener,
-                                 CViewContainer* text_document,
-                                 const MetaWordsData& meta_words_data) -> void
+static auto
+update_text_document(const IUIDescription* description,
+                     const UIAttributes& attributes,
+                     IControlListener* listener,
+                     CViewContainer* text_document,
+                     const MetaWordsData& meta_words_data,
+                     const MetaWordsClipController::Cache& cache) -> void
 {
     if (!text_document)
         return;
 
-    const auto word_widths =
-        compute_word_widths(meta_words_data, [&](const Word& word) {
-            return compute_word_width(description, word);
-        });
+    const auto& word_widths = cache.word_widths;
 
     // Remove views
     std::vector<CControl*> views_to_remove;
@@ -289,8 +282,15 @@ void MetaWordsClipController::on_meta_words_data_changed()
 
     if (text_document)
     {
+        if (cache.word_widths.empty())
+        {
+            cache.word_widths =
+                compute_word_widths(data, [&](const Word& word) {
+                    return compute_word_width(description, word);
+                });
+        }
         update_text_document(description, meta_word_button_attributes, this,
-                             text_document, data);
+                             text_document, data, cache);
         text_document->invalid();
     }
 }
@@ -334,12 +334,20 @@ CView* MetaWordsClipController::verifyView(CView* view,
         {
             if (*viewLabel == "TextDocument")
             {
+                if (cache.word_widths.empty())
+                {
+                    cache.word_widths = compute_word_widths(
+                        meta_words_data_func(), [&](const Word& word) {
+                            return compute_word_width(description, word);
+                        });
+                }
+
                 text_document = dynamic_cast<CViewContainer*>(view);
                 stack_layout  = std::make_unique<HStackLayout>(text_document);
                 stack_layout->setup(4., 0., 0.);
                 update_text_document(description, meta_word_button_attributes,
                                      this, text_document,
-                                     meta_words_data_func());
+                                     meta_words_data_func(), cache);
 
                 view_listener = std::make_unique<FitContent>(text_document);
             }

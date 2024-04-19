@@ -29,6 +29,13 @@ public:
     using FuncMetaWordsData    = std::function<const MetaWordsData()>;
     using FuncListValueChanged = std::function<void(int)>;
     using Subject              = tiny_observer_pattern::SimpleSubject;
+    using Width                = VSTGUI::CCoord;
+
+    struct Cache
+    {
+        using Widths = std::vector<Width>;
+        Widths word_widths;
+    };
 
     MetaWordsClipController(const VSTGUI::IUIDescription* description);
     ~MetaWordsClipController() override;
@@ -63,6 +70,8 @@ private:
     FuncMetaWordsData meta_words_data_func;
     tiny_observer_pattern::SimpleSubject* subject = nullptr;
     tiny_observer_pattern::ObserverID observer_id = 0;
+
+    Cache cache;
 };
 //------------------------------------------------------------------------
 } // namespace mam
