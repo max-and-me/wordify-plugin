@@ -23,7 +23,7 @@
 #include "vstgui/uidescription/detail/uiviewcreatorattributes.h"
 #include "vstgui/uidescription/iviewfactory.h"
 #include "vstgui/uidescription/uiattributes.h"
-#include <chrono>
+#include <optional>
 
 using namespace VSTGUI;
 
@@ -124,8 +124,8 @@ static auto compute_word_width(const IUIDescription* description,
 }
 
 //------------------------------------------------------------------------
-static auto remove_word_views(CViewContainer& text_document,
-                              const MetaWordsData& meta_words_data)
+static auto remove_word_buttons(CViewContainer& text_document,
+                                const MetaWordsData& meta_words_data)
 {
     // Remove views
     std::vector<CControl*> views_to_remove;
@@ -143,17 +143,18 @@ static auto remove_word_views(CViewContainer& text_document,
 }
 
 //------------------------------------------------------------------------
-void insert_word_views(const mam::MetaWordsClipController::Cache& cache,
-                       const mam::MetaWordsData& meta_words_data,
-                       VSTGUI::CViewContainer* text_document,
-                       const VSTGUI::IUIDescription* description,
-                       const VSTGUI::UIAttributes& attributes,
-                       VSTGUI::IControlListener* listener)
+using OptTextButton = std::optional<CTextButton*>;
+template <typename Func>
+void insert_word_buttons(const mam::MetaWordsClipController::Cache& cache,
+                         const mam::MetaWordsData& meta_words_data,
+                         VSTGUI::CViewContainer* text_document,
+                         Func&& but_create_func)
 {
     const auto& word_widths = cache.word_widths;
     for (size_t word_index = 0; word_index < meta_words_data.words.size();
          ++word_index)
     {
+        // Don't add a button for words which are clipped
         const auto word_data = meta_words_data.words[word_index];
         if (word_data.is_clipped_by_region)
             continue;
@@ -162,17 +163,19 @@ void insert_word_views(const mam::MetaWordsClipController::Cache& cache,
         if (find_view_with_tag(text_document, word_index))
             continue;
 
-        // Set gradients to nullptr to improves performance quite a lot when
+        // Setting gradients to nullptr improves performance quite a lot when
         // redrawing
         const auto but_gradient = nullptr;
         const auto but_title    = UTF8String(word_data.word.word);
         const auto but_width    = word_widths[word_index];
         const auto but_enabled  = !word_data.is_punctuation_mark;
         const auto but_tag      = int32_t(word_index);
-        const auto but_factory  = description->getViewFactory();
 
-        auto view     = but_factory->createView(attributes, description);
-        auto button   = dynamic_cast<CTextButton*>(view);
+        OptTextButton opt_button = but_create_func();
+        if (!opt_button.has_value())
+            continue;
+
+        auto button   = opt_button.value();
         auto but_size = button->getViewSize();
         button->setViewSize(but_size.setWidth(but_width));
         button->setTitle(but_title);
@@ -180,7 +183,6 @@ void insert_word_views(const mam::MetaWordsClipController::Cache& cache,
         button->setGradient(but_gradient);
         button->setGradientHighlighted(but_gradient);
         button->setTag(but_tag);
-        button->setListener(listener);
 
         // Insert the button at position
         auto* view_after = find_view_after(text_document, but_tag);
@@ -200,9 +202,22 @@ update_text_document(const IUIDescription* description,
     if (!text_document)
         return;
 
-    remove_word_views(*text_document, meta_words_data);
-    insert_word_views(cache, meta_words_data, text_document, description,
-                      attributes, listener);
+    auto but_creator = [&]() -> OptTextButton {
+        const auto but_factory = description->getViewFactory();
+        if (!but_factory)
+            return std::nullopt;
+
+        auto view = but_factory->createView(attributes, description);
+        if (auto button = dynamic_cast<CTextButton*>(view))
+        {
+            button->setListener(listener);
+            return std::make_optional(button);
+        }
+        return std::nullopt;
+    };
+
+    remove_word_buttons(*text_document, meta_words_data);
+    insert_word_buttons(cache, meta_words_data, text_document, but_creator);
 
     fit_content(text_document->getParentView());
 }
