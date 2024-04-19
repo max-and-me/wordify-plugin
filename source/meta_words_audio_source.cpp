@@ -21,8 +21,70 @@ using PathType                       = const std::string;
 const double WHISPER_CPP_SAMPLE_RATE = 16000.;
 
 //------------------------------------------------------------------------
+class AudioBlockReader
+{
+public:
+    //--------------------------------------------------------------------
+    AudioBlockReader(size_t samples_total)
+    : samples_total(samples_total)
+    {
+    }
+
+    auto set_size(size_t block_size) -> AudioBlockReader&
+    {
+        this->block_size   = block_size;
+        this->samples_read = 0;
+        return *this;
+    }
+    template <typename Func>
+
+    auto read(Func&& func) -> size_t
+    {
+        if (sample_pos > samples_total)
+            return 0;
+
+        const auto sample_begin = sample_pos;
+        auto sample_end         = sample_begin + block_size;
+        sample_end              = std::min(sample_end, samples_total);
+
+        samples_read = sample_end - sample_begin;
+
+        func(sample_pos, samples_read);
+
+        sample_pos += samples_read;
+        return samples_read;
+    }
+    //--------------------------------------------------------------------
+private:
+    size_t block_size    = 0;
+    size_t sample_pos    = 0;
+    size_t samples_read  = 0;
+    size_t samples_total = 0;
+};
+
+//------------------------------------------------------------------------
 auto read_audio_from_host(AudioSource& audio_src) -> void
 {
+    auto block_reader =
+        AudioBlockReader(audio_src.getSampleCount()).set_size(4096);
+
+    while (true)
+    {
+        auto num_read = block_reader.read([&](auto pos, auto count) {
+            auto data_pointers = mam::audio_buffer_management::to_channel_data(
+                audio_src.get_audio_buffers(), pos);
+
+            ARA::PlugIn::HostAudioReader audioReader{&audio_src};
+            audioReader.readAudioSamples(
+                pos, static_cast<ARA::ARASampleCount>(count),
+                data_pointers.data());
+        });
+
+        if (num_read == 0)
+            break;
+    }
+
+    /*
     // create temporary host audio reader and let it fill the buffers
     // (we can safely ignore any errors while reading since host must clear
     // buffers in that case, as well as report the error to the user)
@@ -34,6 +96,7 @@ auto read_audio_from_host(AudioSource& audio_src) -> void
     audioReader.readAudioSamples(
         0, static_cast<ARA::ARASampleCount>(audio_src.getSampleCount()),
         data_pointers.data());
+        */
 }
 
 //------------------------------------------------------------------------
