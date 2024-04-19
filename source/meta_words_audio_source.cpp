@@ -128,7 +128,7 @@ auto resample_to_16kHz(
     data.src_ratio = ratio;
 
     const auto error =
-        src_simple(&data, SRC_SINC_BEST_QUALITY, audio_src.getChannelCount());
+        src_simple(&data, SRC_LINEAR, audio_src.getChannelCount());
     if (error != 0)
         resampled_buf.resize(0);
 
