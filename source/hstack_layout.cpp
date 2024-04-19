@@ -26,26 +26,28 @@ static auto layout_row_stack(const CPoint parent,
     CPoint offset(padding, padding);
     const CPoint origin(padding, padding);
 
-    // The first rect needs to be treated in a special way. No matter if it fits
-    // into the first line or not, it needs to stay at origin! Even if the
-    // parent container is very narrow.
-    auto& first_rect          = rects[0];
-    const auto default_height = first_rect.getHeight();
-    first_rect.moveTo(offset);
-    offset.x += first_rect.getWidth() + hspacing;
+    const auto default_height = rects.begin()->getHeight();
 
-    // Start from the 2nd element (if there is one of course)
-    std::for_each(std::next(rects.begin(), 1), rects.end(), [&](auto& rect) {
+    for (auto& rect : rects)
+    {
         rect.setHeight(default_height);
-        if (!((offset.x + rect.getWidth() + padding) < parent.x))
+        rect.moveTo(offset);
+
+        // The first rect never gets a word wrap, even is parent rect is very
+        // narrow
+        const bool is_first_rect = offset == origin;
+        const bool is_line_end =
+            (offset.x + rect.getWidth() + padding) > parent.x;
+        const bool needs_word_wrap = is_line_end && !is_first_rect;
+        if (needs_word_wrap)
         {
-            offset.x = padding;
-            offset.y += default_height + vspacing;
+            offset.x = padding;                    // Carriage Return
+            offset.y += default_height + vspacing; // Line Feed
+            rect.moveTo(offset);
         }
 
-        rect.moveTo(offset);
-        offset.x += rect.getWidth() + hspacing;
-    });
+        offset.x += rect.getWidth() + hspacing; // Next word horiz pos
+    }
 
     return offset.y + default_height + padding;
 }
