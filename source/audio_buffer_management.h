@@ -43,14 +43,14 @@ auto create_multi_channel_buffers(size_t num_channels,
 
 //------------------------------------------------------------------------
 template <class T>
-auto to_channel_data(MultiChannelBuffers<T>& multi_channel_bufs)
-    -> MultiChannelData
+auto to_channel_data(MultiChannelBuffers<T>& multi_channel_bufs,
+                     size_t sample_start = 0) -> MultiChannelData
 {
     MultiChannelData channel_data;
     channel_data.reserve(multi_channel_bufs.size());
     for (auto ch = 0; ch < multi_channel_bufs.size(); ++ch)
         channel_data.push_back(
-            static_cast<void*>(multi_channel_bufs[ch].data()));
+            static_cast<void*>(multi_channel_bufs[ch].data() + sample_start));
 
     return channel_data;
 }
