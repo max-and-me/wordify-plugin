@@ -7,12 +7,18 @@
 #include "list_entry_controller.h"
 #include "meta_words_clip_controller.h"
 #include "meta_words_data.h"
-#include "vstgui/lib/controls/cstringlist.h"
-#include "vstgui/lib/controls/ctextlabel.h"
 #include "vstgui/lib/iviewlistener.h"
-#include "vstgui/lib/platform/platformfactory.h"
 #include "vstgui/uidescription/uiattributes.h"
 #include <memory>
+
+namespace VSTGUI
+{
+    class IUIDescription;
+    class CTextLabel;
+    class CTextLabel;
+    class CViewContainer;
+    class CView;
+};
 
 namespace mam {
 
