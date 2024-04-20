@@ -104,7 +104,7 @@ bool ARADocumentController::doStoreObjectsToArchive(
     archive = collect_meta_words_serde_dataset(filter, archive);
 
     std::string serialized;
-    meta_words::serde::serialize(meta_words_serde_dataset, serialized);
+    meta_words::serde::serialize(archive, serialized);
     return archiveWriter->writeBytesToArchive(0, serialized.length(),
                                               (ARA::ARAByte*)serialized.data());
 }
