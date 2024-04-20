@@ -46,6 +46,15 @@ update_time_display_control(CTextLabel& timeDisplay,
 }
 
 //------------------------------------------------------------------------
+static auto
+update_duration_display_control(CTextLabel& duration_display,
+                                const MetaWordsData& meta_words_data) -> void
+{
+    const auto str = to_time_display_string(meta_words_data.duration);
+    duration_display.setText(UTF8String(str));
+}
+
+//------------------------------------------------------------------------
 static auto fit_content(CView* view) -> void
 {
     // Only call sizeToFit, when view is a CRowColumnView
@@ -311,6 +320,12 @@ void MetaWordsClipController::on_meta_words_data_changed()
         timeDisplay->invalid();
     }
 
+    if (durationDisplay)
+    {
+        update_duration_display_control(*durationDisplay, data);
+        durationDisplay->invalid();
+    }
+
     if (listTitle)
     {
         update_label_control(*listTitle, data);
@@ -347,6 +362,20 @@ CView* MetaWordsClipController::verifyView(CView* view,
                 if (timeDisplay = dynamic_cast<CTextLabel*>(view))
                     update_time_display_control(*timeDisplay,
                                                 meta_words_data_func());
+            }
+        }
+    }
+
+    if (!durationDisplay)
+    {
+        if (auto viewLabel =
+                attributes.getAttributeValue(UIViewCreator::kAttrUIDescLabel))
+        {
+            if (*viewLabel == "DurationDisplay")
+            {
+                if (durationDisplay = dynamic_cast<CTextLabel*>(view))
+                    update_duration_display_control(*durationDisplay,
+                                                    meta_words_data_func());
             }
         }
     }

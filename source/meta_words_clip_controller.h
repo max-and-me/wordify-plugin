@@ -11,14 +11,13 @@
 #include "vstgui/uidescription/uiattributes.h"
 #include <memory>
 
-namespace VSTGUI
-{
-    class IUIDescription;
-    class CTextLabel;
-    class CTextLabel;
-    class CViewContainer;
-    class CView;
-};
+namespace VSTGUI {
+class IUIDescription;
+class CTextLabel;
+class CTextLabel;
+class CViewContainer;
+class CView;
+}; // namespace VSTGUI
 
 namespace mam {
 
@@ -66,6 +65,7 @@ private:
     const VSTGUI::IUIDescription* description = nullptr;
     VSTGUI::CTextLabel* listTitle             = nullptr;
     VSTGUI::CTextLabel* timeDisplay           = nullptr;
+    VSTGUI::CTextLabel* durationDisplay       = nullptr;
     VSTGUI::CViewContainer* text_document     = nullptr;
     VSTGUI::CView* spinner                    = nullptr;
 

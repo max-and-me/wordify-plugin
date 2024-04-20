@@ -166,6 +166,7 @@ const MetaWordsData PlaybackRegion::get_meta_words_data(
     data.words = mark_clipped_words(data.words, *this);
     data.project_offset     = calculate_project_offset(*this);
     data.project_time_start = getStartInPlaybackTime();
+    data.duration = getDurationInPlaybackTime();
 
     if (getRegionSequence())
     {

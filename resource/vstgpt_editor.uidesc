@@ -1164,6 +1164,44 @@
 											"uidesc-label": "TextDocument",
 											"wants-focus": "false"
 										}
+									},
+									"CTextLabel": {
+										"attributes": {
+											"back-color": "~ BlackCColor",
+											"background-offset": "0, 0",
+											"class": "CTextLabel",
+											"default-value": "0.5",
+											"font": "~ NormalFont",
+											"font-antialias": "true",
+											"font-color": "time_display_color",
+											"frame-color": "~ BlackCColor",
+											"frame-width": "1",
+											"max-value": "1",
+											"min-value": "0",
+											"mouse-enabled": "true",
+											"opacity": "1",
+											"origin": "0, 80",
+											"round-rect-radius": "6",
+											"shadow-color": "~ RedCColor",
+											"size": "100, 20",
+											"style-3D-in": "false",
+											"style-3D-out": "false",
+											"style-no-draw": "false",
+											"style-no-frame": "false",
+											"style-no-text": "false",
+											"style-round-rect": "false",
+											"style-shadow-text": "false",
+											"text-alignment": "left",
+											"text-inset": "0, 0",
+											"text-rotation": "0",
+											"text-shadow-offset": "1, 1",
+											"title": "00:00",
+											"transparent": "true",
+											"uidesc-label": "DurationDisplay",
+											"value-precision": "2",
+											"wants-focus": "false",
+											"wheel-inc-value": "0.1"
+										}
 									}
 								}
 							}

@@ -30,8 +30,9 @@ struct MetaWordsData
 
     String name;
     Color color;
-    Seconds project_offset;
-    Seconds project_time_start;
+    Seconds project_offset{0.};
+    Seconds project_time_start{0.};
+    Seconds duration{0.};
     MetaWordDataset words;
 };
 
