@@ -15,33 +15,33 @@
 namespace mam {
 
 //------------------------------------------------------------------------
-static auto
-collect_meta_words_serde_dataset(const ARA::PlugIn::StoreObjectsFilter* filter)
-    -> meta_words::serde::MetaWordsSerdeDataset
+static auto collect_meta_words_serde_dataset(
+    const ARA::PlugIn::StoreObjectsFilter* filter,
+    meta_words::serde::Archive& archive) -> meta_words::serde::Archive&
 {
     using AudioSource = ARADocumentController::AudioSource;
 
-    meta_words::serde::MetaWordsSerdeDataset meta_words_serde_dataset;
+    meta_words::serde::Archive meta_words_serde_dataset;
     auto audio_sources = filter->getAudioSourcesToStore<AudioSource>();
     for (const auto& as : audio_sources)
     {
         const auto persistent_id = as->getPersistentID();
         const auto mdw           = as->get_meta_words();
 
-        meta_words_serde_dataset.push_back({persistent_id, mdw});
+        archive.audio_sources.push_back({persistent_id, mdw});
     }
 
-    return meta_words_serde_dataset;
+    return archive;
 }
 
 //------------------------------------------------------------------------
-static auto apply_meta_words_serde_dataset(
-    const ARA::PlugIn::RestoreObjectsFilter* filter,
-    meta_words::serde::MetaWordsSerdeDataset& meta_words_serde_dataset) -> void
+static auto
+apply_meta_words_serde_dataset(const ARA::PlugIn::RestoreObjectsFilter* filter,
+                               meta_words::serde::Archive& archive) -> void
 {
     using AudioSource = ARADocumentController::AudioSource;
 
-    for (const auto& el : meta_words_serde_dataset)
+    for (const auto& el : archive.audio_sources)
     {
         auto audio_sources = filter->getAudioSourceToRestoreStateWithID(
             (ARA::ARAPersistentID)el.persistent_id.data());
@@ -89,9 +89,9 @@ bool ARADocumentController::doRestoreObjectsFromArchive(
     bool result = archiveReader->readBytesFromArchive(
         0, archive_size, (ARA::ARAByte*)deserialized.data());
 
-    meta_words::serde::MetaWordsSerdeDataset meta_words_serde_dataset;
-    meta_words::serde::deserialize(deserialized, meta_words_serde_dataset);
-    apply_meta_words_serde_dataset(filter, meta_words_serde_dataset);
+    meta_words::serde::Archive archive;
+    meta_words::serde::deserialize(deserialized, archive);
+    apply_meta_words_serde_dataset(filter, archive);
     return result;
 }
 
@@ -100,7 +100,8 @@ bool ARADocumentController::doStoreObjectsToArchive(
     ARA::PlugIn::HostArchiveWriter* archiveWriter,
     const ARA::PlugIn::StoreObjectsFilter* filter) noexcept
 {
-    auto meta_words_serde_dataset = collect_meta_words_serde_dataset(filter);
+    meta_words::serde::Archive archive;
+    archive = collect_meta_words_serde_dataset(filter, archive);
 
     std::string serialized;
     meta_words::serde::serialize(meta_words_serde_dataset, serialized);

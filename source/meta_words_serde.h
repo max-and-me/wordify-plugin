@@ -12,19 +12,22 @@ namespace mam::meta_words::serde {
 using PersistentId = std::string;
 using String       = std::string;
 
-struct MetaWordsSerde
+struct AudioSource
 {
     PersistentId persistent_id;
     MetaWords words;
 };
 
-using MetaWordsSerdeDataset = std::vector<MetaWordsSerde>;
+struct Archive
+{
+    using MetaWordsAudioSources = std::vector<AudioSource>;
+    size_t version              = 1;
+    MetaWordsAudioSources audio_sources;
+};
 
 //------------------------------------------------------------------------
-auto serialize(const MetaWordsSerdeDataset& meta_words_serde_dataset,
-               String& s) -> bool;
-auto deserialize(const String& s,
-                 MetaWordsSerdeDataset& meta_words_serde_dataset) -> bool;
+auto serialize(const Archive& archive, String& s) -> bool;
+auto deserialize(const String& s, Archive& archive) -> bool;
 
 //------------------------------------------------------------------------
 } // namespace mam::meta_words::serde

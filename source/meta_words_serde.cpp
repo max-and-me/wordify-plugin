@@ -30,42 +30,45 @@ void from_json(const json& j, MetaWord& m)
 namespace serde {
 
 //------------------------------------------------------------------------
-void to_json(json& j, const MetaWordsSerde& mws)
+void to_json(json& j, const AudioSource& mws)
 {
     j = json{{"persistent_id", mws.persistent_id}, {"words", mws.words}};
 }
 
 //------------------------------------------------------------------------
-void from_json(const json& j, MetaWordsSerde& mws)
+void from_json(const json& j, AudioSource& mws)
 {
     j.at("persistent_id").get_to(mws.persistent_id);
     j.at("words").get_to(mws.words);
 }
 
 //------------------------------------------------------------------------
-auto serialize(const MetaWordsSerdeDataset& meta_words_serde_dataset,
-               JsonString& s) -> bool
+void to_json(json& j, const Archive& archive)
 {
-    json j;
+    j = json{{"archive_version", archive.version},
+             {"audio_sources", archive.audio_sources}};
+}
 
-    for (const auto& el : meta_words_serde_dataset)
-        j.push_back(el);
+//------------------------------------------------------------------------
+void from_json(const json& j, Archive& archive)
+{
+    j.at("archive_version").get_to(archive.version);
+    j.at("audio_sources").get_to(archive.audio_sources);
+}
 
-    s = j.dump();
+//------------------------------------------------------------------------
+auto serialize(const Archive& archive, JsonString& s) -> bool
+{
+    json j = archive;
+    s      = j.dump();
 
     return true;
 }
 //------------------------------------------------------------------------
-auto deserialize(const JsonString& s,
-                 MetaWordsSerdeDataset& meta_words_serde_dataset) -> bool
+auto deserialize(const JsonString& s, Archive& archive) -> bool
 {
-    json j = json::parse(s);
-
-    for (auto& el : j)
-    {
-        auto ds = el.template get<MetaWordsSerde>();
-        meta_words_serde_dataset.emplace_back(ds);
-    }
+    json j  = json::parse(s);
+    archive = j.template get<Archive>();
 
     return true;
 }
