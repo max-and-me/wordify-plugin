@@ -10,8 +10,48 @@
 #include "meta_words_editor_view.h"
 #include "meta_words_playback_region.h"
 #include "meta_words_playback_renderer.h"
+#include "meta_words_serde.h"
 
 namespace mam {
+
+//------------------------------------------------------------------------
+static auto
+collect_meta_words_serde_dataset(const ARA::PlugIn::StoreObjectsFilter* filter)
+    -> meta_words::serde::MetaWordsSerdeDataset
+{
+    using AudioSource = ARADocumentController::AudioSource;
+
+    meta_words::serde::MetaWordsSerdeDataset meta_words_serde_dataset;
+    auto audio_sources = filter->getAudioSourcesToStore<AudioSource>();
+    for (const auto& as : audio_sources)
+    {
+        const auto persistent_id = as->getPersistentID();
+        const auto mdw           = as->get_meta_words();
+
+        meta_words_serde_dataset.push_back({persistent_id, mdw});
+    }
+
+    return meta_words_serde_dataset;
+}
+
+//------------------------------------------------------------------------
+static auto apply_meta_words_serde_dataset(
+    const ARA::PlugIn::RestoreObjectsFilter* filter,
+    meta_words::serde::MetaWordsSerdeDataset& meta_words_serde_dataset) -> void
+{
+    using AudioSource = ARADocumentController::AudioSource;
+
+    for (const auto& el : meta_words_serde_dataset)
+    {
+        auto audio_sources = filter->getAudioSourceToRestoreStateWithID(
+            (ARA::ARAPersistentID)el.persistent_id.data());
+
+        if (auto as = dynamic_cast<AudioSource*>(audio_sources))
+        {
+            as->set_meta_words(el.words);
+        }
+    }
+}
 
 //------------------------------------------------------------------------
 // ARADocumentController
@@ -43,7 +83,16 @@ bool ARADocumentController::doRestoreObjectsFromArchive(
     ARA::PlugIn::HostArchiveReader* archiveReader,
     const ARA::PlugIn::RestoreObjectsFilter* filter) noexcept
 {
-    return true;
+    const auto archive_size = archiveReader->getArchiveSize();
+    std::string deserialized;
+    deserialized.resize(archive_size);
+    bool result = archiveReader->readBytesFromArchive(
+        0, archive_size, (ARA::ARAByte*)deserialized.data());
+
+    meta_words::serde::MetaWordsSerdeDataset meta_words_serde_dataset;
+    meta_words::serde::deserialize(deserialized, meta_words_serde_dataset);
+    apply_meta_words_serde_dataset(filter, meta_words_serde_dataset);
+    return result;
 }
 
 //------------------------------------------------------------------------
@@ -51,7 +100,16 @@ bool ARADocumentController::doStoreObjectsToArchive(
     ARA::PlugIn::HostArchiveWriter* archiveWriter,
     const ARA::PlugIn::StoreObjectsFilter* filter) noexcept
 {
-    return true;
+    auto meta_words_serde_dataset = collect_meta_words_serde_dataset(filter);
+
+    std::string serialized;
+    meta_words::serde::serialize(meta_words_serde_dataset, serialized);
+
+    const size_t bsize =
+        serialized.capacity() * sizeof(std::string::value_type);
+
+    return archiveWriter->writeBytesToArchive(0, bsize,
+                                              (ARA::ARAByte*)serialized.data());
 }
 
 //------------------------------------------------------------------------

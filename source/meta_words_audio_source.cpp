@@ -343,9 +343,15 @@ void AudioSource::destroyRenderSampleCache()
 }
 
 //------------------------------------------------------------------------
-const AudioSource::MetaWords& AudioSource::get_meta_words() const
+auto AudioSource::get_meta_words() const -> const MetaWords&
 {
     return meta_words;
+}
+
+//------------------------------------------------------------------------
+auto AudioSource::set_meta_words(const MetaWords& meta_words) -> void
+{
+    this->meta_words = meta_words;
 }
 
 //------------------------------------------------------------------------

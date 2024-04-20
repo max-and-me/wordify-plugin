@@ -47,6 +47,8 @@ smtg_add_vst3plugin(VstGPT
     source/meta_words_playback_region.h
     source/meta_words_playback_renderer.cpp
     source/meta_words_playback_renderer.h
+    source/meta_words_serde.cpp
+    source/meta_words_serde.h
     source/region_order_manager.cpp
     source/region_order_manager.h
     source/spinner_view.cpp
@@ -77,14 +79,15 @@ smtg_target_add_plugin_snapshots (VstGPT
 
 target_link_libraries(VstGPT
     PRIVATE
-        sdk
         ARA_PlugIn_Library
-        tiny-process-library
-        sndfile
-        samplerate
-        meta-words
-        wave-draw
         fmt
+        meta-words
+        nlohmann_json
+        samplerate
+        sdk
+        sndfile
+        tiny-process-library
+        wave-draw
 )
 
 smtg_target_configure_version_file(VstGPT)

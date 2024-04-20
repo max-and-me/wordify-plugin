@@ -56,7 +56,8 @@ public:
     void destroyRenderSampleCache();
     MultiChannelBufferType& get_audio_buffers() { return audio_buffers; }
 
-    const MetaWords& get_meta_words() const;
+    auto get_meta_words() const -> const MetaWords&;
+    auto set_meta_words(const MetaWords& meta_words) -> void;
     FnChanged changed_func;
 
     const Identifier getIdentifier() const { return identifier; }
