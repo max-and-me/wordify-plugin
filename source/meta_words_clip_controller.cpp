@@ -47,11 +47,11 @@ update_region_start_time(CTextLabel& region_start_time,
 
 //------------------------------------------------------------------------
 static auto
-update_region_duration_time(CTextLabel& duration_display,
+update_region_duration_time(CTextLabel& region_duration_time,
                             const MetaWordsData& meta_words_data) -> void
 {
     const auto str = to_time_display_string(meta_words_data.duration);
-    duration_display.setText(UTF8String(str));
+    region_duration_time.setText(UTF8String(str));
 }
 
 //------------------------------------------------------------------------
