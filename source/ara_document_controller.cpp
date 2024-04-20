@@ -104,11 +104,7 @@ bool ARADocumentController::doStoreObjectsToArchive(
 
     std::string serialized;
     meta_words::serde::serialize(meta_words_serde_dataset, serialized);
-
-    const size_t bsize =
-        serialized.capacity() * sizeof(std::string::value_type);
-
-    return archiveWriter->writeBytesToArchive(0, bsize,
+    return archiveWriter->writeBytesToArchive(0, serialized.length(),
                                               (ARA::ARAByte*)serialized.data());
 }
 
