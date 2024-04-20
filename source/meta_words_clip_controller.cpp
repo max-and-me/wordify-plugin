@@ -121,7 +121,7 @@ using Word = std::string;
 static auto compute_word_width(const IUIDescription* description,
                                Word word) -> CCoord
 {
-    static constexpr auto FONT_ID = "ListEntryFont";
+    static constexpr auto FONT_ID = "region_transcript_font";
     return description->getFont(FONT_ID)
         ->getPlatformFont()
         ->getPainter()
@@ -357,7 +357,7 @@ CView* MetaWordsClipController::verifyView(CView* view,
         if (auto viewLabel =
                 attributes.getAttributeValue(UIViewCreator::kAttrUIDescLabel))
         {
-            if (*viewLabel == "TimeDisplay")
+            if (*viewLabel == "RegionStartTime")
             {
                 if (timeDisplay = dynamic_cast<CTextLabel*>(view))
                     update_time_display_control(*timeDisplay,
@@ -371,7 +371,7 @@ CView* MetaWordsClipController::verifyView(CView* view,
         if (auto viewLabel =
                 attributes.getAttributeValue(UIViewCreator::kAttrUIDescLabel))
         {
-            if (*viewLabel == "DurationDisplay")
+            if (*viewLabel == "RegionDurationTime")
             {
                 if (durationDisplay = dynamic_cast<CTextLabel*>(view))
                     update_duration_display_control(*durationDisplay,
@@ -385,7 +385,7 @@ CView* MetaWordsClipController::verifyView(CView* view,
         if (auto viewLabel =
                 attributes.getAttributeValue(UIViewCreator::kAttrUIDescLabel))
         {
-            if (*viewLabel == "ListTitle")
+            if (*viewLabel == "RegionTitle")
             {
                 if (listTitle = dynamic_cast<CTextLabel*>(view))
                     update_label_control(*listTitle, meta_words_data_func());
@@ -398,7 +398,7 @@ CView* MetaWordsClipController::verifyView(CView* view,
         if (auto viewLabel =
                 attributes.getAttributeValue(UIViewCreator::kAttrUIDescLabel))
         {
-            if (*viewLabel == "TextDocument")
+            if (*viewLabel == "RegionTranscript")
             {
                 if (cache.word_widths.empty())
                 {
