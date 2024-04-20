@@ -76,8 +76,14 @@ auto to_time_display_string(T seconds) -> TimeDisplayString
     const auto m = chrono::duration_cast<chrono::minutes>(total - h);
     const auto s = chrono::duration_cast<chrono::seconds>(total - h - m);
 
-    auto output =
-        fmt::format("{:02}:{:02}:{:02}", h.count(), m.count(), s.count());
+    // auto output =
+    //     fmt::format("{:02}:{:02}:{:02}", h.count(), m.count(), s.count());
+
+    auto output = fmt::format("{:02}:{:02}", m.count(), s.count());
+
+    // Only if there are some hours we display them
+    if (h.count() > 0.)
+        output = fmt::format("{:02}:{}", h.count(), output);
 
     return output;
 }
