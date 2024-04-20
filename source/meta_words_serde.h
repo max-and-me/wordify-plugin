@@ -20,9 +20,10 @@ struct AudioSource
 
 struct Archive
 {
-    using MetaWordsAudioSources = std::vector<AudioSource>;
-    size_t version              = 1;
-    MetaWordsAudioSources audio_sources;
+    using AudioSources = std::vector<AudioSource>;
+
+    size_t version = 1;
+    AudioSources audio_sources;
 };
 
 //------------------------------------------------------------------------
