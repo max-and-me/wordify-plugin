@@ -26,29 +26,29 @@ using namespace VSTGUI;
 namespace mam {
 
 //------------------------------------------------------------------------
-static auto update_label_control(CTextLabel& listTitle,
-                                 const MetaWordsData& meta_words_data) -> void
+static auto update_region_title(CTextLabel& region_title,
+                                const MetaWordsData& meta_words_data) -> void
 {
     auto [r, g, b]     = meta_words_data.color;
     const CColor color = make_color<float>(r, g, b, std::nullopt);
-    listTitle.setFontColor(color);
-    listTitle.setText(UTF8String(meta_words_data.name));
-    listTitle.sizeToFit();
+    region_title.setFontColor(color);
+    region_title.setText(UTF8String(meta_words_data.name));
+    region_title.sizeToFit();
 }
 
 //------------------------------------------------------------------------
 static auto
-update_time_display_control(CTextLabel& timeDisplay,
-                            const MetaWordsData& meta_words_data) -> void
+update_region_start_time(CTextLabel& region_start_time,
+                         const MetaWordsData& meta_words_data) -> void
 {
     const auto str = to_time_display_string(meta_words_data.project_time_start);
-    timeDisplay.setText(UTF8String(str));
+    region_start_time.setText(UTF8String(str));
 }
 
 //------------------------------------------------------------------------
 static auto
-update_duration_display_control(CTextLabel& duration_display,
-                                const MetaWordsData& meta_words_data) -> void
+update_region_duration_time(CTextLabel& duration_display,
+                            const MetaWordsData& meta_words_data) -> void
 {
     const auto str = to_time_display_string(meta_words_data.duration);
     duration_display.setText(UTF8String(str));
@@ -129,12 +129,12 @@ static auto compute_word_width(const IUIDescription* description,
 }
 
 //------------------------------------------------------------------------
-static auto remove_word_buttons(CViewContainer& text_document,
+static auto remove_word_buttons(CViewContainer& region_transcript,
                                 const MetaWordsData& meta_words_data)
 {
     // Remove views
     std::vector<CControl*> views_to_remove;
-    text_document.forEachChild([&](CView* child) {
+    region_transcript.forEachChild([&](CView* child) {
         if (auto* control = dynamic_cast<CControl*>(child))
         {
             const auto word_index = control->getTag();
@@ -144,7 +144,7 @@ static auto remove_word_buttons(CViewContainer& text_document,
     });
 
     for (auto* child : views_to_remove)
-        text_document.removeView(child);
+        region_transcript.removeView(child);
 }
 
 //------------------------------------------------------------------------
@@ -152,7 +152,7 @@ using OptTextButton = std::optional<CTextButton*>;
 template <typename Func>
 void insert_word_buttons(const mam::MetaWordsClipController::Cache& cache,
                          const mam::MetaWordsData& meta_words_data,
-                         VSTGUI::CViewContainer* text_document,
+                         VSTGUI::CViewContainer* region_transcript,
                          Func&& but_create_func)
 {
     const auto& word_widths = cache.word_widths;
@@ -165,7 +165,7 @@ void insert_word_buttons(const mam::MetaWordsClipController::Cache& cache,
             continue;
 
         // Continue if button already exists
-        if (find_view_with_tag(text_document, word_index))
+        if (find_view_with_tag(region_transcript, word_index))
             continue;
 
         // Setting gradients to nullptr improves performance quite a lot when
@@ -190,21 +190,21 @@ void insert_word_buttons(const mam::MetaWordsClipController::Cache& cache,
         button->setTag(but_tag);
 
         // Insert the button at position
-        auto* view_after = find_view_after(text_document, but_tag);
-        text_document->addView(button, view_after);
+        auto* view_after = find_view_after(region_transcript, but_tag);
+        region_transcript->addView(button, view_after);
     }
 }
 
 //------------------------------------------------------------------------
 static auto
-update_text_document(const IUIDescription* description,
-                     const UIAttributes& attributes,
-                     IControlListener* listener,
-                     CViewContainer* text_document,
-                     const MetaWordsData& meta_words_data,
-                     const MetaWordsClipController::Cache& cache) -> void
+update_region_transcript(const IUIDescription* description,
+                         const UIAttributes& attributes,
+                         IControlListener* listener,
+                         CViewContainer* region_transcript,
+                         const MetaWordsData& meta_words_data,
+                         const MetaWordsClipController::Cache& cache) -> void
 {
-    if (!text_document)
+    if (!region_transcript)
         return;
 
     auto but_creator = [&]() -> OptTextButton {
@@ -221,10 +221,10 @@ update_text_document(const IUIDescription* description,
         return std::nullopt;
     };
 
-    remove_word_buttons(*text_document, meta_words_data);
-    insert_word_buttons(cache, meta_words_data, text_document, but_creator);
+    remove_word_buttons(*region_transcript, meta_words_data);
+    insert_word_buttons(cache, meta_words_data, region_transcript, but_creator);
 
-    fit_content(text_document->getParentView());
+    fit_content(region_transcript->getParentView());
 }
 
 //------------------------------------------------------------------------
@@ -275,8 +275,8 @@ MetaWordsClipController::MetaWordsClipController(
 //------------------------------------------------------------------------
 MetaWordsClipController::~MetaWordsClipController()
 {
-    if (text_document)
-        text_document->unregisterViewListener(view_listener.get());
+    if (region_transcript)
+        region_transcript->unregisterViewListener(view_listener.get());
 
     if (subject)
         subject->remove_listener(observer_id);
@@ -314,25 +314,25 @@ void MetaWordsClipController::on_meta_words_data_changed()
 {
     const auto& data = meta_words_data_func();
 
-    if (timeDisplay)
+    if (region_start_time)
     {
-        update_time_display_control(*timeDisplay, data);
-        timeDisplay->invalid();
+        update_region_start_time(*region_start_time, data);
+        region_start_time->invalid();
     }
 
-    if (durationDisplay)
+    if (region_duration_time)
     {
-        update_duration_display_control(*durationDisplay, data);
-        durationDisplay->invalid();
+        update_region_duration_time(*region_duration_time, data);
+        region_duration_time->invalid();
     }
 
-    if (listTitle)
+    if (region_title)
     {
-        update_label_control(*listTitle, data);
-        listTitle->invalid();
+        update_region_title(*region_title, data);
+        region_title->invalid();
     }
 
-    if (text_document)
+    if (region_transcript)
     {
         if (cache.word_widths.empty())
         {
@@ -341,9 +341,9 @@ void MetaWordsClipController::on_meta_words_data_changed()
                     return compute_word_width(description, word);
                 });
         }
-        update_text_document(description, meta_word_button_attributes, this,
-                             text_document, data, cache);
-        text_document->invalid();
+        update_region_transcript(description, meta_word_button_attributes, this,
+                                 region_transcript, data, cache);
+        region_transcript->invalid();
     }
 }
 
@@ -352,48 +352,48 @@ CView* MetaWordsClipController::verifyView(CView* view,
                                            const UIAttributes& attributes,
                                            const IUIDescription* description)
 {
-    if (!timeDisplay)
+    if (!region_start_time)
     {
         if (auto viewLabel =
                 attributes.getAttributeValue(UIViewCreator::kAttrUIDescLabel))
         {
             if (*viewLabel == "RegionStartTime")
             {
-                if (timeDisplay = dynamic_cast<CTextLabel*>(view))
-                    update_time_display_control(*timeDisplay,
-                                                meta_words_data_func());
+                if (region_start_time = dynamic_cast<CTextLabel*>(view))
+                    update_region_start_time(*region_start_time,
+                                             meta_words_data_func());
             }
         }
     }
 
-    if (!durationDisplay)
+    if (!region_duration_time)
     {
         if (auto viewLabel =
                 attributes.getAttributeValue(UIViewCreator::kAttrUIDescLabel))
         {
             if (*viewLabel == "RegionDurationTime")
             {
-                if (durationDisplay = dynamic_cast<CTextLabel*>(view))
-                    update_duration_display_control(*durationDisplay,
-                                                    meta_words_data_func());
+                if (region_duration_time = dynamic_cast<CTextLabel*>(view))
+                    update_region_duration_time(*region_duration_time,
+                                                meta_words_data_func());
             }
         }
     }
 
-    if (!listTitle)
+    if (!region_title)
     {
         if (auto viewLabel =
                 attributes.getAttributeValue(UIViewCreator::kAttrUIDescLabel))
         {
             if (*viewLabel == "RegionTitle")
             {
-                if (listTitle = dynamic_cast<CTextLabel*>(view))
-                    update_label_control(*listTitle, meta_words_data_func());
+                if (region_title = dynamic_cast<CTextLabel*>(view))
+                    update_region_title(*region_title, meta_words_data_func());
             }
         }
     }
 
-    if (!text_document)
+    if (!region_transcript)
     {
         if (auto viewLabel =
                 attributes.getAttributeValue(UIViewCreator::kAttrUIDescLabel))
@@ -408,14 +408,15 @@ CView* MetaWordsClipController::verifyView(CView* view,
                         });
                 }
 
-                text_document = dynamic_cast<CViewContainer*>(view);
-                stack_layout  = std::make_unique<HStackLayout>(text_document);
+                region_transcript = dynamic_cast<CViewContainer*>(view);
+                stack_layout =
+                    std::make_unique<HStackLayout>(region_transcript);
                 stack_layout->setup(4., 0., 0.);
-                update_text_document(description, meta_word_button_attributes,
-                                     this, text_document,
-                                     meta_words_data_func(), cache);
+                update_region_transcript(
+                    description, meta_word_button_attributes, this,
+                    region_transcript, meta_words_data_func(), cache);
 
-                view_listener = std::make_unique<FitContent>(text_document);
+                view_listener = std::make_unique<FitContent>(region_transcript);
             }
         }
     }

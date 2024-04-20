@@ -63,10 +63,10 @@ private:
     void on_meta_words_data_changed();
 
     const VSTGUI::IUIDescription* description = nullptr;
-    VSTGUI::CTextLabel* listTitle             = nullptr;
-    VSTGUI::CTextLabel* timeDisplay           = nullptr;
-    VSTGUI::CTextLabel* durationDisplay       = nullptr;
-    VSTGUI::CViewContainer* text_document     = nullptr;
+    VSTGUI::CTextLabel* region_title          = nullptr;
+    VSTGUI::CTextLabel* region_start_time     = nullptr;
+    VSTGUI::CTextLabel* region_duration_time  = nullptr;
+    VSTGUI::CViewContainer* region_transcript = nullptr;
     VSTGUI::CView* spinner                    = nullptr;
 
     std::unique_ptr<VSTGUI::ViewListenerAdapter> view_listener;
