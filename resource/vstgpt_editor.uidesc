@@ -1,93 +1,6 @@
 {
 	"vstgui-ui-description": {
 		"version": "1",
-		"bitmaps": {},
-		"fonts": {
-			"region_start_time_font": {
-				"font-name": "Arial",
-				"size": "14"
-			},
-			"region_duration_time_font": {
-				"font-name": "Arial",
-				"size": "12"
-			},
-			"region_title_font": {
-				"bold": "true",
-				"font-name": "Arial",
-				"size": "14"
-			},
-			"region_transcript_font": {
-				"font-name": "Arial",
-				"size": "15"
-			}
-		},
-		"colors": {
-			"main_background": "#25282bff",
-			"time_display_color": "#818181ff",
-			"meta_words_text_color": "#afb5bbff"
-		},
-		"gradients": {
-			"Default TextButton Gradient": [
-				{
-					"rgba": "#dcdcdcff",
-					"start": "0"
-				},
-				{
-					"rgba": "#b4b4b4ff",
-					"start": "1"
-				}
-			],
-			"Default TextButton Gradient Highlighted": [
-				{
-					"rgba": "#b4b4b4ff",
-					"start": "0"
-				},
-				{
-					"rgba": "#646464ff",
-					"start": "1"
-				}
-			],
-			"play_head_color": [
-				{
-					"rgba": "#FFFFFFFF",
-					"start": "0"
-				},
-				{
-					"rgba": "#FFFFFFFF",
-					"start": "1"
-				}
-			],
-			"transparent_gradient": [
-				{
-					"rgba": "#00000000",
-					"start": "0"
-				},
-				{
-					"rgba": "#00000000",
-					"start": "1"
-				}
-			],
-			"meta_word_text_gradient": [
-				{
-					"rgba": "#afb5bbff",
-					"start": "0"
-				},
-				{
-					"rgba": "#afb5bbff",
-					"start": "1"
-				}
-			],
-			"waveform_background": [
-				{
-					"rgba": "#cccccc7f",
-					"start": "0"
-				},
-				{
-					"rgba": "#9b9b9b7f",
-					"start": "1"
-				}
-			]
-		},
 		"control-tags": {},
 		"custom": {
 			"FocusDrawing": {},
@@ -491,7 +404,7 @@
 									"default-value": "0.5",
 									"font": "region_start_time_font",
 									"font-antialias": "true",
-									"font-color": "time_display_color",
+									"font-color": "region_start_time_color",
 									"frame-color": "~ BlackCColor",
 									"frame-width": "1",
 									"max-value": "1",
@@ -587,8 +500,8 @@
 											"class": "CStringListControl",
 											"default-value": "0.5",
 											"font": "region_transcript_font",
-											"font-color": "meta_words_text_color",
-											"font-color-selected": "meta_words_text_color",
+											"font-color": "region_transcript_button_color",
+											"font-color-selected": "region_transcript_button_color",
 											"hover-color": "#00000064",
 											"line-color": "~ TransparentCColor",
 											"line-width": "1",
@@ -1066,7 +979,7 @@
 									"default-value": "0.5",
 									"font": "region_start_time_font",
 									"font-antialias": "true",
-									"font-color": "time_display_color",
+									"font-color": "region_start_time_color",
 									"frame-color": "~ BlackCColor",
 									"frame-width": "1",
 									"max-value": "1",
@@ -1177,7 +1090,7 @@
 											"default-value": "0.5",
 											"font": "region_duration_time_font",
 											"font-antialias": "true",
-											"font-color": "time_display_color",
+											"font-color": "region_start_time_color",
 											"frame-color": "~ BlackCColor",
 											"frame-width": "1",
 											"max-value": "1",
@@ -1247,7 +1160,7 @@
 							"round-radius": "0",
 							"size": "60, 24",
 							"text-alignment": "center",
-							"text-color": "meta_words_text_color",
+							"text-color": "region_transcript_button_color",
 							"text-color-highlighted": "~ WhiteCColor",
 							"title": "Word",
 							"transparent": "true",

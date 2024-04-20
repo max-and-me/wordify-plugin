@@ -13,6 +13,7 @@
 #include "pluginterfaces/vst/ivstparameterchanges.h"
 #include "pluginterfaces/vst/ivstprocesscontext.h"
 #include "vstgpt_cids.h"
+#include "vstgui/uidescription/uidescription.h"
 #include "waveform_controller.h"
 
 using namespace Steinberg;
@@ -320,6 +321,19 @@ IPlugView* PLUGIN_API VstGPTSingleComponent::createView(FIDString name)
         // create your editor here and return a IPlugView ptr of it
         auto* view =
             new VSTGUI::VST3Editor(this, "view", "vstgpt_editor.uidesc");
+
+        auto ui_description = view->getUIDescription();
+        if (ui_description)
+        {
+            auto dark_scheme_resources =
+                VSTGUI::makeOwned<VSTGUI::UIDescription>(
+                    "editor_res_dark_scheme.uidesc");
+            if (!dark_scheme_resources->parse())
+            {
+                return nullptr;
+            }
+            ui_description->setSharedResources(dark_scheme_resources);
+        }
 
         // Must be set to 'true' to get notified by a host selection change
         if (_araPlugInExtension.getEditorView())

@@ -1,0 +1,92 @@
+{
+  "vstgui-ui-description": {
+    "version": "1",
+    "bitmaps": {},
+    "fonts": {
+      "region_start_time_font": {
+        "font-name": "Arial",
+        "size": "14"
+      },
+      "region_duration_time_font": {
+        "font-name": "Arial",
+        "size": "12"
+      },
+      "region_title_font": {
+        "bold": "true",
+        "font-name": "Arial",
+        "size": "14"
+      },
+      "region_transcript_font": {
+        "font-name": "Arial",
+        "size": "15"
+      }
+    },
+    "colors": {
+      "main_background": "#25282bff",
+      "region_start_time_color": "#818181ff",
+      "region_transcript_button_color": "#afb5bbff"
+    },
+    "gradients": {
+      "Default TextButton Gradient": [
+        {
+          "rgba": "#dcdcdcff",
+          "start": "0"
+        },
+        {
+          "rgba": "#b4b4b4ff",
+          "start": "1"
+        }
+      ],
+      "Default TextButton Gradient Highlighted": [
+        {
+          "rgba": "#b4b4b4ff",
+          "start": "0"
+        },
+        {
+          "rgba": "#646464ff",
+          "start": "1"
+        }
+      ],
+      "play_head_color": [
+        {
+          "rgba": "#FFFFFFFF",
+          "start": "0"
+        },
+        {
+          "rgba": "#FFFFFFFF",
+          "start": "1"
+        }
+      ],
+      "transparent_gradient": [
+        {
+          "rgba": "#00000000",
+          "start": "0"
+        },
+        {
+          "rgba": "#00000000",
+          "start": "1"
+        }
+      ],
+      "meta_word_text_gradient": [
+        {
+          "rgba": "#afb5bbff",
+          "start": "0"
+        },
+        {
+          "rgba": "#afb5bbff",
+          "start": "1"
+        }
+      ],
+      "waveform_background": [
+        {
+          "rgba": "#cccccc7f",
+          "start": "0"
+        },
+        {
+          "rgba": "#9b9b9b7f",
+          "start": "1"
+        }
+      ]
+    }
+  }
+}
