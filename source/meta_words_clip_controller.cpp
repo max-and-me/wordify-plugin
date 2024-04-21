@@ -206,11 +206,12 @@ void insert_word_buttons(const mam::MetaWordsClipController::Cache& cache,
 
 //------------------------------------------------------------------------
 static auto
-update_region_transcript(const IUIDescription* description,
+update_region_transcript(CViewContainer* region_transcript,
+                         const MetaWordsData& meta_words_data,
+                         const IUIDescription* description,
                          const UIAttributes& attributes,
                          IControlListener* listener,
-                         CViewContainer* region_transcript,
-                         const MetaWordsData& meta_words_data,
+
                          const MetaWordsClipController::Cache& cache) -> void
 {
     if (!region_transcript)
@@ -350,8 +351,8 @@ void MetaWordsClipController::on_meta_words_data_changed()
                     return compute_word_width(description, word);
                 });
         }
-        update_region_transcript(description, meta_word_button_attributes, this,
-                                 region_transcript, data, cache);
+        update_region_transcript(region_transcript, data, description,
+                                 meta_word_button_attributes, this, cache);
         region_transcript->invalid();
     }
 }
@@ -422,8 +423,8 @@ CView* MetaWordsClipController::verifyView(CView* view,
                     std::make_unique<HStackLayout>(region_transcript);
                 stack_layout->setup(4., 0., 0.);
                 update_region_transcript(
-                    description, meta_word_button_attributes, this,
-                    region_transcript, meta_words_data_func(), cache);
+                    region_transcript, meta_words_data_func(), description,
+                    meta_word_button_attributes, this, cache);
 
                 view_listener = std::make_unique<FitContent>(region_transcript);
             }
