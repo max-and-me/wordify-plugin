@@ -141,7 +141,7 @@ static auto remove_word_buttons(CViewContainer& region_transcript,
         {
             const auto word_index = control->getTag();
             bool to_be_removed    = true;
-            if (word_index < meta_words_data.words.size())
+            if (size_t(word_index) < meta_words_data.words.size())
             {
                 to_be_removed =
                     meta_words_data.words[word_index].is_clipped_by_region;
