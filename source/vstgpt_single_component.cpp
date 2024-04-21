@@ -70,8 +70,8 @@ static auto to_sample_range(const meta_words::MetaWord& word,
 }
 
 //------------------------------------------------------------------------
-static auto build_waveform_data(ARADocumentController* controller,
-                                double sample_rate) -> WaveFormController::Data
+static auto build_waveform_data(ARADocumentController* controller)
+    -> WaveFormController::Data
 {
     if (!controller)
         return {};
@@ -82,8 +82,15 @@ static auto build_waveform_data(ARADocumentController* controller,
     if (!region)
         return {};
 
-    const auto span_data    = region->get_audio_buffer(sample_rate);
-    const auto word_dataset = region->get_meta_words_data(sample_rate).words;
+    const auto& audioSrc = region->getAudioModification()
+                               ->getAudioSource<mam::meta_words::AudioSource>();
+    if (!audioSrc)
+        return {};
+
+    const auto sample_rate = audioSrc->getSampleRate();
+
+    const auto span_data    = region->get_audio_buffer();
+    const auto word_dataset = region->get_meta_words_data().words;
     size_t a                = 0;
     size_t b                = 0;
     if ((selection.word_index < word_dataset.size()))
@@ -284,8 +291,7 @@ VSTGUI::IController* VstGPTSingleComponent::createSubController(
             return nullptr;
 
         subctrl->initialize(document_controller, [=]() {
-            return build_waveform_data(document_controller,
-                                       processSetup.sampleRate);
+            return build_waveform_data(document_controller);
         });
 
         return subctrl;

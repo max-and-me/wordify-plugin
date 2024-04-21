@@ -27,7 +27,6 @@ static auto onRequestSelectWord(int index,
 //------------------------------------------------------------------------
 static auto onRequestSelectWord(int index,
                                 ARADocumentController* controller,
-                                double sample_rate,
                                 const meta_words::PlaybackRegion::Id id) -> void
 {
     if (!controller)
@@ -40,7 +39,7 @@ static auto onRequestSelectWord(int index,
         return;
 
     // Get the selected word
-    const auto words_data = region->get_meta_words_data(sample_rate);
+    const auto words_data = region->get_meta_words_data();
     const auto& words     = words_data.words;
     const auto& word      = words.at(index);
 
@@ -54,8 +53,8 @@ static auto onRequestSelectWord(int index,
 
 //------------------------------------------------------------------------
 static auto build_meta_words_data(const ARADocumentController* controller,
-                                  const meta_words::PlaybackRegion::Id id,
-                                  double sample_rate) -> const MetaWordsData
+                                  const meta_words::PlaybackRegion::Id id)
+    -> const MetaWordsData
 {
     if (!controller)
         return {};
@@ -64,7 +63,7 @@ static auto build_meta_words_data(const ARADocumentController* controller,
     if (!opt_region)
         return {};
 
-    return opt_region.value()->get_meta_words_data(sample_rate);
+    return opt_region.value()->get_meta_words_data();
 }
 
 //------------------------------------------------------------------------
@@ -115,14 +114,13 @@ VSTGUI::IController* ListEntryController::createSubController(
             return nullptr;
 
         auto& subject = controller->get_playback_region_changed_subject(pbr_id);
-        subctrl->initialize(&subject, [=]() {
-            return build_meta_words_data(ctler, pbr_id, sample_rate_func());
-        });
+        subctrl->initialize(
+            &subject, [=]() { return build_meta_words_data(ctler, pbr_id); });
 
         subctrl->list_value_changed_func = [=](int index) {
             controller->get_region_selection_model().select(
                 {pbr_id, static_cast<size_t>(index)});
-            onRequestSelectWord(index, ctler, sample_rate_func(), pbr_id);
+            onRequestSelectWord(index, ctler, pbr_id);
         };
         return subctrl;
     }

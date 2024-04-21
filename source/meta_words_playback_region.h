@@ -34,15 +34,11 @@ public:
     explicit PlaybackRegion(ARA::PlugIn::AudioModification* audioModification,
                             ARA::ARAPlaybackRegionHostRef hostRef) noexcept;
 
-    auto get_meta_words_data(ARA::ARASampleRate playback_sample_rate) const
-        -> const MetaWordsData;
-
-    auto get_audio_buffer(ARA::ARASampleRate playback_sample_rate) const
-        -> const AudioBufferSpanData;
-
+    auto get_meta_words_data() const -> const MetaWordsData;
+    auto get_audio_buffer() const -> const AudioBufferSpanData;
     auto get_id() const -> Id { return id; }
-
     auto get_effective_color() const -> Color;
+
     //--------------------------------------------------------------------
 private:
     static Id new_id;

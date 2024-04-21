@@ -156,14 +156,15 @@ auto PlaybackRegion::get_effective_color() const -> Color
     return color;
 }
 //------------------------------------------------------------------------
-const MetaWordsData PlaybackRegion::get_meta_words_data(
-    ARA::ARASampleRate playback_sample_rate) const
+const MetaWordsData PlaybackRegion::get_meta_words_data() const
 {
     MetaWordsData data;
 
     data.words = collect_meta_words(*this);
-    data.words = modify_time_stamps(data.words, *this, playback_sample_rate);
-    data.words = mark_clipped_words(data.words, *this);
+    // Since we calculate everything in seconds, we dont need modify timestamps
+    // to the sample rate
+    // data.words = modify_time_stamps(data.words, *this, playback_sample_rate);
+    data.words              = mark_clipped_words(data.words, *this);
     data.project_offset     = calculate_project_offset(*this);
     data.project_time_start = getStartInPlaybackTime();
     data.duration           = getDurationInPlaybackTime();
@@ -178,8 +179,7 @@ const MetaWordsData PlaybackRegion::get_meta_words_data(
 }
 
 //------------------------------------------------------------------------
-auto PlaybackRegion::get_audio_buffer(
-    ARA::ARASampleRate playback_sample_rate) const -> const AudioBufferSpanData
+auto PlaybackRegion::get_audio_buffer() const -> const AudioBufferSpanData
 {
     const auto& audioSrc = this->getAudioModification()
                                ->getAudioSource<mam::meta_words::AudioSource>();
@@ -188,10 +188,10 @@ auto PlaybackRegion::get_audio_buffer(
     const auto& left_channel  = audio_buffers.at(0);
     AudioBufferSpan buffer_span{left_channel};
 
-    const auto start_samples =
-        size_t(this->getStartInAudioModificationTime() * playback_sample_rate);
+    const auto start_samples = size_t(this->getStartInAudioModificationTime() *
+                                      audioSrc->getSampleRate());
     auto duration_samples =
-        size_t(this->getDurationInPlaybackTime() * playback_sample_rate);
+        size_t(this->getDurationInPlaybackTime() * audioSrc->getSampleRate());
 
     duration_samples = std::min(duration_samples, left_channel.size());
 
