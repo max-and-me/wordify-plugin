@@ -59,6 +59,9 @@ void from_json(const json& j, Archive& archive)
 //------------------------------------------------------------------------
 auto serialize(const Archive& archive, JsonString& s) -> bool
 {
+    if (s.empty())
+        return false;
+
     json j = archive;
     s      = j.dump();
 
@@ -67,6 +70,9 @@ auto serialize(const Archive& archive, JsonString& s) -> bool
 //------------------------------------------------------------------------
 auto deserialize(const JsonString& s, Archive& archive) -> bool
 {
+    if (s.empty())
+        return false;
+
     json j  = json::parse(s);
     archive = j.template get<Archive>();
 
