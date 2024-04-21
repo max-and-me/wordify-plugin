@@ -26,7 +26,6 @@ class WaveFormController : public Steinberg::FObject, public VSTGUI::IController
 public:
     //--------------------------------------------------------------------
     using Subject     = tiny_observer_pattern::SimpleSubject;
-    using ObserverId  = tiny_observer_pattern::ObserverID;
     using Observer    = tiny_observer_pattern::Observer<Subject>;
     using ObserverPtr = std::unique_ptr<Observer>;
     using Data        = const WaveFormView::Data;
