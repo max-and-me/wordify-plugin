@@ -48,11 +48,7 @@ static auto update_background_view(CGradientView* view,
 WaveFormController::WaveFormController() {}
 
 //------------------------------------------------------------------------
-WaveFormController::~WaveFormController()
-{
-    if (subject)
-        subject->remove_listener(observer_id);
-}
+WaveFormController::~WaveFormController() {}
 
 //------------------------------------------------------------------------
 bool WaveFormController::initialize(Subject* subject,
@@ -61,17 +57,9 @@ bool WaveFormController::initialize(Subject* subject,
     if (!subject)
         return false;
 
-    if (this->subject)
-    {
-        if (subject)
-            subject->remove_listener(observer_id);
-    }
-
-    this->subject            = subject;
     this->waveform_data_func = std::move(waveform_data_func);
-
-    observer_id = subject->add_listener(
-        [this](const auto&) { this->on_meta_words_data_changed(); });
+    this->observer           = tiny_observer_pattern::make_observer(
+        subject, [&](const auto&) { this->on_meta_words_data_changed(); });
 
     on_meta_words_data_changed();
 

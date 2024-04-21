@@ -25,9 +25,11 @@ class WaveFormController : public Steinberg::FObject, public VSTGUI::IController
 {
 public:
     //--------------------------------------------------------------------
-    using Subject    = tiny_observer_pattern::SimpleSubject;
-    using ObserverId = tiny_observer_pattern::ObserverID;
-    using Data       = const WaveFormView::Data;
+    using Subject     = tiny_observer_pattern::SimpleSubject;
+    using ObserverId  = tiny_observer_pattern::ObserverID;
+    using Observer    = tiny_observer_pattern::Observer<Subject>;
+    using ObserverPtr = std::unique_ptr<Observer>;
+    using Data        = const WaveFormView::Data;
 
     using FuncWaveFormData = std::function<Data()>;
 
@@ -57,8 +59,7 @@ public:
 private:
     void on_meta_words_data_changed();
 
-    Subject* subject       = nullptr;
-    ObserverId observer_id = 0;
+    ObserverPtr observer;
     FuncWaveFormData waveform_data_func;
     WaveFormView* waveform_view            = nullptr;
     VSTGUI::CGradientView* background_view = nullptr;
