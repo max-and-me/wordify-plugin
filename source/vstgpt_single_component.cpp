@@ -18,6 +18,10 @@
 
 using namespace Steinberg;
 
+namespace Presonus {
+DEF_CLASS_IID(IPlugInViewEmbedding)
+}
+
 namespace mam {
 //------------------------------------------------------------------------
 //  // helper to improve readability
@@ -375,6 +379,19 @@ VstGPTSingleComponent::bindToDocumentControllerWithRoles(
 const ARA::ARAFactory* PLUGIN_API VstGPTSingleComponent::getFactory()
 {
     return ARADocumentController::getARAFactory();
+}
+
+//------------------------------------------------------------------------
+Steinberg::TBool PLUGIN_API VstGPTSingleComponent::isViewEmbeddingSupported()
+{
+    return Steinberg::TBool(true);
+}
+
+//------------------------------------------------------------------------
+Steinberg::tresult PLUGIN_API VstGPTSingleComponent::setViewIsEmbedded(
+    Steinberg::IPlugView* /*view*/, Steinberg::TBool /*embedded*/)
+{
+    return Steinberg::kResultOk;
 }
 
 //------------------------------------------------------------------------

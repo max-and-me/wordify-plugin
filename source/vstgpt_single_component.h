@@ -6,10 +6,10 @@
 
 #include "ARA_API/ARAVST3.h"
 #include "ARA_Library/PlugIn/ARAPlug.h"
+#include "ipslviewembedding.h"
 #include "public.sdk/source/vst/vstsinglecomponenteffect.h"
 #include "vstgui/plugin-bindings/vst3editor.h"
 #include <memory>
-
 namespace mam {
 
 //------------------------------------------------------------------------
@@ -18,7 +18,8 @@ namespace mam {
 class VstGPTSingleComponent : public Steinberg::Vst::SingleComponentEffect,
                               public ARA::IPlugInEntryPoint,
                               public ARA::IPlugInEntryPoint2,
-                              public VSTGUI::VST3EditorDelegate
+                              public VSTGUI::VST3EditorDelegate,
+                              public Presonus::IPlugInViewEmbedding
 {
 public:
     VstGPTSingleComponent();
@@ -89,10 +90,16 @@ public:
     Steinberg::IPlugView* PLUGIN_API createView(Steinberg::FIDString name)
         SMTG_OVERRIDE;
 
+    // Presonus
+    Steinberg::TBool PLUGIN_API isViewEmbeddingSupported() override;
+    Steinberg::tresult PLUGIN_API setViewIsEmbedded(
+        Steinberg::IPlugView* view, Steinberg::TBool embedded) override;
+
     OBJ_METHODS(VstGPTSingleComponent, Steinberg::Vst::SingleComponentEffect)
     DEFINE_INTERFACES
     DEF_INTERFACE(IPlugInEntryPoint)
     DEF_INTERFACE(IPlugInEntryPoint2)
+    DEF_INTERFACE(IPlugInViewEmbedding)
     END_DEFINE_INTERFACES(Steinberg::Vst::SingleComponentEffect)
     REFCOUNT_METHODS(Steinberg::Vst::SingleComponentEffect)
     //------------------------------------------------------------------------

@@ -84,6 +84,7 @@ target_link_libraries(VstGPT
         fmt
         meta-words
         nlohmann_json
+        presonus-plugin-extensions
         samplerate
         sdk
         sndfile
