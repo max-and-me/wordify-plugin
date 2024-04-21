@@ -71,7 +71,6 @@ private:
     ARADocumentController* controller = nullptr;
     LifetimeObserverPtr lifetime_observer;
     OrderObserverPtr order_observer;
-    tiny_observer_pattern::ObserverID order_observer_id = 0;
     ARADocumentController::FuncSampleRate playback_sample_rate_func;
     PlaybackRegion::Id tmp_playback_region_id = PlaybackRegion::INVALID_ID;
 };
