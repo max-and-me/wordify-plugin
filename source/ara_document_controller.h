@@ -97,6 +97,7 @@ public:
     // Subjects
     using PlaybackRegionLifetimesSubject =
         tiny_observer_pattern::Subject<PlaybackRegionLifetimeData>;
+    using PlaybackOrderSubject = RegionOrderManager::OrderSubject;
 
     using AnalysisProgressSubject =
         tiny_observer_pattern::Subject<WordAnalysisProgressData>;
@@ -203,21 +204,22 @@ public:
     auto unregister_playback_region_changed_observer(
         const PlaybackRegion::Id playback_region_id, ObserverID id);
 
-    auto register_playback_region_order_observer(
-        RegionOrderManager::OrderSubject::Callback&& callback) -> ObserverID;
-
-    auto unregister_playback_region_order_observer(ObserverID id) -> void;
-
     auto get_playback_region_changed_subject(
         const PlaybackRegion::Id playback_region_id) -> Subject&
     {
         return playback_region_observers[playback_region_id];
     }
 
-    auto register_playback_region_lifetimes_observer(
-        PlaybackRegionLifetimesSubject::Callback&& callback) -> ObserverID;
+    auto get_playback_region_order_subject() -> PlaybackOrderSubject*
+    {
+        return region_order_manager.get_order_subject();
+    }
 
-    auto unregister_playback_region_lifetimes_observer(ObserverID id) -> bool;
+    auto
+    get_playback_region_lifetimes_subject() -> PlaybackRegionLifetimesSubject*
+    {
+        return &playback_region_lifetimes_subject;
+    }
 
     auto register_word_analysis_progress_observer(
         AnalysisProgressSubject::Callback&& callback) -> ObserverID;

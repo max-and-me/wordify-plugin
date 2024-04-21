@@ -38,6 +38,10 @@ public:
     initialize(FuncStartInPlaybackTime&& start_in_playback_time_func) -> bool;
     auto register_observer(OrderSubject::Callback&& callback) -> ObserverID;
     auto unregister_observer(ObserverID id) -> void;
+    auto get_order_subject() -> OrderSubject*
+    {
+        return &playback_region_order_subject;
+    }
     auto push_back(PlaybackRegion::Id id) -> void;
     auto remove(PlaybackRegion::Id id) -> void;
     auto reorder() -> void;

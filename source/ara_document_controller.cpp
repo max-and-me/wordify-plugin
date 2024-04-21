@@ -123,7 +123,11 @@ void ARADocumentController::doUpdateAudioSourceContent(
     const ARA::ARAContentTimeRange* range,
     ARA::ContentUpdateScopes scopeFlags) noexcept
 {
-    // TODO
+    if (auto as = dynamic_cast<AudioSource*>(audioSource))
+    {
+        if (scopeFlags.affectSamples() && as->isSampleAccessEnabled())
+            as->updateRenderSampleCache();
+    }
 }
 
 //------------------------------------------------------------------------
@@ -136,13 +140,13 @@ void ARADocumentController::willEnableAudioSourceSamplesAccess(
 void ARADocumentController::didEnableAudioSourceSamplesAccess(
     ARA::PlugIn::AudioSource* audioSource, bool enable) noexcept
 {
-    auto testAudioSource = dynamic_cast<meta_words::AudioSource*>(audioSource);
+    auto as = dynamic_cast<meta_words::AudioSource*>(audioSource);
 
-    if (testAudioSource == nullptr)
+    if (as == nullptr)
         return;
 
     if (enable)
-        testAudioSource->updateRenderSampleCache();
+        as->updateRenderSampleCache();
 }
 
 //------------------------------------------------------------------------
@@ -351,20 +355,6 @@ void ARADocumentController::onRequestLocatorPosChanged(double pos)
 }
 
 //------------------------------------------------------------------------
-auto ARADocumentController::register_playback_region_lifetimes_observer(
-    PlaybackRegionLifetimesSubject::Callback&& callback) -> ObserverID
-{
-    return playback_region_lifetimes_subject.add_listener(std::move(callback));
-}
-
-//------------------------------------------------------------------------
-auto ARADocumentController::unregister_playback_region_lifetimes_observer(
-    ObserverID id) -> bool
-{
-    return playback_region_lifetimes_subject.remove_listener(id);
-}
-
-//------------------------------------------------------------------------
 auto ARADocumentController::register_word_analysis_progress_observer(
     AnalysisProgressSubject::Callback&& callback) -> ObserverID
 {
@@ -393,20 +383,6 @@ auto ARADocumentController::unregister_playback_region_changed_observer(
 {
     auto& subject = playback_region_observers[playback_region_id];
     return subject.remove_listener(id);
-}
-
-//------------------------------------------------------------------------
-auto ARADocumentController::register_playback_region_order_observer(
-    RegionOrderManager::OrderSubject::Callback&& callback) -> ObserverID
-{
-    return region_order_manager.register_observer(std::move(callback));
-}
-
-//------------------------------------------------------------------------
-auto ARADocumentController::unregister_playback_region_order_observer(
-    ObserverID id) -> void
-{
-    region_order_manager.unregister_observer(id);
 }
 
 //------------------------------------------------------------------------

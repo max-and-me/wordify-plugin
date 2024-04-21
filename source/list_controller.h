@@ -23,14 +23,20 @@ class ListController : public Steinberg::FObject, public VSTGUI::IController
 {
 public:
     //--------------------------------------------------------------------
-    using PlaybackRegion = meta_words::PlaybackRegion;
-    using Control        = VSTGUI::CControl;
-    using View           = VSTGUI::CView;
-    using RowColumnView  = VSTGUI::CRowColumnView;
-    using UIAttributes   = VSTGUI::UIAttributes;
-    using IUIDescription = VSTGUI::IUIDescription;
-    using UTF8StringPtr  = VSTGUI::UTF8StringPtr;
-    using IController    = VSTGUI::IController;
+    using PlaybackRegion   = meta_words::PlaybackRegion;
+    using Control          = VSTGUI::CControl;
+    using View             = VSTGUI::CView;
+    using RowColumnView    = VSTGUI::CRowColumnView;
+    using UIAttributes     = VSTGUI::UIAttributes;
+    using IUIDescription   = VSTGUI::IUIDescription;
+    using UTF8StringPtr    = VSTGUI::UTF8StringPtr;
+    using IController      = VSTGUI::IController;
+    using LifetimeObserver = tiny_observer_pattern::Observer<
+        ARADocumentController::PlaybackRegionLifetimesSubject>;
+    using LifetimeObserverPtr = std::unique_ptr<LifetimeObserver>;
+    using OrderObserver       = tiny_observer_pattern::Observer<
+              ARADocumentController::PlaybackOrderSubject>;
+    using OrderObserverPtr = std::unique_ptr<OrderObserver>;
 
     ListController(
         ARADocumentController* controller,
@@ -62,9 +68,10 @@ private:
     RowColumnView* rowColView            = nullptr;
     const IUIDescription* ui_description = nullptr;
 
-    ARADocumentController* controller                      = nullptr;
-    tiny_observer_pattern::ObserverID lifetime_observer_id = 0;
-    tiny_observer_pattern::ObserverID order_observer_id    = 0;
+    ARADocumentController* controller = nullptr;
+    LifetimeObserverPtr lifetime_observer;
+    OrderObserverPtr order_observer;
+    tiny_observer_pattern::ObserverID order_observer_id = 0;
     ARADocumentController::FuncSampleRate playback_sample_rate_func;
     PlaybackRegion::Id tmp_playback_region_id = PlaybackRegion::INVALID_ID;
 };
