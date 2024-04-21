@@ -190,7 +190,8 @@ auto create_whisper_cmd(const PathType& file_path) -> const Command
     //  of its analysis into a CSV file. The file is named like the audio
     //  file and by prepending ".csv" e.g. my_speech.wav ->
     //  my_speech.wav.csv
-    const Options options         = {"-ocsv"};
+    const Options options = {"-ocsv" /* output result in a CSV file */,
+                             "-sow" /* split on word rather than on token */};
     const OneValArgs one_val_args = {
         // model file resp. binary
         {"-m", MAM_WHISPER_CPP_MODEL_DOWNLOAD_DIR "/ggml-base.en.bin"},
