@@ -35,7 +35,7 @@ public:
         ARADocumentController::PlaybackRegionLifetimesSubject>;
     using LifetimeObserverPtr = std::unique_ptr<LifetimeObserver>;
     using OrderObserver       = tiny_observer_pattern::Observer<
-              ARADocumentController::PlaybackOrderSubject>;
+              ARADocumentController::PlaybackRegionsOrderSubject>;
     using OrderObserverPtr = std::unique_ptr<OrderObserver>;
 
     ListController(

@@ -97,7 +97,7 @@ public:
     // Subjects
     using PlaybackRegionLifetimesSubject =
         tiny_observer_pattern::Subject<PlaybackRegionLifetimeData>;
-    using PlaybackOrderSubject = RegionOrderManager::OrderSubject;
+    using PlaybackRegionsOrderSubject = RegionOrderManager::OrderSubject;
 
     using AnalysisProgressSubject =
         tiny_observer_pattern::Subject<WordAnalysisProgressData>;
@@ -197,20 +197,13 @@ public:
         region_order_manager.for_each_playback_region_id_enumerated(tmp_func);
     }
 
-    auto register_playback_region_changed_observer(
-        const PlaybackRegion::Id playback_region_id,
-        Subject::Callback&& callback) -> ObserverID;
-
-    auto unregister_playback_region_changed_observer(
-        const PlaybackRegion::Id playback_region_id, ObserverID id);
-
     auto get_playback_region_changed_subject(
         const PlaybackRegion::Id playback_region_id) -> Subject&
     {
         return playback_region_observers[playback_region_id];
     }
 
-    auto get_playback_region_order_subject() -> PlaybackOrderSubject*
+    auto get_playback_region_order_subject() -> PlaybackRegionsOrderSubject*
     {
         return region_order_manager.get_order_subject();
     }
@@ -269,6 +262,13 @@ private:
             }
         }
     }
+
+    auto register_playback_region_changed_observer(
+        const PlaybackRegion::Id playback_region_id,
+        Subject::Callback&& callback) -> ObserverID;
+
+    auto unregister_playback_region_changed_observer(
+        const PlaybackRegion::Id playback_region_id, ObserverID id);
 };
 
 //------------------------------------------------------------------------
