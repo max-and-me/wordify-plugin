@@ -190,8 +190,10 @@ auto PlaybackRegion::get_audio_buffer(
 
     const auto start_samples =
         size_t(this->getStartInAudioModificationTime() * playback_sample_rate);
-    const auto duration_samples =
+    auto duration_samples =
         size_t(this->getDurationInPlaybackTime() * playback_sample_rate);
+
+    duration_samples = std::min(duration_samples, left_channel.size());
 
     const AudioBufferSpanData data{
         start_samples,
