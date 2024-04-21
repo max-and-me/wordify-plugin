@@ -301,28 +301,16 @@ MetaWordsClipController::~MetaWordsClipController()
 {
     if (region_transcript)
         region_transcript->unregisterViewListener(view_listener.get());
-
-    if (subject)
-        subject->remove_listener(observer_id);
 }
 
 //------------------------------------------------------------------------
 bool MetaWordsClipController::initialize(
     Subject* subject, FuncMetaWordsData&& meta_words_data_func)
 {
-    if (!subject)
-        return false;
+    observer = tiny_observer_pattern::make_observer(
+        subject, [&](const auto&) { on_meta_words_data_changed(); });
 
-    if (this->subject)
-    {
-        this->subject->remove_listener(observer_id);
-    }
-
-    this->subject              = subject;
     this->meta_words_data_func = std::move(meta_words_data_func);
-
-    observer_id = this->subject->add_listener(
-        [this](const auto&) { this->on_meta_words_data_changed(); });
 
     auto view = description->createView("TextWordTemplate", this);
     if (view)

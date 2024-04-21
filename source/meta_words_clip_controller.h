@@ -35,6 +35,8 @@ public:
     using FuncListValueChanged = std::function<void(int)>;
     using Subject              = tiny_observer_pattern::SimpleSubject;
     using Width                = VSTGUI::CCoord;
+    using ObserverPtr =
+        std::unique_ptr<tiny_observer_pattern::Observer<Subject>>;
 
     struct Cache
     {
@@ -74,8 +76,7 @@ private:
     VSTGUI::UIAttributes meta_word_button_attributes;
 
     FuncMetaWordsData meta_words_data_func;
-    tiny_observer_pattern::SimpleSubject* subject = nullptr;
-    tiny_observer_pattern::ObserverID observer_id = 0;
+    ObserverPtr observer;
 
     Cache cache;
 };

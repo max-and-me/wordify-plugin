@@ -6,6 +6,7 @@
 
 #include <cstdint>
 #include <functional>
+#include <memory>
 #include <unordered_map>
 
 namespace mam::tiny_observer_pattern {
@@ -61,10 +62,54 @@ protected:
 };
 
 //------------------------------------------------------------------------
-using CallbackData = struct
+using None = struct
 {
 };
-using SimpleSubject = Subject<CallbackData>;
+using SimpleSubject = Subject<None>;
+
+//------------------------------------------------------------------------
+template <typename T>
+class Observer
+{
+public:
+    //------------------------------------------------------------------------
+    Observer(T* subject)
+    : subject(subject)
+    {
+        if (this->subject)
+        {
+            observer_id = subject->add_listener([&](const auto& data) {
+                if (on_notify)
+                    on_notify(data);
+            });
+        }
+    }
+
+    ~Observer()
+    {
+        if (subject)
+        {
+            subject->remove_listener(observer_id);
+        }
+    }
+
+    typename T::Callback on_notify;
+
+    //------------------------------------------------------------------------
+private:
+    T* subject             = nullptr;
+    ObserverID observer_id = 0;
+};
+
+//------------------------------------------------------------------------
+template <typename T, typename F>
+auto make_observer(T* subject, F callback) -> std::unique_ptr<Observer<T>>
+{
+    auto observer =
+        std::make_unique<tiny_observer_pattern::Observer<T>>(subject);
+    observer->on_notify = callback;
+    return observer;
+}
 //------------------------------------------------------------------------
 
 } // namespace mam::tiny_observer_pattern
