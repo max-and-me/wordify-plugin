@@ -132,18 +132,27 @@ static auto compute_word_width(const IUIDescription* description,
 static auto remove_word_buttons(CViewContainer& region_transcript,
                                 const MetaWordsData& meta_words_data)
 {
+    using Controls = std::vector<CControl*>;
+
     // Remove views
-    std::vector<CControl*> views_to_remove;
+    Controls buttons_to_remove;
     region_transcript.forEachChild([&](CView* child) {
         if (auto* control = dynamic_cast<CControl*>(child))
         {
             const auto word_index = control->getTag();
-            if (meta_words_data.words[word_index].is_clipped_by_region)
-                views_to_remove.push_back(control);
+            bool to_be_removed    = true;
+            if (word_index < meta_words_data.words.size())
+            {
+                to_be_removed =
+                    meta_words_data.words[word_index].is_clipped_by_region;
+            }
+
+            if(to_be_removed)
+                buttons_to_remove.push_back(control);
         }
     });
 
-    for (auto* child : views_to_remove)
+    for (auto* child : buttons_to_remove)
         region_transcript.removeView(child);
 }
 
