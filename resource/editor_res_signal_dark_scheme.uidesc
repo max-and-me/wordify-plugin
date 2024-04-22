@@ -33,7 +33,7 @@
       "region_start_time_color": "#bebfc5ff",
       "region_duration_time_color": "#8d8d94ff",
       "scroll_bar_handle_color": "#919193ff",
-      "search_field_background_color": "#ccccccff",
+      "search_field_background_color": "#00000000",
       "search_field_text_color": "#d4d4d4ff",
       "transcript_text_color": "#e2e1e6ff"
     },
