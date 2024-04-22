@@ -9,4 +9,5 @@ FetchContent_Declare(
     GIT_TAG 1.2.2
 )
 
+set(BUILD_TESTING OFF)
 FetchContent_MakeAvailable(libsndfile)
