@@ -70,6 +70,7 @@ smtg_target_add_plugin_resources(VstGPT
     RESOURCES
         "resource/vstgpt_editor.uidesc"
         "resource/editor_res_dark_scheme.uidesc"
+        "resource/editor_res_signal_dark_scheme.uidesc"
 )
 
 smtg_target_add_plugin_snapshots (VstGPT

@@ -337,7 +337,7 @@ IPlugView* PLUGIN_API VstGPTSingleComponent::createView(FIDString name)
         {
             auto dark_scheme_resources =
                 VSTGUI::makeOwned<VSTGUI::UIDescription>(
-                    "editor_res_dark_scheme.uidesc");
+                    "editor_res_signal_dark_scheme.uidesc");
             if (!dark_scheme_resources->parse())
             {
                 return nullptr;
