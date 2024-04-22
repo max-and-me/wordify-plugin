@@ -409,7 +409,7 @@ CView* MetaWordsClipController::verifyView(CView* view,
                 region_transcript = dynamic_cast<CViewContainer*>(view);
                 stack_layout =
                     std::make_unique<HStackLayout>(region_transcript);
-                stack_layout->setup(4., 0., 0.);
+                stack_layout->setup({0., 0.}, {0., 0., 0., -4});
                 update_region_transcript(
                     region_transcript, meta_words_data_func(), description,
                     meta_word_button_attributes, this, cache);

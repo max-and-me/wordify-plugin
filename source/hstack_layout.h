@@ -25,10 +25,24 @@ public:
     using Rect          = VSTGUI::CRect;
     using Coord         = VSTGUI::CCoord;
 
+    struct Padding
+    {
+        Coord top    = 0.;
+        Coord right  = 0.;
+        Coord bottom = 0.;
+        Coord left   = 0.;
+    };
+
+    struct Spacing
+    {
+        Coord horiz = 0.;
+        Coord verti = 0.;
+    };
+
     HStackLayout(ViewContainer* container);
     ~HStackLayout() override;
 
-    void setup(Coord hspacing, Coord vspacing, Coord padding);
+    void setup(const Spacing& spacing, const Padding& padding);
 
     void viewContainerViewAdded(ViewContainer* container, View* view) override;
     void viewContainerViewRemoved(ViewContainer* container,
@@ -38,9 +52,8 @@ public:
     //--------------------------------------------------------------------
 private:
     ViewContainer* container = nullptr;
-    Coord hspacing{0.};
-    Coord vspacing{0.};
-    Coord padding{0.};
+    Spacing spacing{0., 0.};
+    Padding padding{0., 0., 0., 0.};
 };
 //------------------------------------------------------------------------
 

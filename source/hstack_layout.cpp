@@ -14,17 +14,17 @@ using CControl = VSTGUI::CControl;
 using CRects   = std::vector<CRect>;
 
 //------------------------------------------------------------------------
-static auto layout_row_stack(const CPoint parent,
-                             CRects& rects,
-                             double hspacing,
-                             double vspacing,
-                             double padding) -> const CCoord
+static auto
+layout_row_stack(const CPoint parent,
+                 CRects& rects,
+                 const HStackLayout::Spacing& spacing,
+                 const HStackLayout::Padding& padding) -> const CCoord
 {
     if (rects.empty())
         return {};
 
-    CPoint offset(padding, padding);
-    const CPoint origin(padding, padding);
+    CPoint offset(padding.left, padding.top);
+    const CPoint origin(padding.left, padding.top);
 
     const auto default_height = rects.begin()->getHeight();
 
@@ -37,19 +37,19 @@ static auto layout_row_stack(const CPoint parent,
         // narrow
         const bool is_first_rect = offset == origin;
         const bool is_line_end =
-            (offset.x + rect.getWidth() + padding) > parent.x;
+            (offset.x + rect.getWidth() + padding.right) > parent.x;
         const bool needs_word_wrap = is_line_end && !is_first_rect;
         if (needs_word_wrap)
         {
-            offset.x = padding;                    // Carriage Return
-            offset.y += default_height + vspacing; // Line Feed
+            offset.x = padding.left;                    // Carriage Return
+            offset.y += default_height + spacing.verti; // Line Feed
             rect.moveTo(offset);
         }
 
-        offset.x += rect.getWidth() + hspacing; // Next word horiz pos
+        offset.x += rect.getWidth() + spacing.horiz; // Next word horiz pos
     }
 
-    return offset.y + default_height + padding;
+    return offset.y + default_height + padding.bottom;
 }
 
 //------------------------------------------------------------------------
@@ -82,16 +82,15 @@ static auto apply_view_size(HStackLayout::ViewContainer* container,
 
 //------------------------------------------------------------------------
 static auto do_layout(HStackLayout::ViewContainer* container,
-                      HStackLayout::Coord hspacing,
-                      HStackLayout::Coord vspacing,
-                      HStackLayout::Coord padding) -> void
+                      const HStackLayout::Spacing& spacing,
+                      const HStackLayout::Padding& padding) -> void
 {
     // Layout children
     auto parent_size = container->getViewSize();
     CRects sizes     = collect_view_size(container);
     const auto new_height =
         layout_row_stack({parent_size.getWidth(), parent_size.getHeight()},
-                         sizes, hspacing, vspacing, padding);
+                         sizes, spacing, padding);
 
     // Adjust parent container height
     parent_size.setHeight(new_height);
@@ -125,28 +124,27 @@ HStackLayout::~HStackLayout()
 //------------------------------------------------------------------------
 void HStackLayout::viewContainerViewAdded(ViewContainer* container, View* view)
 {
-    do_layout(container, hspacing, vspacing, padding);
+    do_layout(container, spacing, padding);
 }
 
 //------------------------------------------------------------------------
 void HStackLayout::viewContainerViewRemoved(ViewContainer* container,
                                             View* view)
 {
-    do_layout(container, hspacing, vspacing, padding);
+    do_layout(container, spacing, padding);
 }
 
 //------------------------------------------------------------------------
 void HStackLayout::viewSizeChanged(View* view, const Rect& oldSize)
 {
-    do_layout(container, hspacing, vspacing, padding);
+    do_layout(container, spacing, padding);
 }
 
 //------------------------------------------------------------------------
-void HStackLayout::setup(Coord hspacing, Coord vspacing, Coord padding)
+void HStackLayout::setup(const Spacing& spacing, const Padding& padding)
 {
-    this->hspacing = hspacing;
-    this->vspacing = vspacing;
-    this->padding  = padding;
+    this->spacing = spacing;
+    this->padding = padding;
 }
 
 //------------------------------------------------------------------------
