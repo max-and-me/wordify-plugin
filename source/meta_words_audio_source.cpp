@@ -239,10 +239,10 @@ auto trim_meta_words(MetaWords& meta_words) -> MetaWords
             iter = meta_words.erase(iter);
     }
 
-    for (auto& meta_word : meta_words)
+    /*for (auto& meta_word : meta_words)
     {
         meta_word.word = trim(meta_word.word);
-    }
+    }*/
 
     return meta_words;
 }
