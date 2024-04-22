@@ -59,9 +59,6 @@ void from_json(const json& j, Archive& archive)
 //------------------------------------------------------------------------
 auto serialize(const Archive& archive, JsonString& s) -> bool
 {
-    if (s.empty())
-        return false;
-
     json j = archive;
     s      = j.dump();
 
