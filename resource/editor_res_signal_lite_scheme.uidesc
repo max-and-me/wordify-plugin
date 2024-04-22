@@ -1,0 +1,93 @@
+{
+  "vstgui-ui-description": {
+    "version": "1",
+    "bitmaps": {},
+    "fonts": {
+      "region_start_time_font": {
+        "font-name": "Arial",
+        "size": "14"
+      },
+      "region_duration_time_font": {
+        "font-name": "Arial",
+        "size": "12"
+      },
+      "region_title_font": {
+        "bold": "true",
+        "font-name": "Arial",
+        "size": "14"
+      },
+      "region_transcript_font": {
+        "font-name": "Arial",
+        "size": "15"
+      },
+      "search_field_font": {
+        "bold": "true",
+        "font-name": "Arial",
+        "size": "14"
+      }
+    },
+    "colors": {
+      "header_background_color": "#edf0f6ff",
+      "body_background_color": "#fafcffff",
+      "footer_background_color": "#fafcffff",
+      "region_start_time_color": "#545863ff",
+      "region_duration_time_color": "#545863ff",
+      "scroll_bar_handle_color": "#878889ff",
+      "search_field_background_color": "#00000000",
+      "search_field_text_color": "#1c1a1dff",
+      "transcript_text_color": "#1c1a1dff"
+    },
+    "gradients": {
+      "Default TextButton Gradient": [
+        {
+          "rgba": "#dcdcdcff",
+          "start": "0"
+        },
+        {
+          "rgba": "#b4b4b4ff",
+          "start": "1"
+        }
+      ],
+      "Default TextButton Gradient Highlighted": [
+        {
+          "rgba": "#b4b4b4ff",
+          "start": "0"
+        },
+        {
+          "rgba": "#646464ff",
+          "start": "1"
+        }
+      ],
+      "play_head_color": [
+        {
+          "rgba": "#FFFFFFFF",
+          "start": "0"
+        },
+        {
+          "rgba": "#FFFFFFFF",
+          "start": "1"
+        }
+      ],
+      "transparent_gradient": [
+        {
+          "rgba": "#00000000",
+          "start": "0"
+        },
+        {
+          "rgba": "#00000000",
+          "start": "1"
+        }
+      ],
+      "waveform_background_gradient": [
+        {
+          "rgba": "#e7ebf3ff",
+          "start": "0"
+        },
+        {
+          "rgba": "#e7ebf3ff",
+          "start": "1"
+        }
+      ]
+    }
+  }
+}
