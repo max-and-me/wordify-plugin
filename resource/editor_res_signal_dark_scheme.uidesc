@@ -35,7 +35,8 @@
       "scroll_bar_handle_color": "#919193ff",
       "search_field_background_color": "#00000000",
       "search_field_text_color": "#d4d4d4ff",
-      "transcript_text_color": "#e2e1e6ff"
+      "transcript_text_color": "#e2e1e6ff",
+      "transcript_text_hilite_color": "#e2e1e680"
     },
     "gradients": {
       "Default TextButton Gradient": [
