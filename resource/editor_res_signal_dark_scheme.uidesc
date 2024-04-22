@@ -32,11 +32,10 @@
       "footer_background_color": "#1a1c20ff",
       "region_start_time_color": "#bebfc5ff",
       "region_duration_time_color": "#8d8d94ff",
-      "region_transcript_button_color": "#afb5bbff",
-      "search_field_background_color": "#cccccc7f",
-      "search_field_text_color": "#818181ff",
-      "transcript_text_color": "#e2e1e6ff",
-      "waveform_background_color": "#cccccc7f"
+      "scroll_bar_handle_color": "#919193ff",
+      "search_field_background_color": "#ccccccff",
+      "search_field_text_color": "#d4d4d4ff",
+      "transcript_text_color": "#e2e1e6ff"
     },
     "gradients": {
       "Default TextButton Gradient": [
@@ -76,16 +75,6 @@
         },
         {
           "rgba": "#00000000",
-          "start": "1"
-        }
-      ],
-      "meta_word_text_gradient": [
-        {
-          "rgba": "#afb5bbff",
-          "start": "0"
-        },
-        {
-          "rgba": "#afb5bbff",
           "start": "1"
         }
       ],
