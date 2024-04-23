@@ -9,26 +9,25 @@
 #include "vstgui/uidescription/icontroller.h"
 
 namespace VSTGUI {
-class CRowColLayout;
+class COptionMenu;
 }
+
+//------------------------------------------------------------------------
 namespace mam {
-class SpinnerView;
+
 //------------------------------------------------------------------------
-// HeaderController
+// GlobalOptionsController
 //------------------------------------------------------------------------
-class HeaderController : public Steinberg::FObject, public VSTGUI::IController
+class GlobalOptionsController : public Steinberg::FObject,
+                                public VSTGUI::IController
 {
 public:
     //--------------------------------------------------------------------
-    HeaderController(ARADocumentController* controller);
-    ~HeaderController() override;
+    GlobalOptionsController(ARADocumentController* controller);
+    ~GlobalOptionsController() override;
 
     void PLUGIN_API update(FUnknown* changedUnknown,
                            Steinberg::int32 message) override {};
-
-    VSTGUI::CView*
-    createView(const VSTGUI::UIAttributes& attributes,
-               const VSTGUI::IUIDescription* description) override;
 
     VSTGUI::CView*
     verifyView(VSTGUI::CView* view,
@@ -37,21 +36,13 @@ public:
 
     // IControlListener
     void valueChanged(VSTGUI::CControl* pControl) override {};
-    VSTGUI::IController*
-    createSubController(VSTGUI::UTF8StringPtr name,
-                        const VSTGUI::IUIDescription* description);
 
-    OBJ_METHODS(HeaderController, FObject)
+    OBJ_METHODS(GlobalOptionsController, FObject)
 
     //--------------------------------------------------------------------
 private:
-    void on_word_analysis_progress(const WordAnalysisProgressData& data);
-
-    ARADocumentController* controller    = nullptr;
-    VSTGUI::CViewContainer* container    = nullptr;
-    SpinnerView* spinner_view            = nullptr;
-    VSTGUI::CRowColLayout* rowcol_parent = nullptr;
-    tiny_observer_pattern::ObserverID word_analysis_progress_observer_id = 0;
+    ARADocumentController* controller = nullptr;
+    VSTGUI::COptionMenu* options_menu = nullptr;
 };
 
 //------------------------------------------------------------------------

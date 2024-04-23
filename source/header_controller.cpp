@@ -3,6 +3,7 @@
 //------------------------------------------------------------------------
 
 #include "header_controller.h"
+#include "global_options_controller.h"
 #include "spinner_view.h"
 #include "vstgui/lib/crowcolumnview.h"
 #include "vstgui/uidescription/iuidescription.h"
@@ -84,6 +85,19 @@ HeaderController::verifyView(VSTGUI::CView* view,
     }
 
     return view;
+}
+
+//------------------------------------------------------------------------
+VSTGUI::IController*
+HeaderController::createSubController(VSTGUI::UTF8StringPtr name,
+                                      const VSTGUI::IUIDescription* description)
+{
+    if (VSTGUI::UTF8StringView(name) == "GlobalOptionsController")
+    {
+        return new GlobalOptionsController(this->controller);
+    }
+
+    return nullptr;
 }
 
 //------------------------------------------------------------------------

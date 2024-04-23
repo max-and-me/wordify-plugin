@@ -30,6 +30,7 @@
       "header_background_color": "#edf0f6ff",
       "body_background_color": "#fafcffff",
       "footer_background_color": "#fafcffff",
+      "kebab_menu_color": "#1b1b1dff",
       "region_start_time_color": "#545863ff",
       "region_duration_time_color": "#545863ff",
       "scroll_bar_handle_color": "#878889ff",
