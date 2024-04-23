@@ -92,6 +92,7 @@ target_link_libraries(VstGPT
         sndfile
         tiny-process-library
         wave-draw
+        vstgui_support
 )
 
 smtg_target_configure_version_file(VstGPT)
