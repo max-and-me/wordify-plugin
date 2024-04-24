@@ -23,8 +23,6 @@ smtg_add_vst3plugin(VstGPT
     source/ara_factory_config.cpp
     source/ara_factory_config.h
     source/audio_buffer_management.h
-    source/global_options_controller.cpp
-    source/global_options_controller.h
     source/header_controller.cpp
     source/header_controller.h
     source/hstack_layout.cpp
@@ -51,12 +49,14 @@ smtg_add_vst3plugin(VstGPT
     source/meta_words_playback_renderer.h
     source/meta_words_serde.cpp
     source/meta_words_serde.h
+    source/preferences_controller.cpp
+    source/preferences_controller.h
     source/region_order_manager.cpp
     source/region_order_manager.h
     source/spinner_view.cpp
     source/spinner_view.h
-    source/tiny_selection_model.h
     source/tiny_observer_pattern.h
+    source/tiny_selection_model.h
     source/version.h
     source/vstgpt_cids.h
     source/vstgpt_entry.cpp

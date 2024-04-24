@@ -3,17 +3,17 @@
 //------------------------------------------------------------------------
 
 #include "header_controller.h"
-#include "global_options_controller.h"
+#include "preferences_controller.h"
 #include "spinner_view.h"
 #include "vstgui/lib/crowcolumnview.h"
 #include "vstgui/uidescription/iuidescription.h"
 #include "vstgui/uidescription/uiattributes.h"
-//------------------------------------------------------------------------
+
 namespace mam {
 using namespace ::VSTGUI;
 
 //------------------------------------------------------------------------
-// WaveFormController
+// HeaderController
 //------------------------------------------------------------------------
 HeaderController::HeaderController(ARADocumentController* controller)
 : controller(controller)
@@ -75,9 +75,9 @@ HeaderController::verifyView(VSTGUI::CView* view,
 {
 
     if (const auto* view_name =
-            attributes.getAttributeValue("custom-view-name"))
+            attributes.getAttributeValue("uidesc-label"))
     {
-        if (*view_name != "HeaderHLayout")
+        if (*view_name != "SpinnerHLayout")
             return view;
 
         if (auto cnt = view->asViewContainer())
@@ -92,9 +92,9 @@ VSTGUI::IController*
 HeaderController::createSubController(VSTGUI::UTF8StringPtr name,
                                       const VSTGUI::IUIDescription* description)
 {
-    if (VSTGUI::UTF8StringView(name) == "GlobalOptionsController")
+    if (VSTGUI::UTF8StringView(name) == "PreferencesController")
     {
-        return new GlobalOptionsController(this->controller);
+        return new PreferencesController(this->controller);
     }
 
     return nullptr;

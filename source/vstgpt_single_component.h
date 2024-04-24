@@ -89,6 +89,11 @@ public:
     // Edit Controller
     Steinberg::IPlugView* PLUGIN_API createView(Steinberg::FIDString name)
         SMTG_OVERRIDE;
+    void PLUGIN_API editorAttached(Steinberg::Vst::EditorView* editor) override;
+    void PLUGIN_API editorRemoved(Steinberg::Vst::EditorView* editor) override;
+    Steinberg::Vst::Parameter*
+    getParameterObject(Steinberg::Vst::ParamID id) override;
+    void PLUGIN_API update(Steinberg::FUnknown* changedUnknown, Steinberg::int32 tag) override;
 
     // Presonus
     Steinberg::TBool PLUGIN_API isViewEmbeddingSupported() override;
@@ -107,6 +112,16 @@ protected:
     ARA::PlugIn::PlugInExtension _araPlugInExtension;
     using VstGPTContextPtr = std::shared_ptr<class VstGPTContext>;
     VstGPTContextPtr context;
+
+    enum GuiParamTags
+    {
+        KEBAB_MENU_TAG = 0
+    };
+    Steinberg::Vst::ParameterContainer ui_parameters;
+    auto init_ui_parameters() -> void;
+
+    using Editors = std::vector<Steinberg::Vst::EditorView*>;
+    Editors editors;
 };
 
 //------------------------------------------------------------------------

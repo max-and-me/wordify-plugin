@@ -395,4 +395,73 @@ Steinberg::tresult PLUGIN_API VstGPTSingleComponent::setViewIsEmbedded(
 }
 
 //------------------------------------------------------------------------
+void PLUGIN_API
+VstGPTSingleComponent::editorAttached(Steinberg::Vst::EditorView* editor)
+{
+    editors.push_back(editor);
+}
+
+//------------------------------------------------------------------------
+void PLUGIN_API
+VstGPTSingleComponent::editorRemoved(Steinberg::Vst::EditorView* editor)
+{
+
+    editors.erase(std::find(editors.begin(), editors.end(), editor));
+}
+
+//------------------------------------------------------------------------
+auto VstGPTSingleComponent::init_ui_parameters() -> void
+{
+    if (auto* kebab_param = new Steinberg::Vst::StringListParameter(
+            STR("Kebab"), KEBAB_MENU_TAG))
+    {
+        kebab_param->appendString(STR("Lite Scheme"));
+        kebab_param->appendString(STR("Dark Scheme"));
+        ui_parameters.addParameter(kebab_param);
+        kebab_param->addDependent(this);
+    }
+}
+
+//------------------------------------------------------------------------
+Steinberg::Vst::Parameter*
+VstGPTSingleComponent::getParameterObject(Steinberg::Vst::ParamID id)
+{
+    return ui_parameters.getParameter(id);
+}
+
+//------------------------------------------------------------------------
+void PLUGIN_API VstGPTSingleComponent::update(
+    Steinberg::FUnknown* changedUnknown, Steinberg::int32 tag)
+{
+    if (auto* param =
+            Steinberg::FCast<Steinberg::Vst::Parameter>(changedUnknown))
+    {
+    }
+}
+
+//------------------------------------------------------------------------
+void VstGPTSingleComponent::toggle_scheme(bool on)
+{
+    for (auto& editor : editors)
+    {
+        auto* view          = dynamic_cast<VSTGUI::VST3Editor*>(editor);
+        auto ui_description = view->getUIDescription();
+        if (ui_description)
+        {
+            auto dark_scheme_resources =
+                VSTGUI::makeOwned<VSTGUI::UIDescription>(
+                    on ? "editor_res_signal_lite_scheme.uidesc"
+                       : "editor_res_signal_dark_scheme.uidesc");
+            if (!dark_scheme_resources->parse())
+            {
+                return;
+            }
+            ui_description->setSharedResources(dark_scheme_resources);
+
+            view->exchangeView("view");
+        }
+    }
+}
+
+//------------------------------------------------------------------------
 } // namespace mam
