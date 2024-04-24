@@ -439,29 +439,29 @@ void PLUGIN_API VstGPTSingleComponent::update(
     }
 }
 
-//------------------------------------------------------------------------
-void VstGPTSingleComponent::toggle_scheme(bool on)
-{
-    for (auto& editor : editors)
-    {
-        auto* view          = dynamic_cast<VSTGUI::VST3Editor*>(editor);
-        auto ui_description = view->getUIDescription();
-        if (ui_description)
-        {
-            auto dark_scheme_resources =
-                VSTGUI::makeOwned<VSTGUI::UIDescription>(
-                    on ? "editor_res_signal_lite_scheme.uidesc"
-                       : "editor_res_signal_dark_scheme.uidesc");
-            if (!dark_scheme_resources->parse())
-            {
-                return;
-            }
-            ui_description->setSharedResources(dark_scheme_resources);
-
-            view->exchangeView("view");
-        }
-    }
-}
+////------------------------------------------------------------------------
+//void VstGPTSingleComponent::toggle_scheme(bool on)
+//{
+//    for (auto& editor : editors)
+//    {
+//        auto* view          = dynamic_cast<VSTGUI::VST3Editor*>(editor);
+//        auto ui_description = view->getUIDescription();
+//        if (ui_description)
+//        {
+//            auto dark_scheme_resources =
+//                VSTGUI::makeOwned<VSTGUI::UIDescription>(
+//                    on ? "editor_res_signal_lite_scheme.uidesc"
+//                       : "editor_res_signal_dark_scheme.uidesc");
+//            if (!dark_scheme_resources->parse())
+//            {
+//                return;
+//            }
+//            ui_description->setSharedResources(dark_scheme_resources);
+//
+//            view->exchangeView("view");
+//        }
+//    }
+//}
 
 //------------------------------------------------------------------------
 } // namespace mam
