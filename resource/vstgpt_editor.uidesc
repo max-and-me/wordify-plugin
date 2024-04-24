@@ -430,7 +430,7 @@
 											"class": "CRowColumnView",
 											"equal-size-layout": "left-top",
 											"hide-clipped-subviews": "false",
-											"margin": "0, 0, 0, 0",
+											"margin": "0, 24, 0, 0",
 											"mouse-enabled": "true",
 											"opacity": "1",
 											"origin": "0, 0",
