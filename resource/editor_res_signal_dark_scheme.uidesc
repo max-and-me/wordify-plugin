@@ -1,7 +1,32 @@
 {
   "vstgui-ui-description": {
     "version": "1",
-    "bitmaps": {},
+    "bitmaps": {
+      "sun-solid": {
+        "path": "sun-solid.png"
+      },
+      "moon-solid": {
+        "path": "moon-solid.png"
+      },
+      "sun-solid_2x": {
+        "path": "sun-solid_2x.png"
+      },
+      "moon-solid_2x": {
+        "path": "moon-solid_2x.png"
+      },
+      "sun-solid_3x": {
+        "path": "sun-solid_3x.png"
+      },
+      "moon-solid_3x": {
+        "path": "moon-solid_3x.png"
+      },
+      "sun-solid_4x": {
+        "path": "sun-solid_4x.png"
+      },
+      "moon-solid_4x": {
+        "path": "moon-solid_4x.png"
+      }
+    },
     "fonts": {
       "region_start_time_font": {
         "font-name": "Arial",
