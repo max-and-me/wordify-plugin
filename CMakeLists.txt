@@ -74,6 +74,14 @@ smtg_target_add_plugin_resources(VstGPT
         "resource/editor_res_dark_scheme.uidesc"
         "resource/editor_res_signal_dark_scheme.uidesc"
         "resource/editor_res_signal_lite_scheme.uidesc"
+        "resource/moon-solid.png"
+        "resource/moon-solid_2x.png"
+        "resource/moon-solid_3x.png"
+        "resource/moon-solid_4x.png"
+        "resource/sun-solid.png"
+        "resource/sun-solid_2x.png"
+        "resource/sun-solid_3x.png"
+        "resource/sun-solid_4x.png"
 )
 
 smtg_target_add_plugin_snapshots (VstGPT
