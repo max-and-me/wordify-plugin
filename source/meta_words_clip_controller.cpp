@@ -282,6 +282,15 @@ public:
         fit_content(view->getParentView());
     }
 
+    void viewWillDelete(CView* view) override
+    {
+        if (view == container)
+        {
+            container->unregisterViewListener(this);
+            container = nullptr;
+        }
+    }
+
     //--------------------------------------------------------------------
 private:
     CViewContainer* container = nullptr;
@@ -299,8 +308,6 @@ MetaWordsClipController::MetaWordsClipController(
 //------------------------------------------------------------------------
 MetaWordsClipController::~MetaWordsClipController()
 {
-    if (region_transcript)
-        region_transcript->unregisterViewListener(view_listener.get());
 }
 
 //------------------------------------------------------------------------

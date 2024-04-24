@@ -122,6 +122,17 @@ HStackLayout::~HStackLayout()
 }
 
 //------------------------------------------------------------------------
+void HStackLayout::viewWillDelete(View* view)
+{
+    if (view == container)
+    {
+        container->unregisterViewContainerListener(this);
+        container->unregisterViewListener(this);
+        container = nullptr;
+    }
+}
+
+//------------------------------------------------------------------------
 void HStackLayout::viewContainerViewAdded(ViewContainer* container, View* view)
 {
     do_layout(container, spacing, padding);

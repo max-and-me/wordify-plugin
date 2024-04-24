@@ -48,6 +48,7 @@ public:
     void viewContainerViewRemoved(ViewContainer* container,
                                   View* view) override;
     void viewSizeChanged(View* view, const Rect& oldSize) override;
+    void viewWillDelete(View* view) override;
 
     //--------------------------------------------------------------------
 private:
