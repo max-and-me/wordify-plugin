@@ -49,6 +49,8 @@ smtg_add_vst3plugin(VstGPT
     source/meta_words_playback_renderer.h
     source/meta_words_serde.cpp
     source/meta_words_serde.h
+    source/preferences_serde.cpp
+    source/preferences_serde.h
     source/preferences_controller.cpp
     source/preferences_controller.h
     source/region_order_manager.cpp
@@ -100,6 +102,7 @@ target_link_libraries(VstGPT
         samplerate
         sdk
         sndfile
+        special-folders
         tiny-process-library
         wave-draw
         vstgui_support

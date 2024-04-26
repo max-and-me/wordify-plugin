@@ -11,6 +11,7 @@
 #include "meta_words_playback_region.h"
 #include "meta_words_playback_renderer.h"
 #include "meta_words_serde.h"
+#include "preferences_serde.h"
 
 namespace mam {
 
@@ -83,6 +84,12 @@ bool ARADocumentController::doRestoreObjectsFromArchive(
     ARA::PlugIn::HostArchiveReader* archiveReader,
     const ARA::PlugIn::RestoreObjectsFilter* filter) noexcept
 {
+    // Restore preferences from disc here as well
+    meta_words::serde::Preferences prefs;
+    meta_words::serde::read_from("Wordify", prefs);
+    this->dark_scheme = prefs.color_scheme == meta_words::serde::Dark;
+
+    // Retore archive
     const auto archive_size = archiveReader->getArchiveSize();
     std::string deserialized;
     deserialized.resize(archive_size);
@@ -100,6 +107,14 @@ bool ARADocumentController::doStoreObjectsToArchive(
     ARA::PlugIn::HostArchiveWriter* archiveWriter,
     const ARA::PlugIn::StoreObjectsFilter* filter) noexcept
 {
+    // Store preferences to disc here as well
+    const meta_words::serde::Preferences prefs{
+        /*.version*/ 1, /*.color_scheme*/ is_dark_scheme()
+                            ? meta_words::serde::ColorScheme::Dark
+                            : meta_words::serde::ColorScheme::Light};
+    meta_words::serde::write_to(prefs, "Wordify");
+
+    // Store archive
     meta_words::serde::Archive archive;
     archive = collect_meta_words_serde_dataset(filter, archive);
 

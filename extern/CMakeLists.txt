@@ -11,5 +11,6 @@ add_subdirectory(presonus-plugin-extensions)
 add_subdirectory(tiny-process-library)
 add_subdirectory(vst3sdk)
 add_subdirectory(wave-draw)
+add_subdirectory(special-folders)
 
 
