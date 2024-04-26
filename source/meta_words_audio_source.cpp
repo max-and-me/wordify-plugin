@@ -251,6 +251,152 @@ auto trim_meta_words(MetaWords& meta_words) -> MetaWords
 } // namespace
 
 //------------------------------------------------------------------------
+// Analyzer
+//------------------------------------------------------------------------
+class AnalyzeWorker
+{
+public:
+    //--------------------------------------------------------------------
+    using Self            = AnalyzeWorker;
+    using TaskId          = size_t;
+    using MetaWordsFuture = std::future<MetaWords>;
+
+    struct Task
+    {
+        using PathType     = std::string;
+        using FuncFinished = std::function<void(meta_words::MetaWords)>;
+        using FuncProgress = std::function<void(double)>;
+
+        PathType file;
+        FuncFinished finished_func;
+        FuncProgress progress_func;
+    };
+
+    using ScheduledTask = std::pair<TaskId, Task>;
+
+    using TaskList = std::vector<ScheduledTask>;
+
+    static Self& instance()
+    {
+        static Self the_worker;
+        return the_worker;
+    }
+
+    auto push_task(const Task&& task) -> TaskId
+    {
+        ScheduledTask waiting_task{++task_id, task};
+        task_list.emplace_back(waiting_task);
+
+        if (!timer)
+        {
+            timer = Steinberg::owned(Steinberg::Timer::create(
+                Steinberg::newTimerCallback(
+                    [this](Steinberg::Timer* timer) { this->work(); }),
+                1.));
+
+            next(future_meta_words);
+        }
+
+        return task_id;
+    }
+
+    auto cancel_task(TaskId task_id) -> bool
+    {
+        if (task_list.empty())
+            return false;
+
+        auto& first_task = task_list.at(0);
+        if (first_task.first == task_id)
+            is_canceled = true;
+
+        auto canceled_jobs = std::remove_if(
+            task_list.begin(), task_list.end(),
+            [&](const ScheduledTask& task) { return task_id == task.first; });
+
+        task_list.erase(canceled_jobs, task_list.end());
+        return true;
+    }
+
+    //--------------------------------------------------------------------
+private:
+    static size_t task_id;
+    std::atomic_bool is_canceled       = false;
+    std::atomic<double> progress_value = 0.;
+    MetaWordsFuture future_meta_words;
+
+    TaskList task_list;
+
+    Steinberg::IPtr<Steinberg::Timer> timer;
+
+    void work()
+    {
+        if (future_meta_words.wait_for(std::chrono::seconds(0)) ==
+            std::future_status::ready)
+        {
+            is_canceled = false;
+            if (!task_list.empty())
+            {
+                auto& task      = task_list.at(0);
+                auto meta_words = future_meta_words.get();
+                if (task.second.finished_func)
+                    task.second.finished_func(meta_words);
+
+                task_list.erase(task_list.begin());
+            }
+
+            if (task_list.empty())
+            {
+                timer = nullptr;
+            }
+            else
+            {
+                if (!next(future_meta_words))
+                {
+                    timer = nullptr;
+                }
+            }
+        }
+
+        if (!task_list.empty())
+        {
+            task_list.at(0).second.progress_func(progress_value.load());
+        }
+    }
+
+    auto next(MetaWordsFuture& future_meta_words) -> bool
+    {
+        if (task_list.empty())
+            return false;
+
+        auto task = task_list.at(0);
+
+        future_meta_words = std::async([this, task]() {
+            FuncProgress progress_func = [&](ProgressValue val) {
+                this->progress_value = val;
+            };
+
+            FuncCancel cancel_func = [&]() { return is_canceled.load(); };
+
+            return process_audio_with_meta_words(task.second.file,
+                                                 std::move(progress_func),
+                                                 std::move(cancel_func));
+        });
+
+        return true;
+    }
+};
+
+size_t AnalyzeWorker::task_id = 0;
+//------------------------------------------------------------------------
+// AudioSource
+//------------------------------------------------------------------------
+AudioSource::~AudioSource()
+{
+    if (task_id.has_value())
+        AnalyzeWorker::instance().cancel_task(task_id.value());
+};
+
+//------------------------------------------------------------------------
 void AudioSource::updateRenderSampleCache()
 {
     ARA_INTERNAL_ASSERT(isSampleAccessEnabled());
@@ -272,45 +418,26 @@ void AudioSource::updateRenderSampleCache()
     const auto path     = PathType{tmp_file.generic_u8string()};
     write_audio_to_file(*this, path);
 
-    future_meta_words = std::async([&, path]() {
-        FuncProgress progress_func = [&](ProgressValue val) {
-            this->analysis_progress = val;
-        };
-
-        FuncCancel cancel_func = []() { return false; };
-
-        return process_audio_with_meta_words(path, std::move(progress_func),
-                                             std::move(cancel_func));
-    });
+    task_id = AnalyzeWorker::instance().push_task({path,
+                                                   [&](auto meta_words) {
+                                                       // TODO
+                                                       this->meta_words =
+                                                           meta_words;
+                                                       this->end_analysis();
+                                                   },
+                                                   [&](auto value) { // TODO
+                                                       this->analysis_progress =
+                                                           value;
+                                                       this->perform_analysis();
+                                                   }});
 
     this->begin_analysis();
-}
-
-//------------------------------------------------------------------------
-auto AudioSource::idle() -> void
-{
-    if (future_meta_words.wait_for(std::chrono::seconds(0)) ==
-        std::future_status::ready)
-    {
-        end_analysis();
-
-        if (changed_func)
-            changed_func(this);
-    }
-    else
-    {
-        perform_analysis();
-    }
 }
 
 //------------------------------------------------------------------------
 void AudioSource::begin_analysis()
 {
     fn_start_stop_changed(*this, true);
-    timer = Steinberg::owned(Steinberg::Timer::create(
-        Steinberg::newTimerCallback(
-            [this](Steinberg::Timer* timer) { this->idle(); }),
-        1.));
 }
 
 //------------------------------------------------------------------------
@@ -323,14 +450,11 @@ void AudioSource::perform_analysis()
 //------------------------------------------------------------------------
 void AudioSource::end_analysis()
 {
-    this->meta_words = future_meta_words.get();
     this->meta_words = trim_meta_words(this->meta_words);
     transform_to_seconds(this->meta_words);
 
-    if (timer)
-        timer->stop();
-
     fn_start_stop_changed(*this, false);
+    task_id.reset();
 }
 
 //------------------------------------------------------------------------
@@ -355,6 +479,9 @@ auto AudioSource::get_meta_words() const -> const MetaWords&
 //------------------------------------------------------------------------
 auto AudioSource::set_meta_words(const MetaWords& meta_words) -> void
 {
+    if (task_id.has_value())
+        AnalyzeWorker::instance().cancel_task(task_id.value());
+
     this->meta_words = meta_words;
 }
 

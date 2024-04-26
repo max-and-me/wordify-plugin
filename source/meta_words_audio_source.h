@@ -9,6 +9,7 @@
 #include "base/source/timer.h"
 #include "mam/meta_words/meta_word.h"
 #include <future>
+#include <optional>
 
 namespace mam::meta_words {
 
@@ -39,7 +40,7 @@ public:
     , identifier(identifier)
     {
     }
-    virtual ~AudioSource(){};
+    ~AudioSource() override;
 
     // render thread sample access:
     // in order to keep this test code as simple as possible, our test audio
@@ -63,7 +64,6 @@ public:
     const Identifier getIdentifier() const { return identifier; }
 
 protected:
-    void idle();
     void begin_analysis();
     void perform_analysis();
     void end_analysis();
@@ -75,10 +75,10 @@ protected:
     FnStartStopChanged fn_start_stop_changed;
     FnProgressChanged fn_progress_changed;
 
-    using MetaWordsFuture = std::future<MetaWords>;
-    Steinberg::IPtr<Steinberg::Timer> timer;
-    MetaWordsFuture future_meta_words;
     Identifier identifier = -1;
+
+    using OptTaskId = std::optional<size_t>;
+    OptTaskId task_id;
 };
 
 //------------------------------------------------------------------------
