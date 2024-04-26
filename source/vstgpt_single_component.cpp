@@ -15,6 +15,7 @@
 #include "vstgpt_cids.h"
 #include "vstgui/uidescription/uidescription.h"
 #include "waveform_controller.h"
+#include <optional>
 
 using namespace Steinberg;
 
@@ -120,6 +121,54 @@ static auto build_waveform_data(ARADocumentController* controller)
     }
 
     return {region->get_effective_color(), span_data.audio_buffer_span, {a, b}};
+}
+
+//------------------------------------------------------------------------
+using ColorSchemeDesc = std::string;
+static auto get_color_scheme(bool is_dark) -> const ColorSchemeDesc
+{
+    return is_dark ? "editor_res_signal_dark_scheme.uidesc"
+                   : "editor_res_signal_lite_scheme.uidesc";
+}
+
+//------------------------------------------------------------------------
+using OptColorSchemeDesc = std::optional<ColorSchemeDesc>;
+static auto
+get_color_scheme(const ARA::PlugIn::PlugInExtension& _araPlugInExtension)
+    -> OptColorSchemeDesc
+{
+    auto* controller =
+        _araPlugInExtension.getDocumentController<ARADocumentController>();
+    if (!controller)
+        return std::nullopt;
+
+    const auto is_dark      = controller->is_dark_scheme();
+    const auto color_scheme = get_color_scheme(is_dark);
+    return {color_scheme};
+}
+
+//------------------------------------------------------------------------
+auto set_dark_scheme_on_editors(VstGPTSingleComponent::Editors& editors,
+                                bool is_dark)
+{
+    for (auto& editor : editors)
+    {
+        auto* view          = dynamic_cast<VSTGUI::VST3Editor*>(editor);
+        auto ui_description = view->getUIDescription();
+        if (ui_description)
+        {
+            const auto color_scheme = get_color_scheme(is_dark);
+            const auto dark_scheme_resources =
+                VSTGUI::makeOwned<VSTGUI::UIDescription>(color_scheme.c_str());
+            if (!dark_scheme_resources->parse())
+            {
+                return;
+            }
+            ui_description->setSharedResources(dark_scheme_resources);
+
+            view->exchangeView("view");
+        }
+    }
 }
 
 //------------------------------------------------------------------------
@@ -325,6 +374,18 @@ void VstGPTSingleComponent::willClose(VSTGUI::VST3Editor* editor)
 //------------------------------------------------------------------------
 IPlugView* PLUGIN_API VstGPTSingleComponent::createView(FIDString name)
 {
+    if (!color_scheme_observer)
+    {
+        auto* document_controller =
+            _araPlugInExtension.getDocumentController<ARADocumentController>();
+        auto color_subject    = document_controller->get_color_scheme_subject();
+        color_scheme_observer = tiny_observer_pattern::make_observer(
+            color_subject, [&, document_controller](tiny_observer_pattern::None) {
+                set_dark_scheme_on_editors(
+                    editors, document_controller->is_dark_scheme());
+            });
+    }
+
     // Here the Host wants to open your editor (if you have one)
     if (FIDStringsEqual(name, Vst::ViewType::kEditor))
     {
@@ -335,9 +396,14 @@ IPlugView* PLUGIN_API VstGPTSingleComponent::createView(FIDString name)
         auto ui_description = view->getUIDescription();
         if (ui_description)
         {
+            const auto opt_color_scheme =
+                get_color_scheme(this->_araPlugInExtension);
+            const auto color_scheme = opt_color_scheme.value_or(
+                "editor_res_signal_lite_scheme.uidesc");
+
             auto dark_scheme_resources =
-                VSTGUI::makeOwned<VSTGUI::UIDescription>(
-                    "editor_res_signal_dark_scheme.uidesc");
+                VSTGUI::makeOwned<VSTGUI::UIDescription>(color_scheme.c_str());
+
             if (!dark_scheme_resources->parse())
             {
                 return nullptr;
@@ -438,30 +504,6 @@ void PLUGIN_API VstGPTSingleComponent::update(
     {
     }
 }
-
-////------------------------------------------------------------------------
-//void VstGPTSingleComponent::toggle_scheme(bool on)
-//{
-//    for (auto& editor : editors)
-//    {
-//        auto* view          = dynamic_cast<VSTGUI::VST3Editor*>(editor);
-//        auto ui_description = view->getUIDescription();
-//        if (ui_description)
-//        {
-//            auto dark_scheme_resources =
-//                VSTGUI::makeOwned<VSTGUI::UIDescription>(
-//                    on ? "editor_res_signal_lite_scheme.uidesc"
-//                       : "editor_res_signal_dark_scheme.uidesc");
-//            if (!dark_scheme_resources->parse())
-//            {
-//                return;
-//            }
-//            ui_description->setSharedResources(dark_scheme_resources);
-//
-//            view->exchangeView("view");
-//        }
-//    }
-//}
 
 //------------------------------------------------------------------------
 } // namespace mam

@@ -36,13 +36,16 @@ PreferencesController::verifyView(VSTGUI::CView* view,
         if (*view_name == "PreferencesMenu")
         {
             this->options_menu = dynamic_cast<VSTGUI::COptionMenu*>(view);
-            this->options_menu->addEntry("Dark");
-            this->options_menu->addEntry("Lite");
+            this->options_menu->addEntry("Entry 1");
+            this->options_menu->addEntry("Entry 2");
             this->options_menu->registerControlListener(this);
         }
         else if (*view_name == "SchemeSwitch")
         {
-            scheme_switch = dynamic_cast<VSTGUI::CControl*>(view);
+            const bool is_dark = controller->is_dark_scheme();
+            scheme_switch      = dynamic_cast<VSTGUI::CControl*>(view);
+            scheme_switch->setValueNormalized(is_dark ? 1. : 0.);
+            scheme_switch->registerControlListener(this);
         }
     }
 
@@ -57,6 +60,8 @@ void PreferencesController::valueChanged(VSTGUI::CControl* pControl)
     }
     else if (pControl == scheme_switch)
     {
+        const auto val = pControl->getValueNormalized();
+        controller->set_dark_scheme(val > 0.);
     }
 }
 

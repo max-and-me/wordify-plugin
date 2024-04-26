@@ -8,6 +8,7 @@
 #include "ARA_Library/PlugIn/ARAPlug.h"
 #include "ipslviewembedding.h"
 #include "public.sdk/source/vst/vstsinglecomponenteffect.h"
+#include "tiny_observer_pattern.h"
 #include "vstgui/plugin-bindings/vst3editor.h"
 #include <memory>
 namespace mam {
@@ -22,6 +23,8 @@ class VstGPTSingleComponent : public Steinberg::Vst::SingleComponentEffect,
                               public Presonus::IPlugInViewEmbedding
 {
 public:
+    using Editors = std::vector<Steinberg::Vst::EditorView*>;
+
     VstGPTSingleComponent();
     ~VstGPTSingleComponent() SMTG_OVERRIDE;
 
@@ -93,7 +96,8 @@ public:
     void PLUGIN_API editorRemoved(Steinberg::Vst::EditorView* editor) override;
     Steinberg::Vst::Parameter*
     getParameterObject(Steinberg::Vst::ParamID id) override;
-    void PLUGIN_API update(Steinberg::FUnknown* changedUnknown, Steinberg::int32 tag) override;
+    void PLUGIN_API update(Steinberg::FUnknown* changedUnknown,
+                           Steinberg::int32 tag) override;
 
     // Presonus
     Steinberg::TBool PLUGIN_API isViewEmbeddingSupported() override;
@@ -120,8 +124,11 @@ protected:
     Steinberg::Vst::ParameterContainer ui_parameters;
     auto init_ui_parameters() -> void;
 
-    using Editors = std::vector<Steinberg::Vst::EditorView*>;
     Editors editors;
+
+    std::unique_ptr<
+        tiny_observer_pattern::Observer<tiny_observer_pattern::SimpleSubject>>
+        color_scheme_observer;
 };
 
 //------------------------------------------------------------------------
