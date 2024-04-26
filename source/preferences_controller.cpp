@@ -59,5 +59,6 @@ void PreferencesController::valueChanged(VSTGUI::CControl* pControl)
     {
     }
 }
+
 //------------------------------------------------------------------------
 } // namespace mam
