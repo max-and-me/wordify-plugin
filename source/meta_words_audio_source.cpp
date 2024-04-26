@@ -174,13 +174,12 @@ auto write_audio_to_file(AudioSource& audio_src,
 }
 
 //-----------------------------------------------------------------------------
-auto run_sync(const Command& cmd, FnProgress&& fn_progress) -> MetaWords
+auto run_sync(const Command& cmd,
+              FuncProgress&& progress_func,
+              FuncCancel&& cancel_func) -> MetaWords
 {
     std::cout << "Run sync..." << '\n';
-
-    // FnProgress fn_progress = [](double val) { double tmp = val; };
-
-    return (run(cmd, fn_progress));
+    return (run(cmd, std::move(progress_func), std::move(cancel_func)));
 }
 
 //------------------------------------------------------------------------
@@ -210,10 +209,11 @@ auto create_whisper_cmd(const PathType& file_path) -> const Command
 
 //------------------------------------------------------------------------
 auto process_audio_with_meta_words(const PathType& file_path,
-                                   FnProgress&& fn_progress) -> MetaWords
+                                   FuncProgress&& progress_func,
+                                   FuncCancel&& cancel_func) -> MetaWords
 {
     const auto cmd = create_whisper_cmd(file_path);
-    return run_sync(cmd, std::move(fn_progress));
+    return run_sync(cmd, std::move(progress_func), std::move(cancel_func));
 };
 
 //------------------------------------------------------------------------
@@ -273,11 +273,14 @@ void AudioSource::updateRenderSampleCache()
     write_audio_to_file(*this, path);
 
     future_meta_words = std::async([&, path]() {
-        FnProgress fn_progress = [&](ProgressValue val) {
+        FuncProgress progress_func = [&](ProgressValue val) {
             this->analysis_progress = val;
         };
 
-        return process_audio_with_meta_words(path, std::move(fn_progress));
+        FuncCancel cancel_func = []() { return false; };
+
+        return process_audio_with_meta_words(path, std::move(progress_func),
+                                             std::move(cancel_func));
     });
 
     this->begin_analysis();
