@@ -55,6 +55,25 @@ apply_meta_words_serde_dataset(const ARA::PlugIn::RestoreObjectsFilter* filter,
 }
 
 //------------------------------------------------------------------------
+template <typename Func>
+static auto
+for_each_playback_region_(const ARADocumentController::AudioSource& source,
+                         Func& func) -> void
+{
+    const auto& sources = source.getAudioModifications();
+    for (const auto& source : sources)
+    {
+        const auto& regions =
+            source->getPlaybackRegions<ARADocumentController::PlaybackRegion>();
+        for (const auto& region : regions)
+        {
+            if (!func(*region))
+                return;
+        }
+    }
+}
+
+//------------------------------------------------------------------------
 // ARADocumentController
 //------------------------------------------------------------------------
 const ARA::ARAFactory* ARADocumentController::getARAFactory() noexcept
@@ -430,6 +449,14 @@ void ARADocumentController::on_word_analysis_progress(const AudioSource& source,
               : WordAnalysisProgressData::State::kAnalysisStopped};
 
     word_analysis_progress_subject.notify_listeners(data);
+
+    for_each_playback_region_(source, [&](const PlaybackRegion& region) -> bool {
+        auto obj = playback_region_observers.find(region.get_id());
+        if (obj != playback_region_observers.end())
+            obj->second.notify_listeners({});
+
+        return true;
+    });
 }
 
 //------------------------------------------------------------------------
