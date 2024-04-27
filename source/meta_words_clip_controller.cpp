@@ -31,6 +31,7 @@ static auto update_region_title(CTextLabel& region_title,
 {
     auto [r, g, b]     = meta_words_data.color;
     const CColor color = make_color<float>(r, g, b, std::nullopt);
+
     region_title.setFontColor(color);
     region_title.setText(UTF8String(meta_words_data.name));
     region_title.sizeToFit();
@@ -302,11 +303,6 @@ private:
 MetaWordsClipController::MetaWordsClipController(
     const IUIDescription* description)
 : description(description)
-{
-}
-
-//------------------------------------------------------------------------
-MetaWordsClipController::~MetaWordsClipController()
 {
 }
 
