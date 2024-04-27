@@ -28,7 +28,7 @@ static auto find_view_by_id(const CRowColumnView& rowColView,
         auto id = 0;
         if (view->getAttribute(PLAYBACK_REGION_ID_ATTR, id))
         {
-            if (pbr_id == id)
+            if (pbr_id == size_t(id))
                 viewToFind = view;
         }
     });
