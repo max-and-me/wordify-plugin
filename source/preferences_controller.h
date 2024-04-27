@@ -30,7 +30,7 @@ public:
     using SchemeToggle = std::function<void(bool)>;
 
     PreferencesController(ARADocumentController* controller,
-                          Steinberg::Vst::Parameter* param);
+                          Steinberg::Vst::Parameter* color_scheme_param);
     ~PreferencesController() override;
 
     void PLUGIN_API update(FUnknown* changedUnknown,
@@ -48,10 +48,10 @@ public:
 
     //--------------------------------------------------------------------
 private:
-    ARADocumentController* controller = nullptr;
-    VSTGUI::COptionMenu* options_menu = nullptr;
-    VSTGUI::CControl* scheme_switch   = nullptr;
-    Steinberg::Vst::Parameter* param  = nullptr;
+    ARADocumentController* controller             = nullptr;
+    VSTGUI::COptionMenu* options_menu             = nullptr;
+    VSTGUI::CControl* scheme_switch               = nullptr;
+    Steinberg::Vst::Parameter* color_scheme_param = nullptr;
 };
 
 //------------------------------------------------------------------------

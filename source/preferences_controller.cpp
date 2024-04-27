@@ -15,23 +15,24 @@ using namespace VSTGUI;
 //------------------------------------------------------------------------
 // PreferencesController
 //------------------------------------------------------------------------
-PreferencesController::PreferencesController(ARADocumentController* controller,
-                                             Steinberg::Vst::Parameter* param)
+PreferencesController::PreferencesController(
+    ARADocumentController* controller,
+    Steinberg::Vst::Parameter* color_scheme_param)
 : controller(controller)
-, param(param)
+, color_scheme_param(color_scheme_param)
 {
     if (!controller)
         return;
 
-    if (param)
-        param->addDependent(this);
+    if (color_scheme_param)
+        color_scheme_param->addDependent(this);
 }
 
 //------------------------------------------------------------------------
 PreferencesController::~PreferencesController()
 {
-    if (param)
-        param->removeDependent(this);
+    if (color_scheme_param)
+        color_scheme_param->removeDependent(this);
 }
 
 //------------------------------------------------------------------------
@@ -52,8 +53,9 @@ PreferencesController::verifyView(VSTGUI::CView* view,
         }
         else if (*view_name == "SchemeSwitch")
         {
-            scheme_switch = dynamic_cast<VSTGUI::CControl*>(view);
-            scheme_switch->setValueNormalized(param->getNormalized());
+            scheme_switch  = dynamic_cast<VSTGUI::CControl*>(view);
+            const auto val = color_scheme_param->getNormalized();
+            scheme_switch->setValueNormalized(val);
             scheme_switch->registerControlListener(this);
         }
     }
@@ -70,7 +72,7 @@ void PreferencesController::valueChanged(VSTGUI::CControl* pControl)
     else if (pControl == scheme_switch)
     {
         const auto val = pControl->getValueNormalized();
-        param->setNormalized(val);
+        color_scheme_param->setNormalized(val);
     }
 }
 
@@ -81,9 +83,10 @@ void PLUGIN_API PreferencesController::update(FUnknown* changedUnknown,
     if (auto* tmp_param =
             Steinberg::FCast<Steinberg::Vst::Parameter>(changedUnknown))
     {
-        if (param->getInfo().id == tmp_param->getInfo().id)
+        if (color_scheme_param->getInfo().id == tmp_param->getInfo().id)
         {
-            scheme_switch->setValueNormalized(param->getNormalized());
+            scheme_switch->setValueNormalized(
+                color_scheme_param->getNormalized());
         }
     }
 }
