@@ -100,7 +100,6 @@ public:
     using PlaybackRegionsOrderSubject = RegionOrderManager::OrderSubject;
     using AnalysisProgressSubject =
         tiny_observer_pattern::Subject<WordAnalysisProgressData>;
-    using ColorSchemeSubject = tiny_observer_pattern::SimpleSubject;
 
     // publish inherited constructor
     using ARA::PlugIn::DocumentController::DocumentController;
@@ -214,11 +213,6 @@ public:
         return &playback_region_lifetimes_subject;
     }
 
-    auto get_color_scheme_subject() -> ColorSchemeSubject*
-    {
-        return &color_scheme_subject;
-    }
-
     auto register_word_analysis_progress_observer(
         AnalysisProgressSubject::Callback&& callback) -> ObserverID;
 
@@ -231,12 +225,6 @@ public:
     }
 
     auto get_region_selection_model() -> RegionSelectionModel&;
-    auto is_dark_scheme() const -> bool { return dark_scheme; }
-    auto set_dark_scheme(bool state) -> void
-    {
-        dark_scheme = state;
-        color_scheme_subject.notify_listeners({});
-    }
 
     //--------------------------------------------------------------------
 protected:
@@ -244,7 +232,6 @@ protected:
     PlaybackRegions playback_regions;
     PlaybackRegionLifetimesSubject playback_region_lifetimes_subject;
     AnalysisProgressSubject word_analysis_progress_subject;
-    ColorSchemeSubject color_scheme_subject;
     RegionOrderManager region_order_manager;
     RegionSelectionModel region_selection_model;
 
@@ -282,8 +269,6 @@ private:
 
     auto unregister_playback_region_changed_observer(
         const PlaybackRegion::Id playback_region_id, ObserverID id);
-
-    bool dark_scheme = true;
 };
 
 //------------------------------------------------------------------------

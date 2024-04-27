@@ -92,11 +92,6 @@ VSTGUI::IController*
 HeaderController::createSubController(VSTGUI::UTF8StringPtr name,
                                       const VSTGUI::IUIDescription* description)
 {
-    if (VSTGUI::UTF8StringView(name) == "PreferencesController")
-    {
-        return new PreferencesController(this->controller);
-    }
-
     return nullptr;
 }
 

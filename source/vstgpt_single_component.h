@@ -117,12 +117,9 @@ protected:
     using VstGPTContextPtr = std::shared_ptr<class VstGPTContext>;
     VstGPTContextPtr context;
 
-    enum GuiParamTags
-    {
-        KEBAB_MENU_TAG = 0
-    };
     Steinberg::Vst::ParameterContainer ui_parameters;
-    auto init_ui_parameters() -> void;
+    auto restore_parameters() -> void;
+    auto store_parameters() -> void;
 
     Editors editors;
 

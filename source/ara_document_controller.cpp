@@ -58,7 +58,7 @@ apply_meta_words_serde_dataset(const ARA::PlugIn::RestoreObjectsFilter* filter,
 template <typename Func>
 static auto
 for_each_playback_region_(const ARADocumentController::AudioSource& source,
-                         Func& func) -> void
+                          Func& func) -> void
 {
     const auto& sources = source.getAudioModifications();
     for (const auto& source : sources)
@@ -103,11 +103,6 @@ bool ARADocumentController::doRestoreObjectsFromArchive(
     ARA::PlugIn::HostArchiveReader* archiveReader,
     const ARA::PlugIn::RestoreObjectsFilter* filter) noexcept
 {
-    // Restore preferences from disc here as well
-    meta_words::serde::Preferences prefs;
-    meta_words::serde::read_from("Wordify", prefs);
-    this->dark_scheme = prefs.color_scheme == meta_words::serde::Dark;
-
     // Retore archive
     const auto archive_size = archiveReader->getArchiveSize();
     std::string deserialized;
@@ -126,13 +121,6 @@ bool ARADocumentController::doStoreObjectsToArchive(
     ARA::PlugIn::HostArchiveWriter* archiveWriter,
     const ARA::PlugIn::StoreObjectsFilter* filter) noexcept
 {
-    // Store preferences to disc here as well
-    const meta_words::serde::Preferences prefs{
-        /*.version*/ 1, /*.color_scheme*/ is_dark_scheme()
-                            ? meta_words::serde::ColorScheme::Dark
-                            : meta_words::serde::ColorScheme::Light};
-    meta_words::serde::write_to(prefs, "Wordify");
-
     // Store archive
     meta_words::serde::Archive archive;
     archive = collect_meta_words_serde_dataset(filter, archive);
@@ -450,13 +438,14 @@ void ARADocumentController::on_word_analysis_progress(const AudioSource& source,
 
     word_analysis_progress_subject.notify_listeners(data);
 
-    for_each_playback_region_(source, [&](const PlaybackRegion& region) -> bool {
-        auto obj = playback_region_observers.find(region.get_id());
-        if (obj != playback_region_observers.end())
-            obj->second.notify_listeners({});
+    for_each_playback_region_(
+        source, [&](const PlaybackRegion& region) -> bool {
+            auto obj = playback_region_observers.find(region.get_id());
+            if (obj != playback_region_observers.end())
+                obj->second.notify_listeners({});
 
-        return true;
-    });
+            return true;
+        });
 }
 
 //------------------------------------------------------------------------

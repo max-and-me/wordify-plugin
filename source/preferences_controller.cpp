@@ -3,6 +3,7 @@
 //------------------------------------------------------------------------
 
 #include "preferences_controller.h"
+#include "public.sdk/source/vst/vstparameters.h"
 #include "vstgui/lib/controls/coptionmenu.h"
 #include "vstgui/uidescription/uiattributes.h"
 
@@ -14,15 +15,24 @@ using namespace VSTGUI;
 //------------------------------------------------------------------------
 // PreferencesController
 //------------------------------------------------------------------------
-PreferencesController::PreferencesController(ARADocumentController* controller)
+PreferencesController::PreferencesController(ARADocumentController* controller,
+                                             Steinberg::Vst::Parameter* param)
 : controller(controller)
+, param(param)
 {
     if (!controller)
         return;
+
+    if (param)
+        param->addDependent(this);
 }
 
 //------------------------------------------------------------------------
-PreferencesController::~PreferencesController() {}
+PreferencesController::~PreferencesController()
+{
+    if (param)
+        param->removeDependent(this);
+}
 
 //------------------------------------------------------------------------
 VSTGUI::CView*
@@ -42,9 +52,8 @@ PreferencesController::verifyView(VSTGUI::CView* view,
         }
         else if (*view_name == "SchemeSwitch")
         {
-            const bool is_dark = controller->is_dark_scheme();
-            scheme_switch      = dynamic_cast<VSTGUI::CControl*>(view);
-            scheme_switch->setValueNormalized(is_dark ? 1. : 0.);
+            scheme_switch = dynamic_cast<VSTGUI::CControl*>(view);
+            scheme_switch->setValueNormalized(param->getNormalized());
             scheme_switch->registerControlListener(this);
         }
     }
@@ -61,7 +70,21 @@ void PreferencesController::valueChanged(VSTGUI::CControl* pControl)
     else if (pControl == scheme_switch)
     {
         const auto val = pControl->getValueNormalized();
-        controller->set_dark_scheme(val > 0.);
+        param->setNormalized(val);
+    }
+}
+
+//------------------------------------------------------------------------
+void PLUGIN_API PreferencesController::update(FUnknown* changedUnknown,
+                                              Steinberg::int32 tag)
+{
+    if (auto* tmp_param =
+            Steinberg::FCast<Steinberg::Vst::Parameter>(changedUnknown))
+    {
+        if (param->getInfo().id == tmp_param->getInfo().id)
+        {
+            scheme_switch->setValueNormalized(param->getNormalized());
+        }
     }
 }
 

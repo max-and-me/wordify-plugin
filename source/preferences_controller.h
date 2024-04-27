@@ -12,6 +12,10 @@ namespace VSTGUI {
 class COptionMenu;
 }
 
+namespace Steinberg::Vst {
+class Parameter;
+}
+
 //------------------------------------------------------------------------
 namespace mam {
 
@@ -25,11 +29,12 @@ public:
     //--------------------------------------------------------------------
     using SchemeToggle = std::function<void(bool)>;
 
-    PreferencesController(ARADocumentController* controller);
+    PreferencesController(ARADocumentController* controller,
+                          Steinberg::Vst::Parameter* param);
     ~PreferencesController() override;
 
     void PLUGIN_API update(FUnknown* changedUnknown,
-                           Steinberg::int32 message) override {};
+                           Steinberg::int32 message) override;
 
     VSTGUI::CView*
     verifyView(VSTGUI::CView* view,
@@ -46,6 +51,7 @@ private:
     ARADocumentController* controller = nullptr;
     VSTGUI::COptionMenu* options_menu = nullptr;
     VSTGUI::CControl* scheme_switch   = nullptr;
+    Steinberg::Vst::Parameter* param  = nullptr;
 };
 
 //------------------------------------------------------------------------

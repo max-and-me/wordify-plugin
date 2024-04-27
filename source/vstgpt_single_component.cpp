@@ -10,8 +10,11 @@
 #include "meta_words_editor_renderer.h"
 #include "meta_words_editor_view.h"
 #include "meta_words_playback_renderer.h"
+#include "parameter_ids.h"
 #include "pluginterfaces/vst/ivstparameterchanges.h"
 #include "pluginterfaces/vst/ivstprocesscontext.h"
+#include "preferences_controller.h"
+#include "preferences_serde.h"
 #include "vstgpt_cids.h"
 #include "vstgui/uidescription/uidescription.h"
 #include "waveform_controller.h"
@@ -133,16 +136,14 @@ static auto get_color_scheme(bool is_dark) -> const ColorSchemeDesc
 
 //------------------------------------------------------------------------
 using OptColorSchemeDesc = std::optional<ColorSchemeDesc>;
-static auto
-get_color_scheme(const ARA::PlugIn::PlugInExtension& _araPlugInExtension)
-    -> OptColorSchemeDesc
+static auto get_color_scheme(VstGPTSingleComponent& controller,
+                             mam::ParamIds id) -> OptColorSchemeDesc
 {
-    auto* controller =
-        _araPlugInExtension.getDocumentController<ARADocumentController>();
-    if (!controller)
+    auto* color_scheme_param = controller.getParameterObject(id);
+    if (!color_scheme_param)
         return std::nullopt;
 
-    const auto is_dark      = controller->is_dark_scheme();
+    const auto is_dark      = color_scheme_param->getNormalized() > 0.;
     const auto color_scheme = get_color_scheme(is_dark);
     return {color_scheme};
 }
@@ -196,6 +197,8 @@ tresult PLUGIN_API VstGPTSingleComponent::initialize(FUnknown* context)
     addAudioInput(STR16("Stereo In"), Steinberg::Vst::SpeakerArr::kMono);
     addAudioOutput(STR16("Stereo Out"), Steinberg::Vst::SpeakerArr::kMono);
 
+    restore_parameters();
+
     return kResultOk;
 }
 
@@ -204,6 +207,8 @@ tresult PLUGIN_API VstGPTSingleComponent::terminate()
 {
     // Here the Plug-in will be de-instantiated, last possibility to remove
     // some memory!
+
+    store_parameters();
 
     //---do not forget to call parent ------
     return SingleComponentEffect::terminate();
@@ -357,6 +362,12 @@ VSTGUI::IController* VstGPTSingleComponent::createSubController(
 
         return subctrl;
     }
+    if (VSTGUI::UTF8StringView(name) == "PreferencesController")
+    {
+        return new PreferencesController(
+            document_controller,
+            getParameterObject(ParamIds::kParamIdColorScheme));
+    }
 
     return nullptr;
 }
@@ -374,18 +385,6 @@ void VstGPTSingleComponent::willClose(VSTGUI::VST3Editor* editor)
 //------------------------------------------------------------------------
 IPlugView* PLUGIN_API VstGPTSingleComponent::createView(FIDString name)
 {
-    if (!color_scheme_observer)
-    {
-        auto* document_controller =
-            _araPlugInExtension.getDocumentController<ARADocumentController>();
-        auto color_subject    = document_controller->get_color_scheme_subject();
-        color_scheme_observer = tiny_observer_pattern::make_observer(
-            color_subject, [&, document_controller](tiny_observer_pattern::None) {
-                set_dark_scheme_on_editors(
-                    editors, document_controller->is_dark_scheme());
-            });
-    }
-
     // Here the Host wants to open your editor (if you have one)
     if (FIDStringsEqual(name, Vst::ViewType::kEditor))
     {
@@ -397,7 +396,7 @@ IPlugView* PLUGIN_API VstGPTSingleComponent::createView(FIDString name)
         if (ui_description)
         {
             const auto opt_color_scheme =
-                get_color_scheme(this->_araPlugInExtension);
+                get_color_scheme(*this, kParamIdColorScheme);
             const auto color_scheme = opt_color_scheme.value_or(
                 "editor_res_signal_lite_scheme.uidesc");
 
@@ -476,16 +475,44 @@ VstGPTSingleComponent::editorRemoved(Steinberg::Vst::EditorView* editor)
 }
 
 //------------------------------------------------------------------------
-auto VstGPTSingleComponent::init_ui_parameters() -> void
+auto VstGPTSingleComponent::restore_parameters() -> void
 {
-    if (auto* kebab_param = new Steinberg::Vst::StringListParameter(
-            STR("Kebab"), KEBAB_MENU_TAG))
+    // Restore preferences from disc here as well
+    meta_words::serde::Preferences prefs;
+    meta_words::serde::read_from("Wordify", prefs);
+
+    if (auto* color_scheme_param = new Steinberg::Vst::StringListParameter(
+            STR("ColorScheme"), ParamIds::kParamIdColorScheme))
     {
-        kebab_param->appendString(STR("Lite Scheme"));
-        kebab_param->appendString(STR("Dark Scheme"));
-        ui_parameters.addParameter(kebab_param);
-        kebab_param->addDependent(this);
+        color_scheme_param->appendString(STR("Lite"));
+        color_scheme_param->appendString(STR("Dark"));
+        color_scheme_param->setNormalized(
+            prefs.color_scheme == meta_words::serde::ColorScheme::Dark ? 1.
+                                                                       : 0.);
+        ui_parameters.addParameter(color_scheme_param);
+        color_scheme_param->addDependent(this);
     }
+}
+
+//------------------------------------------------------------------------
+auto VstGPTSingleComponent::store_parameters() -> void
+{
+    auto* color_scheme_param =
+        getParameterObject(ParamIds::kParamIdColorScheme);
+
+    // Store preferences to disc here as well
+    meta_words::serde::Preferences prefs{};
+
+    if (color_scheme_param)
+    {
+        prefs.color_scheme = color_scheme_param->getNormalized() > 0.
+                                 ? meta_words::serde::ColorScheme::Dark
+                                 : meta_words::serde::ColorScheme::Light;
+
+        color_scheme_param->removeDependent(this);
+    }
+
+    meta_words::serde::write_to(prefs, "Wordify");
 }
 
 //------------------------------------------------------------------------
@@ -502,6 +529,10 @@ void PLUGIN_API VstGPTSingleComponent::update(
     if (auto* param =
             Steinberg::FCast<Steinberg::Vst::Parameter>(changedUnknown))
     {
+        if (param->getInfo().id == ParamIds::kParamIdColorScheme)
+        {
+            set_dark_scheme_on_editors(editors, param->getNormalized() > 0.);
+        }
     }
 }
 
