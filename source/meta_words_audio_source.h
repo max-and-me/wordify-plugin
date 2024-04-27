@@ -34,7 +34,6 @@ public:
                 FnProgressChanged&& fn_progress_changed,
                 Identifier identifier)
     : ARA::PlugIn::AudioSource{document, hostRef}
-    , fn_changed(fn_changed)
     , fn_start_stop_changed(fn_start_stop_changed)
     , fn_progress_changed(fn_progress_changed)
     , identifier(identifier)
@@ -71,7 +70,6 @@ protected:
 
     MultiChannelBufferType audio_buffers;
     MetaWords meta_words;
-    FnChanged fn_changed;
     FnStartStopChanged fn_start_stop_changed;
     FnProgressChanged fn_progress_changed;
 
