@@ -16,10 +16,10 @@
 #include "preferences_controller.h"
 #include "preferences_serde.h"
 #include "vstgpt_cids.h"
+#include "vstgpt_defines.h"
 #include "vstgui/uidescription/uidescription.h"
 #include "waveform_controller.h"
 #include <optional>
-#include "vstgpt_defines.h"
 
 using namespace Steinberg;
 
@@ -28,6 +28,11 @@ DEF_CLASS_IID(IPlugInViewEmbedding)
 }
 
 namespace mam {
+
+//------------------------------------------------------------------------
+static const auto DEFAULT_COLOR_SCHEME_UIDESC =
+    "editor_res_signal_lite_scheme.uidesc";
+
 //------------------------------------------------------------------------
 //  // helper to improve readability
 static auto getAudioBusChannelCount(const IPtr<Vst::Bus>& bus) -> int32
@@ -140,7 +145,7 @@ using OptColorSchemeDesc = std::optional<ColorSchemeDesc>;
 static auto get_color_scheme(VstGPTSingleComponent& controller,
                              mam::ParamIds id) -> OptColorSchemeDesc
 {
-    auto* color_scheme_param = controller.getParameterObject(id);
+    const auto* color_scheme_param = controller.getParameterObject(id);
     if (!color_scheme_param)
         return std::nullopt;
 
@@ -150,24 +155,22 @@ static auto get_color_scheme(VstGPTSingleComponent& controller,
 }
 
 //------------------------------------------------------------------------
-auto set_dark_scheme_on_editors(VstGPTSingleComponent::Editors& editors,
-                                bool is_dark)
+static auto set_dark_scheme_on_editors(VstGPTSingleComponent::Editors& editors,
+                                       bool is_dark)
 {
     for (auto& editor : editors)
     {
-        auto* view          = dynamic_cast<VSTGUI::VST3Editor*>(editor);
-        auto ui_description = view->getUIDescription();
-        if (ui_description)
+        auto* view        = dynamic_cast<VSTGUI::VST3Editor*>(editor);
+        const auto uidesc = view->getUIDescription();
+        if (uidesc)
         {
             const auto color_scheme = get_color_scheme(is_dark);
             const auto dark_scheme_resources =
                 VSTGUI::makeOwned<VSTGUI::UIDescription>(color_scheme.c_str());
             if (!dark_scheme_resources->parse())
-            {
                 return;
-            }
-            ui_description->setSharedResources(dark_scheme_resources);
 
+            uidesc->setSharedResources(dark_scheme_resources);
             view->exchangeView("view");
         }
     }
@@ -263,21 +266,8 @@ tresult PLUGIN_API VstGPTSingleComponent::process(Vst::ProcessData& data)
     }
     else
     {
-        // if we're no ARA playback renderer, we're just copying the inputs
-        // to the outputs, which is appropriate both when being only an ARA
-        // editor renderer, or when being used in non-ARA mode.
-        for (int32 c = 0; c < data.outputs[0].numChannels; ++c)
-            std::memcpy(data.outputs[0].channelBuffers32[c],
-                        data.inputs[0].channelBuffers32[c],
-                        sizeof(float) * static_cast<size_t>(data.numSamples));
+        // No support for non ARA
     }
-
-    // if we are an ARA editor renderer, we now would add out preview signal
-    // to the output, but our test implementation does not support editing
-    // and thus never generates any preview signal.
-    //  if (auto editorRenderer =
-    //  _araPlugInExtension.getEditorRenderer<ARATestEditorRenderer*> ())
-    //      editorRenderer->addEditorSignal (...);
 
     return kResultOk;
 }
@@ -286,7 +276,6 @@ tresult PLUGIN_API VstGPTSingleComponent::process(Vst::ProcessData& data)
 tresult PLUGIN_API
 VstGPTSingleComponent::setupProcessing(Vst::ProcessSetup& newSetup)
 {
-    //--- called before any processing ----
     return SingleComponentEffect::setupProcessing(newSetup);
 }
 
@@ -308,18 +297,12 @@ VstGPTSingleComponent::canProcessSampleSize(int32 symbolicSampleSize)
 //------------------------------------------------------------------------
 tresult PLUGIN_API VstGPTSingleComponent::setState(IBStream* state)
 {
-    // called when we load a preset, the model has to be reloaded
-    IBStreamer streamer(state, kLittleEndian);
-
     return kResultOk;
 }
 
 //------------------------------------------------------------------------
 tresult PLUGIN_API VstGPTSingleComponent::getState(IBStream* state)
 {
-    // here we need to save the model
-    IBStreamer streamer(state, kLittleEndian);
-
     return kResultOk;
 }
 
@@ -338,10 +321,7 @@ VSTGUI::IController* VstGPTSingleComponent::createSubController(
 
     if (VSTGUI::UTF8StringView(name) == "MetaWordsListController")
     {
-        return new ListController(document_controller, std::move([this]() {
-                                      return processSetup.sampleRate;
-                                  }),
-                                  description);
+        return new ListController(document_controller, description);
     }
     else if (VSTGUI::UTF8StringView(name) == "WaveFormController")
     {
@@ -357,13 +337,9 @@ VSTGUI::IController* VstGPTSingleComponent::createSubController(
     }
     else if (VSTGUI::UTF8StringView(name) == "HeaderController")
     {
-        auto* subctrl = new HeaderController(document_controller);
-        if (!subctrl)
-            return nullptr;
-
-        return subctrl;
+        return new HeaderController(document_controller);
     }
-    if (VSTGUI::UTF8StringView(name) == "PreferencesController")
+    else if (VSTGUI::UTF8StringView(name) == "PreferencesController")
     {
         return new PreferencesController(
             document_controller,
@@ -393,22 +369,22 @@ IPlugView* PLUGIN_API VstGPTSingleComponent::createView(FIDString name)
         auto* view =
             new VSTGUI::VST3Editor(this, "view", "vstgpt_editor.uidesc");
 
-        auto ui_description = view->getUIDescription();
-        if (ui_description)
+        const auto uidesc = view->getUIDescription();
+        if (uidesc)
         {
             const auto opt_color_scheme =
                 get_color_scheme(*this, kParamIdColorScheme);
-            const auto color_scheme = opt_color_scheme.value_or(
-                "editor_res_signal_lite_scheme.uidesc");
 
-            auto dark_scheme_resources =
+            const auto color_scheme =
+                opt_color_scheme.value_or(DEFAULT_COLOR_SCHEME_UIDESC);
+
+            auto scheme_res =
                 VSTGUI::makeOwned<VSTGUI::UIDescription>(color_scheme.c_str());
 
-            if (!dark_scheme_resources->parse())
-            {
+            if (!scheme_res->parse())
                 return nullptr;
-            }
-            ui_description->setSharedResources(dark_scheme_resources);
+
+            uidesc->setSharedResources(scheme_res);
         }
 
         // Must be set to 'true' to get notified by a host selection change

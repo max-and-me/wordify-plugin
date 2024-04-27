@@ -39,12 +39,9 @@ find_view_by_id(const VSTGUI::CRowColumnView* rowColView,
 //------------------------------------------------------------------------
 // ListController
 //------------------------------------------------------------------------
-ListController::ListController(
-    ARADocumentController* controller,
-    ARADocumentController::FuncSampleRate&& playback_sample_rate_func,
-    const VSTGUI::IUIDescription* ui_description)
+ListController::ListController(ARADocumentController* controller,
+                               const VSTGUI::IUIDescription* ui_description)
 : controller(controller)
-, playback_sample_rate_func(playback_sample_rate_func)
 , ui_description(ui_description)
 {
     if (controller)
@@ -62,9 +59,7 @@ ListController::ListController(
 }
 
 //------------------------------------------------------------------------
-ListController::~ListController()
-{
-}
+ListController::~ListController() {}
 
 //------------------------------------------------------------------------
 CView* ListController::verifyView(CView* view,
@@ -173,7 +168,6 @@ ListController::createSubController(VSTGUI::UTF8StringPtr name,
     if (VSTGUI::UTF8StringView(name) == "ListEntryController")
     {
         return new ListEntryController(description, controller,
-                                       this->playback_sample_rate_func,
                                        tmp_playback_region_id);
     }
 

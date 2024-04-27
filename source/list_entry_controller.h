@@ -22,7 +22,6 @@ public:
     ListEntryController(
         const VSTGUI::IUIDescription* description,
         ARADocumentController* controller,
-        ARADocumentController::FuncSampleRate& playback_sample_rate_func,
         const meta_words::PlaybackRegion::Id playback_region_id);
     ~ListEntryController() override;
 
@@ -41,7 +40,6 @@ public:
 private:
     const VSTGUI::IUIDescription* description = nullptr;
     ARADocumentController* controller         = nullptr;
-    ARADocumentController::FuncSampleRate playback_sample_rate_func;
     const meta_words::PlaybackRegion::Id playback_region_id =
         meta_words::PlaybackRegion::INVALID_ID;
 };

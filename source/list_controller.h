@@ -38,10 +38,8 @@ public:
               ARADocumentController::PlaybackRegionsOrderSubject>;
     using OrderObserverPtr = std::unique_ptr<OrderObserver>;
 
-    ListController(
-        ARADocumentController* controller,
-        ARADocumentController::FuncSampleRate&& playback_sample_rate_func,
-        const IUIDescription* ui_description);
+    ListController(ARADocumentController* controller,
+                   const IUIDescription* ui_description);
     ~ListController() override;
 
     void PLUGIN_API update(FUnknown* changedUnknown,
@@ -71,7 +69,6 @@ private:
     ARADocumentController* controller = nullptr;
     LifetimeObserverPtr lifetime_observer;
     OrderObserverPtr order_observer;
-    ARADocumentController::FuncSampleRate playback_sample_rate_func;
     PlaybackRegion::Id tmp_playback_region_id = PlaybackRegion::INVALID_ID;
 };
 

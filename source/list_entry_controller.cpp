@@ -72,10 +72,8 @@ static auto build_meta_words_data(const ARADocumentController* controller,
 ListEntryController::ListEntryController(
     const VSTGUI::IUIDescription* description,
     ARADocumentController* controller,
-    ARADocumentController::FuncSampleRate& playback_sample_rate_func,
     const meta_words::PlaybackRegion::Id playback_region_id)
 : controller(controller)
-, playback_sample_rate_func(playback_sample_rate_func)
 , playback_region_id(playback_region_id)
 , description(description)
 {
@@ -103,9 +101,8 @@ VSTGUI::IController* ListEntryController::createSubController(
     if (!controller)
         return nullptr;
 
-    auto sample_rate_func = playback_sample_rate_func;
-    auto pbr_id           = playback_region_id;
-    auto ctler            = this->controller;
+    auto pbr_id = playback_region_id;
+    auto ctler  = this->controller;
 
     if (VSTGUI::UTF8StringView(name) == "MetaWordsClipController")
     {
