@@ -70,17 +70,14 @@ static auto build_meta_words_data(const ARADocumentController* controller,
 // ListEntryController
 //------------------------------------------------------------------------
 ListEntryController::ListEntryController(
-    const VSTGUI::IUIDescription* description,
     ARADocumentController* controller,
-    const meta_words::PlaybackRegion::Id playback_region_id)
+    const meta_words::PlaybackRegion::Id id,
+    const VSTGUI::IUIDescription* description)
 : controller(controller)
-, playback_region_id(playback_region_id)
+, playback_region_id(id)
 , description(description)
 {
 }
-
-//------------------------------------------------------------------------
-ListEntryController::~ListEntryController(){};
 
 //------------------------------------------------------------------------
 VSTGUI::CView*

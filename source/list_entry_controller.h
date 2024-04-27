@@ -19,11 +19,9 @@ class ListEntryController : public Steinberg::FObject,
 {
 public:
     //--------------------------------------------------------------------
-    ListEntryController(
-        const VSTGUI::IUIDescription* description,
-        ARADocumentController* controller,
-        const meta_words::PlaybackRegion::Id playback_region_id);
-    ~ListEntryController() override;
+    ListEntryController(ARADocumentController* controller,
+                        const meta_words::PlaybackRegion::Id id,
+                        const VSTGUI::IUIDescription* description);
 
     VSTGUI::CView*
     verifyView(VSTGUI::CView* view,
@@ -38,10 +36,9 @@ public:
     OBJ_METHODS(ListEntryController, FObject)
     //--------------------------------------------------------------------
 private:
-    const VSTGUI::IUIDescription* description = nullptr;
-    ARADocumentController* controller         = nullptr;
-    const meta_words::PlaybackRegion::Id playback_region_id =
-        meta_words::PlaybackRegion::INVALID_ID;
+    const VSTGUI::IUIDescription* description               = nullptr;
+    ARADocumentController* controller                       = nullptr;
+    const meta_words::PlaybackRegion::Id playback_region_id = 0;
 };
 
 //------------------------------------------------------------------------
