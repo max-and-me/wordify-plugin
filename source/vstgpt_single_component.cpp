@@ -198,8 +198,8 @@ tresult PLUGIN_API VstGPTSingleComponent::initialize(FUnknown* context)
     }
 
     //--- create Audio IO ------
-    addAudioInput(STR16("Stereo In"), Steinberg::Vst::SpeakerArr::kMono);
-    addAudioOutput(STR16("Stereo Out"), Steinberg::Vst::SpeakerArr::kMono);
+    addAudioInput(STR16("Stereo In"), Vst::SpeakerArr::kMono);
+    addAudioOutput(STR16("Stereo Out"), Vst::SpeakerArr::kMono);
 
     restore_parameters();
 
@@ -424,28 +424,26 @@ const ARA::ARAFactory* PLUGIN_API VstGPTSingleComponent::getFactory()
 }
 
 //------------------------------------------------------------------------
-Steinberg::TBool PLUGIN_API VstGPTSingleComponent::isViewEmbeddingSupported()
+TBool PLUGIN_API VstGPTSingleComponent::isViewEmbeddingSupported()
 {
-    return Steinberg::TBool(true);
+    return TBool(true);
 }
 
 //------------------------------------------------------------------------
-Steinberg::tresult PLUGIN_API VstGPTSingleComponent::setViewIsEmbedded(
-    Steinberg::IPlugView* /*view*/, Steinberg::TBool /*embedded*/)
+tresult PLUGIN_API VstGPTSingleComponent::setViewIsEmbedded(IPlugView* /*view*/,
+                                                            TBool /*embedded*/)
 {
-    return Steinberg::kResultOk;
+    return kResultOk;
 }
 
 //------------------------------------------------------------------------
-void PLUGIN_API
-VstGPTSingleComponent::editorAttached(Steinberg::Vst::EditorView* editor)
+void PLUGIN_API VstGPTSingleComponent::editorAttached(Vst::EditorView* editor)
 {
     editors.push_back(editor);
 }
 
 //------------------------------------------------------------------------
-void PLUGIN_API
-VstGPTSingleComponent::editorRemoved(Steinberg::Vst::EditorView* editor)
+void PLUGIN_API VstGPTSingleComponent::editorRemoved(Vst::EditorView* editor)
 {
 
     editors.erase(std::find(editors.begin(), editors.end(), editor));
@@ -458,7 +456,7 @@ auto VstGPTSingleComponent::restore_parameters() -> void
     meta_words::serde::Preferences prefs;
     meta_words::serde::read_from(PLUGIN_NAME_STR, prefs);
 
-    if (auto* color_scheme_param = new Steinberg::Vst::StringListParameter(
+    if (auto* color_scheme_param = new Vst::StringListParameter(
             STR("ColorScheme"), ParamIds::kParamIdColorScheme))
     {
         color_scheme_param->appendString(STR("Lite"));
@@ -493,18 +491,16 @@ auto VstGPTSingleComponent::store_parameters() -> void
 }
 
 //------------------------------------------------------------------------
-Steinberg::Vst::Parameter*
-VstGPTSingleComponent::getParameterObject(Steinberg::Vst::ParamID id)
+Vst::Parameter* VstGPTSingleComponent::getParameterObject(Vst::ParamID id)
 {
     return ui_parameters.getParameter(id);
 }
 
 //------------------------------------------------------------------------
-void PLUGIN_API VstGPTSingleComponent::update(
-    Steinberg::FUnknown* changedUnknown, Steinberg::int32 tag)
+void PLUGIN_API VstGPTSingleComponent::update(FUnknown* changedUnknown,
+                                              int32 tag)
 {
-    if (auto* param =
-            Steinberg::FCast<Steinberg::Vst::Parameter>(changedUnknown))
+    if (auto* param = FCast<Vst::Parameter>(changedUnknown))
     {
         if (param->getInfo().id == ParamIds::kParamIdColorScheme)
         {
