@@ -14,18 +14,18 @@ namespace mam {
 
 //------------------------------------------------------------------------
 constexpr size_t PLAYBACK_REGION_ID_ATTR = 123456789;
+constexpr auto LIST_ENTRY_VIEW_TEMPLATE  = "ListEntryTemplate";
 
 //------------------------------------------------------------------------
-static auto
-find_view_by_id(const VSTGUI::CRowColumnView* rowColView,
-                ListController::PlaybackRegion::Id id) -> VSTGUI::CView*
+static auto find_view_by_id(const CRowColumnView& rowColView,
+                            ListController::PlaybackRegion::Id pbr_id) -> CView*
 {
     CView* viewToFind = nullptr;
-    rowColView->forEachChild([&, pbr_id = id](CView* view) {
+    rowColView.forEachChild([&, pbr_id](CView* view) {
         if (viewToFind)
             return;
 
-        auto id = ListController::PlaybackRegion::INVALID_ID;
+        auto id = 0;
         if (view->getAttribute(PLAYBACK_REGION_ID_ATTR, id))
         {
             if (pbr_id == id)
@@ -40,9 +40,9 @@ find_view_by_id(const VSTGUI::CRowColumnView* rowColView,
 // ListController
 //------------------------------------------------------------------------
 ListController::ListController(ARADocumentController* controller,
-                               const VSTGUI::IUIDescription* ui_description)
+                               const IUIDescription* uidesc)
 : controller(controller)
-, ui_description(ui_description)
+, uidesc(uidesc)
 {
     if (controller)
     {
@@ -57,9 +57,6 @@ ListController::ListController(ARADocumentController* controller,
             [&](const auto&) { this->on_playback_regions_reordered(); });
     }
 }
-
-//------------------------------------------------------------------------
-ListController::~ListController() {}
 
 //------------------------------------------------------------------------
 CView* ListController::verifyView(CView* view,
@@ -92,15 +89,15 @@ CView* ListController::verifyView(CView* view,
 auto ListController::create_list_item_view(const PlaybackRegion::Id id)
     -> CView*
 {
-    if (!ui_description)
+    if (!uidesc)
         return nullptr;
 
-    tmp_playback_region_id = id;
+    playback_region_id = id;
 
-    auto* newView = ui_description->createView("ListEntryTemplate", this);
+    auto* newView = uidesc->createView(LIST_ENTRY_VIEW_TEMPLATE, this);
     newView->setAttribute(PLAYBACK_REGION_ID_ATTR, id);
 
-    tmp_playback_region_id = PlaybackRegion::INVALID_ID;
+    playback_region_id.reset();
 
     return newView;
 }
@@ -115,7 +112,7 @@ void ListController::on_playback_regions_reordered()
         return;
 
     auto func = [&](size_t index, meta_words::PlaybackRegion::Id id) {
-        auto* viewToMove = find_view_by_id(rowColView, id);
+        auto* viewToMove = find_view_by_id(*rowColView, id);
         rowColView->changeViewZOrder(viewToMove, static_cast<uint32_t>(index));
     };
 
@@ -128,7 +125,10 @@ void ListController::on_playback_regions_reordered()
 void ListController::on_add_remove_playback_region(
     const PlaybackRegionLifetimeData& data)
 {
-    if (!ui_description)
+    if (!uidesc)
+        return;
+
+    if (!rowColView)
         return;
 
     switch (data.event)
@@ -145,7 +145,7 @@ void ListController::on_add_remove_playback_region(
             break;
         }
         case PlaybackRegionLifetimeData::Event::WillBeRemoved: {
-            auto* viewToRemove = find_view_by_id(rowColView, data.id);
+            auto* viewToRemove = find_view_by_id(*rowColView, data.id);
             if (viewToRemove)
             {
                 rowColView->removeView(viewToRemove);
@@ -158,17 +158,17 @@ void ListController::on_add_remove_playback_region(
 }
 
 //------------------------------------------------------------------------
-VSTGUI::IController*
-ListController::createSubController(VSTGUI::UTF8StringPtr name,
-                                    const VSTGUI::IUIDescription* description)
+IController*
+ListController::createSubController(UTF8StringPtr name,
+                                    const IUIDescription* description)
 {
-    if (tmp_playback_region_id == PlaybackRegion::INVALID_ID)
+    if (!playback_region_id.has_value())
         return nullptr;
 
-    if (VSTGUI::UTF8StringView(name) == "ListEntryController")
+    if (UTF8StringView(name) == "ListEntryController")
     {
-        return new ListEntryController(description, controller,
-                                       tmp_playback_region_id);
+        return new ListEntryController(controller, playback_region_id.value(),
+                                       description);
     }
 
     return nullptr;

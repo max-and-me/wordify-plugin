@@ -36,11 +36,11 @@ public:
     using LifetimeObserverPtr = std::unique_ptr<LifetimeObserver>;
     using OrderObserver       = tiny_observer_pattern::Observer<
               ARADocumentController::PlaybackRegionsOrderSubject>;
-    using OrderObserverPtr = std::unique_ptr<OrderObserver>;
+    using OrderObserverPtr    = std::unique_ptr<OrderObserver>;
+    using OptPlaybackRegionId = std::optional<PlaybackRegion::Id>;
 
     ListController(ARADocumentController* controller,
-                   const IUIDescription* ui_description);
-    ~ListController() override;
+                   const IUIDescription* uidesc);
 
     void PLUGIN_API update(FUnknown* changedUnknown,
                            Steinberg::int32 message) override {};
@@ -63,13 +63,13 @@ private:
     void on_playback_regions_reordered();
     auto create_list_item_view(const PlaybackRegion::Id id) -> VSTGUI::CView*;
 
-    RowColumnView* rowColView            = nullptr;
-    const IUIDescription* ui_description = nullptr;
+    RowColumnView* rowColView    = nullptr;
+    const IUIDescription* uidesc = nullptr;
 
     ARADocumentController* controller = nullptr;
     LifetimeObserverPtr lifetime_observer;
     OrderObserverPtr order_observer;
-    PlaybackRegion::Id tmp_playback_region_id = PlaybackRegion::INVALID_ID;
+    OptPlaybackRegionId playback_region_id;
 };
 
 //------------------------------------------------------------------------
