@@ -19,6 +19,7 @@
 #include "vstgui/uidescription/uidescription.h"
 #include "waveform_controller.h"
 #include <optional>
+#include "vstgpt_defines.h"
 
 using namespace Steinberg;
 
@@ -477,9 +478,9 @@ VstGPTSingleComponent::editorRemoved(Steinberg::Vst::EditorView* editor)
 //------------------------------------------------------------------------
 auto VstGPTSingleComponent::restore_parameters() -> void
 {
-    // Restore preferences from disc here as well
+    // Restore preferences from disc
     meta_words::serde::Preferences prefs;
-    meta_words::serde::read_from("Wordify", prefs);
+    meta_words::serde::read_from(PLUGIN_NAME_STR, prefs);
 
     if (auto* color_scheme_param = new Steinberg::Vst::StringListParameter(
             STR("ColorScheme"), ParamIds::kParamIdColorScheme))
@@ -500,7 +501,7 @@ auto VstGPTSingleComponent::store_parameters() -> void
     auto* color_scheme_param =
         getParameterObject(ParamIds::kParamIdColorScheme);
 
-    // Store preferences to disc here as well
+    // Store preferences to disc
     meta_words::serde::Preferences prefs{};
 
     if (color_scheme_param)
@@ -512,7 +513,7 @@ auto VstGPTSingleComponent::store_parameters() -> void
         color_scheme_param->removeDependent(this);
     }
 
-    meta_words::serde::write_to(prefs, "Wordify");
+    meta_words::serde::write_to(prefs, PLUGIN_NAME_STR);
 }
 
 //------------------------------------------------------------------------

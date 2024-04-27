@@ -114,18 +114,10 @@ public:
     //------------------------------------------------------------------------
 protected:
     ARA::PlugIn::PlugInExtension _araPlugInExtension;
-    using VstGPTContextPtr = std::shared_ptr<class VstGPTContext>;
-    VstGPTContextPtr context;
-
+    Editors editors;
     Steinberg::Vst::ParameterContainer ui_parameters;
     auto restore_parameters() -> void;
     auto store_parameters() -> void;
-
-    Editors editors;
-
-    std::unique_ptr<
-        tiny_observer_pattern::Observer<tiny_observer_pattern::SimpleSubject>>
-        color_scheme_observer;
 };
 
 //------------------------------------------------------------------------
