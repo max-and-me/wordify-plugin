@@ -58,7 +58,7 @@ apply_meta_words_serde_dataset(const ARA::PlugIn::RestoreObjectsFilter* filter,
 template <typename Func>
 static auto
 for_each_playback_region_(const ARADocumentController::AudioSource& source,
-                          Func& func) -> void
+                          Func&& func) -> void
 {
     const auto& sources = source.getAudioModifications();
     for (const auto& source : sources)
@@ -438,14 +438,14 @@ void ARADocumentController::on_word_analysis_progress(const AudioSource& source,
 
     word_analysis_progress_subject.notify_listeners(data);
 
-    for_each_playback_region_(
-        source, [&](const PlaybackRegion& region) -> bool {
-            auto obj = playback_region_observers.find(region.get_id());
-            if (obj != playback_region_observers.end())
-                obj->second.notify_listeners({});
+    const auto func = [&](const PlaybackRegion& region) -> bool {
+        auto obj = playback_region_observers.find(region.get_id());
+        if (obj != playback_region_observers.end())
+            obj->second.notify_listeners({});
 
-            return true;
-        });
+        return true;
+    };
+    for_each_playback_region_(source, std::move(func));
 }
 
 //------------------------------------------------------------------------
