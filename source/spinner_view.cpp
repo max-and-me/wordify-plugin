@@ -34,10 +34,10 @@ static auto system_time_to_angle() -> Real
     constexpr auto FULL_ROTATION_DEGREE = Real(360.);
 
     const auto system_time_ms = systme_time_milliseconds();
-    const auto delta_ms =
+    const auto normalized =
         float(system_time_ms % FULL_ROTATION_TIME) * FULL_ROTATION_RATE;
 
-    return FULL_ROTATION_DEGREE * delta_ms;
+    return FULL_ROTATION_DEGREE * normalized;
 }
 
 //------------------------------------------------------------------------
