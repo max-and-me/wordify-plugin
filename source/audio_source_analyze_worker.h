@@ -11,19 +11,14 @@
 namespace mam::analysing {
 
 //------------------------------------------------------------------------
-using FuncFinished  = std::function<void(meta_words::MetaWords)>;
-using FuncProgress  = std::function<void(double)>;
-using PathType      = std::string;
-using TaskId        = size_t;
+using FuncFinished = std::function<void(meta_words::MetaWords)>;
+using FuncProgress = std::function<void(double)>;
+using PathType     = std::string;
+using TaskId       = size_t;
 
-struct Task
-{
-    PathType file;
-    FuncFinished finished_func;
-    FuncProgress progress_func;
-};
-
-auto push_task(const Task&& task) -> TaskId;
+auto push_task(const PathType file,
+               FuncFinished&& finished_func,
+               FuncProgress&& progress_func) -> TaskId;
 auto cancel_task(TaskId task_id) -> bool;
 auto task_count_param() -> Steinberg::Vst::Parameter*;
 

@@ -19,7 +19,7 @@ namespace mam::analysing {
 namespace {
 
 //------------------------------------------------------------------------
-using ResultFuture = std::future<meta_words::MetaWords>;
+using FutureResult = std::future<meta_words::MetaWords>;
 using FuncCancel   = std::function<bool()>;
 using FuncProgress = std::function<void(double)>;
 
@@ -83,15 +83,27 @@ auto process_audio_with_meta_words(const meta_words::PathType& file_path,
 //------------------------------------------------------------------------
 // Analyzer
 //------------------------------------------------------------------------
+template <typename TInput, typename TOutput>
 class AnalyzeWorker
 {
 public:
     //--------------------------------------------------------------------
     using Self = AnalyzeWorker;
 
+    using FuncDoTask =
+        std::function<TOutput(const TInput&, FuncProgress&&, FuncCancel&&)>;
+    using FuncCancel = std::function<bool()>;
+
+    struct Task
+    {
+        TInput input_data;
+        FuncFinished finished_func;
+        FuncProgress progress_func;
+        FuncDoTask do_task_func;
+    };
+
     using TaskId        = size_t;
-    using ResultFuture  = std::future<meta_words::MetaWords>;
-    using FuncCancel    = std::function<bool()>;
+    using FutureResult  = std::future<TOutput>;
     using ScheduledTask = std::pair<TaskId, Task>;
     using TaskList      = std::vector<ScheduledTask>;
 
@@ -114,7 +126,7 @@ public:
                     [this](Steinberg::Timer* timer) { this->work(); }),
                 1.));
 
-            next(future_meta_words);
+            next(future_result);
         }
 
         return task_id;
@@ -145,7 +157,7 @@ public:
     static size_t task_id;
     std::atomic_bool is_canceled       = false;
     std::atomic<double> progress_value = 0.;
-    ResultFuture future_meta_words;
+    FutureResult future_result;
     TaskList task_list;
     Steinberg::IPtr<Steinberg::Timer> timer;
     Steinberg::IPtr<Steinberg::Vst::Parameter> task_count_param;
@@ -171,14 +183,14 @@ public:
 
     void work()
     {
-        if (future_meta_words.wait_for(std::chrono::seconds(0)) ==
+        if (future_result.wait_for(std::chrono::seconds(0)) ==
             std::future_status::ready)
         {
             is_canceled = false;
             if (!task_list.empty())
             {
                 auto& task      = task_list.at(0);
-                auto meta_words = future_meta_words.get();
+                auto meta_words = future_result.get();
                 if (task.second.finished_func)
                     task.second.finished_func(meta_words);
 
@@ -192,7 +204,7 @@ public:
             }
             else
             {
-                if (!next(future_meta_words))
+                if (!next(future_result))
                 {
                     timer = nullptr;
                 }
@@ -205,7 +217,7 @@ public:
         }
     }
 
-    auto next(ResultFuture& result_future) -> bool
+    auto next(FutureResult& result_future) -> bool
     {
         if (task_list.empty())
             return false;
@@ -219,9 +231,9 @@ public:
 
             FuncCancel cancel_func = [&]() { return is_canceled.load(); };
 
-            return process_audio_with_meta_words(task.second.file,
-                                                 std::move(progress_func),
-                                                 std::move(cancel_func));
+            return task.second.do_task_func(task.second.input_data,
+                                            std::move(progress_func),
+                                            std::move(cancel_func));
         });
 
         return true;
@@ -229,30 +241,43 @@ public:
 };
 
 //------------------------------------------------------------------------
-size_t AnalyzeWorker::task_id = 0;
+using WorkAnalyzeWorker = AnalyzeWorker<PathType, meta_words::MetaWords>;
+size_t WorkAnalyzeWorker::task_id = 0;
 
 //------------------------------------------------------------------------
-auto push_task(const Task&& task) -> TaskId
+auto push_task(const PathType file,
+               FuncFinished&& finished_func,
+               FuncProgress&& progress_func) -> TaskId
 {
-    return AnalyzeWorker::instance().push_task(std::move(task));
+    WorkAnalyzeWorker::Task task;
+    task.input_data    = file;
+    task.finished_func = std::move(finished_func);
+    task.progress_func = std::move(progress_func);
+    task.do_task_func  = [](const meta_words::PathType& file_path,
+                           FuncProgress&& progress_func,
+                           FuncCancel&& cancel_func) {
+        return process_audio_with_meta_words(
+            file_path, std::move(progress_func), std::move(cancel_func));
+    };
+    return WorkAnalyzeWorker::instance().push_task(std::move(task));
 }
 
 //------------------------------------------------------------------------
 auto cancel_task(TaskId task_id) -> bool
 {
-    return AnalyzeWorker::instance().cancel_task(task_id);
+    return WorkAnalyzeWorker::instance().cancel_task(task_id);
 }
 
 //------------------------------------------------------------------------
 auto count_tasks() -> size_t
 {
-    return AnalyzeWorker::instance().task_count();
+    return WorkAnalyzeWorker::instance().task_count();
 }
 
 //------------------------------------------------------------------------
 auto task_count_param() -> Steinberg::Vst::Parameter*
 {
-    return AnalyzeWorker::instance().task_count_param;
+    return WorkAnalyzeWorker::instance().task_count_param;
 }
 //------------------------------------------------------------------------
 

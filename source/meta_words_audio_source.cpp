@@ -234,16 +234,17 @@ void AudioSource::updateRenderSampleCache()
     const auto path     = PathType{tmp_file.generic_u8string()};
     write_audio_to_file(*this, path);
 
-    task_id = analysing::push_task({path,
-                                    [&](auto meta_words) {
-                                        // TODO
-                                        this->meta_words = meta_words;
-                                        this->end_analysis();
-                                    },
-                                    [&](auto value) { // TODO
-                                        this->analysis_progress = value;
-                                        this->perform_analysis();
-                                    }});
+    task_id = analysing::push_task(
+        path,
+        [&](auto meta_words) {
+            // TODO
+            this->meta_words = meta_words;
+            this->end_analysis();
+        },
+        [&](auto value) { // TODO
+            this->analysis_progress = value;
+            this->perform_analysis();
+        });
 
     this->begin_analysis();
 }
