@@ -156,7 +156,7 @@ public:
     Steinberg::IPtr<Steinberg::Timer> timer;
     Steinberg::IPtr<Steinberg::Vst::Parameter> task_count_param;
 
-    Self()
+    AnalyzeWorker()
     {
 
         Steinberg::Vst::ParameterInfo paramInfo;
@@ -236,6 +236,7 @@ public:
 
 //------------------------------------------------------------------------
 using WorkAnalyzeWorker = AnalyzeWorker<PathType, meta_words::MetaWords>;
+template<>
 size_t WorkAnalyzeWorker::task_id = 0;
 
 //------------------------------------------------------------------------
