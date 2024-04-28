@@ -25,7 +25,7 @@ static auto find_view_by_id(const CRowColumnView& rowColView,
         if (viewToFind)
             return;
 
-        auto id = 0;
+        meta_words::PlaybackRegion::Id id = 0;
         if (view->getAttribute(PLAYBACK_REGION_ID_ATTR, id))
         {
             if (pbr_id == size_t(id))
