@@ -4,6 +4,7 @@
 
 #include "vstgpt_single_component.h"
 #include "ara_document_controller.h"
+#include "audio_source_analyze_worker.h"
 #include "base/source/fstreamer.h"
 #include "header_controller.h"
 #include "list_controller.h"
@@ -337,7 +338,8 @@ VSTGUI::IController* VstGPTSingleComponent::createSubController(
     }
     else if (VSTGUI::UTF8StringView(name) == "HeaderController")
     {
-        return new HeaderController(document_controller);
+        return new HeaderController(document_controller,
+                                    analysing::task_count_param());
     }
     else if (VSTGUI::UTF8StringView(name) == "PreferencesController")
     {

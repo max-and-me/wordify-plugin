@@ -49,6 +49,10 @@
         "bold": "true",
         "font-name": "Arial",
         "size": "14"
+      },
+      "task_count_font": {
+        "font-name": "Arial",
+        "size": "12"
       }
     },
     "colors": {
@@ -61,6 +65,8 @@
       "scroll_bar_handle_color": "#878889ff",
       "search_field_background_color": "#00000000",
       "search_field_text_color": "#1c1a1dff",
+      "task_count_background_color": "#2c6bedff",
+      "task_count_text_color": "#e2e1e6ff",
       "transcript_text_color": "#1c1a1dff",
       "transcript_text_hilite_color": "#1c1a1d80"
     },

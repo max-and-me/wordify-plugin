@@ -12,6 +12,7 @@ namespace mam {
 enum ParamIds
 {
     kParamIdColorScheme = 0,
+    ParamIdAnalyzeTaskCount
 };
 
 //------------------------------------------------------------------------

@@ -11,6 +11,11 @@
 namespace VSTGUI {
 class CRowColLayout;
 }
+
+namespace Steinberg::Vst {
+class Parameter;
+}
+
 namespace mam {
 class SpinnerView;
 //------------------------------------------------------------------------
@@ -20,11 +25,12 @@ class HeaderController : public Steinberg::FObject, public VSTGUI::IController
 {
 public:
     //--------------------------------------------------------------------
-    HeaderController(ARADocumentController* controller);
+    HeaderController(ARADocumentController* controller,
+                     Steinberg::Vst::Parameter* param);
     ~HeaderController() override;
 
     void PLUGIN_API update(FUnknown* changedUnknown,
-                           Steinberg::int32 message) override {};
+                           Steinberg::int32 message) override;
 
     VSTGUI::CView*
     createView(const VSTGUI::UIAttributes& attributes,
@@ -45,13 +51,20 @@ public:
 
     //--------------------------------------------------------------------
 private:
-    void on_word_analysis_progress(const meta_words::WordAnalysisProgressData& data);
+    using StringType = std::string;
+
+    void on_task_count_changed();
+    void on_task_count_changed(size_t value, const StringType& value_str);
+    void
+    on_word_analysis_progress(const meta_words::WordAnalysisProgressData& data);
 
     ARADocumentController* controller    = nullptr;
     VSTGUI::CViewContainer* container    = nullptr;
+    VSTGUI::CTextLabel* task_count_view  = nullptr;
     SpinnerView* spinner_view            = nullptr;
     VSTGUI::CRowColLayout* rowcol_parent = nullptr;
     tiny_observer_pattern::ObserverID word_analysis_progress_observer_id = 0;
+    Steinberg::IPtr<Steinberg::Vst::Parameter> task_count_param;
 };
 
 //------------------------------------------------------------------------
