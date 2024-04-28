@@ -93,7 +93,7 @@ void HeaderController::on_task_count_changed(size_t value,
 
         if (task_count_view)
         {
-           // task_count_view->setVisible(false);
+            task_count_view->setVisible(false);
             task_count_view->setText(VSTGUI::UTF8String(value_str));
         }
     }
