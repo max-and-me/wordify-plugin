@@ -48,22 +48,16 @@ auto create_whisper_cmd(const meta_words::PathType& file_path)
 
     OneValArgs one_val_args = {
         // model file resp. binary
-        //{"-m", MAM_WHISPER_CPP_MODEL_DOWNLOAD_DIR "/ggml-base.en.bin"},
-        {"-m", MAM_WHISPER_CPP_MODEL_DOWNLOAD_DIR "/ggml-small.bin"},
+        {"-m", MAM_WHISPER_CPP_MODEL_DOWNLOAD_DIR "/ggml-base.en.bin"},
+        //{"-m", MAM_WHISPER_CPP_MODEL_DOWNLOAD_DIR "/ggml-small.bin"},
         // audio file to analyse
         {"-f", file_path},
         // maximum segment length in characters: "1" mains one word
         {"-ml", "1"},
+        // language auto
         {"-l", "auto"}};
 
-    // static constexpr auto EXE_PATH =
-    // "Z:\\Private\\mam\\vst-gpt_build\\bin\\Release\\main.exe"; Command
-    /*cmd
-    {*/
-    // EXE_PATH, options, one_val_args};
-    Command cmd{"Z:\\Private\\mam\\vst-gpt_build\\bin\\Release\\main.exe",
-                options, one_val_args};
-
+    Command cmd{MAM_WHISPER_CPP_EXECUTABLE, options, one_val_args};
     return cmd;
 }
 
