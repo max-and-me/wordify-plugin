@@ -48,8 +48,8 @@ auto create_whisper_cmd(const meta_words::PathType& file_path)
 
     OneValArgs one_val_args = {
         // model file resp. binary
-        //{"-m", MAM_WHISPER_CPP_MODEL_DOWNLOAD_DIR "/ggml-base.en.bin"},
-        {"-m", MAM_WHISPER_CPP_MODEL_DOWNLOAD_DIR "/ggml-small.bin"},
+        {"-m", MAM_WHISPER_CPP_MODEL_DOWNLOAD_DIR "/ggml-base.en.bin"},
+        //{"-m", MAM_WHISPER_CPP_MODEL_DOWNLOAD_DIR "/ggml-small.bin"},
         // audio file to analyse
         {"-f", file_path},
         // maximum segment length in characters: "1" mains one word
