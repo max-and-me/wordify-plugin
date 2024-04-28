@@ -48,16 +48,22 @@ auto create_whisper_cmd(const meta_words::PathType& file_path)
 
     OneValArgs one_val_args = {
         // model file resp. binary
-        {"-m", MAM_WHISPER_CPP_MODEL_DOWNLOAD_DIR "/ggml-base.en.bin"},
-        //{"-m", MAM_WHISPER_CPP_MODEL_DOWNLOAD_DIR "/ggml-small.bin"},
+        //{"-m", MAM_WHISPER_CPP_MODEL_DOWNLOAD_DIR "/ggml-base.en.bin"},
+        {"-m", MAM_WHISPER_CPP_MODEL_DOWNLOAD_DIR "/ggml-small.bin"},
         // audio file to analyse
         {"-f", file_path},
         // maximum segment length in characters: "1" mains one word
         {"-ml", "1"},
-        // language auto
         {"-l", "auto"}};
 
-    Command cmd{MAM_WHISPER_CPP_EXECUTABLE, options, one_val_args};
+    // static constexpr auto EXE_PATH =
+    // "Z:\\Private\\mam\\vst-gpt_build\\bin\\Release\\main.exe"; Command
+    /*cmd
+    {*/
+    // EXE_PATH, options, one_val_args};
+    Command cmd{"Z:\\Private\\mam\\vst-gpt_build\\bin\\Release\\main.exe",
+                options, one_val_args};
+
     return cmd;
 }
 
@@ -145,9 +151,13 @@ public:
     }
 
     auto task_count() const -> size_t { return task_list.size(); }
+    auto get_task_count_parmeter() -> VstParameterPtr
+    {
+        return task_count_param;
+    }
 
     //--------------------------------------------------------------------
-    // private:
+private:
     static size_t task_id;
     std::atomic_bool is_canceled       = false;
     std::atomic<double> progress_value = 0.;
@@ -270,9 +280,9 @@ auto count_tasks() -> size_t
 }
 
 //------------------------------------------------------------------------
-auto task_count_param() -> Steinberg::Vst::Parameter*
+auto task_count_param() -> VstParameterPtr
 {
-    return WorkAnalyzeWorker::instance().task_count_param;
+    return WorkAnalyzeWorker::instance().get_task_count_parmeter();
 }
 //------------------------------------------------------------------------
 
