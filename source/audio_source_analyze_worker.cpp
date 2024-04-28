@@ -61,8 +61,7 @@ auto create_whisper_cmd(const meta_words::PathType& file_path)
     /*cmd
     {*/
     // EXE_PATH, options, one_val_args};
-    Command cmd{"Z:\\Private\\mam\\vst-gpt_build\\bin\\Release\\main.exe",
-                options, one_val_args};
+   Command cmd{MAM_WHISPER_CPP_EXECUTABLE, options, one_val_args};
 
     return cmd;
 }
