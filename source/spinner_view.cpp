@@ -4,6 +4,7 @@
 
 #include "spinner_view.h"
 #include "vstgui/lib/cdrawcontext.h"
+#include <chrono>
 
 using namespace VSTGUI;
 
@@ -12,6 +13,32 @@ namespace mam {
 #ifndef kPI
 #define kPI 3.14159265358979323846
 #endif
+//------------------------------------------------------------------------
+static auto systme_time_milliseconds() -> size_t
+{
+    std::chrono::time_point<std::chrono::system_clock> now =
+        std::chrono::system_clock::now();
+    const auto duration = now.time_since_epoch();
+    const auto millis =
+        std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
+
+    return millis;
+}
+
+//------------------------------------------------------------------------
+template <typename Real>
+static auto system_time_to_angle() -> Real
+{
+    constexpr auto FULL_ROTATION_TIME   = 4000; // 4000ms (4s)
+    constexpr auto FULL_ROTATION_RATE   = Real(1.) / Real(FULL_ROTATION_TIME);
+    constexpr auto FULL_ROTATION_DEGREE = Real(360.);
+
+    const auto system_time_ms = systme_time_milliseconds();
+    const auto delta_ms =
+        float(system_time_ms % FULL_ROTATION_TIME) * FULL_ROTATION_RATE;
+
+    return FULL_ROTATION_DEGREE * delta_ms;
+}
 
 //------------------------------------------------------------------------
 SpinnerView::SpinnerView(const CRect& size)
@@ -23,9 +50,7 @@ SpinnerView::SpinnerView(const CRect& size)
 //------------------------------------------------------------------------
 void SpinnerView::onIdle()
 {
-    rotationAngle += 5.0f;
-    if (rotationAngle >= 360.0f)
-        rotationAngle -= 360.0f;
+    rotationAngle = system_time_to_angle<const float>();
     invalid();
 }
 
