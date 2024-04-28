@@ -39,25 +39,37 @@ HeaderController::~HeaderController()
 void HeaderController::on_word_analysis_progress(
     const meta_words::WordAnalysisProgressData& data)
 {
+    using State = meta_words::WordAnalysisProgressData::State;
 
-    if (data.state !=
-        meta_words::WordAnalysisProgressData::State::kAnalysisStopped)
+    switch (data.state)
     {
-        if (container)
-        {
-            if (!spinner_view)
+        case State::kAnalysisStarted: {
+            if (container)
             {
-                const auto view_size = CPoint({40., 40.});
-                spinner_view =
-                    new SpinnerView(CRect{0, 0, view_size.x, view_size.y});
-                container->addView(spinner_view);
+                if (!spinner_view)
+                {
+                    const auto view_size = CPoint({40., 40.});
+                    spinner_view =
+                        new SpinnerView(CRect{0, 0, view_size.x, view_size.y});
+                    container->addView(spinner_view);
+                }
             }
+            break;
         }
-    }
-    else
-    {
-        if (container && spinner_view)
-            container->removeView(spinner_view);
+
+        case State::kAnalysisRunning: {
+            // TODO: Do something here!
+            break;
+        }
+
+        case State::kAnalysisStopped: {
+            if (container && spinner_view)
+                container->removeView(spinner_view);
+            break;
+        }
+
+        default:
+            break;
     }
 }
 
