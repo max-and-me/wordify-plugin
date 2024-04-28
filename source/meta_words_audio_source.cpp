@@ -450,7 +450,6 @@ void AudioSource::perform_analysis()
 //------------------------------------------------------------------------
 void AudioSource::end_analysis()
 {
-    this->meta_words = trim_meta_words(this->meta_words);
     transform_to_seconds(this->meta_words);
 
     fn_start_stop_changed(*this, false);
