@@ -14,28 +14,43 @@
 namespace mam::meta_words {
 
 //------------------------------------------------------------------------
+//  WordAnalysisProgressData
+//------------------------------------------------------------------------
+struct WordAnalysisProgressData
+{
+    enum class State
+    {
+        kAnalysisStarted,
+        kAnalysisRunning,
+        kAnalysisStopped,
+    };
+
+    size_t audio_source_id = 0;
+    double progress_val    = 0.;
+    State state;
+};
+
+//------------------------------------------------------------------------
+// AudioSource
+//------------------------------------------------------------------------
 class AudioSource : public ARA::PlugIn::AudioSource
 {
 public:
     using SampleType = float;
-    using Identifier = int;
+    using Identifier = std::size_t;
     using MultiChannelBufferType =
         mam::audio_buffer_management::MultiChannelBuffers<SampleType>;
     using MetaWords = mam::meta_words::MetaWords;
     using FnChanged = std::function<void(AudioSource*)>;
-    using FnStartStopChanged =
-        std::function<void(const AudioSource& source, bool status)>;
-    using FnProgressChanged =
-        std::function<void(const AudioSource& source, double progress)>;
+    using FuncAnalyzeProgress =
+        std::function<void(const WordAnalysisProgressData&)>;
 
     AudioSource(ARA::PlugIn::Document* document,
                 ARA::ARAAudioSourceHostRef hostRef,
-                FnStartStopChanged&& fn_start_stop_changed,
-                FnProgressChanged&& fn_progress_changed,
+                FuncAnalyzeProgress&& analyze_progress_func,
                 Identifier identifier)
     : ARA::PlugIn::AudioSource{document, hostRef}
-    , fn_start_stop_changed(fn_start_stop_changed)
-    , fn_progress_changed(fn_progress_changed)
+    , analyze_progress_func(analyze_progress_func)
     , identifier(identifier)
     {
     }
@@ -70,8 +85,7 @@ protected:
 
     MultiChannelBufferType audio_buffers;
     MetaWords meta_words;
-    FnStartStopChanged fn_start_stop_changed;
-    FnProgressChanged fn_progress_changed;
+    FuncAnalyzeProgress analyze_progress_func;
 
     Identifier identifier = -1;
 

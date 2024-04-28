@@ -181,11 +181,8 @@ ARA::PlugIn::AudioSource* ARADocumentController::doCreateAudioSource(
 
     auto* new_audio_source = new AudioSource(
         document, hostRef,
-        [this](const AudioSource& source, bool state) {
-            this->on_word_analysis_progress(source, state);
-        },
-        [this](const AudioSource& source, double progress) {
-            this->on_word_analysis_progress(source, progress);
+        [this](const auto& data) {
+            this->on_analyze_audio_source_progress(data);
         },
         id);
     id++;
@@ -428,35 +425,33 @@ void ARADocumentController::on_remove_playback_region(PlaybackRegion::Id id)
 }
 
 //------------------------------------------------------------------------
-void ARADocumentController::on_word_analysis_progress(const AudioSource& source,
-                                                      bool state)
+void ARADocumentController::on_analyze_audio_source_progress(
+    const meta_words::WordAnalysisProgressData& data)
 {
-    WordAnalysisProgressData data{
-        source.getIdentifier(), -1.,
-        state ? WordAnalysisProgressData::State::kAnalysisStarted
-              : WordAnalysisProgressData::State::kAnalysisStopped};
-
     word_analysis_progress_subject.notify_listeners(data);
 
-    const auto func = [&](const PlaybackRegion& region) -> bool {
-        auto obj = playback_region_observers.find(region.get_id());
-        if (obj != playback_region_observers.end())
-            obj->second.notify_listeners({});
+    // Notify all regions which rely on this audio source
+    if (data.state ==
+        meta_words::WordAnalysisProgressData::State::kAnalysisStopped)
+    {
+        const auto func = [&](const PlaybackRegion& region) -> bool {
+            auto obj = playback_region_observers.find(region.get_id());
+            if (obj != playback_region_observers.end())
+                obj->second.notify_listeners({});
 
-        return true;
-    };
-    for_each_playback_region_(source, std::move(func));
-}
+            return true;
+        };
 
-//------------------------------------------------------------------------
-void ARADocumentController::on_word_analysis_progress(const AudioSource& source,
-                                                      double progress)
-{
-    WordAnalysisProgressData data{
-        source.getIdentifier(), progress,
-        WordAnalysisProgressData::State::kAnalysisRunning};
-
-    word_analysis_progress_subject.notify_listeners(data);
+        const auto& sources = getDocument()->getAudioSources<AudioSource>();
+        for (const auto& source : sources)
+        {
+            if (source->getIdentifier() == data.audio_source_id)
+            {
+                for_each_playback_region_(*source, std::move(func));
+                break;
+            }
+        }
+    }
 }
 
 //------------------------------------------------------------------------

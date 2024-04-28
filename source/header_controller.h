@@ -45,7 +45,7 @@ public:
 
     //--------------------------------------------------------------------
 private:
-    void on_word_analysis_progress(const WordAnalysisProgressData& data);
+    void on_word_analysis_progress(const meta_words::WordAnalysisProgressData& data);
 
     ARADocumentController* controller    = nullptr;
     VSTGUI::CViewContainer* container    = nullptr;

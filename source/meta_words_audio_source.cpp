@@ -437,14 +437,28 @@ void AudioSource::updateRenderSampleCache()
 //------------------------------------------------------------------------
 void AudioSource::begin_analysis()
 {
-    fn_start_stop_changed(*this, true);
+    const WordAnalysisProgressData& data = {
+        /*.id*/ this->getIdentifier(),
+        /*.progress*/ 0.,
+        /*.state*/ WordAnalysisProgressData::State::kAnalysisStarted,
+    };
+
+    analyze_progress_func(data);
 }
 
 //------------------------------------------------------------------------
 void AudioSource::perform_analysis()
 {
     double progress_val = analysis_progress;
-    fn_progress_changed(*this, progress_val);
+    // fn_progress_changed(*this, progress_val);
+
+    const WordAnalysisProgressData& data = {
+        /*.id*/ this->getIdentifier(),
+        /*.progress*/ progress_val,
+        /*.state*/ WordAnalysisProgressData::State::kAnalysisRunning,
+    };
+
+    analyze_progress_func(data);
 }
 
 //------------------------------------------------------------------------
@@ -452,7 +466,14 @@ void AudioSource::end_analysis()
 {
     transform_to_seconds(this->meta_words);
 
-    fn_start_stop_changed(*this, false);
+    const WordAnalysisProgressData& data = {
+        /*.id*/ this->getIdentifier(),
+        /*.progress*/ 1.,
+        /*.state*/ WordAnalysisProgressData::State::kAnalysisStopped,
+    };
+
+    analyze_progress_func(data);
+
     task_id.reset();
 }
 

@@ -52,23 +52,6 @@ struct RegionData
 using RegionSelectionModel = SelectionModel<RegionData>;
 
 //------------------------------------------------------------------------
-//  WordAnalysisProgressData
-//------------------------------------------------------------------------
-struct WordAnalysisProgressData
-{
-    enum class State
-    {
-        kAnalysisStarted,
-        kAnalysisRunning,
-        kAnalysisStopped,
-    };
-
-    meta_words::AudioSource::Identifier identifier;
-    double progress_val = 0.;
-    State state;
-};
-
-//------------------------------------------------------------------------
 // ARADocumentController
 //------------------------------------------------------------------------
 class ARADocumentController : public ARA::PlugIn::DocumentController,
@@ -99,7 +82,7 @@ public:
         tiny_observer_pattern::Subject<PlaybackRegionLifetimeData>;
     using PlaybackRegionsOrderSubject = RegionOrderManager::OrderSubject;
     using AnalysisProgressSubject =
-        tiny_observer_pattern::Subject<WordAnalysisProgressData>;
+        tiny_observer_pattern::Subject<meta_words::WordAnalysisProgressData>;
 
     // publish inherited constructor
     using ARA::PlugIn::DocumentController::DocumentController;
@@ -241,8 +224,8 @@ protected:
 private:
     void on_add_playback_region(PlaybackRegion* region);
     void on_remove_playback_region(PlaybackRegion::Id id);
-    void on_word_analysis_progress(const AudioSource& source, bool state);
-    void on_word_analysis_progress(const AudioSource& source, double progress);
+    void on_analyze_audio_source_progress(
+        const meta_words::WordAnalysisProgressData& data);
 
     template <typename Func>
     void for_each_playback_region(Func&& func)

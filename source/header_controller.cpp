@@ -37,10 +37,11 @@ HeaderController::~HeaderController()
 
 //------------------------------------------------------------------------
 void HeaderController::on_word_analysis_progress(
-    const WordAnalysisProgressData& data)
+    const meta_words::WordAnalysisProgressData& data)
 {
 
-    if (data.state != WordAnalysisProgressData::State::kAnalysisStopped)
+    if (data.state !=
+        meta_words::WordAnalysisProgressData::State::kAnalysisStopped)
     {
         if (container)
         {
@@ -74,8 +75,7 @@ HeaderController::verifyView(VSTGUI::CView* view,
                              const VSTGUI::IUIDescription* description)
 {
 
-    if (const auto* view_name =
-            attributes.getAttributeValue("uidesc-label"))
+    if (const auto* view_name = attributes.getAttributeValue("uidesc-label"))
     {
         if (*view_name != "SpinnerHLayout")
             return view;
