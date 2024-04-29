@@ -60,6 +60,8 @@
       "body_background_color": "#fafcffff",
       "footer_background_color": "#fafcffff",
       "kebab_menu_color": "#1b1b1dff",
+      "loading_indicator_background_color": "#e8ebf2ff",
+      "loading_indicator_dot_color": "#b9b9b9ff",
       "region_start_time_color": "#545863ff",
       "region_duration_time_color": "#545863ff",
       "scroll_bar_handle_color": "#878889ff",

@@ -1705,26 +1705,41 @@
 					"wants-focus": "false"
 				},
 				"children": {
-					"CGradientView": {
+					"CTextLabel": {
 						"attributes": {
-							"autosize": "left right top bottom ",
-							"class": "CGradientView",
-							"draw-antialiased": "true",
+							"back-color": "loading_indicator_background_color",
+							"background-offset": "0, 0",
+							"class": "CTextLabel",
+							"default-value": "0.5",
+							"font": "~ NormalFont",
+							"font-antialias": "true",
+							"font-color": "~ WhiteCColor",
 							"frame-color": "~ BlackCColor",
 							"frame-width": "0",
-							"gradient": "Default TextButton Gradient",
-							"gradient-angle": "0",
-							"gradient-style": "linear",
+							"max-value": "1",
+							"min-value": "0",
 							"mouse-enabled": "true",
 							"opacity": "1",
 							"origin": "0, 0",
-							"radial-center": "0.5, 0.5",
-							"radial-radius": "1",
 							"round-rect-radius": "8",
+							"shadow-color": "~ RedCColor",
 							"size": "32, 16",
-							"transparent": "true",
+							"style-3D-in": "false",
+							"style-3D-out": "false",
+							"style-no-draw": "false",
+							"style-no-frame": "true",
+							"style-no-text": "false",
+							"style-round-rect": "true",
+							"style-shadow-text": "false",
+							"text-alignment": "center",
+							"text-inset": "0, 0",
+							"text-rotation": "0",
+							"text-shadow-offset": "1, 1",
+							"transparent": "false",
 							"uidesc-label": "Background",
-							"wants-focus": "false"
+							"value-precision": "2",
+							"wants-focus": "false",
+							"wheel-inc-value": "0.1"
 						}
 					},
 					"CRowColumnView": {
@@ -1751,7 +1766,7 @@
 						"children": {
 							"CTextLabel": {
 								"attributes": {
-									"back-color": "~ BlackCColor",
+									"back-color": "loading_indicator_dot_color",
 									"background-offset": "0, 0",
 									"class": "CTextLabel",
 									"default-value": "0.5",
@@ -1788,7 +1803,7 @@
 							},
 							"CTextLabel": {
 								"attributes": {
-									"back-color": "~ BlackCColor",
+									"back-color": "loading_indicator_dot_color",
 									"background-offset": "0, 0",
 									"class": "CTextLabel",
 									"default-value": "0.5",
@@ -1825,7 +1840,7 @@
 							},
 							"CTextLabel": {
 								"attributes": {
-									"back-color": "~ BlackCColor",
+									"back-color": "loading_indicator_dot_color",
 									"background-offset": "0, 0",
 									"class": "CTextLabel",
 									"default-value": "0.5",
