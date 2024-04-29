@@ -14,13 +14,18 @@ namespace mam {
 class SpinnerView : public VSTGUI::CView
 {
 public:
+    //--------------------------------------------------------------------
+
     SpinnerView(const VSTGUI::CRect& size);
 
     void onIdle() override;
 
     void draw(VSTGUI::CDrawContext* context) override;
 
+    //--------------------------------------------------------------------
 private:
-    float rotationAngle = 0.0f;
+    VSTGUI::CCoord rotationAngle = 0.;
 };
+
+//------------------------------------------------------------------------
 } // namespace mam
