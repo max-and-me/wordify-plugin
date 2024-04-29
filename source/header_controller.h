@@ -9,7 +9,6 @@
 #include "vstgui/uidescription/icontroller.h"
 
 namespace VSTGUI {
-class CRowColLayout;
 class CSearchTextEdit;
 } // namespace VSTGUI
 
@@ -19,6 +18,7 @@ class Parameter;
 
 namespace mam {
 class SpinnerView;
+
 //------------------------------------------------------------------------
 // HeaderController
 //------------------------------------------------------------------------
@@ -56,8 +56,6 @@ private:
 
     void on_task_count_changed();
     void on_task_count_changed(size_t value, const StringType& value_str);
-    void
-    on_word_analysis_progress(const meta_words::WordAnalysisProgressData& data);
     void updateSearchResults();
 
     enum
@@ -65,12 +63,9 @@ private:
         kSearchFieldTag = 1000,
     };
 
-    ARADocumentController* controller    = nullptr;
-    VSTGUI::CViewContainer* container    = nullptr;
-    VSTGUI::CTextLabel* task_count_view  = nullptr;
-    SpinnerView* spinner_view            = nullptr;
-    VSTGUI::CRowColLayout* rowcol_parent = nullptr;
-    tiny_observer_pattern::ObserverID word_analysis_progress_observer_id = 0;
+    ARADocumentController* controller   = nullptr;
+    VSTGUI::CTextLabel* task_count_view = nullptr;
+    SpinnerView* spinner_view           = nullptr;
     Steinberg::IPtr<Steinberg::Vst::Parameter> task_count_param;
     VSTGUI::CSearchTextEdit* searchField = nullptr;
     std::string filterString;

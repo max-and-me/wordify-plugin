@@ -25,12 +25,6 @@ HeaderController::HeaderController(ARADocumentController* controller,
     if (!controller)
         return;
 
-    /* word_analysis_progress_observer_id =
-         controller->register_word_analysis_progress_observer(
-             [this](const auto& data) {
-                 this->on_word_analysis_progress(data);
-             });*/
-
     if (task_count_param)
         param->addDependent(this);
 }
@@ -40,9 +34,6 @@ HeaderController::~HeaderController()
 {
     if (task_count_param)
         task_count_param->removeDependent(this);
-
-    /* controller->unregister_word_analysis_progress_observer(
-         word_analysis_progress_observer_id);*/
 }
 
 //------------------------------------------------------------------------
@@ -71,16 +62,11 @@ void HeaderController::on_task_count_changed(size_t value,
 {
     if (value > 0)
     {
-        if (container)
+        if (spinner_view)
         {
-            if (!spinner_view)
-            {
-                const auto view_size = CPoint({40., 40.});
-                spinner_view =
-                    new SpinnerView(CRect{0, 0, view_size.x, view_size.y});
-                container->addView(spinner_view);
-            }
+            spinner_view->setVisible(true);
         }
+
         if (task_count_view)
         {
             task_count_view->setVisible(true);
@@ -89,52 +75,16 @@ void HeaderController::on_task_count_changed(size_t value,
     }
     else
     {
-        if (container && spinner_view)
-            container->removeView(spinner_view);
+        if (spinner_view)
+        {
+            spinner_view->setVisible(false);
+        }
 
         if (task_count_view)
         {
             task_count_view->setVisible(false);
             task_count_view->setText(VSTGUI::UTF8String(value_str));
         }
-    }
-}
-
-//------------------------------------------------------------------------
-void HeaderController::on_word_analysis_progress(
-    const meta_words::WordAnalysisProgressData& data)
-{
-    using State = meta_words::WordAnalysisProgressData::State;
-
-    switch (data.state)
-    {
-        case State::kAnalysisStarted: {
-            if (container)
-            {
-                if (!spinner_view)
-                {
-                    const auto view_size = CPoint({40., 40.});
-                    spinner_view =
-                        new SpinnerView(CRect{0, 0, view_size.x, view_size.y});
-                    container->addView(spinner_view);
-                }
-            }
-            break;
-        }
-
-        case State::kAnalysisRunning: {
-            // TODO: Do something here!
-            break;
-        }
-
-        case State::kAnalysisStopped: {
-            if (container && spinner_view)
-                container->removeView(spinner_view);
-            break;
-        }
-
-        default:
-            break;
     }
 }
 
@@ -156,6 +106,23 @@ void PLUGIN_API HeaderController::update(FUnknown* changedUnknown,
 CView* HeaderController::createView(const VSTGUI::UIAttributes& attributes,
                                     const VSTGUI::IUIDescription* description)
 {
+    if (const auto* view_name = attributes.getAttributeValue("uidesc-label"))
+    {
+        if (*view_name == "SpinnerView")
+        {
+            VSTGUI::CPoint origin;
+            VSTGUI::CPoint size;
+            const auto* size_str = attributes.getAttributeValue("size");
+            if (size_str)
+                attributes.stringToPoint(*size_str, size);
+            const auto* origin_str = attributes.getAttributeValue("origin");
+            if (origin_str)
+                attributes.stringToPoint(*origin_str, origin);
+
+            const CRect rect{origin, size};
+            return new SpinnerView(rect);
+        }
+    }
     return nullptr;
 }
 
@@ -168,11 +135,9 @@ HeaderController::verifyView(VSTGUI::CView* view,
 
     if (const auto* view_name = attributes.getAttributeValue("uidesc-label"))
     {
-        if (*view_name == "SpinnerHLayout")
+        if (*view_name == "SpinnerView")
         {
-            if (auto cnt = view->asViewContainer())
-                container = cnt;
-
+            spinner_view = dynamic_cast<SpinnerView*>(view);
             if (task_count_param)
                 on_task_count_changed();
         }
