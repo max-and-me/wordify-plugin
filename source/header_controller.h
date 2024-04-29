@@ -10,7 +10,8 @@
 
 namespace VSTGUI {
 class CRowColLayout;
-}
+class CSearchTextEdit;
+} // namespace VSTGUI
 
 namespace Steinberg::Vst {
 class Parameter;
@@ -42,7 +43,7 @@ public:
                const VSTGUI::IUIDescription* description) override;
 
     // IControlListener
-    void valueChanged(VSTGUI::CControl* pControl) override {};
+    void valueChanged(VSTGUI::CControl* pControl) override;
     VSTGUI::IController*
     createSubController(VSTGUI::UTF8StringPtr name,
                         const VSTGUI::IUIDescription* description);
@@ -57,6 +58,12 @@ private:
     void on_task_count_changed(size_t value, const StringType& value_str);
     void
     on_word_analysis_progress(const meta_words::WordAnalysisProgressData& data);
+    void updateSearchResults();
+
+    enum
+    {
+        kSearchFieldTag = 1000,
+    };
 
     ARADocumentController* controller    = nullptr;
     VSTGUI::CViewContainer* container    = nullptr;
@@ -65,6 +72,8 @@ private:
     VSTGUI::CRowColLayout* rowcol_parent = nullptr;
     tiny_observer_pattern::ObserverID word_analysis_progress_observer_id = 0;
     Steinberg::IPtr<Steinberg::Vst::Parameter> task_count_param;
+    VSTGUI::CSearchTextEdit* searchField;
+    std::string filterString;
 };
 
 //------------------------------------------------------------------------

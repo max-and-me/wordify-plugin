@@ -52,6 +52,17 @@ struct RegionData
 using RegionSelectionModel = SelectionModel<RegionData>;
 
 //------------------------------------------------------------------------
+//  WordSelectData
+//------------------------------------------------------------------------
+struct WordSelectData
+{
+    meta_words::PlaybackRegion::Id region_id;
+    int index = 0;
+    MetaWordsData meta_word_data;
+};
+
+//------------------------------------------------------------------------
+//------------------------------------------------------------------------
 // ARADocumentController
 //------------------------------------------------------------------------
 class ARADocumentController : public ARA::PlugIn::DocumentController,
@@ -83,6 +94,8 @@ public:
     using PlaybackRegionsOrderSubject = RegionOrderManager::OrderSubject;
     using AnalysisProgressSubject =
         tiny_observer_pattern::Subject<meta_words::WordAnalysisProgressData>;
+
+    using WordSelectSubject = tiny_observer_pattern::Subject<WordSelectData>;
 
     // publish inherited constructor
     using ARA::PlugIn::DocumentController::DocumentController;
@@ -170,6 +183,8 @@ public:
     auto
     find_playback_region(PlaybackRegion::Id id) const -> OptPlaybackRegionPtr;
 
+    auto find_word_in_region(std::string search) -> void;
+
     template <typename Func>
     void for_each_playback_region_id(Func&& func)
     {
@@ -196,10 +211,20 @@ public:
         return &playback_region_lifetimes_subject;
     }
 
+    auto get_selected_word_subject() -> WordSelectSubject*
+    {
+        return &selected_word_subject;
+    }
+
     auto register_word_analysis_progress_observer(
         AnalysisProgressSubject::Callback&& callback) -> ObserverID;
 
     auto unregister_word_analysis_progress_observer(ObserverID id) -> bool;
+
+    auto register_word_selected_observer(WordSelectSubject::Callback&& callback)
+        -> ObserverID;
+
+    auto unregister_word_selected_observer(ObserverID id) -> bool;
 
     template <typename Func>
     auto for_each_playback_region_id_enumerated(Func& func) const -> void
@@ -215,6 +240,7 @@ protected:
     PlaybackRegions playback_regions;
     PlaybackRegionLifetimesSubject playback_region_lifetimes_subject;
     AnalysisProgressSubject word_analysis_progress_subject;
+    WordSelectSubject selected_word_subject;
     RegionOrderManager region_order_manager;
     RegionSelectionModel region_selection_model;
 

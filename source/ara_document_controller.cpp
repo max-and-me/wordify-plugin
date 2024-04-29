@@ -366,6 +366,35 @@ auto ARADocumentController::find_playback_region(PlaybackRegion::Id id) const
 }
 
 //------------------------------------------------------------------------
+auto ARADocumentController::find_word_in_region(std::string search) -> void
+{
+    for (auto reg : playback_regions)
+    {
+        auto regionPtr          = reg.second;
+        auto meta_words_data    = regionPtr->get_meta_words_data();
+        auto meta_words_dataSet = meta_words_data.words;
+        int index               = 0;
+        for (auto word_data : meta_words_dataSet)
+        {
+            auto word = word_data.word.word;
+            std::transform(word.begin(), word.end(), word.begin(), ::tolower);
+            std::transform(search.begin(), search.end(), search.begin(),
+                           ::tolower);
+
+            if (std::search(word.begin(), word.end(), search.begin(),
+                            search.end()) != word.end())
+            {
+                WordSelectData data{reg.first, index, meta_words_data};
+
+                selected_word_subject.notify_listeners(data);
+                break; // TODO: handle multiple hits
+            }
+            index++;
+        }
+    }
+}
+
+//------------------------------------------------------------------------
 void ARADocumentController::onRequestLocatorPosChanged(double pos)
 {
     auto hostPBCtrl = getHostPlaybackController();
@@ -402,6 +431,20 @@ auto ARADocumentController::unregister_playback_region_changed_observer(
 {
     auto& subject = playback_region_observers[playback_region_id];
     return subject.remove_listener(id);
+}
+
+//------------------------------------------------------------------------
+auto ARADocumentController::register_word_selected_observer(
+    WordSelectSubject::Callback&& callback) -> ObserverID
+{
+    return selected_word_subject.add_listener(std::move(callback));
+}
+
+//------------------------------------------------------------------------
+auto ARADocumentController::unregister_word_selected_observer(ObserverID id)
+    -> bool
+{
+    return selected_word_subject.remove_listener(id);
 }
 
 //------------------------------------------------------------------------

@@ -6,6 +6,7 @@
 #include "public.sdk/source/vst/utility/stringconvert.h"
 #include "public.sdk/source/vst/vstparameters.h"
 #include "spinner_view.h"
+#include "vstgui/lib/controls/csearchtextedit.h"
 #include "vstgui/lib/controls/ctextlabel.h"
 #include "vstgui/uidescription/iuidescription.h"
 #include "vstgui/uidescription/uiattributes.h"
@@ -181,6 +182,18 @@ HeaderController::verifyView(VSTGUI::CView* view,
             if (task_count_view)
                 on_task_count_changed();
         }
+        else if (*view_name == "search")
+        {
+            if (!searchField)
+            {
+                if (auto sf = dynamic_cast<CSearchTextEdit*>(view))
+                {
+                    searchField = sf;
+                    searchField->setTag(kSearchFieldTag);
+                    searchField->setListener(this);
+                }
+            }
+        }
     }
 
     return view;
@@ -195,4 +208,27 @@ HeaderController::createSubController(VSTGUI::UTF8StringPtr name,
 }
 
 //------------------------------------------------------------------------
+void HeaderController::valueChanged(CControl* control)
+{
+    switch (control->getTag())
+    {
+        case kSearchFieldTag: {
+            if (auto sf = dynamic_cast<CSearchTextEdit*>(control))
+            {
+                filterString = sf->getText();
+                updateSearchResults();
+            }
+            break;
+        }
+    }
+}
+
+//------------------------------------------------------------------------
+void HeaderController::updateSearchResults()
+{
+    controller->find_word_in_region(filterString);
+}
+
+//------------------------------------------------------------------------
+
 } // namespace mam

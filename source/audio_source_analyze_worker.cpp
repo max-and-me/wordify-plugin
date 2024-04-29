@@ -61,7 +61,7 @@ auto create_whisper_cmd(const meta_words::PathType& file_path)
     /*cmd
     {*/
     // EXE_PATH, options, one_val_args};
-   Command cmd{MAM_WHISPER_CPP_EXECUTABLE, options, one_val_args};
+    Command cmd{MAM_WHISPER_CPP_EXECUTABLE, options, one_val_args};
 
     return cmd;
 }
@@ -245,7 +245,7 @@ private:
 
 //------------------------------------------------------------------------
 using WorkAnalyzeWorker = AnalyzeWorker<PathType, meta_words::MetaWords>;
-template<>
+template <>
 size_t WorkAnalyzeWorker::task_id = 0;
 
 //------------------------------------------------------------------------
