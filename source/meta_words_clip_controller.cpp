@@ -206,6 +206,50 @@ void insert_word_buttons(const mam::MetaWordsClipController::Cache& cache,
 }
 
 //------------------------------------------------------------------------
+static CViewAttributeID kTemplateNameAttributeID = 'uitl';
+static auto add_loading_indicator(CViewContainer* region_transcript,
+                                  const IUIDescription* description,
+                                  HStackLayout* stack_layout) -> void
+{
+    if (region_transcript->getNbViews() == 0)
+    {
+        auto view =
+            description->createView("LoadingIndicatorTemplate", nullptr);
+        if (!view)
+            return;
+        stack_layout->setup({0., 0.}, {0., 0., 0., 0});
+        region_transcript->addView(view);
+    }
+}
+
+//------------------------------------------------------------------------
+static auto remove_loading_indicator(CViewContainer* region_transcript,
+                                     HStackLayout* stack_layout) -> void
+{
+    if (region_transcript->getNbViews() == 1)
+    {
+        if (CView* view = region_transcript->getView(0))
+        {
+            uint32_t attrSize = 0;
+            if (view->getAttributeSize(kTemplateNameAttributeID, attrSize))
+            {
+                char* str = new char[attrSize];
+                if (view->getAttribute(kTemplateNameAttributeID, attrSize, str,
+                                       attrSize))
+                {
+                    if (VSTGUI::UTF8String("LoadingIndicatorTemplate") == str)
+                    {
+                        stack_layout->setup({0., 0.}, {0., 0., 0., -4});
+                        region_transcript->removeView(view);
+                    }
+                }
+                delete[] str;
+            }
+        }
+    }
+}
+
+//------------------------------------------------------------------------
 static auto
 update_region_transcript(CViewContainer* region_transcript,
                          const MetaWordsData& meta_words_data,
@@ -342,6 +386,10 @@ void MetaWordsClipController::on_meta_words_data_changed()
                     return compute_word_width(description, word);
                 });
         }
+
+        if (!data.words.empty())
+            remove_loading_indicator(region_transcript, stack_layout.get());
+
         update_region_transcript(region_transcript, data, description,
                                  meta_word_button_attributes, this, cache);
         region_transcript->invalid();
@@ -409,6 +457,7 @@ CView* MetaWordsClipController::verifyView(CView* view,
                         });
                 }
 
+                const auto data   = meta_words_data_func();
                 region_transcript = dynamic_cast<CViewContainer*>(view);
                 stack_layout =
                     std::make_unique<HStackLayout>(region_transcript);
@@ -416,6 +465,10 @@ CView* MetaWordsClipController::verifyView(CView* view,
                 update_region_transcript(
                     region_transcript, meta_words_data_func(), description,
                     meta_word_button_attributes, this, cache);
+
+                if (data.words.empty())
+                    add_loading_indicator(region_transcript, description,
+                                          stack_layout.get());
 
                 view_listener = std::make_unique<FitContent>(region_transcript);
             }
