@@ -72,7 +72,7 @@ private:
     VSTGUI::CRowColLayout* rowcol_parent = nullptr;
     tiny_observer_pattern::ObserverID word_analysis_progress_observer_id = 0;
     Steinberg::IPtr<Steinberg::Vst::Parameter> task_count_param;
-    VSTGUI::CSearchTextEdit* searchField;
+    VSTGUI::CSearchTextEdit* searchField = nullptr;
     std::string filterString;
 };
 
