@@ -234,6 +234,9 @@ public:
 
     auto get_region_selection_model() -> RegionSelectionModel&;
 
+    auto onRequestSelectWord(int index,
+                             const meta_words::PlaybackRegion::Id id) -> void;
+
     //--------------------------------------------------------------------
 protected:
     PlaybackRegionObservers playback_region_observers;
