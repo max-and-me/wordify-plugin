@@ -4,7 +4,9 @@
 
 #include "list_controller.h"
 #include "list_entry_controller.h"
+#include "vstgui/lib/controls/cbuttons.h"
 #include "vstgui/lib/crowcolumnview.h"
+#include "vstgui/lib/cscrollview.h"
 #include "vstgui/uidescription/iuidescription.h"
 #include <string>
 
@@ -87,6 +89,7 @@ CView* ListController::verifyView(CView* view,
                         {
                             rowColView->addView(newView);
                             rowColView->sizeToFit();
+                            newView->setAttribute('prid', id);
                         }
                     });
             }
@@ -188,10 +191,50 @@ ListController::createSubController(UTF8StringPtr name,
 //------------------------------------------------------------------------
 void ListController::checkSelectWord(const WordSelectData& data)
 {
+    // word data selection
     controller->onRequestSelectWord(data.index, data.region_id);
 
+    // waveform selection
     controller->get_region_selection_model().select(
         {data.region_id, static_cast<size_t>(data.index)});
+
+    // ui update
+    if (!rowColView)
+        return;
+
+    CView* toFind = nullptr;
+    rowColView->forEachChild([&](CView* child) {
+        if (toFind)
+            return;
+
+        meta_words::PlaybackRegion::Id region_id = 0;
+
+        if (child->getAttribute('prid', region_id))
+        {
+            if (region_id == data.region_id)
+                toFind = child;
+        }
+    });
+
+    if (toFind == nullptr)
+        return;
+
+    if (auto* container = toFind->asViewContainer())
+    {
+        std::vector<CTextButton*> btns;
+        container->getChildViewsOfType<CTextButton>(btns, true);
+        for (auto& btn : btns)
+        {
+            if (btn->getTag() == data.index)
+            {
+                auto rect = btn->translateToGlobal(rowColView->getViewSize());
+                CScrollView* scroll = dynamic_cast<CScrollView*>(
+                    rowColView->getParentView()->getParentView());
+                if (scroll)
+                    scroll->makeRectVisible(rect);
+            }
+        }
+    }
 }
 
 //------------------------------------------------------------------------
