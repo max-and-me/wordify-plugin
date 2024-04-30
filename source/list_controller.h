@@ -41,12 +41,18 @@ public:
 
     ListController(ARADocumentController* controller,
                    const IUIDescription* uidesc);
+    ~ListController();
 
     void PLUGIN_API update(FUnknown* changedUnknown,
                            Steinberg::int32 message) override {};
     View* verifyView(View* view,
                      const UIAttributes& attributes,
                      const IUIDescription* description) override;
+
+    using WordSelectObserver = tiny_observer_pattern::Observer<
+        ARADocumentController::WordSelectSubject>;
+    using WordSelectObserverPtr = std::unique_ptr<WordSelectObserver>;
+
     // IControlListener
     void valueChanged(Control* pControl) override {};
     void controlBeginEdit(Control* pControl) override {};
@@ -59,6 +65,7 @@ public:
 
     //--------------------------------------------------------------------
 private:
+    void checkSelectWord(const WordSelectData& data);
     void on_add_remove_playback_region(const PlaybackRegionLifetimeData& data);
     void on_playback_regions_reordered();
     auto create_list_item_view(const PlaybackRegion::Id id) -> VSTGUI::CView*;
@@ -70,6 +77,8 @@ private:
     LifetimeObserverPtr lifetime_observer;
     OrderObserverPtr order_observer;
     OptPlaybackRegionId playback_region_id;
+    WordSelectObserverPtr word_selected_observer;
+    ARADocumentController::ObserverID word_selected_observer_id = 0;
 };
 
 //------------------------------------------------------------------------

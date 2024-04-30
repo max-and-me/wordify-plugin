@@ -33,17 +33,11 @@ ListEntryController::ListEntryController(
 , playback_region_id(id)
 , description(description)
 {
-    if (controller)
-        word_selected_observer_id = controller->register_word_selected_observer(
-            [this](const auto& data) { this->checkSelectWord(data); });
 }
 
 //------------------------------------------------------------------------
-ListEntryController::~ListEntryController()
-{
-    if (controller)
-        controller->unregister_word_selected_observer(
-            word_selected_observer_id);
+ListEntryController::~ListEntryController(){
+
 };
 
 //------------------------------------------------------------------------
@@ -87,18 +81,6 @@ VSTGUI::IController* ListEntryController::createSubController(
     }
 
     return nullptr;
-}
-
-//------------------------------------------------------------------------
-void ListEntryController::checkSelectWord(const WordSelectData& data)
-{
-    if (data.region_id != playback_region_id)
-        return;
-
-    controller->onRequestSelectWord(data.index, data.region_id);
-
-    controller->get_region_selection_model().select(
-        {playback_region_id, static_cast<size_t>(data.index)});
 }
 
 //------------------------------------------------------------------------

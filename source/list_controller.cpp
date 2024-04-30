@@ -55,7 +55,18 @@ ListController::ListController(ARADocumentController* controller,
         order_observer = tiny_observer_pattern::make_observer(
             controller->get_playback_region_order_subject(),
             [&](const auto&) { this->on_playback_regions_reordered(); });
+
+        word_selected_observer_id = controller->register_word_selected_observer(
+            [this](const auto& data) { this->checkSelectWord(data); });
     }
+}
+
+//------------------------------------------------------------------------
+ListController::~ListController()
+{
+    if (controller)
+        controller->unregister_word_selected_observer(
+            word_selected_observer_id);
 }
 
 //------------------------------------------------------------------------
@@ -172,6 +183,15 @@ ListController::createSubController(UTF8StringPtr name,
     }
 
     return nullptr;
+}
+
+//------------------------------------------------------------------------
+void ListController::checkSelectWord(const WordSelectData& data)
+{
+    controller->onRequestSelectWord(data.index, data.region_id);
+
+    controller->get_region_selection_model().select(
+        {data.region_id, static_cast<size_t>(data.index)});
 }
 
 //------------------------------------------------------------------------
