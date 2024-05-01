@@ -6,6 +6,7 @@
 
 #include "ara_document_controller.h"
 #include "base/source/fobject.h"
+#include "vstgui/lib/iviewlistener.h"
 #include "vstgui/uidescription/icontroller.h"
 
 namespace VSTGUI {
@@ -22,7 +23,9 @@ class SpinnerView;
 //------------------------------------------------------------------------
 // HeaderController
 //------------------------------------------------------------------------
-class HeaderController : public Steinberg::FObject, public VSTGUI::IController
+class HeaderController : public Steinberg::FObject,
+                         public VSTGUI::IController,
+                         public VSTGUI::ViewListenerAdapter
 {
 public:
     //--------------------------------------------------------------------
@@ -47,6 +50,11 @@ public:
     VSTGUI::IController*
     createSubController(VSTGUI::UTF8StringPtr name,
                         const VSTGUI::IUIDescription* description);
+
+    // IViewListener
+    void viewAttached(VSTGUI::CView* view) override;
+    void viewRemoved(VSTGUI::CView* view) override;
+    void viewWillDelete(VSTGUI::CView* view) override;
 
     OBJ_METHODS(HeaderController, FObject)
 

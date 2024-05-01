@@ -13,44 +13,17 @@ namespace mam {
 #ifndef kPI
 #define kPI 3.14159265358979323846
 #endif
-//------------------------------------------------------------------------
-static auto systme_time_milliseconds() -> size_t
-{
-    std::chrono::time_point<std::chrono::system_clock> now =
-        std::chrono::system_clock::now();
-    const auto duration = now.time_since_epoch();
-    const auto millis =
-        std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
-
-    return millis;
-}
-
-//------------------------------------------------------------------------
-template <typename Real>
-static auto system_time_to_angle() -> Real
-{
-    constexpr auto FULL_ROTATION_TIME   = 4000; // 4000ms (4s)
-    constexpr auto FULL_ROTATION_RATE   = Real(1.) / Real(FULL_ROTATION_TIME);
-    constexpr auto FULL_ROTATION_DEGREE = Real(360.);
-
-    const auto system_time_ms = systme_time_milliseconds();
-    const auto normalized =
-        Real(system_time_ms % FULL_ROTATION_TIME) * FULL_ROTATION_RATE;
-
-    return FULL_ROTATION_DEGREE * normalized;
-}
 
 //------------------------------------------------------------------------
 SpinnerView::SpinnerView(const CRect& size)
 : CView(size)
 {
-    setWantsIdle(true);
 }
 
 //------------------------------------------------------------------------
-void SpinnerView::onIdle()
+auto SpinnerView::set_dregree(Degree value) -> void
 {
-    rotationAngle = system_time_to_angle<const float>();
+    rotationAngle = value;
     invalid();
 }
 
@@ -84,6 +57,57 @@ void SpinnerView::draw(CDrawContext* context)
                          start.y + sin(angle) * lineLength);
 
         context->drawLine(start, end);
+    }
+}
+
+//------------------------------------------------------------------------
+// SpinAnimation
+//------------------------------------------------------------------------
+const char* SpinAnimation::ANIMATION_ID = "SpinAnimation";
+SpinAnimation::SpinAnimation() {}
+
+//------------------------------------------------------------------------
+void SpinAnimation::animationStart(VSTGUI::CView* view,
+                                   VSTGUI::IdStringPtr name)
+{
+    SpinnerView* spinner_view = dynamic_cast<SpinnerView*>(view);
+    if (!spinner_view)
+        return;
+
+    if (VSTGUI::UTF8String(name) == ANIMATION_ID)
+    {
+        spinner_view->set_dregree(start_value);
+    }
+}
+
+//------------------------------------------------------------------------
+void SpinAnimation::animationTick(VSTGUI::CView* view,
+                                  VSTGUI::IdStringPtr name,
+                                  float pos)
+{
+    SpinnerView* spinner_view = dynamic_cast<SpinnerView*>(view);
+    if (!spinner_view)
+        return;
+
+    if (VSTGUI::UTF8String(name) == ANIMATION_ID)
+    {
+        const auto current_degree = (end_value - start_value) * pos;
+        spinner_view->set_dregree(current_degree);
+    }
+}
+
+//------------------------------------------------------------------------
+void SpinAnimation::animationFinished(VSTGUI::CView* view,
+                                      VSTGUI::IdStringPtr name,
+                                      bool wasCanceled)
+{
+    SpinnerView* spinner_view = dynamic_cast<SpinnerView*>(view);
+    if (!spinner_view)
+        return;
+
+    if (VSTGUI::UTF8String(name) == ANIMATION_ID)
+    {
+        spinner_view->set_dregree(end_value);
     }
 }
 
