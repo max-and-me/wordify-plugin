@@ -68,7 +68,6 @@ private:
     VSTGUI::CTextLabel* region_start_time     = nullptr;
     VSTGUI::CTextLabel* region_duration_time  = nullptr;
     VSTGUI::CViewContainer* region_transcript = nullptr;
-    VSTGUI::CView* spinner                    = nullptr;
 
     std::unique_ptr<VSTGUI::ViewListenerAdapter> view_listener;
     std::unique_ptr<HStackLayout> stack_layout;
