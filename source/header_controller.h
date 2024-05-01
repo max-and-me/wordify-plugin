@@ -52,15 +52,15 @@ public:
                         const VSTGUI::IUIDescription* description);
 
     // IViewListener
-    void viewAttached(VSTGUI::CView* view) override;
-    void viewRemoved(VSTGUI::CView* view) override;
     void viewWillDelete(VSTGUI::CView* view) override;
 
     OBJ_METHODS(HeaderController, FObject)
 
     //--------------------------------------------------------------------
 private:
-    using StringType = std::string;
+    using StringType             = std::string;
+    using SpinnerViewListenerPtr = std::unique_ptr<struct SpinnerViewListener>;
+    SpinnerViewListenerPtr view_listener;
 
     void on_task_count_changed();
     void on_task_count_changed(size_t value, const StringType& value_str);

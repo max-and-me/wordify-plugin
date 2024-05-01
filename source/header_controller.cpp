@@ -17,6 +17,33 @@ namespace mam {
 using namespace ::VSTGUI;
 
 //------------------------------------------------------------------------
+struct SpinnerViewListener : VSTGUI::ViewListenerAdapter
+{
+    void viewAttached(CView* view) override
+    {
+        if (auto* spinner = dynamic_cast<SpinnerView*>(view))
+        {
+            constexpr auto SPIN_PERIOD_DURATION = 4000.;
+            constexpr auto SPIN_FOREVER = std::numeric_limits<int32_t>().max();
+
+            auto* timing_function = new VSTGUI::Animation::LinearTimingFunction(
+                SPIN_PERIOD_DURATION);
+            auto* repeater = new VSTGUI::Animation::RepeatTimingFunction(
+                timing_function, SPIN_FOREVER, false);
+            view->addAnimation(SpinAnimation::ANIMATION_ID, new SpinAnimation,
+                               repeater);
+        }
+    }
+
+    void viewRemoved(CView* view) override
+    {
+        if (auto* spinner = dynamic_cast<SpinnerView*>(view))
+        {
+            spinner->removeAnimation(SpinAnimation::ANIMATION_ID);
+        }
+    }
+};
+//------------------------------------------------------------------------
 // HeaderController
 //------------------------------------------------------------------------
 HeaderController::HeaderController(ARADocumentController* controller,
@@ -29,6 +56,8 @@ HeaderController::HeaderController(ARADocumentController* controller,
 
     if (task_count_param)
         param->addDependent(this);
+
+    view_listener = std::make_unique<SpinnerViewListener>();
 }
 
 //------------------------------------------------------------------------
@@ -38,7 +67,11 @@ HeaderController::~HeaderController()
         task_count_param->removeDependent(this);
 
     if (spinner_view)
+    {
         spinner_view->unregisterViewListener(this);
+        if (view_listener)
+            spinner_view->unregisterViewListener(view_listener.get());
+    }
 }
 
 //------------------------------------------------------------------------
@@ -143,7 +176,11 @@ HeaderController::verifyView(VSTGUI::CView* view,
         if (*view_name == "SpinnerView")
         {
             spinner_view = dynamic_cast<SpinnerView*>(view);
-            spinner_view->registerViewListener(this);
+
+            spinner_view->registerViewListener(this); // for lifetime
+            if (view_listener)                        // for animations
+                spinner_view->registerViewListener(view_listener.get());
+
             if (task_count_param)
                 on_task_count_changed();
         }
@@ -201,38 +238,23 @@ void HeaderController::updateSearchResults()
 }
 
 //------------------------------------------------------------------------
-void HeaderController::viewAttached(CView* view)
-{
-    if (view == spinner_view)
-    {
-        constexpr auto SPIN_PERIOD_DURATION = 4000.;
-        constexpr auto SPIN_FOREVER = std::numeric_limits<int32_t>().max();
-
-        auto* timing_function =
-            new VSTGUI::Animation::LinearTimingFunction(SPIN_PERIOD_DURATION);
-        auto* repeater = new VSTGUI::Animation::RepeatTimingFunction(
-            timing_function, SPIN_FOREVER, false);
-        spinner_view->addAnimation(SpinAnimation::ANIMATION_ID,
-                                   new SpinAnimation, repeater);
-    }
-}
-
-//------------------------------------------------------------------------
-void HeaderController::viewRemoved(CView* view)
-{
-    if (view == spinner_view)
-    {
-        spinner_view->removeAnimation(SpinAnimation::ANIMATION_ID);
-    }
-}
-
-//------------------------------------------------------------------------
 void HeaderController::viewWillDelete(VSTGUI::CView* view)
 {
-    if (view == spinner_view)
+    if (spinner_view == view)
     {
+        if (view_listener)
+            spinner_view->unregisterViewListener(view_listener.get());
+
         spinner_view->unregisterViewListener(this);
         spinner_view = nullptr;
+    }
+    else if (task_count_view == view)
+    {
+        task_count_view = nullptr;
+    }
+    else if (searchField == view)
+    {
+        searchField = nullptr;
     }
 }
 
