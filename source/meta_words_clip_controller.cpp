@@ -289,7 +289,7 @@ update_region_transcript(CViewContainer* region_transcript,
     remove_word_buttons(*region_transcript, meta_words_data);
     insert_word_buttons(cache, meta_words_data, region_transcript, but_creator);
 
-    fit_content(region_transcript->getParentView());
+    //fit_content(region_transcript->getParentView());
 }
 
 //------------------------------------------------------------------------
@@ -310,10 +310,8 @@ static auto update_control(C* c, const MetaWordsData& data, Func& func) -> void
 // Helper class to call sizeToFit to all parents up the hierarchy
 // AFTER a view has been attached or resized itself.
 //------------------------------------------------------------------------
-class FitContent : public ViewListenerAdapter
+struct FitContentHandler : public ViewListenerAdapter
 {
-public:
-    //--------------------------------------------------------------------
     void viewAttached(CView* view) override
     {
         if (view)
@@ -334,9 +332,6 @@ public:
             delete this;
         }
     }
-
-    //--------------------------------------------------------------------
-private:
 };
 
 //------------------------------------------------------------------------
@@ -556,6 +551,7 @@ CView* MetaWordsClipController::verifyView(CView* view,
             init_words_width_cache(data);
             region_transcript = view->asViewContainer();
             region_transcript->registerViewListener(this);
+            region_transcript->registerViewListener(new FitContentHandler);
 
             stack_layout = std::make_unique<HStackLayout>(region_transcript);
             stack_layout->setup({0., 0.}, {0., 0., 0., HORIZ_PADDING});
@@ -609,7 +605,6 @@ void MetaWordsClipController::viewAttached(VSTGUI::CView* view)
     }
     else if (view == region_transcript)
     {
-        region_transcript->registerViewListener(new FitContent);
         update_region_transcript(region_transcript, data, description,
                                  meta_word_button_attributes, this, cache);
     }
