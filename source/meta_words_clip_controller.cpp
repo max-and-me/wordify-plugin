@@ -29,6 +29,9 @@ using namespace VSTGUI;
 namespace mam {
 
 //------------------------------------------------------------------------
+constexpr auto HORIZ_PADDING = -4;
+
+//------------------------------------------------------------------------
 static auto update_region_title(CTextLabel& region_title,
                                 const MetaWordsData& meta_words_data) -> void
 {
@@ -245,7 +248,8 @@ static auto remove_loading_indicator(CViewContainer* region_transcript,
                 {
                     if (VSTGUI::UTF8String("LoadingIndicatorTemplate") == str)
                     {
-                        stack_layout->setup({0., 0.}, {0., 0., 0., -4});
+                        stack_layout->setup({0., 0.},
+                                            {0., 0., 0., HORIZ_PADDING});
                         region_transcript->removeView(view);
                     }
                 }
@@ -356,10 +360,18 @@ class LoadingIndicatorAnimationHandler : public ViewListenerAdapter
                            public VSTGUI::NonAtomicReferenceCounted
     {
         static const char* ANIMATION_ID;
+        using Rects = std::vector<VSTGUI::CRect>;
+        Rects rects;
 
         void animationStart(VSTGUI::CView* view,
                             VSTGUI::IdStringPtr name) override
         {
+            if (const auto* container = view->asViewContainer())
+            {
+                container->forEachChild([&](CView* child) {
+                    rects.push_back(child->getViewSize());
+                });
+            }
         }
 
         void animationTick(VSTGUI::CView* view,
@@ -369,20 +381,28 @@ class LoadingIndicatorAnimationHandler : public ViewListenerAdapter
             if (!view)
                 return;
 
-            if (auto* container = dynamic_cast<CViewContainer*>(view))
+            if (auto* container = view->asViewContainer())
             {
-                if (auto* container = view->asViewContainer())
-                {
-                    const auto OFFSET = M_PI / double(container->getNbViews());
-                    size_t index      = 0;
-                    container->forEachChild([&](CView* child) {
-                        const auto phase        = 2. * M_PI * pos;
-                        const auto phase_shift  = index++ * OFFSET;
-                        const auto val          = std::sin(phase - phase_shift);
-                        const auto val_positive = std::max(0., val);
-                        child->setAlphaValue(1. - val_positive);
-                    });
-                }
+                const auto OFFSET = M_PI / double(container->getNbViews());
+                size_t index      = 0;
+                container->forEachChild([&](CView* child) {
+                    const auto phase = 2. * M_PI * pos;
+                    const auto phase_shift =
+                        static_cast<double>(index) * OFFSET;
+                    const auto value        = std::sin(phase - phase_shift);
+                    const auto val_positive = std::max(0., value);
+
+                    // Only fade dots out half
+                    child->setAlphaValue(1. - val_positive * 0.5);
+
+                    // Move them up by delta in pixel
+                    constexpr auto DELTA_PX = 2.;
+                    auto r                  = rects.at(index);
+                    r.offset(0., -DELTA_PX * val_positive);
+                    child->setViewSize(r);
+
+                    index++;
+                });
             }
         }
 
@@ -547,7 +567,7 @@ CView* MetaWordsClipController::verifyView(CView* view,
                 region_transcript = dynamic_cast<CViewContainer*>(view);
                 stack_layout =
                     std::make_unique<HStackLayout>(region_transcript);
-                stack_layout->setup({0., 0.}, {0., 0., 0., -4});
+                stack_layout->setup({0., 0.}, {0., 0., 0., HORIZ_PADDING});
                 update_region_transcript(
                     region_transcript, meta_words_data_func(), description,
                     meta_word_button_attributes, this, cache);

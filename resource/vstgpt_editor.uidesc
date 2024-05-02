@@ -1743,22 +1743,16 @@
 							"wheel-inc-value": "0.1"
 						}
 					},
-					"CRowColumnView": {
+					"CViewContainer": {
 						"attributes": {
-							"animate-view-resizing": "false",
 							"autosize": "left right top bottom ",
 							"background-color": "~ BlackCColor",
 							"background-color-draw-style": "filled and stroked",
-							"class": "CRowColumnView",
-							"equal-size-layout": "middle-center",
-							"hide-clipped-subviews": "false",
-							"margin": "0, 0, 0, 0",
+							"class": "CViewContainer",
 							"mouse-enabled": "true",
 							"opacity": "1",
 							"origin": "0, 0",
-							"row-style": "false",
 							"size": "44, 24",
-							"spacing": "4",
 							"transparent": "true",
 							"uidesc-label": "DotGroupLayout",
 							"view-resize-animation-time": "200",
