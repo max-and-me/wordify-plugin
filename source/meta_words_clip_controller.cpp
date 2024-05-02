@@ -288,8 +288,6 @@ update_region_transcript(CViewContainer* region_transcript,
 
     remove_word_buttons(*region_transcript, meta_words_data);
     insert_word_buttons(cache, meta_words_data, region_transcript, but_creator);
-
-    //fit_content(region_transcript->getParentView());
 }
 
 //------------------------------------------------------------------------
