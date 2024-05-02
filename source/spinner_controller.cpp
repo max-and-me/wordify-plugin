@@ -10,13 +10,32 @@
 #include "vstgui/lib/controls/ctextlabel.h"
 #include "vstgui/uidescription/iuidescription.h"
 #include "vstgui/uidescription/uiattributes.h"
+#include <cassert>
 #include <limits>
 
+using namespace VSTGUI;
+
 namespace mam {
-using namespace ::VSTGUI;
 
 //------------------------------------------------------------------------
-struct SpinnerViewListener : VSTGUI::ViewListenerAdapter
+auto create_spinner_view(const UIAttributes& attributes,
+                         const IUIDescription* description) -> SpinnerView*
+{
+    CPoint origin;
+    CPoint size;
+    bool res = attributes.getPointAttribute("origin", origin);
+    res      = res && attributes.getPointAttribute("size", size);
+
+    assert(res && "origin and size must be available!");
+
+    const CRect rect{origin, size};
+    return new SpinnerView(rect);
+}
+
+//------------------------------------------------------------------------
+// SpinnerViewListener
+//------------------------------------------------------------------------
+struct SpinnerViewListener : ViewListenerAdapter
 {
     void viewAttached(CView* view) override
     {
@@ -25,9 +44,9 @@ struct SpinnerViewListener : VSTGUI::ViewListenerAdapter
             constexpr auto SPIN_PERIOD_DURATION = 3000.;
             constexpr auto SPIN_FOREVER = std::numeric_limits<int32_t>().max();
 
-            auto* timing_function = new VSTGUI::Animation::LinearTimingFunction(
-                SPIN_PERIOD_DURATION);
-            auto* repeater = new VSTGUI::Animation::RepeatTimingFunction(
+            auto* timing_function =
+                new Animation::LinearTimingFunction(SPIN_PERIOD_DURATION);
+            auto* repeater = new Animation::RepeatTimingFunction(
                 timing_function, SPIN_FOREVER, false);
             view->addAnimation(SpinAnimation::ANIMATION_ID, new SpinAnimation,
                                repeater);
@@ -42,18 +61,19 @@ struct SpinnerViewListener : VSTGUI::ViewListenerAdapter
         }
     }
 };
+
 //------------------------------------------------------------------------
 // SpinnerController
 //------------------------------------------------------------------------
 SpinnerController::SpinnerController(ARADocumentController* controller,
                                      Steinberg::Vst::Parameter* param)
 : controller(controller)
-, task_count_param(param)
+, task_counter(param)
 {
     if (!controller)
         return;
 
-    if (task_count_param)
+    if (task_counter)
         param->addDependent(this);
 
     view_listener = std::make_unique<SpinnerViewListener>();
@@ -62,8 +82,8 @@ SpinnerController::SpinnerController(ARADocumentController* controller,
 //------------------------------------------------------------------------
 SpinnerController::~SpinnerController()
 {
-    if (task_count_param)
-        task_count_param->removeDependent(this);
+    if (task_counter)
+        task_counter->removeDependent(this);
 
     if (spinner_view)
     {
@@ -76,17 +96,17 @@ SpinnerController::~SpinnerController()
 //------------------------------------------------------------------------
 void SpinnerController::on_task_count_changed()
 {
-    if (!task_count_param)
+    if (!task_counter)
         return;
 
-    const auto norm  = task_count_param->getNormalized();
-    const auto count = task_count_param->toPlain(norm);
+    const auto norm  = task_counter->getNormalized();
+    const auto count = task_counter->toPlain(norm);
 
     StringType value_str;
     if (spinner_badge)
     {
         Steinberg::Vst::String128 text;
-        task_count_param->toString(norm, text);
+        task_counter->toString(norm, text);
         value_str = VST3::StringConvert::convert(text);
     }
 
@@ -132,7 +152,7 @@ void PLUGIN_API SpinnerController::update(FUnknown* changedUnknown,
     if (auto* param =
             Steinberg::FCast<Steinberg::Vst::Parameter>(changedUnknown))
     {
-        if (param->getInfo().id == task_count_param->getInfo().id)
+        if (param->getInfo().id == task_counter->getInfo().id)
         {
             on_task_count_changed();
         }
@@ -140,34 +160,23 @@ void PLUGIN_API SpinnerController::update(FUnknown* changedUnknown,
 }
 
 //------------------------------------------------------------------------
-CView* SpinnerController::createView(const VSTGUI::UIAttributes& attributes,
-                                     const VSTGUI::IUIDescription* description)
+CView* SpinnerController::createView(const UIAttributes& attributes,
+                                     const IUIDescription* description)
 {
     if (const auto* view_name = attributes.getAttributeValue("uidesc-label"))
     {
         if (*view_name == "SpinnerView")
         {
-            VSTGUI::CPoint origin;
-            VSTGUI::CPoint size;
-            const auto* size_str = attributes.getAttributeValue("size");
-            if (size_str)
-                attributes.stringToPoint(*size_str, size);
-            const auto* origin_str = attributes.getAttributeValue("origin");
-            if (origin_str)
-                attributes.stringToPoint(*origin_str, origin);
-
-            const CRect rect{origin, size};
-            return new SpinnerView(rect);
+            return create_spinner_view(attributes, description);
         }
     }
     return nullptr;
 }
 
 //------------------------------------------------------------------------
-VSTGUI::CView*
-SpinnerController::verifyView(VSTGUI::CView* view,
-                              const VSTGUI::UIAttributes& attributes,
-                              const VSTGUI::IUIDescription* description)
+VSTGUI::CView* SpinnerController::verifyView(VSTGUI::CView* view,
+                                             const UIAttributes& attributes,
+                                             const IUIDescription* description)
 {
 
     if (const auto* view_name = attributes.getAttributeValue("uidesc-label"))
@@ -176,11 +185,14 @@ SpinnerController::verifyView(VSTGUI::CView* view,
         {
             spinner_view = dynamic_cast<SpinnerView*>(view);
 
-            spinner_view->registerViewListener(this); // for lifetime
-            if (view_listener)                        // for animations
+            // Lifetime handling
+            spinner_view->registerViewListener(this);
+
+            // Animations handling
+            if (view_listener)
                 spinner_view->registerViewListener(view_listener.get());
 
-            if (task_count_param)
+            if (task_counter)
                 on_task_count_changed();
         }
         else if (*view_name == "SpinnerBadge")
@@ -195,8 +207,9 @@ SpinnerController::verifyView(VSTGUI::CView* view,
 }
 
 //------------------------------------------------------------------------
-VSTGUI::IController* SpinnerController::createSubController(
-    VSTGUI::UTF8StringPtr name, const VSTGUI::IUIDescription* description)
+VSTGUI::IController*
+SpinnerController::createSubController(UTF8StringPtr name,
+                                       const IUIDescription* description)
 {
     return nullptr;
 }

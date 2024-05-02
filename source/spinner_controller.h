@@ -10,7 +10,6 @@
 #include "vstgui/uidescription/icontroller.h"
 
 namespace VSTGUI {
-
 } // namespace VSTGUI
 
 namespace Steinberg::Vst {
@@ -29,6 +28,8 @@ class SpinnerController : public Steinberg::FObject,
 {
 public:
     //--------------------------------------------------------------------
+    using TextLabel = VSTGUI::CTextLabel;
+
     SpinnerController(ARADocumentController* controller,
                       Steinberg::Vst::Parameter* param);
     ~SpinnerController() override;
@@ -66,9 +67,9 @@ private:
     void on_task_count_changed(size_t value, const StringType& value_str);
 
     ARADocumentController* controller = nullptr;
-    VSTGUI::CTextLabel* spinner_badge = nullptr;
+    TextLabel* spinner_badge          = nullptr;
     SpinnerView* spinner_view         = nullptr;
-    Steinberg::IPtr<Steinberg::Vst::Parameter> task_count_param;
+    Steinberg::IPtr<Steinberg::Vst::Parameter> task_counter;
 };
 
 //------------------------------------------------------------------------
