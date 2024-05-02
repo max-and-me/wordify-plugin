@@ -58,6 +58,8 @@ smtg_add_vst3plugin(VstGPT
     source/preferences_controller.h
     source/region_order_manager.cpp
     source/region_order_manager.h
+    source/spinner_controller.cpp
+    source/spinner_controller.h
     source/spinner_view.cpp
     source/spinner_view.h
     source/tiny_observer_pattern.h

@@ -132,7 +132,7 @@
 													"opacity": "1",
 													"origin": "0, 0",
 													"size": "48, 48",
-													"sub-controller": "HeaderController",
+													"sub-controller": "SpinnerController",
 													"transparent": "true",
 													"uidesc-label": "MLayout",
 													"wants-focus": "false"

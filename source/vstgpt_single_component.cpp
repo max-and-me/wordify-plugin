@@ -16,6 +16,7 @@
 #include "pluginterfaces/vst/ivstprocesscontext.h"
 #include "preferences_controller.h"
 #include "preferences_serde.h"
+#include "spinner_controller.h"
 #include "vstgpt_cids.h"
 #include "vstgpt_defines.h"
 #include "vstgui/uidescription/uidescription.h"
@@ -340,6 +341,11 @@ VSTGUI::IController* VstGPTSingleComponent::createSubController(
     {
         return new HeaderController(document_controller,
                                     analysing::task_count_param());
+    }
+    else if (VSTGUI::UTF8StringView(name) == "SpinnerController")
+    {
+        return new SpinnerController(document_controller,
+                                     analysing::task_count_param());
     }
     else if (VSTGUI::UTF8StringView(name) == "PreferencesController")
     {
