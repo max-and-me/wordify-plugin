@@ -21,9 +21,9 @@ struct SpinnerViewListener : VSTGUI::ViewListenerAdapter
 {
     void viewAttached(CView* view) override
     {
-        if (auto* spinner = dynamic_cast<SpinnerView*>(view))
+        if (dynamic_cast<SpinnerView*>(view))
         {
-            constexpr auto SPIN_PERIOD_DURATION = 4000.;
+            constexpr auto SPIN_PERIOD_DURATION = 3000.;
             constexpr auto SPIN_FOREVER = std::numeric_limits<int32_t>().max();
 
             auto* timing_function = new VSTGUI::Animation::LinearTimingFunction(
@@ -37,9 +37,9 @@ struct SpinnerViewListener : VSTGUI::ViewListenerAdapter
 
     void viewRemoved(CView* view) override
     {
-        if (auto* spinner = dynamic_cast<SpinnerView*>(view))
+        if (dynamic_cast<SpinnerView*>(view))
         {
-            spinner->removeAnimation(SpinAnimation::ANIMATION_ID);
+            view->removeAnimation(SpinAnimation::ANIMATION_ID);
         }
     }
 };
