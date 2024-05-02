@@ -67,6 +67,7 @@ public:
     //--------------------------------------------------------------------
 private:
     void on_meta_words_data_changed();
+    void init_words_width_cache(const MetaWordsData& data);
 
     const VSTGUI::IUIDescription* description = nullptr;
     VSTGUI::CTextLabel* region_title          = nullptr;

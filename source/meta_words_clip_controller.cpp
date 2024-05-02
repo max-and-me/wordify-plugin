@@ -501,13 +501,7 @@ void MetaWordsClipController::on_meta_words_data_changed()
 
     if (region_transcript)
     {
-        if (cache.word_widths.empty())
-        {
-            cache.word_widths =
-                compute_word_widths(data, [&](const Word& word) {
-                    return compute_word_width(description, word);
-                });
-        }
+        init_words_width_cache(data);
 
         if (!data.words.empty())
             remove_loading_indicator(region_transcript, stack_layout.get());
@@ -515,6 +509,17 @@ void MetaWordsClipController::on_meta_words_data_changed()
         update_region_transcript(region_transcript, data, description,
                                  meta_word_button_attributes, this, cache);
         region_transcript->invalid();
+    }
+}
+
+//------------------------------------------------------------------------
+void MetaWordsClipController::init_words_width_cache(const MetaWordsData& data)
+{
+    if (cache.word_widths.empty())
+    {
+        cache.word_widths = compute_word_widths(data, [&](const Word& word) {
+            return compute_word_width(description, word);
+        });
     }
 }
 
@@ -533,42 +538,27 @@ CView* MetaWordsClipController::verifyView(CView* view,
         {
             region_start_time = dynamic_cast<CTextLabel*>(view);
             region_start_time->registerViewListener(this);
-
-            update_region_start_time(*region_start_time,
-                                     meta_words_data_func());
         }
         else if (*viewLabel == "RegionDurationTime")
         {
             region_duration_time = dynamic_cast<CTextLabel*>(view);
             region_duration_time->registerViewListener(this);
-
-            update_region_duration_time(*region_duration_time,
-                                        meta_words_data_func());
         }
         else if (*viewLabel == "RegionTitle")
         {
             region_title = dynamic_cast<CTextLabel*>(view);
             region_title->registerViewListener(this);
-
-            update_region_title(*region_title, meta_words_data_func());
         }
         else if (*viewLabel == "RegionTranscript")
         {
             const auto data = meta_words_data_func();
 
-            if (cache.word_widths.empty())
-            {
-                cache.word_widths =
-                    compute_word_widths(data, [&](const Word& word) {
-                        return compute_word_width(description, word);
-                    });
-            }
+            init_words_width_cache(data);
             region_transcript = view->asViewContainer();
+            region_transcript->registerViewListener(this);
 
             stack_layout = std::make_unique<HStackLayout>(region_transcript);
             stack_layout->setup({0., 0.}, {0., 0., 0., HORIZ_PADDING});
-            update_region_transcript(region_transcript, data, description,
-                                     meta_word_button_attributes, this, cache);
 
             if (data.words.empty())
             {
@@ -582,8 +572,6 @@ CView* MetaWordsClipController::verifyView(CView* view,
                             new LoadingIndicatorAnimationHandler);
                 }
             }
-            region_transcript->registerViewListener(this);
-            region_transcript->registerViewListener(new FitContent);
         }
         else if (*viewLabel == "MetaWordButton")
         {
@@ -604,7 +592,28 @@ void MetaWordsClipController::valueChanged(CControl* pControl)
 }
 
 //------------------------------------------------------------------------
-void MetaWordsClipController::viewAttached(VSTGUI::CView* view) {}
+void MetaWordsClipController::viewAttached(VSTGUI::CView* view)
+{
+    const auto& data = meta_words_data_func();
+    if (view == region_start_time)
+    {
+        update_region_start_time(*region_start_time, data);
+    }
+    else if (view == region_duration_time)
+    {
+        update_region_duration_time(*region_duration_time, data);
+    }
+    else if (view == region_title)
+    {
+        update_region_title(*region_title, data);
+    }
+    else if (view == region_transcript)
+    {
+        region_transcript->registerViewListener(new FitContent);
+        update_region_transcript(region_transcript, data, description,
+                                 meta_word_button_attributes, this, cache);
+    }
+}
 
 //------------------------------------------------------------------------
 void MetaWordsClipController::viewRemoved(VSTGUI::CView* view) {}
