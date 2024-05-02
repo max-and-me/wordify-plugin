@@ -339,8 +339,7 @@ VSTGUI::IController* VstGPTSingleComponent::createSubController(
     }
     else if (VSTGUI::UTF8StringView(name) == "HeaderController")
     {
-        return new HeaderController(document_controller,
-                                    analysing::task_count_param());
+        return new HeaderController(document_controller);
     }
     else if (VSTGUI::UTF8StringView(name) == "SpinnerController")
     {

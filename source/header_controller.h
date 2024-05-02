@@ -29,8 +29,7 @@ class HeaderController : public Steinberg::FObject,
 {
 public:
     //--------------------------------------------------------------------
-    HeaderController(ARADocumentController* controller,
-                     Steinberg::Vst::Parameter* param);
+    HeaderController(ARADocumentController* controller);
     ~HeaderController() override;
 
     void PLUGIN_API update(FUnknown* changedUnknown,
@@ -58,12 +57,7 @@ public:
 
     //--------------------------------------------------------------------
 private:
-    using StringType             = std::string;
-    using SpinnerViewListenerPtr = std::unique_ptr<struct SpinnerViewListener>;
-    SpinnerViewListenerPtr view_listener;
-
-    void on_task_count_changed();
-    void on_task_count_changed(size_t value, const StringType& value_str);
+    using StringType = std::string;
     void updateSearchResults();
 
     enum
@@ -71,10 +65,7 @@ private:
         kSearchFieldTag = 1000,
     };
 
-    ARADocumentController* controller   = nullptr;
-    VSTGUI::CTextLabel* task_count_view = nullptr;
-    SpinnerView* spinner_view           = nullptr;
-    Steinberg::IPtr<Steinberg::Vst::Parameter> task_count_param;
+    ARADocumentController* controller    = nullptr;
     VSTGUI::CSearchTextEdit* searchField = nullptr;
     std::string filterString;
 };
