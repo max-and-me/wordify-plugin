@@ -183,7 +183,7 @@ SpinnerController::verifyView(VSTGUI::CView* view,
             if (task_count_param)
                 on_task_count_changed();
         }
-        else if (*view_name == "TaskCount")
+        else if (*view_name == "SpinnerBadge")
         {
             spinner_badge = dynamic_cast<VSTGUI::CTextLabel*>(view);
             if (spinner_badge)

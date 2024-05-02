@@ -182,7 +182,7 @@
 															"text-shadow-offset": "1, 1",
 															"title": "0",
 															"transparent": "false",
-															"uidesc-label": "TaskCount",
+															"uidesc-label": "SpinnerBadge",
 															"value-precision": "2",
 															"wants-focus": "false",
 															"wheel-inc-value": "0.1"
