@@ -76,6 +76,13 @@ struct SpinnerViewListener : ViewListenerAdapter
         if (dynamic_cast<SpinnerView*>(view))
         {
             view->removeAnimation(SpinAnimation::ANIMATION_ID);
+        }
+    }
+
+    void viewWillDelete(CView* view) override
+    {
+        if (dynamic_cast<SpinnerView*>(view))
+        {
             view->unregisterViewListener(this);
             delete this;
         }
