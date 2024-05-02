@@ -133,61 +133,10 @@
 													"origin": "0, 0",
 													"size": "48, 48",
 													"sub-controller": "SpinnerController",
+													"template": "SpinnerTemplate",
 													"transparent": "true",
-													"uidesc-label": "MLayout",
+													"uidesc-label": "SpinnerLayout",
 													"wants-focus": "false"
-												},
-												"children": {
-													"CView": {
-														"attributes": {
-															"class": "CView",
-															"mouse-enabled": "true",
-															"opacity": "1",
-															"origin": "0, 0",
-															"size": "48, 48",
-															"transparent": "false",
-															"uidesc-label": "SpinnerView",
-															"wants-focus": "false"
-														}
-													},
-													"CTextLabel": {
-														"attributes": {
-															"back-color": "task_count_background_color",
-															"background-offset": "0, 0",
-															"class": "CTextLabel",
-															"default-value": "0.5",
-															"font": "~ NormalFontSmall",
-															"font-antialias": "false",
-															"font-color": "task_count_text_color",
-															"frame-color": "~ BlackCColor",
-															"frame-width": "0",
-															"max-value": "100",
-															"min-value": "0",
-															"mouse-enabled": "true",
-															"opacity": "1",
-															"origin": "28, 4",
-															"round-rect-radius": "10",
-															"shadow-color": "~ RedCColor",
-															"size": "20, 19",
-															"style-3D-in": "false",
-															"style-3D-out": "false",
-															"style-no-draw": "false",
-															"style-no-frame": "true",
-															"style-no-text": "false",
-															"style-round-rect": "true",
-															"style-shadow-text": "false",
-															"text-alignment": "center",
-															"text-inset": "0, 0",
-															"text-rotation": "0",
-															"text-shadow-offset": "1, 1",
-															"title": "0",
-															"transparent": "false",
-															"uidesc-label": "SpinnerBadge",
-															"value-precision": "2",
-															"wants-focus": "false",
-															"wheel-inc-value": "0.1"
-														}
-													}
 												}
 											},
 											"CRowColumnView": {
@@ -1903,13 +1852,13 @@
 					},
 					"CTextLabel": {
 						"attributes": {
-							"back-color": "task_count_background_color",
+							"back-color": "spinner_badge_background_color",
 							"background-offset": "0, 0",
 							"class": "CTextLabel",
 							"default-value": "0.5",
 							"font": "~ NormalFontSmall",
 							"font-antialias": "true",
-							"font-color": "task_count_text_color",
+							"font-color": "spinner_badge_text_color",
 							"frame-color": "~ BlackCColor",
 							"frame-width": "0",
 							"max-value": "100",

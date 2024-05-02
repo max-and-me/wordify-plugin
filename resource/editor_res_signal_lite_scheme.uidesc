@@ -67,8 +67,8 @@
       "scroll_bar_handle_color": "#878889ff",
       "search_field_background_color": "#00000000",
       "search_field_text_color": "#1c1a1dff",
-      "task_count_background_color": "#2c6bedff",
-      "task_count_text_color": "#e2e1e6ff",
+      "spinner_badge_background_color": "#2c6bedff",
+      "spinner_badge_text_color": "#e2e1e6ff",
       "transcript_text_color": "#1c1a1dff",
       "transcript_text_hilite_color": "#1c1a1d80"
     },
