@@ -445,6 +445,34 @@ MetaWordsClipController::MetaWordsClipController(
 }
 
 //------------------------------------------------------------------------
+MetaWordsClipController::~MetaWordsClipController()
+{
+    if (region_title)
+    {
+        region_title->unregisterViewListener(this);
+        region_title = nullptr;
+    }
+
+    if (region_start_time)
+    {
+        region_start_time->unregisterViewListener(this);
+        region_start_time = nullptr;
+    }
+
+    if (region_duration_time)
+    {
+        region_duration_time->unregisterViewListener(this);
+        region_duration_time = nullptr;
+    }
+
+    if (region_transcript)
+    {
+        region_transcript->unregisterViewListener(this);
+        region_transcript = nullptr;
+    }
+}
+
+//------------------------------------------------------------------------
 bool MetaWordsClipController::initialize(
     Subject* subject, FuncMetaWordsData&& meta_words_data_func)
 {
@@ -495,25 +523,34 @@ CView* MetaWordsClipController::verifyView(CView* view,
                                            const UIAttributes& attributes,
                                            const IUIDescription* description)
 {
+    if (!view)
+        return view;
+
     if (auto viewLabel =
             attributes.getAttributeValue(UIViewCreator::kAttrUIDescLabel))
     {
         if (*viewLabel == "RegionStartTime")
         {
-            if (region_start_time = dynamic_cast<CTextLabel*>(view))
-                update_region_start_time(*region_start_time,
-                                         meta_words_data_func());
+            region_start_time = dynamic_cast<CTextLabel*>(view);
+            region_start_time->registerViewListener(this);
+
+            update_region_start_time(*region_start_time,
+                                     meta_words_data_func());
         }
         else if (*viewLabel == "RegionDurationTime")
         {
-            if (region_duration_time = dynamic_cast<CTextLabel*>(view))
-                update_region_duration_time(*region_duration_time,
-                                            meta_words_data_func());
+            region_duration_time = dynamic_cast<CTextLabel*>(view);
+            region_duration_time->registerViewListener(this);
+
+            update_region_duration_time(*region_duration_time,
+                                        meta_words_data_func());
         }
         else if (*viewLabel == "RegionTitle")
         {
-            if (region_title = dynamic_cast<CTextLabel*>(view))
-                update_region_title(*region_title, meta_words_data_func());
+            region_title = dynamic_cast<CTextLabel*>(view);
+            region_title->registerViewListener(this);
+
+            update_region_title(*region_title, meta_words_data_func());
         }
         else if (*viewLabel == "RegionTranscript")
         {
@@ -526,7 +563,8 @@ CView* MetaWordsClipController::verifyView(CView* view,
                         return compute_word_width(description, word);
                     });
             }
-            region_transcript = dynamic_cast<CViewContainer*>(view);
+            region_transcript = view->asViewContainer();
+
             stack_layout = std::make_unique<HStackLayout>(region_transcript);
             stack_layout->setup({0., 0.}, {0., 0., 0., HORIZ_PADDING});
             update_region_transcript(region_transcript, data, description,
@@ -544,7 +582,7 @@ CView* MetaWordsClipController::verifyView(CView* view,
                             new LoadingIndicatorAnimationHandler);
                 }
             }
-
+            region_transcript->registerViewListener(this);
             region_transcript->registerViewListener(new FitContent);
         }
         else if (*viewLabel == "MetaWordButton")
@@ -575,16 +613,25 @@ void MetaWordsClipController::viewRemoved(VSTGUI::CView* view) {}
 void MetaWordsClipController::viewWillDelete(CView* view)
 {
     if (view == region_title)
+    {
+        region_title->unregisterViewListener(this);
         region_title = nullptr;
-
-    if (view == region_start_time)
+    }
+    else if (view == region_start_time)
+    {
+        region_start_time->unregisterViewListener(this);
         region_start_time = nullptr;
-
-    if (view == region_duration_time)
+    }
+    else if (view == region_duration_time)
+    {
+        region_duration_time->unregisterViewListener(this);
         region_duration_time = nullptr;
-
-    if (view == region_transcript)
+    }
+    else if (view == region_transcript)
+    {
+        region_transcript->unregisterViewListener(this);
         region_transcript = nullptr;
+    }
 }
 
 //------------------------------------------------------------------------

@@ -44,6 +44,7 @@ public:
     };
 
     MetaWordsClipController(const VSTGUI::IUIDescription* description);
+    ~MetaWordsClipController() override;
 
     bool initialize(Subject* subject, FuncMetaWordsData&& meta_words_data_func);
 
