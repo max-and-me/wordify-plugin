@@ -47,10 +47,8 @@ public:
     void animationFinished(VSTGUI::CView* view,
                            VSTGUI::IdStringPtr name,
                            bool wasCanceled) override;
-
-protected:
     //--------------------------------------------------------------------
-
+private:
     using Degree             = SpinnerView::Degree;
     const Degree start_value = 0.;
     const Degree end_value   = 360.;
