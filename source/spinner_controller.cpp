@@ -6,6 +6,7 @@
 #include "public.sdk/source/vst/utility/stringconvert.h"
 #include "public.sdk/source/vst/vstparameters.h"
 #include "spinner_view.h"
+#include "view_animations.h"
 #include "vstgui/lib/animation/timingfunctions.h"
 #include "vstgui/lib/controls/ctextlabel.h"
 #include "vstgui/uidescription/iuidescription.h"
@@ -16,7 +17,7 @@
 using namespace VSTGUI;
 
 namespace mam {
-
+namespace {
 //------------------------------------------------------------------------
 auto create_spinner_view(const UIAttributes& attributes,
                          const IUIDescription* description) -> SpinnerView*
@@ -31,6 +32,23 @@ auto create_spinner_view(const UIAttributes& attributes,
     const CRect rect{origin, size};
     return new SpinnerView(rect);
 }
+
+//------------------------------------------------------------------------
+auto count_num_tasks(Steinberg::IPtr<Steinberg::Vst::Parameter> task_counter,
+                     SpinnerController::StringType& value_str) -> size_t
+{
+    const auto norm  = task_counter->getNormalized();
+    const auto count = task_counter->toPlain(norm);
+
+    Steinberg::Vst::String128 text;
+    task_counter->toString(norm, text);
+    value_str = VST3::StringConvert::convert(text);
+
+    return size_t(count);
+}
+
+//------------------------------------------------------------------------
+} // namespace
 
 //------------------------------------------------------------------------
 // SpinnerViewListener
@@ -91,6 +109,11 @@ SpinnerController::~SpinnerController()
         if (view_listener)
             spinner_view->unregisterViewListener(view_listener.get());
     }
+    if (spinner_badge)
+        spinner_badge->unregisterViewListener(this);
+
+    if (spinner_layout)
+        spinner_layout->unregisterViewListener(this);
 }
 
 //------------------------------------------------------------------------
@@ -117,32 +140,24 @@ void SpinnerController::on_task_count_changed()
 void SpinnerController::on_task_count_changed(size_t value,
                                               const StringType& value_str)
 {
-    if (value > 0)
+    if (spinner_layout)
     {
-        if (spinner_view)
-        {
-            spinner_view->setVisible(true);
-        }
-
-        if (spinner_badge)
-        {
-            spinner_badge->setVisible(true);
-            spinner_badge->setText(VSTGUI::UTF8String(value_str));
-        }
+        const auto fade_in = value > 0;
+        spinner_layout->forEachChild([&](CView* child) {
+            fade_in ? animations::add_simple_fade_in(child)
+                    : animations::add_simple_fade_out(child);
+        });
     }
-    else
-    {
-        if (spinner_view)
-        {
-            spinner_view->setVisible(false);
-        }
 
-        if (spinner_badge)
-        {
-            spinner_badge->setVisible(false);
-            spinner_badge->setText(VSTGUI::UTF8String(value_str));
-        }
-    }
+    if (spinner_badge)
+        spinner_badge->setText(VSTGUI::UTF8String(value_str));
+}
+
+//------------------------------------------------------------------------
+auto SpinnerController::count_tasks() const -> size_t
+{
+    StringType str;
+    return count_num_tasks(task_counter, str);
 }
 
 //------------------------------------------------------------------------
@@ -178,6 +193,8 @@ VSTGUI::CView* SpinnerController::verifyView(VSTGUI::CView* view,
                                              const UIAttributes& attributes,
                                              const IUIDescription* description)
 {
+    if (!view)
+        return view;
 
     if (const auto* view_name = attributes.getAttributeValue("uidesc-label"))
     {
@@ -191,15 +208,20 @@ VSTGUI::CView* SpinnerController::verifyView(VSTGUI::CView* view,
             // Animations handling
             if (view_listener)
                 spinner_view->registerViewListener(view_listener.get());
-
-            if (task_counter)
-                on_task_count_changed();
         }
         else if (*view_name == "SpinnerBadge")
         {
             spinner_badge = dynamic_cast<VSTGUI::CTextLabel*>(view);
-            if (spinner_badge)
-                on_task_count_changed();
+
+            // Lifetime handling
+            spinner_badge->registerViewListener(this);
+        }
+        else if (*view_name == "SpinnerLayout")
+        {
+            spinner_layout = view->asViewContainer();
+
+            // Lifetime handling
+            spinner_layout->registerViewListener(this);
         }
     }
 
@@ -215,6 +237,22 @@ SpinnerController::createSubController(UTF8StringPtr name,
 }
 
 //------------------------------------------------------------------------
+void SpinnerController::viewAttached(CView* view)
+{
+    if (view == spinner_badge)
+    {
+        StringType str;
+        const auto num_tasks = count_num_tasks(task_counter, str);
+        spinner_badge->setText(str.c_str());
+
+        view->setAlphaValue(num_tasks > 0 ? 1. : 0.);
+    }
+
+    if (view == spinner_view)
+        view->setAlphaValue(count_tasks() > 0 ? 1. : 0.);
+}
+
+//------------------------------------------------------------------------
 void SpinnerController::viewWillDelete(VSTGUI::CView* view)
 {
     if (spinner_view == view)
@@ -227,7 +265,13 @@ void SpinnerController::viewWillDelete(VSTGUI::CView* view)
     }
     else if (spinner_badge == view)
     {
+        spinner_badge->unregisterViewListener(this);
         spinner_badge = nullptr;
+    }
+    else if (spinner_layout == view)
+    {
+        spinner_layout->unregisterViewListener(this);
+        spinner_layout = nullptr;
     }
 }
 

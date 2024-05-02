@@ -8,8 +8,10 @@
 #include "base/source/fobject.h"
 #include "vstgui/lib/iviewlistener.h"
 #include "vstgui/uidescription/icontroller.h"
+#include <string>
 
 namespace VSTGUI {
+class CViewContainer;
 } // namespace VSTGUI
 
 namespace Steinberg::Vst {
@@ -28,7 +30,9 @@ class SpinnerController : public Steinberg::FObject,
 {
 public:
     //--------------------------------------------------------------------
-    using TextLabel = VSTGUI::CTextLabel;
+    using TextLabel     = VSTGUI::CTextLabel;
+    using StringType    = std::string;
+    using ViewContainer = VSTGUI::CViewContainer;
 
     SpinnerController(ARADocumentController* controller,
                       Steinberg::Vst::Parameter* param);
@@ -54,19 +58,21 @@ public:
 
     // IViewListener
     void viewWillDelete(VSTGUI::CView* view) override;
+    void viewAttached(VSTGUI::CView* view) override;
 
     OBJ_METHODS(SpinnerController, FObject)
 
     //--------------------------------------------------------------------
 private:
-    using StringType             = std::string;
     using SpinnerViewListenerPtr = std::unique_ptr<struct SpinnerViewListener>;
     SpinnerViewListenerPtr view_listener;
 
+    size_t count_tasks() const;
     void on_task_count_changed();
     void on_task_count_changed(size_t value, const StringType& value_str);
 
     ARADocumentController* controller = nullptr;
+    ViewContainer* spinner_layout     = nullptr;
     TextLabel* spinner_badge          = nullptr;
     SpinnerView* spinner_view         = nullptr;
     Steinberg::IPtr<Steinberg::Vst::Parameter> task_counter;
