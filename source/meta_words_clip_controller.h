@@ -27,7 +27,8 @@ class HStackLayout;
 // VstGPTWaveClipListController
 //------------------------------------------------------------------------
 class MetaWordsClipController : public Steinberg::FObject,
-                                public VSTGUI::IController
+                                public VSTGUI::IController,
+                                public VSTGUI::ViewListenerAdapter
 {
 public:
     //--------------------------------------------------------------------
@@ -55,6 +56,10 @@ public:
 
     // IControlListener
     void valueChanged(VSTGUI::CControl* pControl) override;
+
+    // ViewListenerAdapter
+    void viewAttached(VSTGUI::CView* view) override;
+    void viewRemoved(VSTGUI::CView* view) override;
 
     FuncListValueChanged list_value_changed_func;
 

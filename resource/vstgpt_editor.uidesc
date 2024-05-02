@@ -1760,7 +1760,7 @@
 							"size": "44, 24",
 							"spacing": "4",
 							"transparent": "true",
-							"uidesc-label": "HLayout",
+							"uidesc-label": "DotGroupLayout",
 							"view-resize-animation-time": "200",
 							"wants-focus": "false"
 						},

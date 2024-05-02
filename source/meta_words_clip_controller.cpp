@@ -7,6 +7,8 @@
 #include "list_entry_controller.h"
 #include "little_helpers.h"
 #include "meta_words_data.h"
+#include "vstgui/lib/animation/ianimationtarget.h"
+#include "vstgui/lib/animation/timingfunctions.h"
 #include "vstgui/lib/ccolor.h"
 #include "vstgui/lib/cfont.h"
 #include "vstgui/lib/controls/cbuttons.h"
@@ -19,6 +21,7 @@
 #include "vstgui/uidescription/detail/uiviewcreatorattributes.h"
 #include "vstgui/uidescription/iviewfactory.h"
 #include "vstgui/uidescription/uiattributes.h"
+#include <cmath>
 #include <optional>
 
 using namespace VSTGUI;
@@ -209,17 +212,20 @@ void insert_word_buttons(const mam::MetaWordsClipController::Cache& cache,
 static CViewAttributeID kTemplateNameAttributeID = 'uitl';
 static auto add_loading_indicator(CViewContainer* region_transcript,
                                   const IUIDescription* description,
-                                  HStackLayout* stack_layout) -> void
+                                  HStackLayout* stack_layout) -> CView*
 {
     if (region_transcript->getNbViews() == 0)
     {
-        auto view =
-            description->createView("LoadingIndicatorTemplate", nullptr);
-        if (!view)
-            return;
-        stack_layout->setup({0., 0.}, {0., 0., 0., 0});
-        region_transcript->addView(view);
+        if (auto view =
+                description->createView("LoadingIndicatorTemplate", nullptr))
+        {
+            stack_layout->setup({0., 0.}, {0., 0., 0., 0});
+            region_transcript->addView(view);
+            return view;
+        }
     }
+
+    return nullptr;
 }
 
 //------------------------------------------------------------------------
@@ -340,6 +346,86 @@ public:
 private:
     CViewContainer* container = nullptr;
 };
+
+//------------------------------------------------------------------------
+// LoadingIndicatorAnimationHandler
+//------------------------------------------------------------------------
+class LoadingIndicatorAnimationHandler : public ViewListenerAdapter
+{
+    struct WaveAnimation : public VSTGUI::Animation::IAnimationTarget,
+                           public VSTGUI::NonAtomicReferenceCounted
+    {
+        static const char* ANIMATION_ID;
+
+        void animationStart(VSTGUI::CView* view,
+                            VSTGUI::IdStringPtr name) override
+        {
+        }
+
+        void animationTick(VSTGUI::CView* view,
+                           VSTGUI::IdStringPtr name,
+                           float pos) override
+        {
+            if (!view)
+                return;
+
+            if (auto* container = dynamic_cast<CViewContainer*>(view))
+            {
+                if (auto* container = view->asViewContainer())
+                {
+                    const auto OFFSET = M_PI / double(container->getNbViews());
+                    size_t index      = 0;
+                    container->forEachChild([&](CView* child) {
+                        const auto phase        = 2. * M_PI * pos;
+                        const auto phase_shift  = index++ * OFFSET;
+                        const auto val          = std::sin(phase - phase_shift);
+                        const auto val_positive = std::max(0., val);
+                        child->setAlphaValue(1. - val_positive);
+                    });
+                }
+            }
+        }
+
+        void animationFinished(VSTGUI::CView* view,
+                               VSTGUI::IdStringPtr name,
+                               bool wasCanceled) override
+        {
+        }
+    };
+
+    void viewAttached(CView* view) override
+    {
+        constexpr auto PERIOD_DURATION = 1200.;
+        constexpr auto REPEAT_FOREVER  = std::numeric_limits<int32_t>().max();
+
+        auto* timing_function =
+            new VSTGUI::Animation::LinearTimingFunction(PERIOD_DURATION);
+        auto* repeater = new VSTGUI::Animation::RepeatTimingFunction(
+            timing_function, REPEAT_FOREVER, false);
+
+        if (view)
+            view->addAnimation(WaveAnimation::ANIMATION_ID, new WaveAnimation,
+                               repeater);
+    }
+
+    void viewRemoved(CView* view) override
+    {
+        if (view)
+            view->removeAnimation(WaveAnimation::ANIMATION_ID);
+    }
+
+    void viewWillDelete(CView* view) override
+    {
+        if (view)
+        {
+            view->unregisterViewListener(this);
+            delete this;
+        }
+    }
+};
+
+const char* LoadingIndicatorAnimationHandler::WaveAnimation::ANIMATION_ID =
+    "WaveAnimation";
 
 //------------------------------------------------------------------------
 // VstGPTWaveClipListController
@@ -467,11 +553,20 @@ CView* MetaWordsClipController::verifyView(CView* view,
                     meta_word_button_attributes, this, cache);
 
                 if (data.words.empty())
-                    add_loading_indicator(region_transcript, description,
-                                          stack_layout.get());
+                {
+                    auto* indicator = add_loading_indicator(
+                        region_transcript, description, stack_layout.get());
 
-                view_listener = std::make_unique<FitContent>(region_transcript);
+                    if (auto* container = indicator->asViewContainer())
+                    {
+                        if (auto* dot_group = container->getView(1))
+                            dot_group->registerViewListener(
+                                new LoadingIndicatorAnimationHandler);
+                    }
+                }
             }
+
+            view_listener = std::make_unique<FitContent>(region_transcript);
         }
     }
 
@@ -495,6 +590,12 @@ void MetaWordsClipController::valueChanged(CControl* pControl)
         list_value_changed_func(pControl->getTag());
     }
 }
+
+//------------------------------------------------------------------------
+void MetaWordsClipController::viewAttached(VSTGUI::CView* view) {}
+
+//------------------------------------------------------------------------
+void MetaWordsClipController::viewRemoved(VSTGUI::CView* view) {}
 
 //------------------------------------------------------------------------
 } // namespace mam
