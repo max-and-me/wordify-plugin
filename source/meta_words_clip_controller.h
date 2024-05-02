@@ -5,11 +5,9 @@
 #pragma once
 
 #include "list_entry_controller.h"
-#include "meta_words_clip_controller.h"
 #include "meta_words_data.h"
 #include "vstgui/lib/iviewlistener.h"
 #include "vstgui/uidescription/uiattributes.h"
-#include <memory>
 
 namespace VSTGUI {
 class IUIDescription;
@@ -60,6 +58,7 @@ public:
     // ViewListenerAdapter
     void viewAttached(VSTGUI::CView* view) override;
     void viewRemoved(VSTGUI::CView* view) override;
+    void viewWillDelete(VSTGUI::CView* view) override;
 
     FuncListValueChanged list_value_changed_func;
 
@@ -74,7 +73,6 @@ private:
     VSTGUI::CTextLabel* region_duration_time  = nullptr;
     VSTGUI::CViewContainer* region_transcript = nullptr;
 
-    std::unique_ptr<VSTGUI::ViewListenerAdapter> view_listener;
     std::unique_ptr<HStackLayout> stack_layout;
     VSTGUI::UIAttributes meta_word_button_attributes;
 

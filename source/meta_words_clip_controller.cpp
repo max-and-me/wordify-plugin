@@ -314,41 +314,29 @@ class FitContent : public ViewListenerAdapter
 {
 public:
     //--------------------------------------------------------------------
-    FitContent(CViewContainer* container)
-    : container(container)
-    {
-        if (container)
-            container->registerViewListener(this);
-    }
-
-    ~FitContent() override
-    {
-        if (container)
-            container->unregisterViewListener(this);
-    }
-
     void viewAttached(CView* view) override
     {
-        fit_content(view->getParentView());
+        if (view)
+            fit_content(view->getParentView());
     }
 
     void viewSizeChanged(CView* view, const CRect& oldSize) override
     {
-        fit_content(view->getParentView());
+        if (view)
+            fit_content(view->getParentView());
     }
 
     void viewWillDelete(CView* view) override
     {
-        if (view == container)
+        if (auto c = view->asViewContainer())
         {
-            container->unregisterViewListener(this);
-            container = nullptr;
+            c->unregisterViewListener(this);
+            delete this;
         }
     }
 
     //--------------------------------------------------------------------
 private:
-    CViewContainer* container = nullptr;
 };
 
 //------------------------------------------------------------------------
@@ -507,93 +495,59 @@ CView* MetaWordsClipController::verifyView(CView* view,
                                            const UIAttributes& attributes,
                                            const IUIDescription* description)
 {
-    if (!region_start_time)
-    {
-        if (auto viewLabel =
-                attributes.getAttributeValue(UIViewCreator::kAttrUIDescLabel))
-        {
-            if (*viewLabel == "RegionStartTime")
-            {
-                if (region_start_time = dynamic_cast<CTextLabel*>(view))
-                    update_region_start_time(*region_start_time,
-                                             meta_words_data_func());
-            }
-        }
-    }
-
-    if (!region_duration_time)
-    {
-        if (auto viewLabel =
-                attributes.getAttributeValue(UIViewCreator::kAttrUIDescLabel))
-        {
-            if (*viewLabel == "RegionDurationTime")
-            {
-                if (region_duration_time = dynamic_cast<CTextLabel*>(view))
-                    update_region_duration_time(*region_duration_time,
-                                                meta_words_data_func());
-            }
-        }
-    }
-
-    if (!region_title)
-    {
-        if (auto viewLabel =
-                attributes.getAttributeValue(UIViewCreator::kAttrUIDescLabel))
-        {
-            if (*viewLabel == "RegionTitle")
-            {
-                if (region_title = dynamic_cast<CTextLabel*>(view))
-                    update_region_title(*region_title, meta_words_data_func());
-            }
-        }
-    }
-
-    if (!region_transcript)
-    {
-        if (auto viewLabel =
-                attributes.getAttributeValue(UIViewCreator::kAttrUIDescLabel))
-        {
-            if (*viewLabel == "RegionTranscript")
-            {
-                if (cache.word_widths.empty())
-                {
-                    cache.word_widths = compute_word_widths(
-                        meta_words_data_func(), [&](const Word& word) {
-                            return compute_word_width(description, word);
-                        });
-                }
-
-                const auto data   = meta_words_data_func();
-                region_transcript = dynamic_cast<CViewContainer*>(view);
-                stack_layout =
-                    std::make_unique<HStackLayout>(region_transcript);
-                stack_layout->setup({0., 0.}, {0., 0., 0., HORIZ_PADDING});
-                update_region_transcript(
-                    region_transcript, meta_words_data_func(), description,
-                    meta_word_button_attributes, this, cache);
-
-                if (data.words.empty())
-                {
-                    auto* indicator = add_loading_indicator(
-                        region_transcript, description, stack_layout.get());
-
-                    if (auto* container = indicator->asViewContainer())
-                    {
-                        if (auto* dot_group = container->getView(1))
-                            dot_group->registerViewListener(
-                                new LoadingIndicatorAnimationHandler);
-                    }
-                }
-            }
-
-            view_listener = std::make_unique<FitContent>(region_transcript);
-        }
-    }
-
     if (auto viewLabel =
             attributes.getAttributeValue(UIViewCreator::kAttrUIDescLabel))
     {
-        if (*viewLabel == "MetaWordButton")
+        if (*viewLabel == "RegionStartTime")
+        {
+            if (region_start_time = dynamic_cast<CTextLabel*>(view))
+                update_region_start_time(*region_start_time,
+                                         meta_words_data_func());
+        }
+        else if (*viewLabel == "RegionDurationTime")
+        {
+            if (region_duration_time = dynamic_cast<CTextLabel*>(view))
+                update_region_duration_time(*region_duration_time,
+                                            meta_words_data_func());
+        }
+        else if (*viewLabel == "RegionTitle")
+        {
+            if (region_title = dynamic_cast<CTextLabel*>(view))
+                update_region_title(*region_title, meta_words_data_func());
+        }
+        else if (*viewLabel == "RegionTranscript")
+        {
+            const auto data = meta_words_data_func();
+
+            if (cache.word_widths.empty())
+            {
+                cache.word_widths =
+                    compute_word_widths(data, [&](const Word& word) {
+                        return compute_word_width(description, word);
+                    });
+            }
+            region_transcript = dynamic_cast<CViewContainer*>(view);
+            stack_layout = std::make_unique<HStackLayout>(region_transcript);
+            stack_layout->setup({0., 0.}, {0., 0., 0., HORIZ_PADDING});
+            update_region_transcript(region_transcript, data, description,
+                                     meta_word_button_attributes, this, cache);
+
+            if (data.words.empty())
+            {
+                auto* indicator = add_loading_indicator(
+                    region_transcript, description, stack_layout.get());
+
+                if (auto* container = indicator->asViewContainer())
+                {
+                    if (auto* dot_group = container->getView(1))
+                        dot_group->registerViewListener(
+                            new LoadingIndicatorAnimationHandler);
+                }
+            }
+
+            region_transcript->registerViewListener(new FitContent);
+        }
+        else if (*viewLabel == "MetaWordButton")
         {
             meta_word_button_attributes = attributes;
         }
@@ -616,6 +570,22 @@ void MetaWordsClipController::viewAttached(VSTGUI::CView* view) {}
 
 //------------------------------------------------------------------------
 void MetaWordsClipController::viewRemoved(VSTGUI::CView* view) {}
+
+//------------------------------------------------------------------------
+void MetaWordsClipController::viewWillDelete(CView* view)
+{
+    if (view == region_title)
+        region_title = nullptr;
+
+    if (view == region_start_time)
+        region_start_time = nullptr;
+
+    if (view == region_duration_time)
+        region_duration_time = nullptr;
+
+    if (view == region_transcript)
+        region_transcript = nullptr;
+}
 
 //------------------------------------------------------------------------
 } // namespace mam
