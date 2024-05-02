@@ -76,6 +76,8 @@ struct SpinnerViewListener : ViewListenerAdapter
         if (dynamic_cast<SpinnerView*>(view))
         {
             view->removeAnimation(SpinAnimation::ANIMATION_ID);
+            view->unregisterViewListener(this);
+            delete this;
         }
     }
 };
@@ -93,8 +95,6 @@ SpinnerController::SpinnerController(ARADocumentController* controller,
 
     if (task_counter)
         param->addDependent(this);
-
-    view_listener = std::make_unique<SpinnerViewListener>();
 }
 
 //------------------------------------------------------------------------
@@ -104,11 +104,8 @@ SpinnerController::~SpinnerController()
         task_counter->removeDependent(this);
 
     if (spinner_view)
-    {
         spinner_view->unregisterViewListener(this);
-        if (view_listener)
-            spinner_view->unregisterViewListener(view_listener.get());
-    }
+
     if (spinner_badge)
         spinner_badge->unregisterViewListener(this);
 
@@ -185,6 +182,7 @@ CView* SpinnerController::createView(const UIAttributes& attributes,
             return create_spinner_view(attributes, description);
         }
     }
+
     return nullptr;
 }
 
@@ -206,8 +204,7 @@ VSTGUI::CView* SpinnerController::verifyView(VSTGUI::CView* view,
             spinner_view->registerViewListener(this);
 
             // Animations handling
-            if (view_listener)
-                spinner_view->registerViewListener(view_listener.get());
+            spinner_view->registerViewListener(new SpinnerViewListener);
         }
         else if (*view_name == "SpinnerBadge")
         {
@@ -257,9 +254,6 @@ void SpinnerController::viewWillDelete(VSTGUI::CView* view)
 {
     if (spinner_view == view)
     {
-        if (view_listener)
-            spinner_view->unregisterViewListener(view_listener.get());
-
         spinner_view->unregisterViewListener(this);
         spinner_view = nullptr;
     }

@@ -64,9 +64,6 @@ public:
 
     //--------------------------------------------------------------------
 private:
-    using SpinnerViewListenerPtr = std::unique_ptr<struct SpinnerViewListener>;
-    SpinnerViewListenerPtr view_listener;
-
     size_t count_tasks() const;
     void on_task_count_changed();
     void on_task_count_changed(size_t value, const StringType& value_str);
