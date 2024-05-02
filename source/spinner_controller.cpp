@@ -83,7 +83,7 @@ void SpinnerController::on_task_count_changed()
     const auto count = task_count_param->toPlain(norm);
 
     StringType value_str;
-    if (task_count_view)
+    if (spinner_badge)
     {
         Steinberg::Vst::String128 text;
         task_count_param->toString(norm, text);
@@ -104,10 +104,10 @@ void SpinnerController::on_task_count_changed(size_t value,
             spinner_view->setVisible(true);
         }
 
-        if (task_count_view)
+        if (spinner_badge)
         {
-            task_count_view->setVisible(true);
-            task_count_view->setText(VSTGUI::UTF8String(value_str));
+            spinner_badge->setVisible(true);
+            spinner_badge->setText(VSTGUI::UTF8String(value_str));
         }
     }
     else
@@ -117,10 +117,10 @@ void SpinnerController::on_task_count_changed(size_t value,
             spinner_view->setVisible(false);
         }
 
-        if (task_count_view)
+        if (spinner_badge)
         {
-            task_count_view->setVisible(false);
-            task_count_view->setText(VSTGUI::UTF8String(value_str));
+            spinner_badge->setVisible(false);
+            spinner_badge->setText(VSTGUI::UTF8String(value_str));
         }
     }
 }
@@ -185,8 +185,8 @@ SpinnerController::verifyView(VSTGUI::CView* view,
         }
         else if (*view_name == "TaskCount")
         {
-            task_count_view = dynamic_cast<VSTGUI::CTextLabel*>(view);
-            if (task_count_view)
+            spinner_badge = dynamic_cast<VSTGUI::CTextLabel*>(view);
+            if (spinner_badge)
                 on_task_count_changed();
         }
     }
@@ -212,9 +212,9 @@ void SpinnerController::viewWillDelete(VSTGUI::CView* view)
         spinner_view->unregisterViewListener(this);
         spinner_view = nullptr;
     }
-    else if (task_count_view == view)
+    else if (spinner_badge == view)
     {
-        task_count_view = nullptr;
+        spinner_badge = nullptr;
     }
 }
 

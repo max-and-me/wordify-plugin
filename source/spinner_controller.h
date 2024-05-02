@@ -65,9 +65,9 @@ private:
     void on_task_count_changed();
     void on_task_count_changed(size_t value, const StringType& value_str);
 
-    ARADocumentController* controller   = nullptr;
-    VSTGUI::CTextLabel* task_count_view = nullptr;
-    SpinnerView* spinner_view           = nullptr;
+    ARADocumentController* controller = nullptr;
+    VSTGUI::CTextLabel* spinner_badge = nullptr;
+    SpinnerView* spinner_view         = nullptr;
     Steinberg::IPtr<Steinberg::Vst::Parameter> task_count_param;
 };
 
