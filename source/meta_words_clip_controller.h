@@ -30,10 +30,10 @@ class MetaWordsClipController : public Steinberg::FObject,
 {
 public:
     //--------------------------------------------------------------------
-    using FuncMetaWordsData    = std::function<const MetaWordsData()>;
-    using FuncListValueChanged = std::function<void(int)>;
-    using Subject              = tiny_observer_pattern::SimpleSubject;
-    using Width                = VSTGUI::CCoord;
+    using FuncMetaWordsData  = std::function<const MetaWordsData()>;
+    using FuncOnSelectedWord = std::function<void(int)>;
+    using Subject            = tiny_observer_pattern::SimpleSubject;
+    using Width              = VSTGUI::CCoord;
     using ObserverPtr =
         std::unique_ptr<tiny_observer_pattern::Observer<Subject>>;
 
@@ -61,7 +61,7 @@ public:
     void viewRemoved(VSTGUI::CView* view) override;
     void viewWillDelete(VSTGUI::CView* view) override;
 
-    FuncListValueChanged on_select_word_func;
+    FuncOnSelectedWord on_select_word_func;
     FuncMetaWordsData meta_words_data_func;
 
     OBJ_METHODS(MetaWordsClipController, FObject)
