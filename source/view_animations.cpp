@@ -32,10 +32,10 @@ auto add_simple_fade_out(View* view) -> void
 
     if (view)
     {
-        view->addAnimation("AlphaAnimation",
-                           new Anim::AlphaValueAnimation(0.f, true),
-                           new Anim::CubicBezierTimingFunction(
-                               Anim::CubicBezierTimingFunction::easyOut(DUR)));
+        view->addAnimation(
+            "AlphaAnimation", new Anim::AlphaValueAnimation(0.f, true),
+            new Anim::CubicBezierTimingFunction(
+                Anim::CubicBezierTimingFunction::easyOut(DUR * 2)));
     }
 }
 
