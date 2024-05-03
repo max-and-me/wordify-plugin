@@ -154,7 +154,7 @@ using OptTextButton = std::optional<CTextButton*>;
 template <typename Func>
 void insert_word_buttons(const mam::MetaWordsClipController::Cache& cache,
                          const mam::MetaWordsData& meta_words_data,
-                         VSTGUI::CViewContainer* region_transcript,
+                         CViewContainer* region_transcript,
                          Func&& but_create_func)
 {
     const auto& word_widths = cache.word_widths;
@@ -202,15 +202,14 @@ void insert_word_buttons(const mam::MetaWordsClipController::Cache& cache,
 //------------------------------------------------------------------------
 class LoadingIndicatorAnimationHandler : public ViewListenerAdapter
 {
-    struct WaveAnimation : public VSTGUI::Animation::IAnimationTarget,
-                           public VSTGUI::NonAtomicReferenceCounted
+    struct WaveAnimation : public Animation::IAnimationTarget,
+                           public NonAtomicReferenceCounted
     {
         static const char* ANIMATION_ID;
-        using Rects = std::vector<VSTGUI::CRect>;
+        using Rects = std::vector<CRect>;
         Rects rects;
 
-        void animationStart(VSTGUI::CView* view,
-                            VSTGUI::IdStringPtr name) override
+        void animationStart(CView* view, IdStringPtr name) override
         {
             if (const auto* container = view->asViewContainer())
             {
@@ -220,9 +219,7 @@ class LoadingIndicatorAnimationHandler : public ViewListenerAdapter
             }
         }
 
-        void animationTick(VSTGUI::CView* view,
-                           VSTGUI::IdStringPtr name,
-                           float pos) override
+        void animationTick(CView* view, IdStringPtr name, float pos) override
         {
             if (!view)
                 return;
@@ -253,8 +250,8 @@ class LoadingIndicatorAnimationHandler : public ViewListenerAdapter
             }
         }
 
-        void animationFinished(VSTGUI::CView* view,
-                               VSTGUI::IdStringPtr name,
+        void animationFinished(CView* view,
+                               IdStringPtr name,
                                bool wasCanceled) override
         {
         }
@@ -266,8 +263,8 @@ class LoadingIndicatorAnimationHandler : public ViewListenerAdapter
         constexpr auto REPEAT_FOREVER  = std::numeric_limits<int32_t>().max();
 
         auto* timing_function =
-            new VSTGUI::Animation::LinearTimingFunction(PERIOD_DURATION);
-        auto* repeater = new VSTGUI::Animation::RepeatTimingFunction(
+            new Animation::LinearTimingFunction(PERIOD_DURATION);
+        auto* repeater = new Animation::RepeatTimingFunction(
             timing_function, REPEAT_FOREVER, false);
 
         if (view)
@@ -337,7 +334,7 @@ static auto remove_loading_indicator(CViewContainer* region_transcript,
                 if (view->getAttribute(kTemplateNameAttributeID, attrSize, str,
                                        attrSize))
                 {
-                    if (VSTGUI::UTF8String("LoadingIndicatorTemplate") == str)
+                    if (UTF8String("LoadingIndicatorTemplate") == str)
                     {
                         stack_layout->setup({0., 0.},
                                             {0., 0., 0., HORIZ_PADDING});
@@ -585,7 +582,7 @@ void MetaWordsClipController::valueChanged(CControl* pControl)
 }
 
 //------------------------------------------------------------------------
-void MetaWordsClipController::viewAttached(VSTGUI::CView* view)
+void MetaWordsClipController::viewAttached(CView* view)
 {
     const auto& data = meta_words_data_func();
     if (view == region_start_time)
@@ -608,7 +605,7 @@ void MetaWordsClipController::viewAttached(VSTGUI::CView* view)
 }
 
 //------------------------------------------------------------------------
-void MetaWordsClipController::viewRemoved(VSTGUI::CView* view) {}
+void MetaWordsClipController::viewRemoved(CView* view) {}
 
 //------------------------------------------------------------------------
 void MetaWordsClipController::viewWillDelete(CView* view)
