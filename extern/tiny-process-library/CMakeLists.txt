@@ -9,4 +9,6 @@ FetchContent_Declare(
     GIT_TAG 93edd94959a2cc8aec1ea4ec5df82835b2b05bac
 )
 
+option(BUILD_TESTING "" OFF)
+
 FetchContent_MakeAvailable(tiny-process-library)
