@@ -201,20 +201,28 @@ void insert_word_buttons(const mam::MetaWordsClipController::Cache& cache,
 static CViewAttributeID kTemplateNameAttributeID = 'uitl';
 static auto add_loading_indicator(CViewContainer* region_transcript,
                                   const IUIDescription* description,
-                                  HStackLayout* stack_layout) -> CView*
+                                  HStackLayout* stack_layout) -> void
 {
-    if (region_transcript->getNbViews() == 0)
+    if (region_transcript->getNbViews() > 0)
+        return;
+
+    if (auto indicator_template =
+            description->createView("LoadingIndicatorTemplate", nullptr))
     {
-        if (auto view =
-                description->createView("LoadingIndicatorTemplate", nullptr))
+        stack_layout->setup({0., 0.}, {0., 0., 0., 0});
+        region_transcript->addView(indicator_template);
+
+        if (auto* container = dynamic_cast<CViewContainer*>(indicator_template))
         {
-            stack_layout->setup({0., 0.}, {0., 0., 0., 0});
-            region_transcript->addView(view);
-            return view;
+            // TODO: Needs to be improved!!!!
+            constexpr auto DOT_GROUP_VIEW_INDEX = 1;
+            if (auto* dot_group = container->getView(DOT_GROUP_VIEW_INDEX))
+            {
+                dot_group->registerViewListener(
+                    new LoadingIndicatorAnimationHandler);
+            }
         }
     }
-
-    return nullptr;
 }
 
 //------------------------------------------------------------------------
@@ -296,7 +304,6 @@ static auto update_control(C* c, const MetaWordsData& data, Func& func) -> void
 //------------------------------------------------------------------------
 struct FitContentHandler : public ViewListenerAdapter
 {
-    //------------------------------------------------------------------------
     static auto fit_content(CView* view) -> void
     {
         // Only call sizeToFit, when view is a CRowColumnView
@@ -367,7 +374,8 @@ class LoadingIndicatorAnimationHandler : public ViewListenerAdapter
                 const auto OFFSET = M_PI / double(container->getNbViews());
                 size_t index      = 0;
                 container->forEachChild([&](CView* child) {
-                    const auto phase = 2. * M_PI * pos;
+                    constexpr auto TWO_PI = 2. * M_PI;
+                    const auto phase      = TWO_PI * pos;
                     const auto phase_shift =
                         static_cast<double>(index) * OFFSET;
                     const auto value        = std::sin(phase - phase_shift);
@@ -556,15 +564,8 @@ CView* MetaWordsClipController::verifyView(CView* view,
 
             if (data.words.empty())
             {
-                auto* indicator = add_loading_indicator(
-                    region_transcript, description, stack_layout.get());
-
-                if (auto* container = indicator->asViewContainer())
-                {
-                    if (auto* dot_group = container->getView(1))
-                        dot_group->registerViewListener(
-                            new LoadingIndicatorAnimationHandler);
-                }
+                add_loading_indicator(region_transcript, description,
+                                      stack_layout.get());
             }
         }
         else if (*viewLabel == "MetaWordButton")
