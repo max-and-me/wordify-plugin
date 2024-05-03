@@ -198,6 +198,103 @@ void insert_word_buttons(const mam::MetaWordsClipController::Cache& cache,
 }
 
 //------------------------------------------------------------------------
+// LoadingIndicatorAnimationHandler
+//------------------------------------------------------------------------
+class LoadingIndicatorAnimationHandler : public ViewListenerAdapter
+{
+    struct WaveAnimation : public VSTGUI::Animation::IAnimationTarget,
+                           public VSTGUI::NonAtomicReferenceCounted
+    {
+        static const char* ANIMATION_ID;
+        using Rects = std::vector<VSTGUI::CRect>;
+        Rects rects;
+
+        void animationStart(VSTGUI::CView* view,
+                            VSTGUI::IdStringPtr name) override
+        {
+            if (const auto* container = view->asViewContainer())
+            {
+                container->forEachChild([&](CView* child) {
+                    rects.push_back(child->getViewSize());
+                });
+            }
+        }
+
+        void animationTick(VSTGUI::CView* view,
+                           VSTGUI::IdStringPtr name,
+                           float pos) override
+        {
+            if (!view)
+                return;
+
+            if (auto* container = view->asViewContainer())
+            {
+                const auto OFFSET = M_PI / double(container->getNbViews());
+                size_t index      = 0;
+                container->forEachChild([&](CView* child) {
+                    constexpr auto TWO_PI = 2. * M_PI;
+                    const auto phase      = TWO_PI * pos;
+                    const auto phase_shift =
+                        static_cast<double>(index) * OFFSET;
+                    const auto value        = std::sin(phase - phase_shift);
+                    const auto val_positive = std::max(0., value);
+
+                    // Only fade dots out half
+                    child->setAlphaValue(1. - val_positive * 0.5);
+
+                    // Move them up by delta in pixel
+                    constexpr auto DELTA_PX = 2.;
+                    auto r                  = rects.at(index);
+                    r.offset(0., -DELTA_PX * val_positive);
+                    child->setViewSize(r);
+
+                    index++;
+                });
+            }
+        }
+
+        void animationFinished(VSTGUI::CView* view,
+                               VSTGUI::IdStringPtr name,
+                               bool wasCanceled) override
+        {
+        }
+    };
+
+    void viewAttached(CView* view) override
+    {
+        constexpr auto PERIOD_DURATION = 1200.;
+        constexpr auto REPEAT_FOREVER  = std::numeric_limits<int32_t>().max();
+
+        auto* timing_function =
+            new VSTGUI::Animation::LinearTimingFunction(PERIOD_DURATION);
+        auto* repeater = new VSTGUI::Animation::RepeatTimingFunction(
+            timing_function, REPEAT_FOREVER, false);
+
+        if (view)
+            view->addAnimation(WaveAnimation::ANIMATION_ID, new WaveAnimation,
+                               repeater);
+    }
+
+    void viewRemoved(CView* view) override
+    {
+        if (view)
+            view->removeAnimation(WaveAnimation::ANIMATION_ID);
+    }
+
+    void viewWillDelete(CView* view) override
+    {
+        if (view)
+        {
+            view->unregisterViewListener(this);
+            delete this;
+        }
+    }
+};
+
+const char* LoadingIndicatorAnimationHandler::WaveAnimation::ANIMATION_ID =
+    "WaveAnimation";
+
+//------------------------------------------------------------------------
 static CViewAttributeID kTemplateNameAttributeID = 'uitl';
 static auto add_loading_indicator(CViewContainer* region_transcript,
                                   const IUIDescription* description,
@@ -338,103 +435,6 @@ struct FitContentHandler : public ViewListenerAdapter
         }
     }
 };
-
-//------------------------------------------------------------------------
-// LoadingIndicatorAnimationHandler
-//------------------------------------------------------------------------
-class LoadingIndicatorAnimationHandler : public ViewListenerAdapter
-{
-    struct WaveAnimation : public VSTGUI::Animation::IAnimationTarget,
-                           public VSTGUI::NonAtomicReferenceCounted
-    {
-        static const char* ANIMATION_ID;
-        using Rects = std::vector<VSTGUI::CRect>;
-        Rects rects;
-
-        void animationStart(VSTGUI::CView* view,
-                            VSTGUI::IdStringPtr name) override
-        {
-            if (const auto* container = view->asViewContainer())
-            {
-                container->forEachChild([&](CView* child) {
-                    rects.push_back(child->getViewSize());
-                });
-            }
-        }
-
-        void animationTick(VSTGUI::CView* view,
-                           VSTGUI::IdStringPtr name,
-                           float pos) override
-        {
-            if (!view)
-                return;
-
-            if (auto* container = view->asViewContainer())
-            {
-                const auto OFFSET = M_PI / double(container->getNbViews());
-                size_t index      = 0;
-                container->forEachChild([&](CView* child) {
-                    constexpr auto TWO_PI = 2. * M_PI;
-                    const auto phase      = TWO_PI * pos;
-                    const auto phase_shift =
-                        static_cast<double>(index) * OFFSET;
-                    const auto value        = std::sin(phase - phase_shift);
-                    const auto val_positive = std::max(0., value);
-
-                    // Only fade dots out half
-                    child->setAlphaValue(1. - val_positive * 0.5);
-
-                    // Move them up by delta in pixel
-                    constexpr auto DELTA_PX = 2.;
-                    auto r                  = rects.at(index);
-                    r.offset(0., -DELTA_PX * val_positive);
-                    child->setViewSize(r);
-
-                    index++;
-                });
-            }
-        }
-
-        void animationFinished(VSTGUI::CView* view,
-                               VSTGUI::IdStringPtr name,
-                               bool wasCanceled) override
-        {
-        }
-    };
-
-    void viewAttached(CView* view) override
-    {
-        constexpr auto PERIOD_DURATION = 1200.;
-        constexpr auto REPEAT_FOREVER  = std::numeric_limits<int32_t>().max();
-
-        auto* timing_function =
-            new VSTGUI::Animation::LinearTimingFunction(PERIOD_DURATION);
-        auto* repeater = new VSTGUI::Animation::RepeatTimingFunction(
-            timing_function, REPEAT_FOREVER, false);
-
-        if (view)
-            view->addAnimation(WaveAnimation::ANIMATION_ID, new WaveAnimation,
-                               repeater);
-    }
-
-    void viewRemoved(CView* view) override
-    {
-        if (view)
-            view->removeAnimation(WaveAnimation::ANIMATION_ID);
-    }
-
-    void viewWillDelete(CView* view) override
-    {
-        if (view)
-        {
-            view->unregisterViewListener(this);
-            delete this;
-        }
-    }
-};
-
-const char* LoadingIndicatorAnimationHandler::WaveAnimation::ANIMATION_ID =
-    "WaveAnimation";
 
 //------------------------------------------------------------------------
 // VstGPTWaveClipListController
