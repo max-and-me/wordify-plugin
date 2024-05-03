@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.14.0)
+cmake_minimum_required(VERSION 3.25.0)
 set(CMAKE_OSX_DEPLOYMENT_TARGET 10.15 CACHE STRING "")
 
 # Only turn on validator in Release configuration
@@ -208,11 +208,41 @@ add_custom_target(${PROJECT_NAME}-dependency-graph
 
 # Installer
 set(CPACK_PACKAGE_VENDOR "MaxAndMe")
-set(CPACK_RESOURCE_FILE_LICENSE ${PROJECT_SOURCE_DIR}/LICENSE)
-message(STATUS "[MAM] ${CPACK_RESOURCE_FILE_LICENSE}")
+set(CPACK_RESOURCE_FILE_LICENSE ${PROJECT_SOURCE_DIR}/LICENSE.txt)
+set(MAM_WORDIFY_MODEL_FILE "${MAM_WHISPER_CPP_MODEL_DOWNLOAD_DIR}/ggml-base.en.bin")
+message(STATUS "[MAM] CMAKE_SYSTEM_NAME          : ${CMAKE_SYSTEM_NAME}")
+message(STATUS "[MAM] CPACK_RESOURCE_FILE_LICENSE: ${CPACK_RESOURCE_FILE_LICENSE}")
+message(STATUS "[MAM] MAM_WORDIFY_MODEL_FILE     : ${MAM_WORDIFY_MODEL_FILE}")
 get_target_property(PLUGIN_PACKAGE_PATH VstGPT SMTG_PLUGIN_PACKAGE_PATH)
+
 vst3_cpack_configure(
     PLUGIN_PACKAGE_PATH "${PLUGIN_PACKAGE_PATH}"
 )
+
+# AI Models
+cpack_add_component(
+    aimodels
+    DISPLAY_NAME "Model Data"
+    INSTALL_TYPES full
+)
+
+# Installation path for ai model data
+# Windows: C:\Program Data\...
+# macOS  : /Library/Application Support/...
+set(CPACK_INNOSETUP_aimodels_INSTALL_DIRECTORY "{commonappdata}")    # C:\Program Data\
+set(MAM_MODEL_DATA_FOLDER "${CPACK_PACKAGE_VENDOR}/${PROJECT_NAME}/ModelData")
+if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
+    set(MAM_MODEL_DATA_FOLDER "Library/Application Support/${MAM_MODEL_DATA_FOLDER}")
+endif()
+
+message(STATUS "[MAM] MAM_MODEL_DATA_FOLDER: ${MAM_MODEL_DATA_FOLDER}")
+
+install(
+    FILES       "${MAM_WORDIFY_MODEL_FILE}"
+    DESTINATION "${MAM_MODEL_DATA_FOLDER}"
+    COMPONENT   aimodels
+)
+
+list(APPEND CPACK_COMPONENTS_ALL aimodels)
 
 include(CPack)
