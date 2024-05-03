@@ -62,20 +62,6 @@ update_region_duration_time(CTextLabel& region_duration_time,
 }
 
 //------------------------------------------------------------------------
-static auto fit_content(CView* view) -> void
-{
-    // Only call sizeToFit, when view is a CRowColumnView
-    if (auto* rc_view = dynamic_cast<CRowColumnView*>(view))
-    {
-        // Return immediately, if there is nothing more to resize
-        if (!rc_view->sizeToFit())
-            return;
-
-        fit_content(rc_view->getParentView());
-    }
-}
-
-//------------------------------------------------------------------------
 using WordWidths = std::vector<CCoord>;
 template <typename Func>
 static auto compute_word_widths(const MetaWordsData& meta_words_data,
@@ -310,6 +296,20 @@ static auto update_control(C* c, const MetaWordsData& data, Func& func) -> void
 //------------------------------------------------------------------------
 struct FitContentHandler : public ViewListenerAdapter
 {
+    //------------------------------------------------------------------------
+    static auto fit_content(CView* view) -> void
+    {
+        // Only call sizeToFit, when view is a CRowColumnView
+        if (auto* rc_view = dynamic_cast<CRowColumnView*>(view))
+        {
+            // Return immediately, if there is nothing more to resize
+            if (!rc_view->sizeToFit())
+                return;
+
+            fit_content(rc_view->getParentView());
+        }
+    }
+
     void viewAttached(CView* view) override
     {
         if (view)
