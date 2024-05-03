@@ -69,15 +69,18 @@ VSTGUI::IController* ListEntryController::createSubController(
             return nullptr;
 
         auto& subject = controller->get_playback_region_changed_subject(pbr_id);
-        subctrl->initialize(
-            &subject, [=]() { return build_meta_words_data(ctler, pbr_id); });
 
-        subctrl->list_value_changed_func = [=](int index) {
+        subctrl->meta_words_data_func = [=]() {
+            return build_meta_words_data(ctler, pbr_id);
+        };
+
+        subctrl->on_select_word_func = [=](int index) {
             controller->get_region_selection_model().select(
                 {pbr_id, static_cast<size_t>(index)});
             controller->onRequestSelectWord(index, pbr_id);
         };
-        return subctrl;
+
+        return subctrl->initialize(&subject) ? subctrl : nullptr;
     }
 
     return nullptr;

@@ -46,7 +46,7 @@ public:
     MetaWordsClipController(const VSTGUI::IUIDescription* description);
     ~MetaWordsClipController() override;
 
-    bool initialize(Subject* subject, FuncMetaWordsData&& meta_words_data_func);
+    bool initialize(Subject* subject);
 
     VSTGUI::CView*
     verifyView(VSTGUI::CView* view,
@@ -61,7 +61,8 @@ public:
     void viewRemoved(VSTGUI::CView* view) override;
     void viewWillDelete(VSTGUI::CView* view) override;
 
-    FuncListValueChanged list_value_changed_func;
+    FuncListValueChanged on_select_word_func;
+    FuncMetaWordsData meta_words_data_func;
 
     OBJ_METHODS(MetaWordsClipController, FObject)
     //--------------------------------------------------------------------
@@ -78,9 +79,7 @@ private:
     std::unique_ptr<HStackLayout> stack_layout;
     VSTGUI::UIAttributes meta_word_button_attributes;
 
-    FuncMetaWordsData meta_words_data_func;
     ObserverPtr observer;
-
     Cache cache;
 };
 //------------------------------------------------------------------------

@@ -474,19 +474,17 @@ MetaWordsClipController::~MetaWordsClipController()
 }
 
 //------------------------------------------------------------------------
-bool MetaWordsClipController::initialize(
-    Subject* subject, FuncMetaWordsData&& meta_words_data_func)
+bool MetaWordsClipController::initialize(Subject* subject)
 {
     observer = tiny_observer_pattern::make_observer(
         subject, [&](const auto&) { on_meta_words_data_changed(); });
-
-    this->meta_words_data_func = std::move(meta_words_data_func);
 
     auto view = description->createView("TextWordTemplate", this);
     if (view)
         view->forget();
 
-    on_meta_words_data_changed();
+    if (!meta_words_data_func)
+        return false;
 
     return true;
 }
@@ -580,9 +578,9 @@ CView* MetaWordsClipController::verifyView(CView* view,
 //------------------------------------------------------------------------
 void MetaWordsClipController::valueChanged(CControl* pControl)
 {
-    if (pControl)
+    if (pControl && on_select_word_func)
     {
-        list_value_changed_func(pControl->getTag());
+        on_select_word_func(pControl->getTag());
     }
 }
 
