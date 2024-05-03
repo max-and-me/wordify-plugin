@@ -201,3 +201,14 @@ target_compile_features(temp-dir-test
 add_custom_target(${PROJECT_NAME}-dependency-graph
     COMMAND ${CMAKE_COMMAND} ${CMAKE_SOURCE_DIR} --graphviz=${CMAKE_BINARY_DIR}/graphviz/${PROJECT_NAME}.dot
 )
+
+# Installer
+set(CPACK_PACKAGE_VENDOR "MaxAndMe")
+set(CPACK_RESOURCE_FILE_LICENSE ${PROJECT_SOURCE_DIR}/LICENSE)
+message(STATUS "[MAM] ${CPACK_RESOURCE_FILE_LICENSE}")
+get_target_property(PLUGIN_PACKAGE_PATH VstGPT SMTG_PLUGIN_PACKAGE_PATH)
+vst3_cpack_configure(
+    PLUGIN_PACKAGE_PATH "${PLUGIN_PACKAGE_PATH}"
+)
+
+include(CPack)
