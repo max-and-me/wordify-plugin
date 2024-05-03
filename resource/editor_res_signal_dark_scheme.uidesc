@@ -50,7 +50,7 @@
         "font-name": "Arial",
         "size": "14"
       },
-      "task_count_font": {
+      "spinner_badge_font": {
         "font-name": "Arial",
         "size": "12"
       }
