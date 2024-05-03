@@ -237,13 +237,17 @@ class LoadingIndicatorAnimationHandler : public ViewListenerAdapter
                     const auto val_positive = std::max(0., value);
 
                     // Only fade dots out half
-                    child->setAlphaValue(1. - val_positive * 0.5);
+                    child->setAlphaValue(0.5 + val_positive * 0.5);
 
                     // Move them up by delta in pixel
-                    constexpr auto DELTA_PX = 2.;
+                    constexpr auto DELTA_PX = .5;
                     auto r                  = rects.at(index);
-                    r.offset(0., -DELTA_PX * val_positive);
+                    const auto extend_delta = DELTA_PX * val_positive;
+                    r.extend(extend_delta, extend_delta);
                     child->setViewSize(r);
+
+                    if (auto* label = dynamic_cast<CTextLabel*>(child))
+                        label->setRoundRectRadius(r.getWidth() * 0.5);
 
                     index++;
                 });
