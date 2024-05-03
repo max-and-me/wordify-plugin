@@ -9,4 +9,5 @@ FetchContent_Declare(
     GIT_TAG 0.2.2
 )
 
+option(BUILD_TESTING OFF)
 FetchContent_MakeAvailable(libsamplerate)
