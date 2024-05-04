@@ -12,6 +12,8 @@ project(VstGPT
     DESCRIPTION "VstGPT VST 3 Plug-in"
 )
 
+set(CPACK_PACKAGE_VENDOR "MaxAndMe")
+
 add_subdirectory(extern)
 smtg_enable_vst3_sdk()
 
@@ -120,7 +122,7 @@ smtg_target_configure_version_file(VstGPT)
 if(SMTG_MAC)
     smtg_target_set_bundle(VstGPT
         BUNDLE_IDENTIFIER org.maxandme.vst3.vstgpt
-        COMPANY_NAME "Max And Me"
+        COMPANY_NAME "${CPACK_PACKAGE_VENDOR}"
     )
     smtg_target_set_debug_executable(VstGPT
         "/Applications/VST3PluginTestHost.app"
@@ -207,9 +209,8 @@ add_custom_target(${PROJECT_NAME}-dependency-graph
 )
 
 # Installer
-set(CPACK_PACKAGE_VENDOR "MaxAndMe")
 set(CPACK_RESOURCE_FILE_LICENSE ${PROJECT_SOURCE_DIR}/LICENSE.txt)
-set(MAM_WORDIFY_MODEL_FILE "${MAM_WHISPER_CPP_MODEL_DOWNLOAD_DIR}/ggml-medium.bin")
+set(MAM_WORDIFY_MODEL_FILE "${MAM_WHISPER_CPP_MODEL_DOWNLOAD_DIR}/ggml-base.en.bin")
 message(STATUS "[MAM] CMAKE_SYSTEM_NAME          : ${CMAKE_SYSTEM_NAME}")
 message(STATUS "[MAM] CPACK_RESOURCE_FILE_LICENSE: ${CPACK_RESOURCE_FILE_LICENSE}")
 message(STATUS "[MAM] MAM_WORDIFY_MODEL_FILE     : ${MAM_WORDIFY_MODEL_FILE}")
