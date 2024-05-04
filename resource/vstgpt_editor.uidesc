@@ -431,7 +431,7 @@
 																			"frame-color": "~ BlackCColor",
 																			"frame-width": "1",
 																			"max-value": "1",
-																			"menu-check-style": "true",
+																			"menu-check-style": "false",
 																			"menu-popup-style": "false",
 																			"min-value": "0",
 																			"mouse-enabled": "true",
