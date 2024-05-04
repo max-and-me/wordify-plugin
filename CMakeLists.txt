@@ -11,13 +11,13 @@ project(VstGPT
     # Version number symbols usable in C++ can be found in
     # source/version.h and ${PROJECT_BINARY_DIR}/projectversion.h.
     VERSION       ${VERSION_NOW}.0
-    DESCRIPTION   "VstGPT VST 3 Plug-in"
+    DESCRIPTION   "Wordify VST 3 Plug-in"
     HOMEPAGE_URL  "https://www.wordify.org"
 )
 
-set(CPACK_PACKAGE_VENDOR      "MaxAndMe")
+set(CPACK_PACKAGE_VENDOR      "WordifyOrg")
 set(PROJECT_CONTACT_EMAIL     "info@wordify.org")
-set(PROJECT_BUNDLE_IDENTIFIER "org.wordify.ara-vst3-plugin")
+set(PROJECT_BUNDLE_IDENTIFIER "org.wordify.plugin.vst3")
 
 add_subdirectory(extern)
 smtg_enable_vst3_sdk()
