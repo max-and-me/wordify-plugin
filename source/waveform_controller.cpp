@@ -51,13 +51,12 @@ WaveFormController::WaveFormController() {}
 WaveFormController::~WaveFormController() {}
 
 //------------------------------------------------------------------------
-bool WaveFormController::initialize(Subject* subject,
-                                    FuncWaveFormData&& waveform_data_func)
+bool WaveFormController::initialize(Subject* subject, FuncWaveFormData&& func)
 {
     if (!subject)
         return false;
 
-    this->waveform_data_func = std::move(waveform_data_func);
+    this->waveform_data_func = std::move(func);
     this->observer           = tiny_observer_pattern::make_observer(
         subject, [&](const auto&) { this->on_meta_words_data_changed(); });
 

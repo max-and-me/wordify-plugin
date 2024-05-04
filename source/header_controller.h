@@ -48,7 +48,7 @@ public:
     void valueChanged(VSTGUI::CControl* pControl) override;
     VSTGUI::IController*
     createSubController(VSTGUI::UTF8StringPtr name,
-                        const VSTGUI::IUIDescription* description);
+                        const VSTGUI::IUIDescription* description) override;
 
     // IViewListener
     void viewWillDelete(VSTGUI::CView* view) override;

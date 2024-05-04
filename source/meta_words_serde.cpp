@@ -2,8 +2,6 @@
 // Copyright(c) 2023 Max And Me.
 //------------------------------------------------------------------------
 
-#pragma once
-
 #include "meta_words_serde.h"
 #include "nlohmann/json.hpp"
 

@@ -34,9 +34,9 @@ private:
     const T lo{0};
     const T hi{0};
 
-    bool is_in(const T& value, const T& lo, const T& hi) const
+    bool is_in(const T& value, const T& lo_, const T& hi_) const
     {
-        return !(value < lo) && !(hi < value);
+        return !(value < lo_) && !(hi_ < value);
     }
 };
 

@@ -26,9 +26,9 @@ WaveFormView::WaveFormView(const CRect& size)
 }
 
 //------------------------------------------------------------------------
-auto WaveFormView::initialize(FuncWaveFormData&& waveform_data_func) -> bool
+auto WaveFormView::initialize(FuncWaveFormData&& func) -> bool
 {
-    this->waveform_data_func = std::move(waveform_data_func);
+    this->waveform_data_func = std::move(func);
     return true;
 }
 
