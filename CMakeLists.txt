@@ -188,9 +188,9 @@ set_property(
 )
 
 # whisper.cpp exe and model
-#set_target_properties(main PROPERTIES 
-#    OUTPUT_NAME "WordifyWorker"
-#)
+set_target_properties(main PROPERTIES 
+    OUTPUT_NAME "WordifyWorker"
+)
 
 target_compile_definitions(VstGPT
     PRIVATE
