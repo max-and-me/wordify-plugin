@@ -221,15 +221,16 @@ vst3_cpack_configure(
 
 # AI Models
 cpack_add_component(
-    aimodels
+    modeldata
     DISPLAY_NAME "Model Data"
     INSTALL_TYPES full
+    REQUIRED
 )
 
 # Installation path for ai model data
 # Windows: C:\Program Data\...
 # macOS  : /Library/Application Support/...
-set(CPACK_INNOSETUP_aimodels_INSTALL_DIRECTORY "{commonappdata}")    # C:\Program Data\
+set(CPACK_INNOSETUP_modeldata_INSTALL_DIRECTORY "{commonappdata}")    # C:\Program Data\
 set(MAM_MODEL_DATA_FOLDER "${CPACK_PACKAGE_VENDOR}/${PROJECT_NAME}/ModelData")
 if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     set(MAM_MODEL_DATA_FOLDER "Library/Application Support/${MAM_MODEL_DATA_FOLDER}")
@@ -240,9 +241,9 @@ message(STATUS "[MAM] MAM_MODEL_DATA_FOLDER: ${MAM_MODEL_DATA_FOLDER}")
 install(
     FILES       "${MAM_WORDIFY_MODEL_FILE}"
     DESTINATION "${MAM_MODEL_DATA_FOLDER}"
-    COMPONENT   aimodels
+    COMPONENT   modeldata
 )
 
-list(APPEND CPACK_COMPONENTS_ALL aimodels)
+list(APPEND CPACK_COMPONENTS_ALL modeldata)
 
 include(CPack)
