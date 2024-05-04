@@ -1,21 +1,61 @@
 # VST 3 GPT Plug-In
 [![CMake (Linux, macOS, Windows)](https://github.com/rehans/vst-gpt/actions/workflows/cmake.yml/badge.svg)](https://github.com/rehans/vst-gpt/actions/workflows/cmake.yml)
 
-## Clone and Build
+## Getting Started
 
-```cmd
-git clone https://github.com/max-and-me/vst-gpt
+To clone and create the project, open a command prompt and proceed as follows:
+
+### Windows
+
+```sh
+git clone https://github.com/max-and-me/wordify-plugin.git
 mkdir build
 cd build
-cmake -DCMAKE_BUILD_TYPE=Debug ../<repo_name>
+cmake ../wordify-plugin
 cmake --build .
+```
+
+### macOS
+
+```sh
+git clone git clone https://github.com/max-and-me/wordify-plugin.git
+mkdir build
+cd build
+cmake -GXcode ../wordify-plugin
+cmake --build .
+```
+
+### Linux
+
+```sh
+git clone git clone https://github.com/max-and-me/wordify-plugin.git
+mkdir build
+cd build
+cmake -DCMAKE_BUILD_TYPE=Debug ../wordify-plugin
+cmake --build .
+```
+
+As soon as the project has been successfully built, you will find the plugin bundle in the build folder: ```Debug/VST3/Wordify.vst3```
+
+### Installer
+
+Build the project in ```Release``` configuration:
+
+CPack is configured to work with the following Generators:
+
+* Windows: ```INNOSETUP```
+* macOS: ```productbuild```
+* Linux: ```TGZ```
+
+Execute CPack inside the CMake binary directory the ```project```. 
+
+```sh
+cpack -C Release -G <CPack_Generator> .
 ```
 
 ## Dependency Graph
 
 ![Alt text](doc/VstGPT.dot.VstGPT.png "Dependency Graph")
-
-### How to generate
 
 ```shell
 cmake --build . --target VstGPT-dependency-graph
@@ -27,7 +67,6 @@ cp ./VstGPT.dot.VstGPT.png ../../vst-gpt/doc
 Copy the generated ```VstGPT.dot.VstGPT.png``` into the ```doc``` folder.
 
 > TODO: Automate this!!
-
 
 ## How to whisper
 
