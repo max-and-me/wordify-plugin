@@ -47,10 +47,10 @@ CView* PreferencesController::verifyView(CView* view,
         if (*view_name == "PreferencesMenu")
         {
             this->options_menu = dynamic_cast<COptionMenu*>(view);
-            this->options_menu->addEntry("Entry 1");
-            this->options_menu->addEntry("Entry 2");
-            this->options_menu->addSeparator();
-            this->options_menu->addEntry(VERSION_STR, CMenuItem::kDisabled);
+            this->options_menu->addEntry("Visit wordify.org ...");
+            this->options_menu->addEntry("Check for updates ...");
+            this->options_menu->addEntry(UTF8String("v") + VERSION_STR, -1,
+                                         CMenuItem::kDisabled);
             this->options_menu->registerControlListener(this);
         }
         else if (*view_name == "SchemeSwitch")

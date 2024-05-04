@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.25.0)
+
 set(CMAKE_OSX_DEPLOYMENT_TARGET 10.15 CACHE STRING "")
+string(TIMESTAMP VERSION_NOW "%Y.%m") # VERSION_NOW e.g. 2023.08
 
 # Only turn on validator in Release configuration
 option(SMTG_RUN_VST_VALIDATOR $<$<CONFIG:Debug>:OFF>$<$<CONFIG:Release>:ON>)
@@ -8,11 +10,14 @@ project(VstGPT
     # This is your plug-in version number. Change it here only.
     # Version number symbols usable in C++ can be found in
     # source/version.h and ${PROJECT_BINARY_DIR}/projectversion.h.
-    VERSION 1.0.0.0 
-    DESCRIPTION "VstGPT VST 3 Plug-in"
+    VERSION       ${VERSION_NOW}.0
+    DESCRIPTION   "VstGPT VST 3 Plug-in"
+    HOMEPAGE_URL  "https://www.wordify.org"
 )
 
-set(CPACK_PACKAGE_VENDOR "MaxAndMe")
+set(CPACK_PACKAGE_VENDOR      "MaxAndMe")
+set(PROJECT_CONTACT_EMAIL     "info@wordify.org")
+set(PROJECT_BUNDLE_IDENTIFIER "org.wordify.ara-vst3-plugin")
 
 add_subdirectory(extern)
 smtg_enable_vst3_sdk()
@@ -121,7 +126,7 @@ smtg_target_configure_version_file(VstGPT)
 
 if(SMTG_MAC)
     smtg_target_set_bundle(VstGPT
-        BUNDLE_IDENTIFIER org.maxandme.vst3.vstgpt
+        BUNDLE_IDENTIFIER ${PROJECT_BUNDLE_IDENTIFIER}
         COMPANY_NAME "${CPACK_PACKAGE_VENDOR}"
     )
     smtg_target_set_debug_executable(VstGPT
@@ -191,6 +196,11 @@ target_compile_definitions(VstGPT
     PRIVATE
         MAM_WHISPER_CPP_EXECUTABLE="$<TARGET_FILE:main>"
         MAM_WHISPER_CPP_MODEL_DOWNLOAD_DIR="${MAM_WHISPER_CPP_MODEL_DOWNLOAD_DIR}"
+        CPACK_PACKAGE_VENDOR="${CPACK_PACKAGE_VENDOR}"
+        PROJECT_HOMEPAGE_URL="${PROJECT_HOMEPAGE_URL}"
+        PROJECT_CONTACT_EMAIL="${PROJECT_CONTACT_EMAIL}"
+        PROJECT_NAME="${PROJECT_NAME}"
+        PROJECT_BUNDLE_IDENTIFIER="${PROJECT_BUNDLE_IDENTIFIER}"
 )
 
 # test
@@ -210,10 +220,16 @@ add_custom_target(${PROJECT_NAME}-dependency-graph
 
 # Installer
 set(CPACK_RESOURCE_FILE_LICENSE ${PROJECT_SOURCE_DIR}/LICENSE.txt)
-set(MAM_WORDIFY_MODEL_FILE "${MAM_WHISPER_CPP_MODEL_DOWNLOAD_DIR}/ggml-base.en.bin")
+set(MAM_WORDIFY_MODEL_FILE "${MAM_WHISPER_CPP_MODEL_DOWNLOAD_DIR}/ggml-medium.bin")
 message(STATUS "[MAM] CMAKE_SYSTEM_NAME          : ${CMAKE_SYSTEM_NAME}")
 message(STATUS "[MAM] CPACK_RESOURCE_FILE_LICENSE: ${CPACK_RESOURCE_FILE_LICENSE}")
 message(STATUS "[MAM] MAM_WORDIFY_MODEL_FILE     : ${MAM_WORDIFY_MODEL_FILE}")
+message(STATUS "[MAM] CPACK_PACKAGE_VENDOR       : ${CPACK_PACKAGE_VENDOR}")
+message(STATUS "[MAM] PROJECT_HOMEPAGE_URL       : ${PROJECT_HOMEPAGE_URL}")
+message(STATUS "[MAM] PROJECT_CONTACT_EMAIL      : ${PROJECT_CONTACT_EMAIL}")
+message(STATUS "[MAM] PROJECT_NAME               : ${PROJECT_NAME}")
+message(STATUS "[MAM] BUNDLE_IDENTIFIER          : ${BUNDLE_IDENTIFIER}")
+
 get_target_property(PLUGIN_PACKAGE_PATH VstGPT SMTG_PLUGIN_PACKAGE_PATH)
 
 vst3_cpack_configure(
