@@ -2,8 +2,6 @@
 // Copyright(c) 2024 Max And Me.
 //------------------------------------------------------------------------
 
-#pragma once
-
 #include "preferences_serde.h"
 #include "hao/special_folders/special_folders.h"
 #include "nlohmann/json.hpp"
