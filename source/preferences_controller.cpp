@@ -4,6 +4,7 @@
 
 #include "preferences_controller.h"
 #include "public.sdk/source/vst/vstparameters.h"
+#include "version.h"
 #include "vstgui/lib/controls/coptionmenu.h"
 #include "vstgui/uidescription/uiattributes.h"
 
@@ -36,24 +37,25 @@ PreferencesController::~PreferencesController()
 }
 
 //------------------------------------------------------------------------
-VSTGUI::CView*
-PreferencesController::verifyView(VSTGUI::CView* view,
-                                  const VSTGUI::UIAttributes& attributes,
-                                  const VSTGUI::IUIDescription* description)
+CView* PreferencesController::verifyView(CView* view,
+                                         const UIAttributes& attributes,
+                                         const IUIDescription* description)
 {
 
     if (const auto* view_name = attributes.getAttributeValue("uidesc-label"))
     {
         if (*view_name == "PreferencesMenu")
         {
-            this->options_menu = dynamic_cast<VSTGUI::COptionMenu*>(view);
+            this->options_menu = dynamic_cast<COptionMenu*>(view);
             this->options_menu->addEntry("Entry 1");
             this->options_menu->addEntry("Entry 2");
+            this->options_menu->addSeparator();
+            this->options_menu->addEntry(VERSION_STR, CMenuItem::kDisabled);
             this->options_menu->registerControlListener(this);
         }
         else if (*view_name == "SchemeSwitch")
         {
-            scheme_switch  = dynamic_cast<VSTGUI::CControl*>(view);
+            scheme_switch  = dynamic_cast<CControl*>(view);
             const auto val = color_scheme_param->getNormalized();
             scheme_switch->setValueNormalized(val);
             scheme_switch->registerControlListener(this);
@@ -64,7 +66,7 @@ PreferencesController::verifyView(VSTGUI::CView* view,
 }
 
 //------------------------------------------------------------------------
-void PreferencesController::valueChanged(VSTGUI::CControl* pControl)
+void PreferencesController::valueChanged(CControl* pControl)
 {
     if (pControl == this->options_menu)
     {
