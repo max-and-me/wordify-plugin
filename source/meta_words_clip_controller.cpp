@@ -383,20 +383,6 @@ update_region_transcript(CViewContainer* region_transcript,
 }
 
 //------------------------------------------------------------------------
-template <typename C, typename Func>
-static auto update_control(C* c, const MetaWordsData& data, Func& func) -> void
-{
-    if (!c)
-        return;
-
-    if (!func)
-        return;
-
-    func(*c, data);
-    c->invalid();
-}
-
-//------------------------------------------------------------------------
 // Helper class to call sizeToFit to all parents up the hierarchy
 // AFTER a view has been attached or resized itself.
 //------------------------------------------------------------------------
@@ -495,9 +481,14 @@ void MetaWordsClipController::on_meta_words_data_changed()
 {
     const auto& data = meta_words_data_func();
 
-    update_control(region_start_time, data, update_region_start_time);
-    update_control(region_duration_time, data, update_region_duration_time);
-    update_control(region_title, data, update_region_title);
+    if (region_start_time)
+        update_region_start_time(*region_start_time, data);
+
+    if (region_duration_time)
+        update_region_duration_time(*region_duration_time, data);
+
+    if (region_title)
+        update_region_title(*region_title, data);
 
     if (region_transcript)
     {
