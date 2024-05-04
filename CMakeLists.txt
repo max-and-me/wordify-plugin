@@ -15,9 +15,11 @@ project(VstGPT
     HOMEPAGE_URL  "https://www.wordify.org"
 )
 
+string(TIMESTAMP YEAR_NOW     "%Y") # Current year
 set(CPACK_PACKAGE_VENDOR      "WordifyOrg")
 set(PROJECT_CONTACT_EMAIL     "info@wordify.org")
 set(PROJECT_BUNDLE_IDENTIFIER "org.wordify.plugin.vst3")
+set(PROJECT_LEGAL_COPYRIGHT   "Copyright(c) ${YEAR_NOW}")
 
 add_subdirectory(extern)
 smtg_enable_vst3_sdk()
@@ -201,6 +203,7 @@ target_compile_definitions(VstGPT
         PROJECT_CONTACT_EMAIL="${PROJECT_CONTACT_EMAIL}"
         PROJECT_NAME="${PROJECT_NAME}"
         PROJECT_BUNDLE_IDENTIFIER="${PROJECT_BUNDLE_IDENTIFIER}"
+        PROJECT_LEGAL_COPYRIGHT="${PROJECT_LEGAL_COPYRIGHT}"
 )
 
 # test
