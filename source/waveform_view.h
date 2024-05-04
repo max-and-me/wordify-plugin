@@ -29,9 +29,9 @@ public:
     };
 
     using FuncWaveFormData = std::function<const Data()>;
+    FuncWaveFormData waveform_data_func;
 
     WaveFormView(const VSTGUI::CRect& size);
-    auto initialize(FuncWaveFormData&& waveform_data_func) -> bool;
     auto draw(VSTGUI::CDrawContext* pContext) -> void override;
 
     //--------------------------------------------------------------------
@@ -40,8 +40,6 @@ private:
                   const VSTGUI::CRect& viewSize) -> void;
     auto draw_like_spotify(VSTGUI::CDrawContext& pContext,
                            const VSTGUI::CRect& viewSize) -> void;
-
-    FuncWaveFormData waveform_data_func;
 };
 
 } // namespace mam

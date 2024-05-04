@@ -12,22 +12,12 @@ namespace mam {
 using namespace ::VSTGUI;
 
 //------------------------------------------------------------------------
-using CPointOptional = std::optional<CPoint>;
 static auto
-read_view_size(const VSTGUI::UIAttributes& attributes) -> CPointOptional
+read_view_size(const VSTGUI::UIAttributes& attributes) -> VSTGUI::CPoint
 {
-    if (!attributes.hasAttribute("size"))
-        return std::nullopt;
-
-    VSTGUI::CPoint view_size;
-    const auto* view_size_str = attributes.getAttributeValue("size");
-    if (view_size_str)
-    {
-        if (attributes.stringToPoint(*view_size_str, view_size) == false)
-            return std::nullopt;
-    }
-
-    return view_size;
+    VSTGUI::CPoint size;
+    attributes.getPointAttribute("size", size);
+    return size;
 }
 
 //------------------------------------------------------------------------
@@ -48,7 +38,14 @@ static auto update_background_view(CGradientView* view,
 WaveFormController::WaveFormController() {}
 
 //------------------------------------------------------------------------
-WaveFormController::~WaveFormController() {}
+WaveFormController::~WaveFormController()
+{
+    if (waveform_view)
+        waveform_view->unregisterViewListener(this);
+
+    if (background_view)
+        background_view->unregisterViewListener(this);
+}
 
 //------------------------------------------------------------------------
 bool WaveFormController::initialize(Subject* subject, FuncWaveFormData&& func)
@@ -60,19 +57,16 @@ bool WaveFormController::initialize(Subject* subject, FuncWaveFormData&& func)
     this->observer           = tiny_observer_pattern::make_observer(
         subject, [&](const auto&) { this->on_meta_words_data_changed(); });
 
-    on_meta_words_data_changed();
-
     return true;
 }
 
 //------------------------------------------------------------------------
 void WaveFormController::on_meta_words_data_changed()
 {
-    const auto data = this->waveform_data_func();
-
     if (waveform_view)
         waveform_view->invalid();
 
+    const auto data = this->waveform_data_func();
     update_background_view(background_view, data);
 }
 
@@ -85,9 +79,7 @@ CView* WaveFormController::createView(const VSTGUI::UIAttributes& attributes,
     {
         if (*view_name == "WaveForm")
         {
-            const auto view_size =
-                read_view_size(attributes).value_or<CPoint>({320., 240.});
-
+            const auto view_size = read_view_size(attributes);
             return new WaveFormView(CRect{0, 0, view_size.x, view_size.y});
         }
     }
@@ -107,18 +99,45 @@ WaveFormController::verifyView(VSTGUI::CView* view,
         if (*view_name == "WaveForm")
         {
             waveform_view = dynamic_cast<WaveFormView*>(view);
-            waveform_view->initialize(
-                [func = this->waveform_data_func]() -> WaveFormView::Data {
-                    return func();
-                });
-            waveform_view->invalid();
+            waveform_view->waveform_data_func = this->waveform_data_func;
+            waveform_view->registerViewListener(this);
         }
         else if (*view_name == "Background")
         {
             background_view = dynamic_cast<CGradientView*>(view);
+            background_view->registerViewListener(this);
         }
     }
     return view;
+}
+
+//------------------------------------------------------------------------
+void WaveFormController::viewAttached(CView* view)
+{
+    if (view == waveform_view)
+    {
+        waveform_view->invalid();
+    }
+    else if (view == background_view)
+    {
+        update_background_view(background_view, waveform_data_func());
+    }
+}
+
+//------------------------------------------------------------------------
+
+void WaveFormController::viewWillDelete(CView* view)
+{
+    if (view == waveform_view)
+    {
+        waveform_view->unregisterViewListener(this);
+        waveform_view = nullptr;
+    }
+    else if (view == background_view)
+    {
+        background_view->unregisterViewListener(this);
+        background_view = nullptr;
+    }
 }
 
 //------------------------------------------------------------------------

@@ -21,7 +21,9 @@ class WaveFormView;
 //------------------------------------------------------------------------
 // WaveFormController
 //------------------------------------------------------------------------
-class WaveFormController : public Steinberg::FObject, public VSTGUI::IController
+class WaveFormController : public Steinberg::FObject,
+                           public VSTGUI::IController,
+                           public VSTGUI::ViewListenerAdapter
 {
 public:
     //--------------------------------------------------------------------
@@ -51,6 +53,10 @@ public:
 
     // IControlListener
     void valueChanged(VSTGUI::CControl* pControl) override {};
+
+    // ViewListenerAdapter
+    void viewAttached(VSTGUI::CView* view) override;
+    void viewWillDelete(VSTGUI::CView* view) override;
 
     OBJ_METHODS(WaveFormController, FObject)
 

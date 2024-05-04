@@ -26,16 +26,12 @@ WaveFormView::WaveFormView(const CRect& size)
 }
 
 //------------------------------------------------------------------------
-auto WaveFormView::initialize(FuncWaveFormData&& func) -> bool
-{
-    this->waveform_data_func = std::move(func);
-    return true;
-}
-
-//------------------------------------------------------------------------
 auto WaveFormView::draw_like_spotify(CDrawContext& pContext,
                                      const CRect& viewSize) -> void
 {
+    if (!waveform_data_func)
+        return;
+
     using Drawer   = wave_draw::Drawer;
     using DrawData = wave_draw::DrawData;
     using Color    = VSTGUI::CColor;
@@ -82,6 +78,9 @@ auto WaveFormView::draw_like_spotify(CDrawContext& pContext,
 auto WaveFormView::drawFull(CDrawContext* pContext,
                             const CRect& viewSize) -> void
 {
+    if (!waveform_data_func)
+        return;
+
     pContext->setLineWidth(1.0);
 
     const auto amplitude    = viewSize.getHeight() * 0.5;
