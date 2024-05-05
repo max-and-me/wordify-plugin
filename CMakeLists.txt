@@ -6,7 +6,7 @@ string(TIMESTAMP VERSION_NOW "%Y.%m") # VERSION_NOW e.g. 2023.08
 # Only turn on validator in Release configuration
 option(SMTG_RUN_VST_VALIDATOR $<$<CONFIG:Debug>:OFF>$<$<CONFIG:Release>:ON>)
 
-project(VstGPT
+project("Wordify"
     # This is your plug-in version number. Change it here only.
     # Version number symbols usable in C++ can be found in
     # source/version.h and ${PROJECT_BINARY_DIR}/projectversion.h.
@@ -24,7 +24,7 @@ set(PROJECT_LEGAL_COPYRIGHT   "Copyright(c) ${YEAR_NOW}")
 add_subdirectory(extern)
 smtg_enable_vst3_sdk()
 
-smtg_add_vst3plugin(VstGPT
+smtg_add_vst3plugin(Wordify
     ${public_sdk_SOURCE_DIR}/source/vst/vstsinglecomponenteffect.cpp
     ${public_sdk_SOURCE_DIR}/source/vst/vstsinglecomponenteffect.h
     source/ara_document_controller.cpp
@@ -89,7 +89,7 @@ smtg_add_vst3plugin(VstGPT
     source/waveform_view.h
 )
 
-smtg_target_add_plugin_resources(VstGPT
+smtg_target_add_plugin_resources(Wordify
     RESOURCES
         "resource/vstgpt_editor.uidesc"
         "resource/editor_res_dark_scheme.uidesc"
@@ -105,13 +105,13 @@ smtg_target_add_plugin_resources(VstGPT
         "resource/sun-solid_4x.png"
 )
 
-smtg_target_add_plugin_snapshots (VstGPT
+smtg_target_add_plugin_snapshots (Wordify
     RESOURCES
         resource/76FA7B014D2757B49BA55204681B0F2C_snapshot.png
         resource/76FA7B014D2757B49BA55204681B0F2C_snapshot_2.0x.png
 )
 
-target_link_libraries(VstGPT
+target_link_libraries(Wordify
     PRIVATE
         ARA_PlugIn_Library
         fmt
@@ -127,32 +127,32 @@ target_link_libraries(VstGPT
         vstgui_support
 )
 
-smtg_target_configure_version_file(VstGPT)
+smtg_target_configure_version_file(Wordify)
 
 if(SMTG_MAC)
-    smtg_target_set_bundle(VstGPT
+    smtg_target_set_bundle(Wordify
         BUNDLE_IDENTIFIER ${PROJECT_BUNDLE_IDENTIFIER}
         COMPANY_NAME "${CPACK_PACKAGE_VENDOR}"
     )
-    smtg_target_set_debug_executable(VstGPT
+    smtg_target_set_debug_executable(Wordify
         "/Applications/VST3PluginTestHost.app"
         "--pluginfolder;$(BUILT_PRODUCTS_DIR)"
     )
 elseif(SMTG_WIN)
-    target_sources(VstGPT PRIVATE 
+    target_sources(Wordify PRIVATE 
         resource/win32resource.rc
     )
     if(MSVC)
-        set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT VstGPT)
+        set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT Wordify)
 
-        smtg_target_set_debug_executable(VstGPT
+        smtg_target_set_debug_executable(Wordify
             "$(ProgramW6432)/Steinberg/VST3PluginTestHost/VST3PluginTestHost.exe"
             "--pluginfolder \"$(OutDir)/\""
         )
     endif()
 
     if(WIN32)
-        target_compile_definitions(VstGPT
+        target_compile_definitions(Wordify
             PUBLIC
                 -D_UNICODE
                 -DUNICODE
@@ -167,17 +167,17 @@ elseif(SMTG_WIN)
 endif(SMTG_MAC)
 
 # VSTGUI support
-target_sources(VstGPT
+target_sources(Wordify
     PRIVATE
         resource/vstgpt_editor.uidesc
 )
 
-target_link_libraries(VstGPT
+target_link_libraries(Wordify
     PRIVATE
         vstgui_support
 )
 
-target_compile_features(VstGPT 
+target_compile_features(Wordify 
     PRIVATE
         cxx_std_17
 )
@@ -197,7 +197,7 @@ set_target_properties(main PROPERTIES
     OUTPUT_NAME "WordifyWorker"
 )
 
-target_compile_definitions(VstGPT
+target_compile_definitions(Wordify
     PRIVATE
         MAM_WHISPER_CPP_EXECUTABLE="$<TARGET_FILE:main>"
         MAM_WHISPER_CPP_MODEL_DOWNLOAD_DIR="${MAM_WHISPER_CPP_MODEL_DOWNLOAD_DIR}"
@@ -236,7 +236,7 @@ message(STATUS "[MAM] PROJECT_CONTACT_EMAIL      : ${PROJECT_CONTACT_EMAIL}")
 message(STATUS "[MAM] PROJECT_NAME               : ${PROJECT_NAME}")
 message(STATUS "[MAM] BUNDLE_IDENTIFIER          : ${BUNDLE_IDENTIFIER}")
 
-get_target_property(PLUGIN_PACKAGE_PATH VstGPT SMTG_PLUGIN_PACKAGE_PATH)
+get_target_property(PLUGIN_PACKAGE_PATH Wordify SMTG_PLUGIN_PACKAGE_PATH)
 
 vst3_cpack_configure(
     PLUGIN_PACKAGE_PATH "${PLUGIN_PACKAGE_PATH}"
