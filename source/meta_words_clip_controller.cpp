@@ -4,8 +4,8 @@
 
 #include "meta_words_clip_controller.h"
 
-#include "hstack_layout.h"
 #include "hilite_text_button.h"
+#include "hstack_layout.h"
 #include "list_entry_controller.h"
 #include "little_helpers.h"
 #include "meta_words_data.h"
@@ -29,24 +29,6 @@
 using namespace VSTGUI;
 
 namespace mam {
-
-using CPointOptional = std::optional<CPoint>;
-static auto
-read_view_size(const VSTGUI::UIAttributes& attributes) -> CPointOptional
-{
-    if (!attributes.hasAttribute("size"))
-        return std::nullopt;
-
-    VSTGUI::CPoint view_size;
-    const auto* view_size_str = attributes.getAttributeValue("size");
-    if (view_size_str)
-    {
-        if (attributes.stringToPoint(*view_size_str, view_size) == false)
-            return std::nullopt;
-    }
-
-    return view_size;
-}
 
 //------------------------------------------------------------------------
 constexpr auto HORIZ_PADDING = -4;
@@ -378,7 +360,6 @@ update_region_transcript(CViewContainer* region_transcript,
                          const IUIDescription* description,
                          const UIAttributes& attributes,
                          IControlListener* listener,
-
                          const MetaWordsClipController::Cache& cache) -> void
 {
     if (!region_transcript)
@@ -389,38 +370,20 @@ update_region_transcript(CViewContainer* region_transcript,
         if (!but_factory)
             return std::nullopt;
 
-        CView* view = nullptr;
         if (const auto* view_name =
-            attributes.getAttributeValue("custom-view-name"))
+                attributes.getAttributeValue("uidesc-label"))
         {
             if (*view_name == "MetaWordButton")
             {
-                const auto view_size =
-                read_view_size(attributes).value_or<CPoint>({60, 24.});
-                auto* btn = new HiliteTextButton (CRect{0, 0, view_size.x, view_size.y});
-                
-                static constexpr auto FONT_ID = "region_transcript_font";
-                btn->setFont(description->getFont(FONT_ID));
-                btn->setFrameColor(kBlackCColor);
-                btn->setFrameColorHighlighted(kWhiteCColor);
-                btn->setFrameWidth(0);
-                btn->setGradient(nullptr);
-                btn->setGradientHighlighted(nullptr);
-                btn->setStyle(CTextButton::kKickStyle);
-                btn->setTextAlignment(kCenterText);
-                static constexpr auto TEXT_COLOR_ID = "transcript_text_hilite_color";
-                CColor textColor;
-                description->getColor(TEXT_COLOR_ID, textColor);
-                btn->setTextColor(textColor);
-                
-                view = btn;
+                auto* btn = new HiliteTextButton(CRect(), listener);
+                static CViewAttributeID kViewNameAttribute = 'cvcr';
+                btn->setAttribute(kViewNameAttribute,
+                                  IdStringPtr("CTextButton"));
+                but_factory->applyAttributeValues(btn, attributes, description);
+                return std::make_optional(btn);
             }
         }
-        if (auto button = dynamic_cast<CTextButton*>(view))
-        {
-            button->setListener(listener);
-            return std::make_optional(button);
-        }
+
         return std::nullopt;
     };
 
@@ -566,7 +529,6 @@ MetaWordsClipController::verifyView(CView* view,
                                     const UIAttributes& attributes,
                                     const IUIDescription* /*description*/)
 {
-    
     if (!view)
         return view;
 
