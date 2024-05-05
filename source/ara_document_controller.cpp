@@ -403,7 +403,7 @@ auto ARADocumentController::find_word_in_region(std::string search) -> void
         auto meta_words_dataSet = meta_words_data.words;
         int index               = 0;
         
-        if (search == "")
+        if (search.empty())
         {
             WordSelectData data{reg.first, -1, meta_words_data};
             selected_word_subject.notify_listeners(data);
