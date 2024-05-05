@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "gsl/span"
+#include "nonstd.h"
 #include "vstgui/lib/ccolor.h"
 #include "vstgui/lib/cview.h"
 

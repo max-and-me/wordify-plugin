@@ -5,7 +5,7 @@
 #pragma once
 
 #include "base/source/fobject.h"
-#include "gsl/span"
+#include "nonstd.h"
 #include "tiny_observer_pattern.h"
 #include "vstgui/lib/iviewlistener.h"
 #include "vstgui/uidescription/icontroller.h"
