@@ -32,7 +32,6 @@ namespace mam {
 //------------------------------------------------------------------------
 // Normally these are not available from outside, but we need them here.
 static CViewAttributeID kTemplateNameAttributeID = 'uitl';
-static CViewAttributeID kViewNameAttribute       = 'cvcr';
 
 //------------------------------------------------------------------------
 static auto update_region_title(CTextLabel& region_title,
@@ -372,9 +371,8 @@ update_region_transcript(CViewContainer* region_transcript,
             if (*view_name == "MetaWordButton")
             {
                 auto* btn = new HiliteTextButton(CRect(), listener);
-                btn->setAttribute(kViewNameAttribute,
-                                  IdStringPtr("CTextButton"));
-                but_factory->applyAttributeValues(btn, attributes, description);
+                but_factory->applyCustomViewAttributeValues(
+                    btn, IdStringPtr("CTextButton"), attributes, description);
                 return std::make_optional(btn);
             }
         }
