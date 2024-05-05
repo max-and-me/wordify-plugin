@@ -47,7 +47,7 @@ public:
     ~MetaWordsClipController() override;
 
     bool initialize(Subject* subject);
-    
+
     VSTGUI::CView*
     verifyView(VSTGUI::CView* view,
                const VSTGUI::UIAttributes& attributes,

@@ -402,7 +402,7 @@ auto ARADocumentController::find_word_in_region(std::string search) -> void
         auto meta_words_data    = regionPtr->get_meta_words_data();
         auto meta_words_dataSet = meta_words_data.words;
         int index               = 0;
-        
+
         if (search.empty())
         {
             WordSelectData data{reg.first, -1, meta_words_data};
@@ -414,7 +414,8 @@ auto ARADocumentController::find_word_in_region(std::string search) -> void
             for (auto word_data : meta_words_dataSet)
             {
                 auto word = word_data.word.word;
-                std::transform(word.begin(), word.end(), word.begin(), ::tolower);
+                std::transform(word.begin(), word.end(), word.begin(),
+                               ::tolower);
                 std::transform(search.begin(), search.end(), search.begin(),
                                ::tolower);
 
@@ -428,8 +429,6 @@ auto ARADocumentController::find_word_in_region(std::string search) -> void
                 index++;
             }
         }
-        
-       
     }
 }
 

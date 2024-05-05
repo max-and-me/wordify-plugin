@@ -3,12 +3,12 @@
 //------------------------------------------------------------------------
 
 #include "list_controller.h"
-#include "list_entry_controller.h"
 #include "hilite_text_button.h"
+#include "list_entry_controller.h"
+#include "vstgui/lib/cframe.h"
 #include "vstgui/lib/controls/cbuttons.h"
 #include "vstgui/lib/crowcolumnview.h"
 #include "vstgui/lib/cscrollview.h"
-#include "vstgui/lib/cframe.h"
 #include "vstgui/uidescription/iuidescription.h"
 #include <string>
 
@@ -197,10 +197,10 @@ void ListController::checkSelectWord(const WordSelectData& data)
     if (data.index != -1)
     {
         controller->onRequestSelectWord(data.index, data.region_id);
-        
+
         // waveform selection
         controller->get_region_selection_model().select(
-                                                        {data.region_id, static_cast<size_t>(data.index)});
+            {data.region_id, static_cast<size_t>(data.index)});
     }
 
     // ui update
@@ -227,12 +227,11 @@ void ListController::checkSelectWord(const WordSelectData& data)
     if (auto* container = toFind->asViewContainer())
     {
         std::vector<HiliteTextButton*> btns;
-        container->getChildViewsOfType<HiliteTextButton
-        >(btns, true);
+        container->getChildViewsOfType<HiliteTextButton>(btns, true);
         for (auto& btn : btns)
         {
-            btn->setHilite (false);
-            
+            btn->setHilite(false);
+
             if (btn->getTag() == data.index)
             {
                 auto rect = btn->translateToGlobal(rowColView->getViewSize());
@@ -240,15 +239,17 @@ void ListController::checkSelectWord(const WordSelectData& data)
                     rowColView->getParentView()->getParentView());
                 if (scroll)
                     scroll->makeRectVisible(rect);
-                auto* grandParent = rowColView->getParentView()->getParentView();
+                auto* grandParent =
+                    rowColView->getParentView()->getParentView();
                 if (grandParent)
                 {
                     CPoint btnRectGlobal = btn->getViewSize().getTopLeft();
                     btn->localToFrame(btnRectGlobal);
-                    
+
                     CRect btnRect = btn->getViewSize();
-                    btnRect.offset(btnRectGlobal.x - btnRect.getWidth(), btnRectGlobal.y);
-                    btn->setHilite (true);
+                    btnRect.offset(btnRectGlobal.x - btnRect.getWidth(),
+                                   btnRectGlobal.y);
+                    btn->setHilite(true);
                 }
             }
             btn->setDirty();

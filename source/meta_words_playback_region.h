@@ -5,9 +5,9 @@
 #pragma once
 
 #include "ARA_Library/PlugIn/ARAPlug.h"
-#include "nonstd.h"
 #include "meta_words_audio_source.h"
 #include "meta_words_data.h"
+#include "nonstd.h"
 #include <optional>
 
 namespace mam::meta_words {
