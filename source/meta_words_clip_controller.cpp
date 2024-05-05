@@ -31,7 +31,7 @@ using namespace VSTGUI;
 namespace mam {
 
 //------------------------------------------------------------------------
-constexpr auto HORIZ_PADDING = -4;
+constexpr auto HORIZ_PADDING = 0;
 
 //------------------------------------------------------------------------
 static auto update_region_title(CTextLabel& region_title,
@@ -188,6 +188,7 @@ void insert_word_buttons(const mam::MetaWordsClipController::Cache& cache,
         auto but_size = button->getViewSize();
         button->setViewSize(but_size.setWidth(but_width));
         button->setTitle(but_title);
+        button->sizeToFit();
         button->setMouseEnabled(but_enabled);
         button->setGradient(but_gradient);
         button->setGradientHighlighted(but_gradient);

@@ -187,7 +187,7 @@ auto transform_to_seconds(MetaWords& meta_words) -> void
 }
 
 //------------------------------------------------------------------------
-auto trim_meta_words(MetaWords& meta_words) -> MetaWords
+auto trim_first_meta_word(MetaWords& meta_words) -> MetaWords
 {
     // Check the first entry, which can be empty. If so, remove it.
     auto iter = meta_words.begin();
@@ -198,6 +198,16 @@ auto trim_meta_words(MetaWords& meta_words) -> MetaWords
     }
 
     return meta_words;
+}
+
+//------------------------------------------------------------------------
+auto trim_meta_words(MetaWords& meta_words) -> void
+{
+    for (auto& word : meta_words)
+    {
+        auto& str = word.word;
+        str.erase(std::remove_if(str.begin(), str.end(), ::isspace), str.end());
+    }
 }
 
 //------------------------------------------------------------------------
@@ -280,6 +290,7 @@ void AudioSource::perform_analysis()
 void AudioSource::end_analysis()
 {
     transform_to_seconds(this->meta_words);
+    trim_meta_words(this->meta_words);
 
     const WordAnalysisProgressData& data = {
         /*.id*/ this->getIdentifier(),
@@ -318,6 +329,7 @@ auto AudioSource::set_meta_words(const MetaWords& meta_words_) -> void
         analysing::cancel_task(task_id.value());
 
     this->meta_words = meta_words_;
+    trim_meta_words(this->meta_words);
 }
 
 //------------------------------------------------------------------------

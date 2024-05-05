@@ -24,12 +24,10 @@ void HiliteTextButton::draw(CDrawContext* context)
     {
         CRect rect     = getViewSize();
         CPoint topLeft = rect.getTopLeft();
-        topLeft.x      = topLeft.x + 4;
-        topLeft.y      = topLeft.y + 4;
         rect.setTopLeft(topLeft);
 
         CPoint bottomRight = rect.getBottomRight();
-        bottomRight.y      = bottomRight.y - 2;
+        bottomRight.y      = bottomRight.y;
         rect.setBottomRight(bottomRight);
 
         context->setFillColor(CColor(255, 255, 0, 125));
