@@ -29,6 +29,10 @@
 using namespace VSTGUI;
 
 namespace mam {
+//------------------------------------------------------------------------
+// Normally these are not available from outside, but we need them here.
+static CViewAttributeID kTemplateNameAttributeID = 'uitl';
+static CViewAttributeID kViewNameAttribute       = 'cvcr';
 
 //------------------------------------------------------------------------
 static auto update_region_title(CTextLabel& region_title,
@@ -296,7 +300,6 @@ const char* LoadingIndicatorAnimationHandler::WaveAnimation::ANIMATION_ID =
     "WaveAnimation";
 
 //------------------------------------------------------------------------
-static CViewAttributeID kTemplateNameAttributeID = 'uitl';
 static auto add_loading_indicator(CViewContainer* region_transcript,
                                   const IUIDescription* description) -> void
 {
@@ -369,7 +372,6 @@ update_region_transcript(CViewContainer* region_transcript,
             if (*view_name == "MetaWordButton")
             {
                 auto* btn = new HiliteTextButton(CRect(), listener);
-                static CViewAttributeID kViewNameAttribute = 'cvcr';
                 btn->setAttribute(kViewNameAttribute,
                                   IdStringPtr("CTextButton"));
                 but_factory->applyAttributeValues(btn, attributes, description);
