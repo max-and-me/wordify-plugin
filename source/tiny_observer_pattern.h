@@ -62,7 +62,7 @@ protected:
 };
 
 //------------------------------------------------------------------------
-using None = struct
+struct None
 {
 };
 using SimpleSubject = Subject<None>;
