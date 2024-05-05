@@ -31,9 +31,9 @@ public:
     {
     }
 
-    auto set_size(size_t block_size) -> AudioBlockReader&
+    auto set_size(size_t value) -> AudioBlockReader&
     {
-        this->block_size   = block_size;
+        this->block_size   = value;
         this->samples_read = 0;
         return *this;
     }
@@ -236,9 +236,9 @@ void AudioSource::updateRenderSampleCache()
 
     task_id = analysing::push_task(
         path,
-        [&](auto meta_words) {
+        [&](auto meta_words_) {
             // TODO
-            this->meta_words = meta_words;
+            this->meta_words = meta_words_;
             this->end_analysis();
         },
         [&](auto value) { // TODO
@@ -312,12 +312,12 @@ auto AudioSource::get_meta_words() const -> const MetaWords&
 }
 
 //------------------------------------------------------------------------
-auto AudioSource::set_meta_words(const MetaWords& meta_words) -> void
+auto AudioSource::set_meta_words(const MetaWords& meta_words_) -> void
 {
     if (task_id.has_value())
         analysing::cancel_task(task_id.value());
 
-    this->meta_words = meta_words;
+    this->meta_words = meta_words_;
 }
 
 //------------------------------------------------------------------------

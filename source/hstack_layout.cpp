@@ -102,7 +102,7 @@ static auto do_layout(HStackLayout::ViewContainer* container,
 // HStackLayout
 //------------------------------------------------------------------------
 HStackLayout::HStackLayout(ViewContainer* container)
-: container(container)
+: observed_container(container)
 {
     if (container)
     {
@@ -114,48 +114,51 @@ HStackLayout::HStackLayout(ViewContainer* container)
 //------------------------------------------------------------------------
 HStackLayout::~HStackLayout()
 {
-    if (container)
+    if (observed_container)
     {
-        container->unregisterViewContainerListener(this);
-        container->unregisterViewListener(this);
+        observed_container->unregisterViewContainerListener(this);
+        observed_container->unregisterViewListener(this);
     }
 }
 
 //------------------------------------------------------------------------
 void HStackLayout::viewWillDelete(View* view)
 {
-    if (view == container)
+    if (view == observed_container)
     {
-        container->unregisterViewContainerListener(this);
-        container->unregisterViewListener(this);
-        container = nullptr;
+        observed_container->unregisterViewContainerListener(this);
+        observed_container->unregisterViewListener(this);
+        observed_container = nullptr;
     }
 }
 
 //------------------------------------------------------------------------
 void HStackLayout::viewContainerViewAdded(ViewContainer* container, View* view)
 {
-    do_layout(container, spacing, padding);
+    if (observed_container == container)
+        do_layout(observed_container, spacing, padding);
 }
 
 //------------------------------------------------------------------------
 void HStackLayout::viewContainerViewRemoved(ViewContainer* container,
                                             View* view)
 {
-    do_layout(container, spacing, padding);
+    if (observed_container == container)
+        do_layout(observed_container, spacing, padding);
 }
 
 //------------------------------------------------------------------------
 void HStackLayout::viewSizeChanged(View* view, const Rect& oldSize)
 {
-    do_layout(container, spacing, padding);
+    do_layout(observed_container, spacing, padding);
 }
 
 //------------------------------------------------------------------------
-void HStackLayout::setup(const Spacing& spacing, const Padding& padding)
+void HStackLayout::setup(const Spacing& spacing_value,
+                         const Padding& padding_value)
 {
-    this->spacing = spacing;
-    this->padding = padding;
+    this->spacing = spacing_value;
+    this->padding = padding_value;
 }
 
 //------------------------------------------------------------------------

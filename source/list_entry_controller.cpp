@@ -43,15 +43,15 @@ ListEntryController::~ListEntryController(){
 //------------------------------------------------------------------------
 VSTGUI::CView*
 ListEntryController::verifyView(VSTGUI::CView* view,
-                                const VSTGUI::UIAttributes& attributes,
-                                const VSTGUI::IUIDescription* description)
+                                const VSTGUI::UIAttributes& /*attributes*/,
+                                const VSTGUI::IUIDescription* /*description*/)
 {
     return view;
 };
 
 //------------------------------------------------------------------------
 VSTGUI::IController* ListEntryController::createSubController(
-    VSTGUI::UTF8StringPtr name, const VSTGUI::IUIDescription* description)
+    VSTGUI::UTF8StringPtr name, const VSTGUI::IUIDescription* description_)
 {
     if (playback_region_id == meta_words::PlaybackRegion::INVALID_ID)
         return nullptr;

@@ -52,7 +52,7 @@ public:
 
     //--------------------------------------------------------------------
 private:
-    ViewContainer* container = nullptr;
+    ViewContainer* observed_container = nullptr;
     Spacing spacing{0., 0.};
     Padding padding{0., 0., 0., 0.};
 };

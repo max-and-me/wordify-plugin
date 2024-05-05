@@ -64,17 +64,12 @@ static auto on_editor_renderer(meta_words::EditorRenderer& editorRenderer,
                           data.processContext->sampleRate;
         editorRenderer.update_project_time(time);
     }
-
-    editorRenderer;
-    data;
 }
 
 //------------------------------------------------------------------------
-static auto on_editor_view(meta_words::EditorView& editorView,
-                           Vst::ProcessData& data) -> void
+static auto on_editor_view(meta_words::EditorView& /*editorView*/,
+                           Vst::ProcessData& /*data*/) -> void
 {
-    editorView;
-    data;
 }
 
 //------------------------------------------------------------------------

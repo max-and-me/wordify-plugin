@@ -515,9 +515,10 @@ void MetaWordsClipController::init_words_width_cache(const MetaWordsData& data)
 }
 
 //------------------------------------------------------------------------
-CView* MetaWordsClipController::verifyView(CView* view,
-                                           const UIAttributes& attributes,
-                                           const IUIDescription* description)
+CView*
+MetaWordsClipController::verifyView(CView* view,
+                                    const UIAttributes& attributes,
+                                    const IUIDescription* /*description*/)
 {
     if (!view)
         return view;

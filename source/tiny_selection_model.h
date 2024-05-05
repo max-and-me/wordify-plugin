@@ -19,18 +19,18 @@ public:
 
     void select(const DataType& data)
     {
-        this->data = data;
+        this->selection_data = data;
         if (on_select_func)
-            on_select_func(this->data);
+            on_select_func(this->selection_data);
     }
 
-    auto get_data() const -> const DataType& { return data; }
+    auto get_data() const -> const DataType& { return selection_data; }
 
     FuncOnSelect on_select_func;
 
     //------------------------------------------------------------------------
 private:
-    DataType data{0};
+    DataType selection_data{0};
 };
 
 //------------------------------------------------------------------------
