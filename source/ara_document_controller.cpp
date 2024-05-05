@@ -405,12 +405,13 @@ auto ARADocumentController::find_word_in_region(std::string search) -> void
 
         if (search.empty())
         {
-            WordSelectData data{reg.first, -1, meta_words_data};
+            WordSelectData data{reg.first, {}, meta_words_data};
             selected_word_subject.notify_listeners(data);
             continue;
         }
         else
         {
+            WordSelectData data{reg.first, {}, meta_words_data};
             for (auto word_data : meta_words_dataSet)
             {
                 auto word = word_data.word.word;
@@ -422,12 +423,12 @@ auto ARADocumentController::find_word_in_region(std::string search) -> void
                 if (std::search(word.begin(), word.end(), search.begin(),
                                 search.end()) != word.end())
                 {
-                    WordSelectData data{reg.first, index, meta_words_data};
-                    selected_word_subject.notify_listeners(data);
-                    break; // TODO: handle multiple hits
+
+                    data.indices.push_back(index);
                 }
                 index++;
             }
+            selected_word_subject.notify_listeners(data);
         }
     }
 }

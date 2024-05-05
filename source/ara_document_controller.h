@@ -56,8 +56,9 @@ using RegionSelectionModel = SelectionModel<RegionData>;
 //------------------------------------------------------------------------
 struct WordSelectData
 {
+    using SelectedIdices = std::vector<int>;
     meta_words::PlaybackRegion::Id region_id;
-    int index = -1;
+    SelectedIdices indices{};
     MetaWordsData meta_word_data;
 };
 

@@ -194,13 +194,13 @@ ListController::createSubController(UTF8StringPtr name,
 void ListController::checkSelectWord(const WordSelectData& data)
 {
     // word data selection
-    if (data.index != -1)
+    if (data.indices.empty() == false)
     {
-        controller->onRequestSelectWord(data.index, data.region_id);
+        controller->onRequestSelectWord(data.indices.at(0), data.region_id);
 
         // waveform selection
         controller->get_region_selection_model().select(
-            {data.region_id, static_cast<size_t>(data.index)});
+            {data.region_id, static_cast<size_t>(data.indices.at(0))});
     }
 
     // ui update
@@ -232,7 +232,9 @@ void ListController::checkSelectWord(const WordSelectData& data)
         {
             btn->setHilite(false);
 
-            if (btn->getTag() == data.index)
+            auto it = std::find(data.indices.begin(), data.indices.end(),
+                                btn->getTag());
+            if (it != data.indices.end())
             {
                 auto rect = btn->translateToGlobal(rowColView->getViewSize());
                 CScrollView* scroll = dynamic_cast<CScrollView*>(

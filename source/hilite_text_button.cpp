@@ -24,7 +24,7 @@ void HiliteTextButton::draw(CDrawContext* context)
     {
         if (getTextColor() != hiliteColor)
             setTextColor(hiliteColor);
-        
+
         CRect rect     = getViewSize();
         CPoint topLeft = rect.getTopLeft();
         rect.setTopLeft(topLeft);
@@ -46,7 +46,7 @@ void HiliteTextButton::draw(CDrawContext* context)
 }
 
 //------------------------------------------------------------------------
-void HiliteTextButton::setTextColor (const CColor& color)
+void HiliteTextButton::setTextColor(const CColor& color)
 {
     CTextButton::setTextColor(color);
     if (!hilite)
