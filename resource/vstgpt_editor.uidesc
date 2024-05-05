@@ -1439,34 +1439,17 @@
 					"wants-focus": "false"
 				},
 				"children": {
-					"CTextButton": {
+					"CView": {
 						"attributes": {
-							"class": "CTextButton",
-							"default-value": "0.5",
-							"font": "region_transcript_font",
-							"frame-color": "~ BlackCColor",
-							"frame-color-highlighted": "~ WhiteCColor",
-							"frame-width": "0",
-							"gradient": "Default TextButton Gradient",
-							"gradient-highlighted": "Default TextButton Gradient Highlighted",
-							"icon-position": "left",
-							"icon-text-margin": "0",
-							"kick-style": "true",
-							"max-value": "1",
-							"min-value": "0",
+							"class": "CView",
+							"custom-view-name": "MetaWordButton",
 							"mouse-enabled": "true",
 							"opacity": "1",
-							"origin": "0, 0",
-							"round-radius": "0",
+							"origin": "1, 2",
 							"size": "60, 24",
-							"text-alignment": "center",
-							"text-color": "transcript_text_color",
-							"text-color-highlighted": "transcript_text_hilite_color",
-							"title": "Word",
-							"transparent": "true",
+							"transparent": "false",
 							"uidesc-label": "MetaWordButton",
-							"wants-focus": "false",
-							"wheel-inc-value": "0.1"
+							"wants-focus": "false"
 						}
 					}
 				}

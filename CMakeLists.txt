@@ -36,6 +36,8 @@ smtg_add_vst3plugin(VstGPT
     source/audio_buffer_management.h
     source/header_controller.cpp
     source/header_controller.h
+    source/hilite_text_button.cpp
+    source/hilite_text_button.h
     source/hstack_layout.cpp
     source/hstack_layout.h
     source/list_controller.cpp

@@ -57,7 +57,7 @@ using RegionSelectionModel = SelectionModel<RegionData>;
 struct WordSelectData
 {
     meta_words::PlaybackRegion::Id region_id;
-    int index = 0;
+    int index = -1;
     MetaWordsData meta_word_data;
 };
 
