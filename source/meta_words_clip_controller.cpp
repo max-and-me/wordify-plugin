@@ -31,9 +31,6 @@ using namespace VSTGUI;
 namespace mam {
 
 //------------------------------------------------------------------------
-constexpr auto HORIZ_PADDING = 0;
-
-//------------------------------------------------------------------------
 static auto update_region_title(CTextLabel& region_title,
                                 const MetaWordsData& meta_words_data) -> void
 {
@@ -327,8 +324,7 @@ static auto add_loading_indicator(CViewContainer* region_transcript,
 }
 
 //------------------------------------------------------------------------
-static auto remove_loading_indicator(CViewContainer* region_transcript,
-                                     HStackLayout* stack_layout) -> void
+static auto remove_loading_indicator(CViewContainer* region_transcript) -> void
 {
     if (region_transcript->getNbViews() == 1)
     {
@@ -343,8 +339,6 @@ static auto remove_loading_indicator(CViewContainer* region_transcript,
                 {
                     if (UTF8String("LoadingIndicatorTemplate") == str)
                     {
-                        stack_layout->setup({0., 0.},
-                                            {0., 0., 0., HORIZ_PADDING});
                         region_transcript->removeView(view);
                     }
                 }
@@ -505,7 +499,7 @@ void MetaWordsClipController::on_meta_words_data_changed()
         init_words_width_cache(data);
 
         if (!data.words.empty())
-            remove_loading_indicator(region_transcript, stack_layout.get());
+            remove_loading_indicator(region_transcript);
 
         update_region_transcript(region_transcript, data, description,
                                  meta_word_button_attributes, this, cache);
@@ -561,7 +555,7 @@ MetaWordsClipController::verifyView(CView* view,
             region_transcript->registerViewListener(new FitContentHandler);
 
             stack_layout = std::make_unique<HStackLayout>(region_transcript);
-            stack_layout->setup({0., 0.}, {0., 0., 0., HORIZ_PADDING});
+            stack_layout->setup({0., 0.}, {0., 0., 0., 0.});
 
             if (data.words.empty())
             {
