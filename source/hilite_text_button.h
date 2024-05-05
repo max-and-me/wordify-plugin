@@ -24,9 +24,12 @@ public:
 
     void draw(VSTGUI::CDrawContext* context) override;
     void setHilite(bool state) { hilite = state; }
+    void setTextColor (const VSTGUI::CColor& color) override;
 
     //--------------------------------------------------------------------
 private:
+    VSTGUI::CColor hiliteColor = VSTGUI::kWhiteCColor;
+    VSTGUI::CColor normalColor = VSTGUI::kBlackCColor;
     bool hilite = false;
 };
 

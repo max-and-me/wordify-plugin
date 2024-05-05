@@ -22,6 +22,9 @@ void HiliteTextButton::draw(CDrawContext* context)
 {
     if (hilite)
     {
+        if (getTextColor() != hiliteColor)
+            setTextColor(hiliteColor);
+        
         CRect rect     = getViewSize();
         CPoint topLeft = rect.getTopLeft();
         rect.setTopLeft(topLeft);
@@ -30,11 +33,24 @@ void HiliteTextButton::draw(CDrawContext* context)
         bottomRight.y      = bottomRight.y;
         rect.setBottomRight(bottomRight);
 
-        context->setFillColor(CColor(255, 255, 0, 125));
+        context->setFillColor(CColor(200, 200, 200, 125));
         context->drawGraphicsPath(
-            context->createRoundRectGraphicsPath(rect, 0));
+            context->createRoundRectGraphicsPath(rect, 4));
+    }
+    else
+    {
+        if (getTextColor() != normalColor)
+            setTextColor(normalColor);
     }
     CTextButton::draw(context);
+}
+
+//------------------------------------------------------------------------
+void HiliteTextButton::setTextColor (const CColor& color)
+{
+    CTextButton::setTextColor(color);
+    if (!hilite)
+        normalColor = getTextColor();
 }
 
 //------------------------------------------------------------------------
