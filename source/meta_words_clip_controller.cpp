@@ -399,6 +399,12 @@ struct FitContentHandler : public ViewListenerAdapter
 
             fit_content(rc_view->getParentView());
         }
+        else if (auto* scrollable_container =
+                     dynamic_cast<CViewContainer*>(view))
+        {
+            scrollable_container->sizeToFit();
+            return;
+        }
     }
 
     void viewAttached(CView* view) override
