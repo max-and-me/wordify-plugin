@@ -298,8 +298,7 @@ const char* LoadingIndicatorAnimationHandler::WaveAnimation::ANIMATION_ID =
 //------------------------------------------------------------------------
 static CViewAttributeID kTemplateNameAttributeID = 'uitl';
 static auto add_loading_indicator(CViewContainer* region_transcript,
-                                  const IUIDescription* description,
-                                  HStackLayout* stack_layout) -> void
+                                  const IUIDescription* description) -> void
 {
     if (region_transcript->getNbViews() > 0)
         return;
@@ -307,7 +306,6 @@ static auto add_loading_indicator(CViewContainer* region_transcript,
     if (auto indicator_template =
             description->createView("LoadingIndicatorTemplate", nullptr))
     {
-        stack_layout->setup({0., 0.}, {0., 0., 0., 0});
         region_transcript->addView(indicator_template);
 
         if (auto* container = dynamic_cast<CViewContainer*>(indicator_template))
@@ -558,10 +556,7 @@ MetaWordsClipController::verifyView(CView* view,
             stack_layout->setup({0., 0.}, {0., 0., 0., 0.});
 
             if (data.words.empty())
-            {
-                add_loading_indicator(region_transcript, description,
-                                      stack_layout.get());
-            }
+                add_loading_indicator(region_transcript, description);
         }
         else if (*viewLabel == "MetaWordButton")
         {
