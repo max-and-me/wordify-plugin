@@ -59,11 +59,14 @@ auto deserialize(const String& s, Preferences& prefs) -> bool
 }
 
 //------------------------------------------------------------------------
-auto write_to(const Preferences& prefs, const PathType& directory) -> bool
+auto write_to(const Preferences& prefs,
+              const String& company_name,
+              const String& plugin_name) -> bool
 {
     const auto prefs_folder = hao::special_folders::get_preferences_folder();
     auto prefs_folder_path  = std::filesystem::path(prefs_folder);
-    prefs_folder_path /= directory;
+    prefs_folder_path /= company_name;
+    prefs_folder_path /= plugin_name;
 
     if (!std::filesystem::exists(prefs_folder_path))
     {
@@ -81,11 +84,14 @@ auto write_to(const Preferences& prefs, const PathType& directory) -> bool
 }
 
 //------------------------------------------------------------------------
-auto read_from(const PathType& directory, Preferences& prefs) -> bool
+auto read_from(const String& company_name,
+               const String& plugin_name,
+               Preferences& prefs) -> bool
 {
     const auto prefs_folder = hao::special_folders::get_preferences_folder();
     auto prefs_folder_path  = std::filesystem::path(prefs_folder);
-    prefs_folder_path /= directory;
+    prefs_folder_path /= company_name;
+    prefs_folder_path /= plugin_name;
 
     const auto prefs_file_path = prefs_folder_path / PREFERENCES_FILE_NAME;
 

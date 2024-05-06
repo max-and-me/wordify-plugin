@@ -28,8 +28,12 @@ struct Preferences
 auto serialize(const Preferences& prefs, String& s) -> bool;
 auto deserialize(const String& s, Preferences& prefs) -> bool;
 
-auto write_to(const Preferences& prefs, const PathType& directory) -> bool;
-auto read_from(const PathType& directory, Preferences& prefs) -> bool;
+auto write_to(const Preferences& prefs,
+              const String& company_name,
+              const String& plugin_name) -> bool;
+auto read_from(const String& company_name,
+               const String& plugin_name,
+               Preferences& prefs) -> bool;
 
 //------------------------------------------------------------------------
 } // namespace mam::meta_words::serde
