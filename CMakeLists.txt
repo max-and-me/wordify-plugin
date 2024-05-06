@@ -17,7 +17,7 @@ project("Wordify"
 
 string(TIMESTAMP YEAR_NOW     "%Y") # Current year
 set(CPACK_PACKAGE_VENDOR      "WordifyOrg")
-set(PROJECT_CONTACT_EMAIL     "info@wordify.org")
+set(PROJECT_CONTACT_EMAIL     "hey@wordify.org")
 set(PROJECT_BUNDLE_IDENTIFIER "org.wordify.plugin.vst3")
 set(PROJECT_LEGAL_COPYRIGHT   "Copyright(c) ${YEAR_NOW}")
 
