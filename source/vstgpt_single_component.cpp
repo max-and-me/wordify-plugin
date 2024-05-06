@@ -456,7 +456,7 @@ auto VstGPTSingleComponent::restore_parameters() -> void
 {
     // Restore preferences from disc
     meta_words::serde::Preferences prefs;
-    meta_words::serde::read_from(PLUGIN_NAME_STR, prefs);
+    meta_words::serde::read_from(COMPANY_NAME_STR, PLUGIN_NAME_STR, prefs);
 
     if (auto* color_scheme_param = new Vst::StringListParameter(
             STR("ColorScheme"), ParamIds::kParamIdColorScheme))
@@ -489,7 +489,7 @@ auto VstGPTSingleComponent::store_parameters() -> void
         color_scheme_param->removeDependent(this);
     }
 
-    meta_words::serde::write_to(prefs, PLUGIN_NAME_STR);
+    meta_words::serde::write_to(prefs, COMPANY_NAME_STR, PLUGIN_NAME_STR);
 }
 
 //------------------------------------------------------------------------
