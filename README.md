@@ -1,5 +1,6 @@
-# VST 3 GPT Plug-In
-[![CMake (Linux, macOS, Windows)](https://github.com/rehans/vst-gpt/actions/workflows/cmake.yml/badge.svg)](https://github.com/rehans/vst-gpt/actions/workflows/cmake.yml)
+# Wordify VST 3 Plug-In (ARA)
+
+[![CMake (Linux, macOS, Windows)](https://github.com/max-and-me/wordify-plugin/actions/workflows/cmake.yml/badge.svg)](https://github.com/max-and-me/wordify-plugin/actions/workflows/cmake.yml)
 
 ## Getting Started
 
