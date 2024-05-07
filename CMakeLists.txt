@@ -21,6 +21,14 @@ set(PROJECT_CONTACT_EMAIL     "hey@wordify.org")
 set(PROJECT_BUNDLE_IDENTIFIER "org.wordify.plugin.vst3")
 set(PROJECT_LEGAL_COPYRIGHT   "Copyright(c) ${YEAR_NOW}")
 
+message(STATUS "[MAM] CMAKE_SYSTEM_NAME          : ${CMAKE_SYSTEM_NAME}")
+message(STATUS "[MAM] CPACK_PACKAGE_VENDOR       : ${CPACK_PACKAGE_VENDOR}")
+message(STATUS "[MAM] PROJECT_HOMEPAGE_URL       : ${PROJECT_HOMEPAGE_URL}")
+message(STATUS "[MAM] PROJECT_CONTACT_EMAIL      : ${PROJECT_CONTACT_EMAIL}")
+message(STATUS "[MAM] PROJECT_NAME               : ${PROJECT_NAME}")
+message(STATUS "[MAM] PROJECT_BUNDLE_IDENTIFIER  : ${PROJECT_BUNDLE_IDENTIFIER}")
+message(STATUS "[MAM] PROJECT_LEGAL_COPYRIGHT    : ${PROJECT_LEGAL_COPYRIGHT}")
+
 add_subdirectory(extern)
 smtg_enable_vst3_sdk()
 
@@ -129,43 +137,6 @@ target_link_libraries(Wordify
 
 smtg_target_configure_version_file(Wordify)
 
-if(SMTG_MAC)
-    smtg_target_set_bundle(Wordify
-        BUNDLE_IDENTIFIER ${PROJECT_BUNDLE_IDENTIFIER}
-        COMPANY_NAME "${CPACK_PACKAGE_VENDOR}"
-    )
-    smtg_target_set_debug_executable(Wordify
-        "/Applications/VST3PluginTestHost.app"
-        "--pluginfolder;$(BUILT_PRODUCTS_DIR)"
-    )
-elseif(SMTG_WIN)
-    target_sources(Wordify PRIVATE 
-        resource/win32resource.rc
-    )
-    if(MSVC)
-        set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT Wordify)
-
-        smtg_target_set_debug_executable(Wordify
-            "$(ProgramW6432)/Steinberg/VST3PluginTestHost/VST3PluginTestHost.exe"
-            "--pluginfolder \"$(OutDir)/\""
-        )
-    endif()
-
-    if(WIN32)
-        target_compile_definitions(Wordify
-            PUBLIC
-                -D_UNICODE
-                -DUNICODE
-        )
-    
-        target_compile_definitions(tiny-process-library
-            PUBLIC
-                -D_UNICODE
-                -DUNICODE
-        )
-    endif()
-endif(SMTG_MAC)
-
 # VSTGUI support
 target_sources(Wordify
     PRIVATE
@@ -192,11 +163,6 @@ set_property(
         POSITION_INDEPENDENT_CODE ON
 )
 
-# whisper.cpp exe and model
-set_target_properties(main PROPERTIES 
-    OUTPUT_NAME "WordifyWorker"
-)
-
 target_compile_definitions(Wordify
     PRIVATE
         MAM_WHISPER_CPP_EXECUTABLE="$<TARGET_FILE:main>"
@@ -209,15 +175,51 @@ target_compile_definitions(Wordify
         PROJECT_LEGAL_COPYRIGHT="${PROJECT_LEGAL_COPYRIGHT}"
 )
 
-# test
-add_executable(temp-dir-test
-    test/test_temp_dir.cpp
+if(SMTG_MAC)
+    smtg_target_set_bundle(Wordify
+        BUNDLE_IDENTIFIER ${PROJECT_BUNDLE_IDENTIFIER}
+        COMPANY_NAME "${CPACK_PACKAGE_VENDOR}"
+    )
+elseif(SMTG_WIN)
+    target_sources(Wordify PRIVATE 
+        resource/win32resource.rc
+    )
+
+    set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT Wordify)
+
+    target_compile_definitions(Wordify
+        PUBLIC
+            -D_UNICODE
+            -DUNICODE
+    )
+
+    target_compile_definitions(tiny-process-library
+        PUBLIC
+            -D_UNICODE
+            -DUNICODE
+    )
+endif()
+
+# whisper.cpp exe and model
+set_target_properties(main PROPERTIES 
+    OUTPUT_NAME "WordifyWorker"
 )
 
-target_compile_features(temp-dir-test 
-    PRIVATE
-        cxx_std_17
-)
+if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    add_custom_command(
+        TARGET Wordify POST_BUILD
+        COMMENT "[MAM] Copy WordifyWorker."
+        COMMAND ${CMAKE_COMMAND} -E copy
+            "$<TARGET_FILE:main>"
+            "$<TARGET_FILE_DIR:Wordify>"
+    )
+else()
+    get_target_property(TEST_VAR Wordify LIBRARY_OUTPUT_DIRECTORY)
+    add_custom_command(TARGET Wordify POST_BUILD
+        COMMAND ln -sf "$<TARGET_FILE:main>" "${TEST_VAR}"
+    )
+
+endif()
 
 # Dependency Graph
 add_custom_target(${PROJECT_NAME}-dependency-graph
@@ -225,48 +227,7 @@ add_custom_target(${PROJECT_NAME}-dependency-graph
 )
 
 # Installer
-set(CPACK_RESOURCE_FILE_LICENSE ${PROJECT_SOURCE_DIR}/LICENSE.txt)
 set(MAM_WORDIFY_MODEL_FILE "${MAM_WHISPER_CPP_MODEL_DOWNLOAD_DIR}/ggml-medium.bin")
-message(STATUS "[MAM] CMAKE_SYSTEM_NAME          : ${CMAKE_SYSTEM_NAME}")
-message(STATUS "[MAM] CPACK_RESOURCE_FILE_LICENSE: ${CPACK_RESOURCE_FILE_LICENSE}")
 message(STATUS "[MAM] MAM_WORDIFY_MODEL_FILE     : ${MAM_WORDIFY_MODEL_FILE}")
-message(STATUS "[MAM] CPACK_PACKAGE_VENDOR       : ${CPACK_PACKAGE_VENDOR}")
-message(STATUS "[MAM] PROJECT_HOMEPAGE_URL       : ${PROJECT_HOMEPAGE_URL}")
-message(STATUS "[MAM] PROJECT_CONTACT_EMAIL      : ${PROJECT_CONTACT_EMAIL}")
-message(STATUS "[MAM] PROJECT_NAME               : ${PROJECT_NAME}")
-message(STATUS "[MAM] BUNDLE_IDENTIFIER          : ${BUNDLE_IDENTIFIER}")
 
-get_target_property(PLUGIN_PACKAGE_PATH Wordify SMTG_PLUGIN_PACKAGE_PATH)
-
-vst3_cpack_configure(
-    PLUGIN_PACKAGE_PATH "${PLUGIN_PACKAGE_PATH}"
-)
-
-# AI Models
-cpack_add_component(
-    modeldata
-    DISPLAY_NAME "Model Data"
-    INSTALL_TYPES full
-    REQUIRED
-)
-
-# Installation path for ai model data
-# Windows: C:\Program Data\...
-# macOS  : /Library/Application Support/...
-set(CPACK_INNOSETUP_modeldata_INSTALL_DIRECTORY "{commonappdata}")    # C:\Program Data\
-set(MAM_MODEL_DATA_FOLDER "${CPACK_PACKAGE_VENDOR}/${PROJECT_NAME}/ModelData")
-if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
-    set(MAM_MODEL_DATA_FOLDER "Library/Application Support/${MAM_MODEL_DATA_FOLDER}")
-endif()
-
-message(STATUS "[MAM] MAM_MODEL_DATA_FOLDER: ${MAM_MODEL_DATA_FOLDER}")
-
-install(
-    FILES       "${MAM_WORDIFY_MODEL_FILE}"
-    DESTINATION "${MAM_MODEL_DATA_FOLDER}"
-    COMPONENT   modeldata
-)
-
-list(APPEND CPACK_COMPONENTS_ALL modeldata)
-
-include(CPack)
+add_subdirectory(installer)
