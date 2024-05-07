@@ -200,26 +200,28 @@ elseif(SMTG_WIN)
     )
 endif()
 
-# whisper.cpp exe and model
+# This needs to be fixed in vst3sdk.
+# https://github.com/steinbergmedia/vst3_cmake/blob/master/modules/SMTG_AddSMTGLibrary.cmake#L292C21-L292C54
+# If this is not set, "$<TARGET_FILE_DIR:Wordify>" returns 'Wordify.bundle' instead of 'Wordify.vst3'
+set_target_properties(Wordify PROPERTIES
+    BUNDLE_EXTENSION vst3
+)
+
+# whispercpp's command line executable is called 'main'. We need
+# some more meaningful name and simple rename the executable
+# 'WordifyWorker'
 set_target_properties(main PROPERTIES 
     OUTPUT_NAME "WordifyWorker"
 )
 
-if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
-    add_custom_command(
-        TARGET Wordify POST_BUILD
-        COMMENT "[MAM] Copy WordifyWorker."
-        COMMAND ${CMAKE_COMMAND} -E copy
-            "$<TARGET_FILE:main>"
-            "$<TARGET_FILE_DIR:Wordify>"
-    )
-else()
-    get_target_property(TEST_VAR Wordify LIBRARY_OUTPUT_DIRECTORY)
-    add_custom_command(TARGET Wordify POST_BUILD
-        COMMAND ln -sf "$<TARGET_FILE:main>" "${TEST_VAR}"
-    )
-
-endif()
+# Copy WordifyWorker next to our Wordify executable
+add_custom_command(
+    TARGET Wordify POST_BUILD
+    COMMENT "[MAM] Copy WordifyWorker."
+    COMMAND ${CMAKE_COMMAND} -E copy
+        "$<TARGET_FILE:main>"
+        "$<TARGET_FILE_DIR:Wordify>"
+)
 
 # Dependency Graph
 add_custom_target(${PROJECT_NAME}-dependency-graph
