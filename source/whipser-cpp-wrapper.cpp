@@ -1,6 +1,7 @@
 // Copyright(c) 2024 Max And Me.
 
 #include "whipser-cpp-wrapper.h"
+#include "base/source/fdebug.h"
 #include "hao/special_folders/special_folders.h"
 #include "vstgpt_defines.h"
 #include "whereami.h"
@@ -10,9 +11,6 @@
 namespace mam::whisper_cpp {
 
 //------------------------------------------------------------------------
-#define DEBUG_MODEL 1
-
-//------------------------------------------------------------------------
 namespace {
 using StringType = std::string;
 
@@ -20,7 +18,7 @@ using StringType = std::string;
 auto get_ggml_file_path(const StringType& company_name,
                         const StringType& plugin_name) -> PathType
 {
-#if DEBUG_MODEL
+#if DEVELOPMENT
     (void)company_name;
     (void)plugin_name;
     std::filesystem::path file_path(MAM_WHISPER_CPP_MODEL_DOWNLOAD_DIR);
@@ -44,7 +42,7 @@ auto get_ggml_file_path(const StringType& company_name,
 //------------------------------------------------------------------------
 auto get_worker_executable_path() -> PathType
 {
-#if DEBUG_MODEL
+#if DEVELOPMENT
     return MAM_WHISPER_CPP_EXECUTABLE;
 #else
     const int length = wai_getModulePath(NULL, 0, NULL);
