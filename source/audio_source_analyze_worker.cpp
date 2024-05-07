@@ -4,11 +4,15 @@
 
 #include "audio_source_analyze_worker.h"
 #include "base/source/timer.h"
+#include "hao/special_folders/special_folders.h"
 #include "mam/meta_words/runner.h"
 #include "meta_words_data.h"
 #include "parameter_ids.h"
+#include "vstgpt_defines.h"
+#include "whipser-cpp-wrapper.h"
 #include <algorithm>
 #include <atomic>
+#include <filesystem>
 #include <functional>
 #include <future>
 #include <string>
@@ -48,20 +52,16 @@ auto create_whisper_cmd(const meta_words::PathType& file_path)
 
     OneValArgs one_val_args = {
         // model file resp. binary
-        {"-m", MAM_WHISPER_CPP_MODEL_DOWNLOAD_DIR "/ggml-base.en.bin"},
-        //{"-m", MAM_WHISPER_CPP_MODEL_DOWNLOAD_DIR "/ggml-small.bin"},
+        {"-m", whisper_cpp::get_ggml_file_path()},
         // audio file to analyse
         {"-f", file_path},
         // maximum segment length in characters: "1" mains one word
         {"-ml", "1"},
+        // auto language detection
         {"-l", "auto"}};
 
-    // static constexpr auto EXE_PATH =
-    // "Z:\\Private\\mam\\vst-gpt_build\\bin\\Release\\main.exe"; Command
-    /*cmd
-    {*/
-    // EXE_PATH, options, one_val_args};
-    Command cmd{MAM_WHISPER_CPP_EXECUTABLE, options, one_val_args};
+    Command cmd{whisper_cpp::get_worker_executable_path(), options,
+                one_val_args};
 
     return cmd;
 }

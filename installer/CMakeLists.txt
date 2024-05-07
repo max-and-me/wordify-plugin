@@ -22,7 +22,7 @@ cpack_add_component(
 # Windows: C:\Program Data\WordifyOrg\Wordify\ModelData\...
 # macOS  : /Library/Application Support/WordifyOrg/Wordify/ModelData/...
 set(CPACK_INNOSETUP_modeldata_INSTALL_DIRECTORY "{commonappdata}")    # C:\Program Data\
-set(MAM_MODEL_DATA_FOLDER "${CPACK_PACKAGE_VENDOR}/${PROJECT_NAME}/ModelData")
+set(MAM_MODEL_DATA_FOLDER "${CPACK_PACKAGE_VENDOR}/${PROJECT_NAME}/${MAM_GGML_DIRECTORY_NAME}")
 if(CMAKE_SYSTEM_NAME STREQUAL "Darwin")
     # On macos we need to add 'Library/Application Support'
     set(MAM_MODEL_DATA_FOLDER "Library/Application Support/${MAM_MODEL_DATA_FOLDER}")

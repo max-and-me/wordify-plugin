@@ -20,6 +20,7 @@ set(CPACK_PACKAGE_VENDOR      "WordifyOrg")
 set(PROJECT_CONTACT_EMAIL     "hey@wordify.org")
 set(PROJECT_BUNDLE_IDENTIFIER "org.wordify.plugin.vst3")
 set(PROJECT_LEGAL_COPYRIGHT   "Copyright(c) ${YEAR_NOW}")
+set(MAM_GGML_DIRECTORY_NAME   "ModelData")
 
 message(STATUS "[MAM] CMAKE_SYSTEM_NAME          : ${CMAKE_SYSTEM_NAME}")
 message(STATUS "[MAM] CPACK_PACKAGE_VENDOR       : ${CPACK_PACKAGE_VENDOR}")
@@ -95,6 +96,8 @@ smtg_add_vst3plugin(Wordify
     source/waveform_controller.h
     source/waveform_view.cpp
     source/waveform_view.h
+    source/whipser-cpp-wrapper.cpp
+    source/whipser-cpp-wrapper.h
 )
 
 smtg_target_add_plugin_resources(Wordify
@@ -133,6 +136,7 @@ target_link_libraries(Wordify
         tiny-process-library
         wave-draw
         vstgui_support
+        whereami
 )
 
 smtg_target_configure_version_file(Wordify)
@@ -159,6 +163,7 @@ set_property(
         tiny-process-library
         sndfile
         meta-words
+        whereami
     PROPERTY
         POSITION_INDEPENDENT_CODE ON
 )
@@ -166,6 +171,8 @@ set_property(
 target_compile_definitions(Wordify
     PRIVATE
         MAM_WHISPER_CPP_EXECUTABLE="$<TARGET_FILE:main>"
+        MAM_WHISPER_CPP_EXECUTABLE_NAME="$<TARGET_FILE_NAME:main>"
+        MAM_GGML_DIRECTORY_NAME="${MAM_GGML_DIRECTORY_NAME}"
         MAM_WHISPER_CPP_MODEL_DOWNLOAD_DIR="${MAM_WHISPER_CPP_MODEL_DOWNLOAD_DIR}"
         CPACK_PACKAGE_VENDOR="${CPACK_PACKAGE_VENDOR}"
         PROJECT_HOMEPAGE_URL="${PROJECT_HOMEPAGE_URL}"
