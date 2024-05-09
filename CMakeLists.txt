@@ -159,10 +159,20 @@ target_compile_features(Wordify
 set_property(
     TARGET
         ARA_PlugIn_Library
-        tiny-process-library
-        sndfile
+        common
+        fmt
+        main
         meta-words
+        nlohmann_json
+        presonus-plugin-extensions
+        samplerate
+        sndfile
+        special-folders
+        tiny-process-library
+        vstgui_support
+        wave-draw
         whereami
+        whisper
     PROPERTY
         POSITION_INDEPENDENT_CODE ON
 )
