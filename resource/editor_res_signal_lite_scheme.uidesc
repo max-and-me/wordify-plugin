@@ -1,7 +1,7 @@
 {
   "vstgui-ui-description": {
     "version": "1",
-        "bitmaps": {
+    "bitmaps": {
       "sun-solid": {
         "path": "sun-solid.png"
       },
@@ -25,6 +25,18 @@
       },
       "moon-solid_4x": {
         "path": "moon-solid_4x.png"
+      },
+      "magnifying-glass": {
+        "path": "magnifying-glass-solid_lite.png"
+      },
+      "magnifying-glass_2x": {
+        "path": "magnifying-glass-solid_lite_2x.png"
+      },
+      "magnifying-glass_3x": {
+        "path": "magnifying-glass-solid_lite_3x.png"
+      },
+      "magnifying-glass_4x": {
+        "path": "magnifying-glass-solid_lite_4x.png"
       }
     },
     "fonts": {
