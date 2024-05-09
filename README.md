@@ -59,13 +59,13 @@ cpack -C Release -G <CPack_Generator> .
 ![Alt text](doc/Wordify.dot.Wordify.png "Dependency Graph")
 
 ```shell
-cmake --build . --target VstGPT-dependency-graph
+cmake --build . --target Wordify-dependency-graph
 cd graphviz
-dot -Tpng -O ./VstGPT.dot.VstGPT
-cp ./VstGPT.dot.VstGPT.png ../../vst-gpt/doc    
+dot -Tpng -O ./Wordify.dot.Wordify
+cp ./Wordify.dot.Wordify.png ../../wordify/doc    
 ```
 
-Copy the generated ```VstGPT.dot.VstGPT.png``` into the ```doc``` folder.
+Copy the generated ```Wordify.dot.Wordify.png``` into the ```doc``` folder.
 
 > TODO: Automate this!!
 
