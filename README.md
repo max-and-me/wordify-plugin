@@ -56,7 +56,7 @@ cpack -C Release -G <CPack_Generator> .
 
 ## Dependency Graph
 
-![Alt text](doc/VstGPT.dot.VstGPT.png "Dependency Graph")
+![Alt text](doc/Wordify.dot.Wordify.png "Dependency Graph")
 
 ```shell
 cmake --build . --target VstGPT-dependency-graph
