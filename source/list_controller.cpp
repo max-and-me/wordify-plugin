@@ -68,6 +68,12 @@ ListController::ListController(ARADocumentController* controller,
 //------------------------------------------------------------------------
 ListController::~ListController()
 {
+    if (rowColView)
+    {
+        rowColView->unregisterViewListener(this);
+        rowColView = nullptr;
+    }
+
     if (controller)
         controller->unregister_word_selected_observer(
             word_selected_observer_id);
@@ -82,6 +88,7 @@ CView* ListController::verifyView(CView* view,
     {
         if (rowColView = dynamic_cast<CRowColumnView*>(view))
         {
+            rowColView->registerViewListener(this);
             if (controller)
             {
                 controller->for_each_playback_region_id(
@@ -261,6 +268,16 @@ void ListController::checkSelectWord(const WordSelectData& data)
             }
             btn->setDirty();
         }
+    }
+}
+
+//------------------------------------------------------------------------
+void ListController::viewWillDelete(VSTGUI::CView* view)
+{
+    if (view == rowColView)
+    {
+        rowColView->unregisterViewListener(this);
+        rowColView = nullptr;
     }
 }
 

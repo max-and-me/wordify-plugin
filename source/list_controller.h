@@ -6,6 +6,7 @@
 
 #include "ara_document_controller.h"
 #include "base/source/fobject.h"
+#include "vstgui/lib/iviewlistener.h"
 #include "vstgui/uidescription/icontroller.h"
 
 namespace VSTGUI {
@@ -19,7 +20,9 @@ class PlaybackRegion;
 //------------------------------------------------------------------------
 // ListController
 //------------------------------------------------------------------------
-class ListController : public Steinberg::FObject, public VSTGUI::IController
+class ListController : public Steinberg::FObject,
+                       public VSTGUI::IController,
+                       public VSTGUI::ViewListenerAdapter
 {
 public:
     //--------------------------------------------------------------------
@@ -60,6 +63,8 @@ public:
     IController*
     createSubController(UTF8StringPtr name,
                         const IUIDescription* description) override;
+
+    void viewWillDelete(VSTGUI::CView* view) override;
 
     OBJ_METHODS(ListController, FObject)
 
