@@ -133,7 +133,6 @@ target_link_libraries(Wordify
         sdk
         sndfile
         special-folders
-        tiny-process-library
         wave-draw
         vstgui_support
         whereami
