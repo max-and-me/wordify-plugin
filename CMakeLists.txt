@@ -96,8 +96,8 @@ smtg_add_vst3plugin(Wordify
     source/waveform_controller.h
     source/waveform_view.cpp
     source/waveform_view.h
-    source/whipser-cpp-wrapper.cpp
-    source/whipser-cpp-wrapper.h
+    source/whipser_cpp_wrapper.cpp
+    source/whipser_cpp_wrapper.h
 )
 
 smtg_target_add_plugin_resources(Wordify

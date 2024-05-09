@@ -9,7 +9,7 @@
 #include "meta_words_data.h"
 #include "parameter_ids.h"
 #include "vstgpt_defines.h"
-#include "whipser-cpp-wrapper.h"
+#include "whipser_cpp_wrapper.h"
 #include <algorithm>
 #include <atomic>
 #include <filesystem>

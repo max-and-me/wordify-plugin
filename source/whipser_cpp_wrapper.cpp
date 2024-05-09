@@ -1,6 +1,6 @@
 // Copyright(c) 2024 Max And Me.
 
-#include "whipser-cpp-wrapper.h"
+#include "whipser_cpp_wrapper.h"
 #include "base/source/fdebug.h"
 #include "hao/special_folders/special_folders.h"
 #include "vstgpt_defines.h"
@@ -18,7 +18,7 @@ using StringType = std::string;
 auto get_ggml_file_path(const StringType& company_name,
                         const StringType& plugin_name) -> PathType
 {
-#if DEVELOPMENT
+#if 0
     (void)company_name;
     (void)plugin_name;
     std::filesystem::path file_path(MAM_WHISPER_CPP_MODEL_DOWNLOAD_DIR);
@@ -42,7 +42,7 @@ auto get_ggml_file_path(const StringType& company_name,
 //------------------------------------------------------------------------
 auto get_worker_executable_path() -> PathType
 {
-#if DEVELOPMENT
+#if 0
     return MAM_WHISPER_CPP_EXECUTABLE;
 #else
     const int length = wai_getModulePath(NULL, 0, NULL);
