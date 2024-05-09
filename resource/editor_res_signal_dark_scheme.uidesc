@@ -70,7 +70,11 @@
       "spinner_badge_background_color": "#2c6bedff",
       "spinner_badge_text_color": "#e2e1e6ff",
       "transcript_text_color": "#e2e1e6ff",
-      "transcript_text_hilite_color": "#e2e1e680"
+      "transcript_text_hilite_color": "#e2e1e680",
+      "search_hilite_bgr_color": "#C8C8C880",
+      "search_hilite_text_color": "#FFFFFF",
+      "search_select_hilite_bgr_color": "#FFFF00",
+      "search_select_hilite_text_color": "#000000"
     },
     "gradients": {
       "Default TextButton Gradient": [

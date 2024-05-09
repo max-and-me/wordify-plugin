@@ -20,28 +20,37 @@ HiliteTextButton::HiliteTextButton(const CRect& size,
 //------------------------------------------------------------------------
 void HiliteTextButton::draw(CDrawContext* context)
 {
-    if (hilite)
+    if (hilite == HiliteState::kNone)
     {
-        if (getTextColor() != hiliteColor)
-            setTextColor(hiliteColor);
+        if (getTextColor() != normalTextColor)
+            setTextColor(normalTextColor);
+        CTextButton::draw(context);
+        return;
+    }
 
-        CRect rect     = getViewSize();
-        CPoint topLeft = rect.getTopLeft();
-        rect.setTopLeft(topLeft);
-
-        CPoint bottomRight = rect.getBottomRight();
-        bottomRight.y      = bottomRight.y;
-        rect.setBottomRight(bottomRight);
-
-        context->setFillColor(CColor(200, 200, 200, 125));
-        context->drawGraphicsPath(
-            context->createRoundRectGraphicsPath(rect, 4));
+    if (hilite == HiliteState::kSearchHilite)
+    {
+        if (getTextColor() != searchHiliteTextColor)
+            setTextColor(searchHiliteTextColor);
+        context->setFillColor(searchHiliteBgrColor);
     }
     else
     {
-        if (getTextColor() != normalColor)
-            setTextColor(normalColor);
+        if (getTextColor() != searchSelectHiliteTextColor)
+            setTextColor(searchSelectHiliteTextColor);
+        context->setFillColor(searchSelectHiliteBgrColor);
     }
+
+    CRect rect     = getViewSize();
+    CPoint topLeft = rect.getTopLeft();
+    rect.setTopLeft(topLeft);
+
+    CPoint bottomRight = rect.getBottomRight();
+    bottomRight.y      = bottomRight.y;
+    rect.setBottomRight(bottomRight);
+
+    context->drawGraphicsPath(context->createRoundRectGraphicsPath(rect, 4));
+
     CTextButton::draw(context);
 }
 
@@ -49,9 +58,20 @@ void HiliteTextButton::draw(CDrawContext* context)
 void HiliteTextButton::setTextColor(const CColor& color)
 {
     CTextButton::setTextColor(color);
-    if (!hilite)
-        normalColor = getTextColor();
+    if (hilite == HiliteState::kNone)
+        normalTextColor = getTextColor();
 }
 
 //------------------------------------------------------------------------
+void HiliteTextButton::setSchemeHiliteColors(const VSTGUI::CColor& shbc,
+                                             const VSTGUI::CColor& shtc,
+                                             const VSTGUI::CColor& ssbc,
+                                             const VSTGUI::CColor& sstc)
+{
+    searchHiliteBgrColor        = shbc;
+    searchHiliteTextColor       = shtc;
+    searchSelectHiliteBgrColor  = ssbc;
+    searchSelectHiliteTextColor = sstc;
+}
+
 } // namespace mam

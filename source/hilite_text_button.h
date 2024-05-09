@@ -16,6 +16,12 @@ class HiliteTextButton : public VSTGUI::CTextButton
 public:
     //--------------------------------------------------------------------
 
+    enum class HiliteState
+    {
+        kNone = 0,
+        kSearchHilite,
+        kSearchSelectHilite
+    };
     HiliteTextButton(const VSTGUI::CRect& size,
                      VSTGUI::IControlListener* listener = nullptr,
                      int32_t tag                        = -1,
@@ -23,14 +29,21 @@ public:
                      VSTGUI::CTextButton::Style         = kKickStyle);
 
     void draw(VSTGUI::CDrawContext* context) override;
-    void setHilite(bool state) { hilite = state; }
+    void setHilite(HiliteState state) { hilite = state; }
     void setTextColor(const VSTGUI::CColor& color) override;
+    void setSchemeHiliteColors(const VSTGUI::CColor& shbc,
+                               const VSTGUI::CColor& shtc,
+                               const VSTGUI::CColor& ssbc,
+                               const VSTGUI::CColor& sstc);
 
     //--------------------------------------------------------------------
 private:
-    VSTGUI::CColor hiliteColor = VSTGUI::kWhiteCColor;
-    VSTGUI::CColor normalColor = VSTGUI::kBlackCColor;
-    bool hilite                = false;
+    VSTGUI::CColor searchHiliteBgrColor        = VSTGUI::kGreyCColor;
+    VSTGUI::CColor searchHiliteTextColor       = VSTGUI::kWhiteCColor;
+    VSTGUI::CColor searchSelectHiliteBgrColor  = VSTGUI::kYellowCColor;
+    VSTGUI::CColor searchSelectHiliteTextColor = VSTGUI::kBlackCColor;
+    VSTGUI::CColor normalTextColor             = VSTGUI::kBlackCColor;
+    HiliteState hilite                         = HiliteState::kNone;
 };
 
 //------------------------------------------------------------------------

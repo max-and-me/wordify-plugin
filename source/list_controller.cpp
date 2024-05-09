@@ -230,7 +230,7 @@ void ListController::checkSelectWord(const WordSelectData& data)
         container->getChildViewsOfType<HiliteTextButton>(btns, true);
         for (auto& btn : btns)
         {
-            btn->setHilite(false);
+            btn->setHilite(HiliteTextButton::HiliteState::kNone);
 
             auto it = std::find(data.indices.begin(), data.indices.end(),
                                 btn->getTag());
@@ -251,7 +251,12 @@ void ListController::checkSelectWord(const WordSelectData& data)
                     CRect btnRect = btn->getViewSize();
                     btnRect.offset(btnRectGlobal.x - btnRect.getWidth(),
                                    btnRectGlobal.y);
-                    btn->setHilite(true);
+                    if (it == data.indices.begin())
+                        btn->setHilite(
+                            HiliteTextButton::HiliteState::kSearchSelectHilite);
+                    else
+                        btn->setHilite(
+                            HiliteTextButton::HiliteState::kSearchHilite);
                 }
             }
             btn->setDirty();
