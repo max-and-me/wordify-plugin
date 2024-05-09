@@ -4,9 +4,11 @@
 
 #pragma once
 
-#include "list_entry_controller.h"
+#include "base/source/fobject.h"
 #include "meta_words_data.h"
+#include "tiny_observer_pattern.h"
 #include "vstgui/lib/iviewlistener.h"
+#include "vstgui/uidescription/icontroller.h"
 #include "vstgui/uidescription/uiattributes.h"
 
 namespace VSTGUI {

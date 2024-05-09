@@ -6,7 +6,6 @@
 
 #include "hilite_text_button.h"
 #include "hstack_layout.h"
-#include "list_entry_controller.h"
 #include "little_helpers.h"
 #include "meta_words_data.h"
 #include "vstgui/lib/animation/ianimationtarget.h"

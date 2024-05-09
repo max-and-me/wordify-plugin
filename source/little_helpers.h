@@ -6,6 +6,7 @@
 
 #include "fmt/format.h"
 #include "vstgui/lib/ccolor.h"
+#include <chrono>
 #include <optional>
 #include <string>
 

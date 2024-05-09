@@ -4,7 +4,7 @@
 
 #include "list_controller.h"
 #include "hilite_text_button.h"
-#include "list_entry_controller.h"
+#include "meta_words_clip_controller.h"
 #include "vstgui/lib/cframe.h"
 #include "vstgui/lib/controls/cbuttons.h"
 #include "vstgui/lib/crowcolumnview.h"
@@ -18,7 +18,7 @@ namespace mam {
 
 //------------------------------------------------------------------------
 constexpr size_t PLAYBACK_REGION_ID_ATTR = 123456789;
-constexpr auto LIST_ENTRY_VIEW_TEMPLATE  = "ListEntryTemplate";
+constexpr auto LIST_ENTRY_VIEW_TEMPLATE  = "MetaWordsClipTemplateNG";
 
 //------------------------------------------------------------------------
 static auto find_view_by_id(const CRowColumnView& rowColView,
@@ -38,6 +38,22 @@ static auto find_view_by_id(const CRowColumnView& rowColView,
     });
 
     return viewToFind;
+}
+
+//------------------------------------------------------------------------
+//------------------------------------------------------------------------
+static auto build_meta_words_data(const ARADocumentController* controller,
+                                  const meta_words::PlaybackRegion::Id id)
+    -> const MetaWordsData
+{
+    if (!controller)
+        return {};
+
+    auto opt_region = controller->find_playback_region(id);
+    if (!opt_region)
+        return {};
+
+    return opt_region.value()->get_meta_words_data();
 }
 
 //------------------------------------------------------------------------
@@ -188,10 +204,31 @@ ListController::createSubController(UTF8StringPtr name,
     if (!playback_region_id.has_value())
         return nullptr;
 
-    if (UTF8StringView(name) == "ListEntryController")
+    if (UTF8StringView(name) == "MetaWordsClipController")
     {
-        return new ListEntryController(controller, playback_region_id.value(),
-                                       description);
+        if (!controller)
+            return nullptr;
+
+        auto pbr_id = playback_region_id.value();
+        auto ctler  = this->controller;
+
+        auto* subctrl = new MetaWordsClipController(description);
+        if (!subctrl)
+            return nullptr;
+
+        auto& subject = controller->get_playback_region_changed_subject(pbr_id);
+
+        subctrl->meta_words_data_func = [=]() {
+            return build_meta_words_data(ctler, pbr_id);
+        };
+
+        subctrl->on_select_word_func = [=](int index) {
+            controller->get_region_selection_model().select(
+                {pbr_id, static_cast<size_t>(index)});
+            controller->onRequestSelectWord(index, pbr_id);
+        };
+
+        return subctrl->initialize(&subject) ? subctrl : nullptr;
     }
 
     return nullptr;

@@ -51,8 +51,6 @@ smtg_add_vst3plugin(Wordify
     source/hstack_layout.h
     source/list_controller.cpp
     source/list_controller.h
-    source/list_entry_controller.cpp
-    source/list_entry_controller.h
     source/little_helpers.h
     source/meta_words_audio_modification.cpp
     source/meta_words_audio_modification.h

@@ -872,7 +872,7 @@
 					"row-style": "true",
 					"size": "608, 80",
 					"spacing": "0",
-					"sub-controller": "ListEntryController",
+					"sub-controller": "MetaWordsClipController",
 					"transparent": "true",
 					"uidesc-label": "ListEntry",
 					"view-resize-animation-time": "200",
