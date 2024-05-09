@@ -66,6 +66,22 @@ HeaderController::verifyView(VSTGUI::CView* view,
                 }
             }
         }
+        else if (*view_name == "Next")
+        {
+            if (auto c = dynamic_cast<CControl*>(view))
+            {
+                c->setTag(kSearchNextTag);
+                c->setListener(this);
+            }
+        }
+        else if (*view_name == "Previous")
+        {
+            if (auto c = dynamic_cast<CControl*>(view))
+            {
+                c->setTag(kSearchPreviousTag);
+                c->setListener(this);
+            }
+        }
     }
 
     return view;
@@ -92,6 +108,16 @@ void HeaderController::valueChanged(CControl* control)
             }
             break;
         }
+        case kSearchNextTag: {
+            if (control->getValue() == control->getMax())
+                selectNextSearch ();
+            break;
+        }
+        case kSearchPreviousTag: {
+            if (control->getValue() == control->getMax())
+                selectPreviousSearch ();
+            break;
+        }
     }
 }
 
@@ -99,6 +125,16 @@ void HeaderController::valueChanged(CControl* control)
 void HeaderController::updateSearchResults()
 {
     controller->find_word_in_region(filterString);
+}
+
+//------------------------------------------------------------------------
+void HeaderController::selectNextSearch()
+{
+}
+
+//------------------------------------------------------------------------
+void HeaderController::selectPreviousSearch()
+{
 }
 
 //------------------------------------------------------------------------

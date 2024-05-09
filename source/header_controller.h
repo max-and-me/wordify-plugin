@@ -59,10 +59,14 @@ public:
 private:
     using StringType = std::string;
     void updateSearchResults();
+    void selectNextSearch ();
+    void selectPreviousSearch();
 
     enum
     {
         kSearchFieldTag = 1000,
+        kSearchNextTag,
+        kSearchPreviousTag
     };
 
     ARADocumentController* controller    = nullptr;
