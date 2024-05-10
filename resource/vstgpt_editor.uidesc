@@ -196,7 +196,7 @@
 															"back-color": "~ TransparentCColor",
 															"background-offset": "0, 0",
 															"class": "CSearchTextEdit",
-															"clearmark-inset": "11, 11",
+															"clearmark-inset": "7, 7",
 															"font": "search_field_font",
 															"font-antialias": "true",
 															"font-color": "search_field_text_color",
