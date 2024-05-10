@@ -37,6 +37,30 @@
       },
       "magnifying-glass_4x": {
         "path": "magnifying-glass-solid_lite_4x.png"
+      },
+      "chevron-up": {
+        "path": "chevron-up-solid_lite.png"
+      },
+      "chevron-up_2x": {
+        "path": "chevron-up-solid_lite_2x.png"
+      },
+      "chevron-up_3x": {
+        "path": "chevron-up-solid_lite_3x.png"
+      },
+      "chevron-up_4x": {
+        "path": "chevron-up-solid_lite_4x.png"
+      },
+      "chevron-down": {
+        "path": "chevron-down-solid_lite.png"
+      },
+      "chevron-down_2x": {
+        "path": "chevron-down-solid_lite_2x.png"
+      },
+      "chevron-down_3x": {
+        "path": "chevron-down-solid_lite_3x.png"
+      },
+      "chevron-down_4x": {
+        "path": "chevron-down-solid_lite_4x.png"
       }
     },
     "fonts": {
