@@ -237,6 +237,7 @@ ListController::createSubController(UTF8StringPtr name,
 //------------------------------------------------------------------------
 void ListController::checkSelectWord(const WordSelectData& data)
 {
+
     // word data selection
     if (data.indices.empty() == false && data.hiliteSelectIndex != -1)
     {
@@ -282,12 +283,6 @@ void ListController::checkSelectWord(const WordSelectData& data)
                                 btn->getTag());
             if (it != data.indices.end())
             {
-                CPoint btnRectGlobal = btn->getViewSize().getTopLeft();
-                btn->localToFrame(btnRectGlobal);
-
-                CRect btnRect = btn->getViewSize();
-                btnRect.offset(btnRectGlobal.x - btnRect.getWidth(),
-                               btnRectGlobal.y);
                 if (data.hiliteSelectIndex != -1 &&
                     btn->getTag() == data.indices.at(data.hiliteSelectIndex))
                 {
