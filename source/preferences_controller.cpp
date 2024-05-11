@@ -31,12 +31,14 @@ PreferencesController::~PreferencesController()
     if (options_menu)
     {
         options_menu->unregisterControlListener(this);
+        options_menu->unregisterViewListener(this);
         options_menu = nullptr;
     }
 
     if (scheme_switch)
     {
         scheme_switch->unregisterControlListener(this);
+        scheme_switch->unregisterViewListener(this);
         scheme_switch = nullptr;
     }
 
@@ -61,6 +63,7 @@ CView* PreferencesController::verifyView(CView* view,
                 options_menu->addEntry(UTF8String("v") + VERSION_STR, -1,
                                        CMenuItem::kDisabled);
                 options_menu->registerControlListener(this);
+                options_menu->registerViewListener(this);
             }
         }
         else if (*view_name == "SchemeSwitch")
@@ -72,6 +75,7 @@ CView* PreferencesController::verifyView(CView* view,
                     const auto val = color_scheme_param->getNormalized();
                     scheme_switch->setValueNormalized(val);
                     scheme_switch->registerControlListener(this);
+                    scheme_switch->registerViewListener(this);
                 }
             }
         }
@@ -123,11 +127,13 @@ void PreferencesController::viewWillDelete(VSTGUI::CView* view)
     if (view == options_menu)
     {
         options_menu->unregisterControlListener(this);
+        options_menu->unregisterViewListener(this);
         options_menu = nullptr;
     }
     else if (view == scheme_switch)
     {
         scheme_switch->unregisterControlListener(this);
+        scheme_switch->unregisterViewListener(this);
         scheme_switch = nullptr;
     }
 }
