@@ -1,11 +1,9 @@
-//------------------------------------------------------------------------
 // Copyright(c) 2024 Max And Me.
-//------------------------------------------------------------------------
 
 #pragma once
 
-#include "ara_document_controller.h"
 #include "base/source/fobject.h"
+#include "vstgui/lib/iviewlistener.h"
 #include "vstgui/uidescription/icontroller.h"
 
 namespace VSTGUI {
@@ -16,14 +14,15 @@ namespace Steinberg::Vst {
 class Parameter;
 }
 
-//------------------------------------------------------------------------
 namespace mam {
+class ARADocumentController;
 
 //------------------------------------------------------------------------
 // PreferencesController
 //------------------------------------------------------------------------
 class PreferencesController : public Steinberg::FObject,
-                              public VSTGUI::IController
+                              public VSTGUI::IController,
+                              public VSTGUI::ViewListenerAdapter
 {
 public:
     //--------------------------------------------------------------------
@@ -33,9 +32,9 @@ public:
                           Steinberg::Vst::Parameter* color_scheme_param);
     ~PreferencesController() override;
 
+    // IController
     void PLUGIN_API update(FUnknown* changedUnknown,
                            Steinberg::int32 message) override;
-
     VSTGUI::CView*
     verifyView(VSTGUI::CView* view,
                const VSTGUI::UIAttributes& attributes,
@@ -43,6 +42,9 @@ public:
 
     // IControlListener
     void valueChanged(VSTGUI::CControl* pControl) override;
+
+    // IViewListener
+    void viewWillDelete(VSTGUI::CView* view) override;
 
     OBJ_METHODS(PreferencesController, FObject)
 
