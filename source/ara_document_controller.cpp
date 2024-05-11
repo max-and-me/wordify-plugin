@@ -423,7 +423,10 @@ auto ARADocumentController::find_word_in_region(std::string search,
             {
                 auto wd = word_data;
                 if (wd.is_clipped_by_region)
+                {
+                    index++;
                     continue;
+                }
                 auto word = word_data.word.word;
                 std::transform(word.begin(), word.end(), word.begin(),
                                ::tolower);
