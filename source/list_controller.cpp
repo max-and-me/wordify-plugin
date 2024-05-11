@@ -41,6 +41,50 @@ static auto find_view_by_id(const CRowColumnView& rowColView,
 }
 
 //------------------------------------------------------------------------
+auto get_button_state(const WordSelectData& data,
+                      int32_t control_tag) -> HiliteTextButton::HiliteState
+{
+    using State    = HiliteTextButton::HiliteState;
+    auto new_state = State::kNone;
+
+    auto it = std::find(data.indices.begin(), data.indices.end(), control_tag);
+    if (it != data.indices.end())
+    {
+        bool is_valid = data.hiliteSelectIndex != -1;
+        if (is_valid && control_tag == data.indices.at(data.hiliteSelectIndex))
+        {
+            new_state = State::kSearchSelectHilite;
+        }
+        else
+        {
+            new_state = State::kSearchHilite;
+        }
+    }
+    else
+    {
+        new_state = State::kNone;
+    }
+
+    return new_state;
+}
+
+//------------------------------------------------------------------------
+auto scroll_to_view(CRowColumnView* rowColView, const CView* btn)
+{
+    CPoint p(rowColView->getVisibleViewSize().getTopLeft());
+    rowColView->translateToGlobal(p);
+    // newSize.offsetInverse(p);
+
+    const auto& scroll_content_rect = rowColView->getViewSize();
+    auto rect = btn->translateToGlobal(scroll_content_rect);
+    rect.offsetInverse(p);
+
+    auto scroll = dynamic_cast<CScrollView*>(
+        rowColView->getParentView()->getParentView());
+    if (scroll)
+        scroll->makeRectVisible(rect);
+}
+
 //------------------------------------------------------------------------
 static auto build_meta_words_data(const ARADocumentController* controller,
                                   const meta_words::PlaybackRegion::Id id)
@@ -271,36 +315,18 @@ void ListController::checkSelectWord(const WordSelectData& data)
     if (toFind == nullptr)
         return;
 
-    if (auto* container = toFind->asViewContainer())
+    using State   = HiliteTextButton::HiliteState;
+    using Buttons = std::vector<HiliteTextButton*>;
+    if (const auto* container = toFind->asViewContainer())
     {
-        std::vector<HiliteTextButton*> btns;
+        Buttons btns;
         container->getChildViewsOfType<HiliteTextButton>(btns, true);
         for (auto& btn : btns)
         {
-            btn->setHilite(HiliteTextButton::HiliteState::kNone);
-
-            auto it = std::find(data.indices.begin(), data.indices.end(),
-                                btn->getTag());
-            if (it != data.indices.end())
-            {
-                if (data.hiliteSelectIndex != -1 &&
-                    btn->getTag() == data.indices.at(data.hiliteSelectIndex))
-                {
-                    btn->setHilite(
-                        HiliteTextButton::HiliteState::kSearchSelectHilite);
-                    auto rect =
-                        btn->translateToGlobal(rowColView->getViewSize());
-                    CScrollView* scroll = dynamic_cast<CScrollView*>(
-                        rowColView->getParentView()->getParentView());
-                    if (scroll)
-                        scroll->makeRectVisible(rect);
-                }
-                else
-                {
-                    btn->setHilite(
-                        HiliteTextButton::HiliteState::kSearchHilite);
-                }
-            }
+            const auto new_state = get_button_state(data, btn->getTag());
+            if (new_state == HiliteTextButton::HiliteState::kSearchSelectHilite)
+                scroll_to_view(rowColView, btn);
+            btn->setHilite(new_state);
             btn->setDirty();
         }
     }
