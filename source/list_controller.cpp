@@ -238,13 +238,15 @@ ListController::createSubController(UTF8StringPtr name,
 void ListController::checkSelectWord(const WordSelectData& data)
 {
     // word data selection
-    if (data.indices.empty() == false)
+    if (data.indices.empty() == false && data.hiliteSelectIndex != -1)
     {
-        controller->onRequestSelectWord(data.indices.at(0), data.region_id);
+        controller->onRequestSelectWord(data.indices.at(data.hiliteSelectIndex),
+                                        data.region_id);
 
         // waveform selection
         controller->get_region_selection_model().select(
-            {data.region_id, static_cast<size_t>(data.indices.at(0))});
+            {data.region_id,
+             static_cast<size_t>(data.indices.at(data.hiliteSelectIndex))});
     }
 
     // ui update
@@ -280,27 +282,28 @@ void ListController::checkSelectWord(const WordSelectData& data)
                                 btn->getTag());
             if (it != data.indices.end())
             {
-                auto rect = btn->translateToGlobal(rowColView->getViewSize());
-                CScrollView* scroll = dynamic_cast<CScrollView*>(
-                    rowColView->getParentView()->getParentView());
-                if (scroll)
-                    scroll->makeRectVisible(rect);
-                auto* grandParent =
-                    rowColView->getParentView()->getParentView();
-                if (grandParent)
-                {
-                    CPoint btnRectGlobal = btn->getViewSize().getTopLeft();
-                    btn->localToFrame(btnRectGlobal);
+                CPoint btnRectGlobal = btn->getViewSize().getTopLeft();
+                btn->localToFrame(btnRectGlobal);
 
-                    CRect btnRect = btn->getViewSize();
-                    btnRect.offset(btnRectGlobal.x - btnRect.getWidth(),
-                                   btnRectGlobal.y);
-                    if (it == data.indices.begin())
-                        btn->setHilite(
-                            HiliteTextButton::HiliteState::kSearchSelectHilite);
-                    else
-                        btn->setHilite(
-                            HiliteTextButton::HiliteState::kSearchHilite);
+                CRect btnRect = btn->getViewSize();
+                btnRect.offset(btnRectGlobal.x - btnRect.getWidth(),
+                               btnRectGlobal.y);
+                if (data.hiliteSelectIndex != -1 &&
+                    btn->getTag() == data.indices.at(data.hiliteSelectIndex))
+                {
+                    btn->setHilite(
+                        HiliteTextButton::HiliteState::kSearchSelectHilite);
+                    auto rect =
+                        btn->translateToGlobal(rowColView->getViewSize());
+                    CScrollView* scroll = dynamic_cast<CScrollView*>(
+                        rowColView->getParentView()->getParentView());
+                    if (scroll)
+                        scroll->makeRectVisible(rect);
+                }
+                else
+                {
+                    btn->setHilite(
+                        HiliteTextButton::HiliteState::kSearchHilite);
                 }
             }
             btn->setDirty();

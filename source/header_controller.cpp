@@ -27,7 +27,10 @@ HeaderController::HeaderController(ARADocumentController* controller)
 }
 
 //------------------------------------------------------------------------
-HeaderController::~HeaderController() {}
+HeaderController::~HeaderController()
+{
+    changed(kWillDestroy);
+}
 
 //------------------------------------------------------------------------
 void PLUGIN_API HeaderController::update(FUnknown* changedUnknown,
@@ -103,38 +106,43 @@ void HeaderController::valueChanged(CControl* control)
         case kSearchFieldTag: {
             if (auto sf = dynamic_cast<CSearchTextEdit*>(control))
             {
-                filterString = sf->getText();
-                updateSearchResults();
+                searchSelectIndex = 0;
+                filterString      = sf->getText();
+                searchSelectIndex =
+                    updateSearchResults(filterString, searchSelectIndex);
             }
             break;
         }
         case kSearchNextTag: {
             if (control->getValue() == control->getMax())
-                selectNextSearch ();
+                searchSelectIndex =
+                    selectPreviousNextSearch(filterString, ++searchSelectIndex);
             break;
         }
         case kSearchPreviousTag: {
             if (control->getValue() == control->getMax())
-                selectPreviousSearch ();
+                searchSelectIndex =
+                    selectPreviousNextSearch(filterString, --searchSelectIndex);
             break;
         }
     }
 }
 
 //------------------------------------------------------------------------
-void HeaderController::updateSearchResults()
+int HeaderController::updateSearchResults(std::string search, int selectIndex)
 {
-    controller->find_word_in_region(filterString);
+    return controller->find_word_in_region(search, selectIndex);
 }
 
 //------------------------------------------------------------------------
-void HeaderController::selectNextSearch()
+int HeaderController::selectPreviousNextSearch(std::string search,
+                                               int selectIndex)
 {
-}
-
-//------------------------------------------------------------------------
-void HeaderController::selectPreviousSearch()
-{
+    if (filterString.empty())
+        return 0;
+    if (selectIndex < 0)
+        selectIndex = 0;
+    return updateSearchResults(filterString, selectIndex);
 }
 
 //------------------------------------------------------------------------

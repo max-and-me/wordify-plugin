@@ -56,10 +56,12 @@ using RegionSelectionModel = SelectionModel<RegionData>;
 //------------------------------------------------------------------------
 struct WordSelectData
 {
-    using SelectedIdices = std::vector<int>;
+    using SelectedIdices    = std::vector<int>;
+    using HiliteSelectIndex = int;
     meta_words::PlaybackRegion::Id region_id;
     SelectedIdices indices{};
     MetaWordsData meta_word_data;
+    HiliteSelectIndex hiliteSelectIndex;
 };
 
 //------------------------------------------------------------------------
@@ -86,8 +88,7 @@ public:
     // Containers
     using PlaybackRegionObservers =
         std::unordered_map<PlaybackRegion::Id, Subject>;
-    using PlaybackRegions =
-        std::unordered_map<PlaybackRegion::Id, PlaybackRegion*>;
+    using PlaybackRegions = std::map<PlaybackRegion::Id, PlaybackRegion*>;
 
     // Subjects
     using PlaybackRegionLifetimesSubject =
@@ -184,7 +185,7 @@ public:
     auto
     find_playback_region(PlaybackRegion::Id id) const -> OptPlaybackRegionPtr;
 
-    auto find_word_in_region(std::string search) -> void;
+    auto find_word_in_region(std::string search, int selectIndex) -> int;
 
     template <typename Func>
     void for_each_playback_region_id(Func&& func)

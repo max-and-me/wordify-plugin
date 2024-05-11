@@ -394,26 +394,36 @@ auto ARADocumentController::find_playback_region(PlaybackRegion::Id id) const
 }
 
 //------------------------------------------------------------------------
-auto ARADocumentController::find_word_in_region(std::string search) -> void
+auto ARADocumentController::find_word_in_region(std::string search,
+                                                int selectIndex) -> int
 {
-    for (auto reg : playback_regions)
+    int selectIndexResult = selectIndex;
+    bool selectHiliteSet  = false;
+    int selectIndexInSet  = selectIndex;
+
+    using WordSelectDataList = std::vector<WordSelectData>;
+    WordSelectDataList dataList;
+
+    for (const auto& reg : playback_regions)
     {
         auto regionPtr          = reg.second;
         auto meta_words_data    = regionPtr->get_meta_words_data();
         auto meta_words_dataSet = meta_words_data.words;
         int index               = 0;
 
+        WordSelectData data{reg.first, {}, meta_words_data, -1};
         if (search.empty())
         {
-            WordSelectData data{reg.first, {}, meta_words_data};
             selected_word_subject.notify_listeners(data);
             continue;
         }
         else
         {
-            WordSelectData data{reg.first, {}, meta_words_data};
             for (auto word_data : meta_words_dataSet)
             {
+                auto wd = word_data;
+                if (wd.is_clipped_by_region)
+                    continue;
                 auto word = word_data.word.word;
                 std::transform(word.begin(), word.end(), word.begin(),
                                ::tolower);
@@ -428,9 +438,36 @@ auto ARADocumentController::find_word_in_region(std::string search) -> void
                 }
                 index++;
             }
-            selected_word_subject.notify_listeners(data);
+            dataList.push_back(data);
         }
     }
+    for (auto data = dataList.begin(); data != dataList.end(); ++data)
+    {
+        if (selectIndexInSet + 1 <= data->indices.size() && !selectHiliteSet)
+        {
+            data->hiliteSelectIndex = selectIndexInSet;
+            selectHiliteSet         = true;
+        }
+        else if (!selectHiliteSet)
+        {
+            selectIndexInSet -= static_cast<int>(data->indices.size());
+        }
+
+        // catch out of range
+        if (std::next(data) == dataList.end() && !selectHiliteSet)
+        {
+            if (selectIndexInSet + 1 >= data->indices.size())
+            {
+                data->hiliteSelectIndex = selectIndexInSet;
+                selectHiliteSet         = true;
+                selectIndexResult       = selectIndex - 1;
+            }
+        }
+
+        selected_word_subject.notify_listeners(*data);
+    }
+
+    return selectIndexResult;
 }
 
 //------------------------------------------------------------------------

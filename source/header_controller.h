@@ -58,9 +58,8 @@ public:
     //--------------------------------------------------------------------
 private:
     using StringType = std::string;
-    void updateSearchResults();
-    void selectNextSearch ();
-    void selectPreviousSearch();
+    int updateSearchResults(std::string search, int selectIndex);
+    int selectPreviousNextSearch(std::string search, int selectIndex);
 
     enum
     {
@@ -72,6 +71,7 @@ private:
     ARADocumentController* controller    = nullptr;
     VSTGUI::CSearchTextEdit* searchField = nullptr;
     std::string filterString;
+    int searchSelectIndex = 0;
 };
 
 //------------------------------------------------------------------------
