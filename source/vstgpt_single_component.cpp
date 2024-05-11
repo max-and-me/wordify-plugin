@@ -334,15 +334,7 @@ VSTGUI::IController* VstGPTSingleComponent::createSubController(
     }
     else if (VSTGUI::UTF8StringView(name) == "HeaderController")
     {
-        if (headerController == nullptr)
-        {
-            headerController = new HeaderController(document_controller);
-            headerController->addDependent(this);
-        }
-        else
-            headerController->addRef();
-
-        return headerController;
+        return new HeaderController(document_controller);
     }
     else if (VSTGUI::UTF8StringView(name) == "SpinnerController")
     {
@@ -516,16 +508,6 @@ void PLUGIN_API VstGPTSingleComponent::update(FUnknown* changedUnknown,
         {
             set_dark_scheme_on_editors(editors, param->getNormalized() > 0.);
             return;
-        }
-    }
-
-    if (headerController)
-    {
-        auto* controller = Steinberg::FCast<HeaderController>(changedUnknown);
-        if (controller && tag == kWillDestroy)
-        {
-            headerController->removeDependent(this);
-            headerController = nullptr;
         }
     }
 }

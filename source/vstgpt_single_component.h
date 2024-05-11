@@ -116,7 +116,6 @@ protected:
     ARA::PlugIn::PlugInExtension _araPlugInExtension;
     Editors editors;
     Steinberg::Vst::ParameterContainer ui_parameters;
-    HeaderController* headerController = nullptr;
     auto restore_parameters() -> void;
     auto store_parameters() -> void;
 };
