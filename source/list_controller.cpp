@@ -71,13 +71,9 @@ auto get_button_state(const WordSelectData& data,
 //------------------------------------------------------------------------
 auto scroll_to_view(CRowColumnView* rowColView, const CView* btn)
 {
-    CPoint p(rowColView->getVisibleViewSize().getTopLeft());
-    rowColView->translateToGlobal(p);
-    // newSize.offsetInverse(p);
-
+    // TODO: This does not work!!!!
     const auto& scroll_content_rect = rowColView->getViewSize();
     auto rect = btn->translateToGlobal(scroll_content_rect);
-    rect.offsetInverse(p);
 
     auto scroll = dynamic_cast<CScrollView*>(
         rowColView->getParentView()->getParentView());
