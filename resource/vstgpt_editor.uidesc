@@ -224,7 +224,7 @@
 															"text-rotation": "0",
 															"text-shadow-offset": "1, 1",
 															"transparent": "false",
-															"uidesc-label": "search",
+															"uidesc-label": "Search",
 															"value-precision": "2",
 															"wants-focus": "true",
 															"wheel-inc-value": "0.1"

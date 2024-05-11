@@ -23,9 +23,7 @@ class SpinnerView;
 //------------------------------------------------------------------------
 // HeaderController
 //------------------------------------------------------------------------
-class HeaderController : public Steinberg::FObject,
-                         public VSTGUI::IController,
-                         public VSTGUI::ViewListenerAdapter
+class HeaderController : public Steinberg::FObject, public VSTGUI::IController
 {
 public:
     //--------------------------------------------------------------------
@@ -50,9 +48,6 @@ public:
     createSubController(VSTGUI::UTF8StringPtr name,
                         const VSTGUI::IUIDescription* description) override;
 
-    // IViewListener
-    void viewWillDelete(VSTGUI::CView* view) override;
-
     OBJ_METHODS(HeaderController, FObject)
 
     //--------------------------------------------------------------------
@@ -68,8 +63,7 @@ private:
         kSearchPreviousTag
     };
 
-    ARADocumentController* controller    = nullptr;
-    VSTGUI::CSearchTextEdit* searchField = nullptr;
+    ARADocumentController* controller = nullptr;
     std::string filterString;
     int searchSelectIndex = 0;
 };

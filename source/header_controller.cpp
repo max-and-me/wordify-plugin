@@ -57,16 +57,12 @@ HeaderController::verifyView(VSTGUI::CView* view,
 {
     if (const auto* view_name = attributes.getAttributeValue("uidesc-label"))
     {
-        if (*view_name == "search")
+        if (*view_name == "Search")
         {
-            if (!searchField)
+            if (auto c = dynamic_cast<CSearchTextEdit*>(view))
             {
-                if (auto sf = dynamic_cast<CSearchTextEdit*>(view))
-                {
-                    searchField = sf;
-                    searchField->setTag(kSearchFieldTag);
-                    searchField->setListener(this);
-                }
+                c->setTag(kSearchFieldTag);
+                c->setListener(this);
             }
         }
         else if (*view_name == "Next")
@@ -142,16 +138,8 @@ int HeaderController::selectPreviousNextSearch(std::string search,
         return 0;
     if (selectIndex < 0)
         selectIndex = 0;
-    return updateSearchResults(filterString, selectIndex);
-}
 
-//------------------------------------------------------------------------
-void HeaderController::viewWillDelete(VSTGUI::CView* view)
-{
-    if (searchField == view)
-    {
-        searchField = nullptr;
-    }
+    return updateSearchResults(filterString, selectIndex);
 }
 
 //------------------------------------------------------------------------
