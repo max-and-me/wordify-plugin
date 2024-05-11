@@ -18,7 +18,7 @@ namespace mam {
 
 //------------------------------------------------------------------------
 constexpr size_t PLAYBACK_REGION_ID_ATTR = 123456789;
-constexpr auto LIST_ENTRY_VIEW_TEMPLATE  = "MetaWordsClipTemplateNG";
+constexpr auto LIST_ENTRY_VIEW_TEMPLATE  = "ClipTemplate";
 
 //------------------------------------------------------------------------
 static auto find_view_by_id(const CRowColumnView& rowColView,
