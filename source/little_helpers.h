@@ -84,7 +84,7 @@ auto to_time_display_string(T seconds) -> TimeDisplayString
 
     // Only if there are some hours we display them
     if (h.count() > 0.)
-        output = fmt::format("{:02}:{}", h.count(), output);
+        output = fmt::format("{:2}:{}", h.count(), output);
 
     return output;
 }
