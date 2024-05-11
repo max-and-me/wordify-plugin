@@ -162,6 +162,16 @@
           "rgba": "#2f3133ff",
           "start": "1"
         }
+      ],
+      "search_next_previous_button_highlighted_background_gradient": [
+        {
+          "rgba": "#393b41ff",
+          "start": "0"
+        },
+        {
+          "rgba": "#393b41ff",
+          "start": "1"
+        }
       ]
     }
   }
