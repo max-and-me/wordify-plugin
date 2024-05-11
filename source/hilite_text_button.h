@@ -29,7 +29,7 @@ public:
                      VSTGUI::CTextButton::Style         = kKickStyle);
 
     void draw(VSTGUI::CDrawContext* context) override;
-    void setHilite(HiliteState state) { hilite = state; }
+    bool setHilite(HiliteState state);
     void setTextColor(const VSTGUI::CColor& color) override;
     void setSchemeHiliteColors(const VSTGUI::CColor& shbc,
                                const VSTGUI::CColor& shtc,

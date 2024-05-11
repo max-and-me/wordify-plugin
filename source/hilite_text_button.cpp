@@ -76,4 +76,13 @@ void HiliteTextButton::setSchemeHiliteColors(const VSTGUI::CColor& shbc,
     searchSelectHiliteTextColor = sstc;
 }
 
+//------------------------------------------------------------------------
+bool HiliteTextButton::setHilite(HiliteState state)
+{
+    const bool changed = hilite != state;
+    hilite             = state;
+    return changed;
+}
+
+//------------------------------------------------------------------------
 } // namespace mam

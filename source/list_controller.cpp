@@ -326,8 +326,9 @@ void ListController::checkSelectWord(const WordSelectData& data)
             const auto new_state = get_button_state(data, btn->getTag());
             if (new_state == HiliteTextButton::HiliteState::kSearchSelectHilite)
                 scroll_to_view(rowColView, btn);
-            btn->setHilite(new_state);
-            btn->setDirty();
+
+            if (btn->setHilite(new_state))
+                btn->invalid();
         }
     }
 }
