@@ -41,14 +41,7 @@ void HiliteTextButton::draw(CDrawContext* context)
         context->setFillColor(searchSelectHiliteBgrColor);
     }
 
-    CRect rect     = getViewSize();
-    CPoint topLeft = rect.getTopLeft();
-    rect.setTopLeft(topLeft);
-
-    CPoint bottomRight = rect.getBottomRight();
-    bottomRight.y      = bottomRight.y;
-    rect.setBottomRight(bottomRight);
-
+    const CRect& rect   = getViewSize();
     const CCoord radius = getRoundRadius();
     if (auto path = owned(context->createRoundRectGraphicsPath(rect, radius)))
         context->drawGraphicsPath(path);
