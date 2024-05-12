@@ -183,11 +183,21 @@ void insert_word_buttons(const mam::MetaWordsClipController::Cache& cache,
         if (!opt_button.has_value())
             continue;
 
+        // Little workaround for sizeToFit function of the button. sizeToFit
+        // takes the round radius into account. That's not what we want here! So
+        // we put it to zero, sizeToFit and put it back after.
+        auto size_to_fit = [](CTextButton* button) {
+            const auto radius = button->getRoundRadius();
+            button->setRoundRadius(0.);
+            button->sizeToFit();
+            button->setRoundRadius(radius);
+        };
+
         auto button   = opt_button.value();
         auto but_size = button->getViewSize();
         button->setViewSize(but_size.setWidth(but_width));
         button->setTitle(but_title);
-        button->sizeToFit();
+        size_to_fit(button);
         button->setMouseEnabled(but_enabled);
         button->setGradient(but_gradient);
         button->setGradientHighlighted(but_gradient);

@@ -1305,7 +1305,7 @@
 							"mouse-enabled": "true",
 							"opacity": "1",
 							"origin": "0, 0",
-							"round-radius": "0",
+							"round-radius": "4",
 							"size": "60, 24",
 							"text-alignment": "center",
 							"text-color": "transcript_text_color",

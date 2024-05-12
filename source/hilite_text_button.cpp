@@ -49,8 +49,8 @@ void HiliteTextButton::draw(CDrawContext* context)
     bottomRight.y      = bottomRight.y;
     rect.setBottomRight(bottomRight);
 
-    constexpr CCoord RADIUS = 4.;
-    if (auto path = owned(context->createRoundRectGraphicsPath(rect, RADIUS)))
+    const CCoord radius = getRoundRadius();
+    if (auto path = owned(context->createRoundRectGraphicsPath(rect, radius)))
         context->drawGraphicsPath(path);
 
     CTextButton::draw(context);
