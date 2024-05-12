@@ -409,7 +409,6 @@ auto ARADocumentController::find_word_in_region(std::string search,
         auto regionPtr          = reg.second;
         auto meta_words_data    = regionPtr->get_meta_words_data();
         auto meta_words_dataSet = meta_words_data.words;
-        int index               = 0;
 
         WordSelectData data{reg.first, {}, meta_words_data, -1};
         if (search.empty())
@@ -419,14 +418,12 @@ auto ARADocumentController::find_word_in_region(std::string search,
         }
         else
         {
-            for (auto word_data : meta_words_dataSet)
+            for (size_t i = 0; i < meta_words_dataSet.size(); i++)
             {
-                auto wd = word_data;
-                if (wd.is_clipped_by_region)
-                {
-                    index++;
+                const auto& word_data = meta_words_dataSet[i];
+                if (word_data.is_clipped_by_region)
                     continue;
-                }
+
                 auto word = word_data.word.word;
                 std::transform(word.begin(), word.end(), word.begin(),
                                ::tolower);
@@ -437,10 +434,10 @@ auto ARADocumentController::find_word_in_region(std::string search,
                                 search.end()) != word.end())
                 {
 
-                    data.indices.push_back(index);
+                    data.indices.push_back(i);
                 }
-                index++;
             }
+
             dataList.push_back(data);
         }
     }
