@@ -69,16 +69,29 @@ auto get_button_state(const WordSelectData& data,
 }
 
 //------------------------------------------------------------------------
-auto scroll_to_view(CRowColumnView* rowColView, const CView* btn)
+auto scroll_to_view(CRowColumnView* rowColView, const CView* view)
 {
-    // TODO: This does not work!!!!
-    const auto& scroll_content_rect = rowColView->getViewSize();
-    auto rect = btn->translateToGlobal(scroll_content_rect);
+    if (!rowColView)
+        return;
 
-    auto scroll = dynamic_cast<CScrollView*>(
-        rowColView->getParentView()->getParentView());
-    if (scroll)
-        scroll->makeRectVisible(rect);
+    auto parent = rowColView->getParentView();
+    if (!parent)
+        return;
+
+    parent = parent->getParentView();
+    if (!parent)
+        return;
+
+    // Copied from CScrollView::notify (CBaseObject* sender, IdStringPtr message)
+    if (auto scroll_view = dynamic_cast<CScrollView*>(parent))
+    {
+        CRect r = view->getViewSize();
+        CPoint p;
+        view->localToFrame(p);
+        scroll_view->frameToLocal(p);
+        r.offset(p.x, p.y);
+        scroll_view->makeRectVisible(r);
+    }
 }
 
 //------------------------------------------------------------------------
