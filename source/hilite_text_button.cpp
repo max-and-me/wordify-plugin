@@ -8,6 +8,22 @@
 using namespace VSTGUI;
 
 namespace mam {
+namespace {
+
+//------------------------------------------------------------------------
+auto drawHiliteBackground(CDrawContext* context,
+                          const CRect& rect,
+                          const CCoord radius,
+                          const CColor background) -> void
+{
+    context->setFillColor(background);
+    if (auto path = owned(context->createRoundRectGraphicsPath(rect, radius)))
+        context->drawGraphicsPath(path);
+}
+
+//------------------------------------------------------------------------
+} // namespace
+
 //------------------------------------------------------------------------
 HiliteTextButton::HiliteTextButton(const CRect& size,
                                    IControlListener* listener,
@@ -21,17 +37,9 @@ HiliteTextButton::HiliteTextButton(const CRect& size,
 //------------------------------------------------------------------------
 void HiliteTextButton::draw(CDrawContext* context)
 {
-    if (hilite == HiliteState::kNone)
-    {
-        CTextButton::draw(context);
-        return;
-    }
-
-    const CRect& rect   = getViewSize();
-    const CCoord radius = getRoundRadius();
-    context->setFillColor(currentBackgroundColor);
-    if (auto path = owned(context->createRoundRectGraphicsPath(rect, radius)))
-        context->drawGraphicsPath(path);
+    if (hilite != HiliteState::kNone)
+        drawHiliteBackground(context, getViewSize(), getRoundRadius(),
+                             currentBackgroundColor);
 
     CTextButton::draw(context);
 }
