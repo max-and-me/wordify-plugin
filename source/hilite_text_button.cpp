@@ -49,6 +49,8 @@ bool HiliteTextButton::setHilite(HiliteState state)
 {
     const bool changed = hilite != state;
     hilite             = state;
+    if (!changed)
+        return false;
 
     switch (hilite)
     {
