@@ -12,6 +12,7 @@
 #include "meta_words_playback_renderer.h"
 #include "meta_words_serde.h"
 #include "preferences_serde.h"
+#include "string_matcher.h"
 
 namespace mam {
 
@@ -425,17 +426,9 @@ auto ARADocumentController::find_word_in_region(std::string search,
                     continue;
 
                 auto word = word_data.word.word;
-                std::transform(word.begin(), word.end(), word.begin(),
-                               ::tolower);
-                std::transform(search.begin(), search.end(), search.begin(),
-                               ::tolower);
-
-                if (std::search(word.begin(), word.end(), search.begin(),
-                                search.end()) != word.end())
-                {
-
-                    data.indices.push_back(i);
-                }
+               
+                if (StringMatcher::isMatch(word, search, string_match_method))
+                    data.indices.push_back(static_cast<int>(i));
             }
 
             dataList.push_back(data);

@@ -8,6 +8,7 @@
 #include "meta_words_data.h"
 #include "meta_words_playback_region.h"
 #include "region_order_manager.h"
+#include "string_matcher.h"
 #include "tiny_observer_pattern.h"
 #include "tiny_selection_model.h"
 
@@ -239,6 +240,11 @@ public:
     auto onRequestSelectWord(int index,
                              const meta_words::PlaybackRegion::Id id) -> void;
 
+    auto selectStringMatchMethod(StringMatcher::MatchMethod matchMethod) -> void
+    {
+        string_match_method = matchMethod;
+    }
+
     //--------------------------------------------------------------------
 protected:
     PlaybackRegionObservers playback_region_observers;
@@ -283,6 +289,9 @@ private:
 
     auto unregister_playback_region_changed_observer(
         const PlaybackRegion::Id playback_region_id, ObserverID id);
+
+    StringMatcher::MatchMethod string_match_method =
+        StringMatcher::MatchMethod::nearbyFuzzyMatch;
 };
 
 //------------------------------------------------------------------------
