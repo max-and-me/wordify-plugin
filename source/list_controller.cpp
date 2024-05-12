@@ -82,7 +82,8 @@ auto scroll_to_view(CRowColumnView* rowColView, const CView* view)
     if (!parent)
         return;
 
-    // Copied from CScrollView::notify (CBaseObject* sender, IdStringPtr message)
+    // Copied from CScrollView::notify (CBaseObject* sender, IdStringPtr
+    // message)
     if (auto scroll_view = dynamic_cast<CScrollView*>(parent))
     {
         CRect r = view->getViewSize();
