@@ -6,6 +6,7 @@
 #pragma once
 
 namespace VSTGUI {
+class IUIDescription;
 } // namespace VSTGUI
 
 namespace mam {
@@ -30,11 +31,7 @@ public:
 
     void draw(VSTGUI::CDrawContext* context) override;
     bool setHilite(HiliteState state);
-    void setTextColor(const VSTGUI::CColor& color) override;
-    void setSchemeHiliteColors(const VSTGUI::CColor& shbc,
-                               const VSTGUI::CColor& shtc,
-                               const VSTGUI::CColor& ssbc,
-                               const VSTGUI::CColor& sstc);
+    void verifyTextButtonView(const VSTGUI::IUIDescription* description);
 
     //--------------------------------------------------------------------
 private:
@@ -43,6 +40,7 @@ private:
     VSTGUI::CColor searchSelectHiliteBgrColor  = VSTGUI::kYellowCColor;
     VSTGUI::CColor searchSelectHiliteTextColor = VSTGUI::kBlackCColor;
     VSTGUI::CColor normalTextColor             = VSTGUI::kBlackCColor;
+    VSTGUI::CColor currentBackgroundColor      = VSTGUI::kTransparentCColor;
     HiliteState hilite                         = HiliteState::kNone;
 };
 

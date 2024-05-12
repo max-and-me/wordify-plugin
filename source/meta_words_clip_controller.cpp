@@ -383,25 +383,7 @@ update_region_transcript(CViewContainer* region_transcript,
                 but_factory->applyCustomViewAttributeValues(
                     btn, IdStringPtr("CTextButton"), attributes, description);
 
-                CColor searchHiliteBgrColor;
-                description->getColor("search_hilite_bgr_color",
-                                      searchHiliteBgrColor);
-
-                CColor searchHiliteTextColor;
-                description->getColor("search_hilite_text_color",
-                                      searchHiliteTextColor);
-
-                CColor searchSelectHiliteBgrColor;
-                description->getColor("search_select_hilite_bgr_color",
-                                      searchSelectHiliteBgrColor);
-
-                CColor searchSelectHiliteTextColor;
-                description->getColor("search_select_hilite_text_color",
-                                      searchSelectHiliteTextColor);
-
-                btn->setSchemeHiliteColors(
-                    searchHiliteBgrColor, searchHiliteTextColor,
-                    searchSelectHiliteBgrColor, searchSelectHiliteTextColor);
+                btn->verifyTextButtonView(description);
 
                 return std::make_optional(btn);
             }
