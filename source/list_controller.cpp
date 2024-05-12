@@ -47,22 +47,15 @@ auto get_button_state(const WordSelectData& data,
     using State    = HiliteTextButton::HiliteState;
     auto new_state = State::kNone;
 
-    auto it = std::find(data.indices.begin(), data.indices.end(), control_tag);
-    if (it != data.indices.end())
+    const auto& indices   = data.indices;
+    const auto i_selected = data.hiliteSelectIndex;
+
+    auto iter = std::find(indices.begin(), indices.end(), control_tag);
+    if (iter != indices.end())
     {
-        bool is_valid = data.hiliteSelectIndex != -1;
-        if (is_valid && control_tag == data.indices.at(data.hiliteSelectIndex))
-        {
-            new_state = State::kSearchSelectHilite;
-        }
-        else
-        {
-            new_state = State::kSearchHilite;
-        }
-    }
-    else
-    {
-        new_state = State::kNone;
+        const auto i = std::distance(indices.begin(), iter);
+        new_state    = (i == i_selected) ? State::kSearchSelectHilite
+                                         : State::kSearchHilite;
     }
 
     return new_state;
