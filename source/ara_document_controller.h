@@ -57,11 +57,11 @@ using RegionSelectionModel = SelectionModel<RegionData>;
 //------------------------------------------------------------------------
 struct WordSelectData
 {
-    using SelectedIdices    = std::vector<int>;
+    using SelectedIdices    = std::vector<size_t>;
     using HiliteSelectIndex = int;
     meta_words::PlaybackRegion::Id region_id;
     SelectedIdices indices{};
-    MetaWordsData meta_word_data;
+    //MetaWordsData meta_word_data;
     HiliteSelectIndex hiliteSelectIndex;
 };
 

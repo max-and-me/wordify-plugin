@@ -71,12 +71,14 @@ smtg_add_vst3plugin(Wordify
     source/meta_words_serde.h
     source/nonstd.h
     source/parameter_ids.h
-    source/preferences_serde.cpp
-    source/preferences_serde.h
     source/preferences_controller.cpp
     source/preferences_controller.h
+    source/preferences_serde.cpp
+    source/preferences_serde.h
     source/region_order_manager.cpp
     source/region_order_manager.h
+    source/search_engine.cpp
+    source/search_engine.h
     source/spinner_controller.cpp
     source/spinner_controller.h
     source/spinner_view.cpp

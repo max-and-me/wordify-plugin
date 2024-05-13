@@ -13,6 +13,7 @@
 #include "meta_words_serde.h"
 #include "preferences_serde.h"
 #include "string_matcher.h"
+#include "search_engine.h"
 
 namespace mam {
 
@@ -405,35 +406,31 @@ auto ARADocumentController::find_word_in_region(std::string search,
     using WordSelectDataList = std::vector<WordSelectData>;
     WordSelectDataList dataList;
 
-    for (const auto& reg : playback_regions)
+    if (search.empty())
     {
-        auto regionPtr          = reg.second;
-        auto meta_words_data    = regionPtr->get_meta_words_data();
-        auto meta_words_dataSet = meta_words_data.words;
-
-        WordSelectData data{reg.first, {}, meta_words_data, -1};
-        if (search.empty())
+        for (const auto& reg : playback_regions)
         {
-            selected_word_subject.notify_listeners(data);
-            continue;
+            selected_word_subject.notify_listeners({reg.first, {}, -1});
         }
-        else
+        return 0;
+    }
+    else
+    {
+        const auto results = search_engine::search(
+            search, playback_regions,
+            [&](const auto& s0, const auto& s1) -> bool {
+                return StringMatcher::isMatch(s0, s1, string_match_method);
+            });
+
+        // TODO: Translation only. Remove later!
+        for (const auto& result : results)
         {
-            for (size_t i = 0; i < meta_words_dataSet.size(); i++)
-            {
-                const auto& word_data = meta_words_dataSet[i];
-                if (word_data.is_clipped_by_region)
-                    continue;
-
-                auto word = word_data.word.word;
-               
-                if (StringMatcher::isMatch(word, search, string_match_method))
-                    data.indices.push_back(static_cast<int>(i));
-            }
-
-            dataList.push_back(data);
+            WordSelectData data{result.regio_id, result.indices,
+                                result.selected_word.value_or(-1)};
+            dataList.emplace_back(data);
         }
     }
+
     for (auto data = dataList.begin(); data != dataList.end(); ++data)
     {
         if (selectIndexInSet + 1 <= data->indices.size() && !selectHiliteSet)
