@@ -396,23 +396,21 @@ auto ARADocumentController::find_playback_region(PlaybackRegion::Id id) const
 }
 
 //------------------------------------------------------------------------
-auto ARADocumentController::find_word_in_region(std::string search,
-                                                int selectIndex) -> int
+auto ARADocumentController::clear_search_results() -> void
 {
-    int selectIndexResult = selectIndex;
-    bool selectHiliteSet  = false;
-    int selectIndexInSet  = selectIndex;
+    search_engine::clear_results();
+    for (const auto& reg : playback_regions)
+    {
+        search_engine_subject.notify_listeners({reg.first, {}, std::nullopt});
+    }
+}
 
-    using WordSelectDataList = std::vector<WordSelectData>;
-    WordSelectDataList dataList;
-
+//------------------------------------------------------------------------
+auto ARADocumentController::search_word(std::string search) -> void
+{
     if (search.empty())
     {
-        for (const auto& reg : playback_regions)
-        {
-            selected_word_subject.notify_listeners({reg.first, {}, -1});
-        }
-        return 0;
+        clear_search_results();
     }
     else
     {
@@ -422,43 +420,19 @@ auto ARADocumentController::find_word_in_region(std::string search,
                 return StringMatcher::isMatch(s0, s1, string_match_method);
             });
 
-        // TODO: Translation only. Remove later!
         for (const auto& result : results)
-        {
-            WordSelectData data{result.regio_id, result.indices,
-                                result.focused_word.value_or(-1)};
-            dataList.emplace_back(data);
-        }
+            search_engine_subject.notify_listeners(result);
+
+        if (results.empty())
+            clear_search_results();
     }
-
-    for (auto data = dataList.begin(); data != dataList.end(); ++data)
-    {
-        if (selectIndexInSet + 1 <= data->indices.size() && !selectHiliteSet)
-        {
-            data->hiliteSelectIndex = selectIndexInSet;
-            selectHiliteSet         = true;
-        }
-        else if (!selectHiliteSet)
-        {
-            selectIndexInSet -= static_cast<int>(data->indices.size());
-        }
-
-        // catch out of range
-        if (std::next(data) == dataList.end() && !selectHiliteSet)
-        {
-            if (selectIndexInSet + 1 >= data->indices.size())
-            {
-                data->hiliteSelectIndex = selectIndexInSet;
-                selectHiliteSet         = true;
-                selectIndexResult       = selectIndex - 1;
-            }
-        }
-
-        selected_word_subject.notify_listeners(*data);
-    }
-
-    return selectIndexResult;
 }
+
+//------------------------------------------------------------------------
+auto ARADocumentController::focus_next_occurence() -> void {}
+
+//------------------------------------------------------------------------
+auto ARADocumentController::focus_prev_occurence() -> void {}
 
 //------------------------------------------------------------------------
 void ARADocumentController::onRequestLocatorPosChanged(double pos)
@@ -501,16 +475,16 @@ auto ARADocumentController::unregister_playback_region_changed_observer(
 
 //------------------------------------------------------------------------
 auto ARADocumentController::register_word_selected_observer(
-    WordSelectSubject::Callback&& callback) -> ObserverID
+    SearchEngineSubject::Callback&& callback) -> ObserverID
 {
-    return selected_word_subject.add_listener(std::move(callback));
+    return search_engine_subject.add_listener(std::move(callback));
 }
 
 //------------------------------------------------------------------------
 auto ARADocumentController::unregister_word_selected_observer(ObserverID id)
     -> bool
 {
-    return selected_word_subject.remove_listener(id);
+    return search_engine_subject.remove_listener(id);
 }
 
 //------------------------------------------------------------------------

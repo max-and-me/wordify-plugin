@@ -53,9 +53,6 @@ public:
     //--------------------------------------------------------------------
 private:
     using StringType = std::string;
-    int updateSearchResults(std::string search, int selectIndex);
-    int selectPreviousNextSearch(std::string search, int selectIndex);
-
     enum
     {
         kSearchFieldTag = 1000,
@@ -64,8 +61,6 @@ private:
     };
 
     ARADocumentController* controller = nullptr;
-    std::string filterString;
-    int searchSelectIndex = 0;
 };
 
 //------------------------------------------------------------------------

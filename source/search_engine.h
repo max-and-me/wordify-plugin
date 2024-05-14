@@ -23,7 +23,7 @@ using Regions     = std::map<RegionID, meta_words::PlaybackRegion*>;
 
 struct SearchResult
 {
-    RegionID regio_id = 0;
+    RegionID region_id = 0;
     WordIndices indices;
     OptWord focused_word;
 };

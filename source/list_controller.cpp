@@ -41,21 +41,25 @@ static auto find_view_by_id(const CRowColumnView& rowColView,
 }
 
 //------------------------------------------------------------------------
-auto get_button_state(const WordSelectData& data,
+auto get_button_state(const search_engine::SearchResult& search_results,
                       int32_t control_tag) -> HiliteTextButton::HiliteState
 {
     using State    = HiliteTextButton::HiliteState;
     auto new_state = State::kNone;
 
-    const auto& indices   = data.indices;
-    const auto i_selected = data.hiliteSelectIndex;
+    const auto& indices    = search_results.indices;
+    const auto opt_focused = search_results.focused_word;
 
     auto iter = std::find(indices.begin(), indices.end(), control_tag);
     if (iter != indices.end())
     {
         const auto i = std::distance(indices.begin(), iter);
-        new_state    = (i == i_selected) ? State::kSearchSelectHilite
-                                         : State::kSearchHilite;
+        new_state    = State::kSearchHilite;
+        if (opt_focused)
+        {
+            new_state = (i == opt_focused.value()) ? State::kSearchSelectHilite
+                                                   : State::kSearchHilite;
+        }
     }
 
     return new_state;
@@ -282,19 +286,23 @@ ListController::createSubController(UTF8StringPtr name,
 }
 
 //------------------------------------------------------------------------
-void ListController::checkSelectWord(const WordSelectData& data)
+void ListController::checkSelectWord(
+    const search_engine::SearchResult& search_result)
 {
 
-    // word data selection
-    if (data.indices.empty() == false && data.hiliteSelectIndex != -1)
+    // word search_result selection
+    if (!search_result.indices.empty() &&
+        search_result.focused_word.has_value())
     {
-        controller->onRequestSelectWord(data.indices.at(data.hiliteSelectIndex),
-                                        data.region_id);
+        controller->onRequestSelectWord(
+            search_result.indices.at(search_result.focused_word.value()),
+            search_result.region_id);
 
         // waveform selection
         controller->get_region_selection_model().select(
-            {data.region_id,
-             static_cast<size_t>(data.indices.at(data.hiliteSelectIndex))});
+            {search_result.region_id,
+             static_cast<size_t>(search_result.indices.at(
+                 search_result.focused_word.value()))});
     }
 
     // ui update
@@ -310,7 +318,7 @@ void ListController::checkSelectWord(const WordSelectData& data)
 
         if (child->getAttribute('prid', region_id))
         {
-            if (region_id == data.region_id)
+            if (region_id == search_result.region_id)
                 toFind = child;
         }
     });
@@ -326,7 +334,8 @@ void ListController::checkSelectWord(const WordSelectData& data)
         container->getChildViewsOfType<HiliteTextButton>(btns, true);
         for (auto& btn : btns)
         {
-            const auto new_state = get_button_state(data, btn->getTag());
+            const auto new_state =
+                get_button_state(search_result, btn->getTag());
             if (new_state == HiliteTextButton::HiliteState::kSearchSelectHilite)
                 scroll_to_view(rowColView, btn);
 

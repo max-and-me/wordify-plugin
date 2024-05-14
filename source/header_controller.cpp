@@ -101,45 +101,23 @@ void HeaderController::valueChanged(CControl* control)
     {
         case kSearchFieldTag: {
             if (auto sf = dynamic_cast<CSearchTextEdit*>(control))
-            {
-                searchSelectIndex = 0;
-                filterString      = sf->getText();
-                searchSelectIndex =
-                    updateSearchResults(filterString, searchSelectIndex);
-            }
+                controller->search_word(sf->getText().getString());
+
             break;
         }
         case kSearchNextTag: {
             if (control->getValue() == control->getMax())
-                searchSelectIndex =
-                    selectPreviousNextSearch(filterString, ++searchSelectIndex);
+                controller->focus_next_occurence();
+
             break;
         }
         case kSearchPreviousTag: {
             if (control->getValue() == control->getMax())
-                searchSelectIndex =
-                    selectPreviousNextSearch(filterString, --searchSelectIndex);
+                controller->focus_prev_occurence();
+
             break;
         }
     }
-}
-
-//------------------------------------------------------------------------
-int HeaderController::updateSearchResults(std::string search, int selectIndex)
-{
-    return controller->find_word_in_region(search, selectIndex);
-}
-
-//------------------------------------------------------------------------
-int HeaderController::selectPreviousNextSearch(std::string search,
-                                               int selectIndex)
-{
-    if (filterString.empty())
-        return 0;
-    if (selectIndex < 0)
-        selectIndex = 0;
-
-    return updateSearchResults(filterString, selectIndex);
 }
 
 //------------------------------------------------------------------------

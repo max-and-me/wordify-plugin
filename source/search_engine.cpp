@@ -4,7 +4,10 @@
 #include "meta_words_playback_region.h"
 
 namespace mam::search_engine {
-
+namespace {
+//------------------------------------------------------------------------
+//------------------------------------------------------------------------
+}
 //------------------------------------------------------------------------
 struct SearchEngineCache
 {
@@ -48,12 +51,21 @@ auto search(const StringType& search_word,
                 indices.push_back(i);
         }
 
-        results.push_back({region.first, indices, std::nullopt});
+        if (!indices.empty())
+            results.push_back({region.first, indices, std::nullopt});
     }
 
     SearchEngineCache::instance().search_results = std::move(results);
-    // TODO
-    // SearchEngineCache::instance().focused_word
+
+    if (!SearchEngineCache::instance().search_results.empty())
+    {
+        auto& first_result = SearchEngineCache::instance().search_results.at(0);
+
+        constexpr auto DEFAULT_WORD_INDEX          = 0;
+        first_result.focused_word                  = DEFAULT_WORD_INDEX;
+        SearchEngineCache::instance().focused_word = {
+            first_result.region_id, first_result.focused_word.value()};
+    }
 
     return SearchEngineCache::instance().search_results;
 }
