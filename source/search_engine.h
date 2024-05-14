@@ -21,22 +21,22 @@ using RegionID    = size_t;
 using OptWord     = std::optional<WordIndex>;
 using Regions     = std::map<RegionID, meta_words::PlaybackRegion*>;
 
-struct Result
+struct SearchResult
 {
     RegionID regio_id = 0;
     WordIndices indices;
-    OptWord selected_word;
+    OptWord focused_word;
 };
 
-using SearchResults = std::vector<Result>;
+using SearchResults = std::vector<SearchResult>;
 using MatchFunc =
     std::function<bool(const StringType& s0, const StringType& s1)>;
 
-auto search(const StringType& search_string,
+auto search(const StringType& search_word,
             const Regions& regions,
-            const MatchFunc& match_func) -> const SearchResults&;
+            MatchFunc&& match_func) -> const SearchResults&;
 auto next_occurence() -> void;
-auto previous_occurence() -> void;
+auto prev_occurence() -> void;
 auto clear_results() -> void;
 
 //------------------------------------------------------------------------

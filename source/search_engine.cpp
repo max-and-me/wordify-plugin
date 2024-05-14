@@ -17,19 +17,19 @@ struct SearchEngineCache
     }
 
     SearchResults search_results;
-    StringType search_term;
-    RegionWord selected_word;
+    StringType search_word;
+    RegionWord focused_word;
 };
 
 //------------------------------------------------------------------------
-auto search(const StringType& search_string,
+auto search(const StringType& search_word,
             const Regions& regions,
-            const MatchFunc& match_func) -> const SearchResults&
+            MatchFunc&& match_func) -> const SearchResults&
 {
-    if (search_string == SearchEngineCache::instance().search_term)
+    if (search_word == SearchEngineCache::instance().search_word)
         return SearchEngineCache::instance().search_results;
 
-    SearchEngineCache::instance().search_term = search_string;
+    SearchEngineCache::instance().search_word = search_word;
     SearchResults results;
     for (const auto& region : regions)
     {
@@ -44,7 +44,7 @@ auto search(const StringType& search_string,
                 continue;
 
             auto word = word_data.word.word;
-            if (match_func(word, search_string))
+            if (match_func(word, search_word))
                 indices.push_back(i);
         }
 
@@ -53,7 +53,7 @@ auto search(const StringType& search_string,
 
     SearchEngineCache::instance().search_results = std::move(results);
     // TODO
-    // SearchEngineCache::instance().selected_word
+    // SearchEngineCache::instance().focused_word
 
     return SearchEngineCache::instance().search_results;
 }
@@ -62,13 +62,13 @@ auto search(const StringType& search_string,
 auto next_occurence() -> void {}
 
 //------------------------------------------------------------------------
-auto previous_occurence() -> void {}
+auto prev_occurence() -> void {}
 
 //------------------------------------------------------------------------
 auto clear_results() -> void
 {
     SearchEngineCache::instance().search_results.clear();
-    SearchEngineCache::instance().search_term.clear();
+    SearchEngineCache::instance().search_word.clear();
 }
 //------------------------------------------------------------------------
 } // namespace mam::search_engine

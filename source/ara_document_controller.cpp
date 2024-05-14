@@ -12,8 +12,8 @@
 #include "meta_words_playback_renderer.h"
 #include "meta_words_serde.h"
 #include "preferences_serde.h"
-#include "string_matcher.h"
 #include "search_engine.h"
+#include "string_matcher.h"
 
 namespace mam {
 
@@ -426,7 +426,7 @@ auto ARADocumentController::find_word_in_region(std::string search,
         for (const auto& result : results)
         {
             WordSelectData data{result.regio_id, result.indices,
-                                result.selected_word.value_or(-1)};
+                                result.focused_word.value_or(-1)};
             dataList.emplace_back(data);
         }
     }
