@@ -6,12 +6,17 @@
 namespace mam::search_engine {
 namespace {
 //------------------------------------------------------------------------
+
 //------------------------------------------------------------------------
-}
+} // namespace
 //------------------------------------------------------------------------
 struct SearchEngineCache
 {
-    using RegionWord = std::pair<RegionID, WordIndex>;
+    struct RegionWord
+    {
+        RegionID region_id   = 0;
+        WordIndex word_index = 0;
+    };
 
     static SearchEngineCache& instance()
     {
@@ -71,10 +76,52 @@ auto search(const StringType& search_word,
 }
 
 //------------------------------------------------------------------------
-auto next_occurence() -> void {}
+auto next_occurence() -> SearchResults
+{
+    auto& focused_word   = SearchEngineCache::instance().focused_word;
+    auto& search_results = SearchEngineCache::instance().search_results;
+
+    SearchResults results;
+
+    auto iter = std::find_if(
+        search_results.begin(), search_results.end(), [&](const auto& result) {
+            return result.region_id == focused_word.region_id;
+        });
+
+    if (iter == search_results.end())
+        return results; // Should not happen, would be a serious error!
+
+    focused_word.word_index++;
+    if (focused_word.word_index < iter->indices.size())
+    {
+        // Still in the same region
+        iter->focused_word = focused_word.word_index;
+        results.push_back(*iter);
+    }
+    else
+    {
+        // Advance from one region to the next
+        iter->focused_word.reset();
+        results.push_back(*iter);
+
+        iter = std::next(iter);
+        if (iter == search_results.end())
+            iter = search_results.begin();
+
+        focused_word.word_index = 0;
+        focused_word.region_id  = iter->region_id;
+        iter->focused_word      = focused_word.word_index;
+        results.push_back(*iter);
+    }
+
+    return results;
+}
 
 //------------------------------------------------------------------------
-auto prev_occurence() -> void {}
+auto prev_occurence() -> SearchResults
+{
+    return {};
+}
 
 //------------------------------------------------------------------------
 auto clear_results() -> void

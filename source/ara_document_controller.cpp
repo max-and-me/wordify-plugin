@@ -429,7 +429,12 @@ auto ARADocumentController::search_word(std::string search) -> void
 }
 
 //------------------------------------------------------------------------
-auto ARADocumentController::focus_next_occurence() -> void {}
+auto ARADocumentController::focus_next_occurence() -> void
+{
+    const auto results = search_engine::next_occurence();
+    for (const auto& result : results)
+        search_engine_subject.notify_listeners(result);
+}
 
 //------------------------------------------------------------------------
 auto ARADocumentController::focus_prev_occurence() -> void {}

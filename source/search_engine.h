@@ -21,6 +21,12 @@ using RegionID    = size_t;
 using OptWord     = std::optional<WordIndex>;
 using Regions     = std::map<RegionID, meta_words::PlaybackRegion*>;
 
+struct RegionWord
+{
+    RegionID region_id   = 0;
+    WordIndex word_index = 0;
+};
+
 struct SearchResult
 {
     RegionID region_id = 0;
@@ -31,12 +37,13 @@ struct SearchResult
 using SearchResults = std::vector<SearchResult>;
 using MatchFunc =
     std::function<bool(const StringType& s0, const StringType& s1)>;
+using RegionIDFunc = std::function<RegionID(RegionID)>;
 
 auto search(const StringType& search_word,
             const Regions& regions,
             MatchFunc&& match_func) -> const SearchResults&;
-auto next_occurence() -> void;
-auto prev_occurence() -> void;
+auto next_occurence() -> SearchResults;
+auto prev_occurence() -> SearchResults;
 auto clear_results() -> void;
 
 //------------------------------------------------------------------------
