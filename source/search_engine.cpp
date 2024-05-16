@@ -124,10 +124,19 @@ auto prev_occurence() -> SearchResults
 }
 
 //------------------------------------------------------------------------
-auto clear_results() -> void
+auto clear_results() -> SearchResults
 {
+    auto results = SearchEngineCache::instance().search_results;
+    for (auto& result : results)
+    {
+        result.focused_word = std::nullopt;
+        result.indices.clear();
+    }
+
     SearchEngineCache::instance().search_results.clear();
     SearchEngineCache::instance().search_word.clear();
+
+    return results;
 }
 //------------------------------------------------------------------------
 } // namespace mam::search_engine

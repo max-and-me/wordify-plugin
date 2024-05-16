@@ -44,7 +44,7 @@ auto search(const StringType& search_word,
             MatchFunc&& match_func) -> const SearchResults&;
 auto next_occurence() -> SearchResults;
 auto prev_occurence() -> SearchResults;
-auto clear_results() -> void;
+auto clear_results() -> SearchResults;
 
 //------------------------------------------------------------------------
 } // namespace mam::search_engine

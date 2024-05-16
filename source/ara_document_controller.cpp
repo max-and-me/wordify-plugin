@@ -398,10 +398,10 @@ auto ARADocumentController::find_playback_region(PlaybackRegion::Id id) const
 //------------------------------------------------------------------------
 auto ARADocumentController::clear_search_results() -> void
 {
-    search_engine::clear_results();
-    for (const auto& reg : playback_regions)
+    auto results = search_engine::clear_results();
+    for (const auto& result : results)
     {
-        search_engine_subject.notify_listeners({reg.first, {}, std::nullopt});
+        search_engine_subject.notify_listeners(result);
     }
 }
 
