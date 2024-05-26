@@ -6,9 +6,40 @@
 namespace mam::search_engine {
 namespace {
 //------------------------------------------------------------------------
+auto collect_search_results(const StringType& search_word,
+                            const Regions& regions,
+                            MatchFunc&& match_func) -> const SearchResults
+{
+    SearchResults results;
+
+    for (const auto& region : regions)
+    {
+        auto regionPtr          = region.second;
+        auto meta_words_data    = regionPtr->get_meta_words_data();
+        auto meta_words_dataSet = meta_words_data.words;
+
+        WordIndices indices;
+        for (size_t i = 0; i < meta_words_dataSet.size(); i++)
+        {
+            const auto& word_data = meta_words_dataSet[i];
+            if (word_data.is_clipped_by_region)
+                continue;
+
+            auto word = word_data.word.word;
+            if (match_func(word, search_word))
+                indices.push_back(i);
+        }
+
+        if (!indices.empty())
+            results.push_back({region.first, indices, std::nullopt});
+    }
+
+    return results;
+}
 
 //------------------------------------------------------------------------
 } // namespace
+
 //------------------------------------------------------------------------
 struct SearchEngineCache
 {
@@ -34,34 +65,14 @@ auto search(const StringType& search_word,
             const Regions& regions,
             MatchFunc&& match_func) -> const SearchResults&
 {
-    if (search_word == SearchEngineCache::instance().search_word)
+    if (SearchEngineCache::instance().search_word == search_word)
         return SearchEngineCache::instance().search_results;
 
     SearchEngineCache::instance().search_word = search_word;
-    SearchResults results;
-    for (const auto& region : regions)
-    {
-        auto regionPtr          = region.second;
-        auto meta_words_data    = regionPtr->get_meta_words_data();
-        auto meta_words_dataSet = meta_words_data.words;
-        WordIndices indices;
-        for (size_t i = 0; i < meta_words_dataSet.size(); i++)
-        {
-            const auto& word_data = meta_words_dataSet[i];
-            if (word_data.is_clipped_by_region)
-                continue;
+    SearchEngineCache::instance().search_results =
+        collect_search_results(search_word, regions, std::move(match_func));
 
-            auto word = word_data.word.word;
-            if (match_func(word, search_word))
-                indices.push_back(i);
-        }
-
-        if (!indices.empty())
-            results.push_back({region.first, indices, std::nullopt});
-    }
-
-    SearchEngineCache::instance().search_results = std::move(results);
-
+    // Focus the first word
     if (!SearchEngineCache::instance().search_results.empty())
     {
         auto& first_result = SearchEngineCache::instance().search_results.at(0);
