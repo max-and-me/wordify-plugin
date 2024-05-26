@@ -12,20 +12,20 @@ bool sort(RegionOrderManager::FuncStartInPlaybackTime& start_in_playback_time,
 {
     using Id = meta_words::PlaybackRegion::Id;
 
-    bool has_been_reorderd = false;
-    auto sorter            = [&](const Id id0, const Id id1) {
+    auto sorter = [&](const Id id0, const Id id1) {
         const auto time0 = start_in_playback_time(id0);
         const auto time1 = start_in_playback_time(id1);
 
         bool result = time0 < time1;
 
-        has_been_reorderd |= result;
-
         return result;
     };
 
+    if (std::is_sorted(ids.begin(), ids.end(), sorter))
+        return false;
+
     std::sort(ids.begin(), ids.end(), sorter);
-    return has_been_reorderd;
+    return true;
 }
 
 //------------------------------------------------------------------------
