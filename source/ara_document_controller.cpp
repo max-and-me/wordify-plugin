@@ -437,7 +437,12 @@ auto ARADocumentController::focus_next_occurence() -> void
 }
 
 //------------------------------------------------------------------------
-auto ARADocumentController::focus_prev_occurence() -> void {}
+auto ARADocumentController::focus_prev_occurence() -> void
+{
+    const auto results = search_engine::prev_occurence();
+    for (const auto& result : results)
+        search_engine_subject.notify_listeners(result);
+}
 
 //------------------------------------------------------------------------
 void ARADocumentController::onRequestLocatorPosChanged(double pos)

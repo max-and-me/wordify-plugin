@@ -120,7 +120,45 @@ auto next_occurence() -> SearchResults
 //------------------------------------------------------------------------
 auto prev_occurence() -> SearchResults
 {
-    return {};
+    auto& focused_word   = SearchEngineCache::instance().focused_word;
+    auto& search_results = SearchEngineCache::instance().search_results;
+
+    SearchResults results;
+
+    auto iter =
+        std::find_if(search_results.rbegin(), search_results.rend(),
+                     [&](const auto& result) {
+                         return result.region_id == focused_word.region_id;
+                     });
+
+    if (iter == search_results.rend())
+        return results; // Should not happen, would be a serious error!
+
+    if (focused_word.word_index == 0)
+    {
+        // Advance from one region to the next
+        iter->focused_word.reset();
+        results.push_back(*iter);
+
+        iter = std::next(iter);
+        if (iter == search_results.rend())
+            iter = search_results.rbegin();
+
+        focused_word.word_index = iter->indices.size() - 1;
+        focused_word.region_id  = iter->region_id;
+        iter->focused_word      = focused_word.word_index;
+        results.push_back(*iter);
+    }
+    else
+    {
+        focused_word.word_index--;
+
+        // Still in the same region
+        iter->focused_word = focused_word.word_index;
+        results.push_back(*iter);
+    }
+
+    return results;
 }
 
 //------------------------------------------------------------------------
