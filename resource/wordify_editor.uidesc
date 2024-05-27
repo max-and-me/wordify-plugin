@@ -1,35 +1,37 @@
 {
 	"vstgui-ui-description": {
 		"version": "1",
+		"fonts": {},
+		"colors": {},
 		"control-tags": {},
 		"custom": {
 			"FocusDrawing": {},
 			"VST3Editor": {
-				"Path": "/Users/max/Documents/Code/vst-gpt/vst-gpt/resource/vstgpt_editor.uidesc"
+				"Path": "Z:\\Private\\mam\\vst-gpt\\resource\\wordify_editor.uidesc"
 			},
 			"UIGridController": {
-				"Grids": "1x 1,5x 5,8x 8,10x 10,12x 12,15x 15",
-				"Size": "1, 1"
+				"Grids": "1x 1,4x 4,8x 8,10x 10,12x 12,15x 15",
+				"Size": "4, 4"
 			},
 			"UITemplateController": {
 				"SelectedTemplate": "view"
 			},
 			"UIEditController": {
-				"EditViewScale": "1",
-				"EditorSize": "0, 0, 1129, 765",
-				"SplitViewSize_0_0": "0.6508795669824086749244429483951535075903",
-				"SplitViewSize_0_1": "0.3247631935047361473323235259158536791801",
-				"SplitViewSize_1_0": "0.6001353179972936935371308209141716361046",
-				"SplitViewSize_1_1": "0.4756427604871447667456152430531801655889",
-				"SplitViewSize_2_0": "0.7183348095659876086926942662103101611137",
-				"SplitViewSize_2_1": "0.280779450841452615783566670870641246438",
+				"EditViewScale": "2.5",
+				"EditorSize": "0, 0, 1471, 894",
+				"SplitViewSize_0_0": "0.6970046082949308274834265830577351152897",
+				"SplitViewSize_0_1": "0.2834101382488479203836106989911058917642",
+				"SplitViewSize_1_0": "0.5875576036866358986543446007999591529369",
+				"SplitViewSize_1_1": "0.4815668202764977201546514606889104470611",
+				"SplitViewSize_2_0": "0.7838205302515295347376422796514816582203",
+				"SplitViewSize_2_1": "0.2154996600951733509710095404443563893437",
 				"TabSwitchValue": "0",
 				"Version": "1",
 				"ViewBackground": "1"
 			},
 			"UIAttributesController": {},
 			"UIViewCreatorDataSource": {
-				"SelectedRow": "11"
+				"SelectedRow": "8"
 			},
 			"UIGradientsDataSource": {
 				"SelectedRow": "1"
@@ -39,6 +41,9 @@
 			},
 			"UIFontsDataSource": {
 				"SelectedRow": "1"
+			},
+			"UIBitmapsDataSource": {
+				"SelectedRow": "-1"
 			}
 		},
 		"templates": {
@@ -499,7 +504,7 @@
 									"background-color-draw-style": "filled and stroked",
 									"bordered": "false",
 									"class": "CScrollView",
-									"container-size": "619.496, 424",
+									"container-size": "624, 992",
 									"follow-focus-view": "false",
 									"horizontal-scrollbar": "false",
 									"mouse-enabled": "true",
@@ -531,7 +536,7 @@
 											"opacity": "1",
 											"origin": "0, 0",
 											"row-style": "true",
-											"size": "619.496, 424",
+											"size": "624, 992",
 											"spacing": "24",
 											"transparent": "true",
 											"uidesc-label": "VLayout",

@@ -369,7 +369,7 @@ IPlugView* PLUGIN_API VstGPTSingleComponent::createView(FIDString name)
     {
         // create your editor here and return a IPlugView ptr of it
         auto* view =
-            new VSTGUI::VST3Editor(this, "view", "vstgpt_editor.uidesc");
+            new VSTGUI::VST3Editor(this, "view", "wordify_editor.uidesc");
 
         const auto uidesc = view->getUIDescription();
         if (uidesc)
