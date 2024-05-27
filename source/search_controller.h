@@ -4,7 +4,6 @@
 
 #pragma once
 
-#include "ara_document_controller.h"
 #include "base/source/fobject.h"
 #include "vstgui/lib/iviewlistener.h"
 #include "vstgui/uidescription/icontroller.h"
@@ -13,12 +12,8 @@ namespace VSTGUI {
 class CSearchTextEdit;
 } // namespace VSTGUI
 
-namespace Steinberg::Vst {
-class Parameter;
-}
-
 namespace mam {
-class SpinnerView;
+class ARADocumentController;
 
 //------------------------------------------------------------------------
 // SearchController
@@ -52,14 +47,6 @@ public:
 
     //--------------------------------------------------------------------
 private:
-    using StringType = std::string;
-    enum
-    {
-        kSearchFieldTag = 1000,
-        kSearchNextTag,
-        kSearchPreviousTag
-    };
-
     ARADocumentController* controller = nullptr;
 };
 

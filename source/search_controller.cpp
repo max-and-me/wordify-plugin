@@ -1,20 +1,22 @@
-//------------------------------------------------------------------------
 // Copyright(c) 2024 Max And Me.
-//------------------------------------------------------------------------
 
 #include "search_controller.h"
-#include "public.sdk/source/vst/utility/stringconvert.h"
-#include "public.sdk/source/vst/vstparameters.h"
-#include "spinner_view.h"
-#include "vstgui/lib/animation/timingfunctions.h"
+#include "ara_document_controller.h"
 #include "vstgui/lib/controls/csearchtextedit.h"
-#include "vstgui/lib/controls/ctextlabel.h"
 #include "vstgui/uidescription/iuidescription.h"
 #include "vstgui/uidescription/uiattributes.h"
-#include <limits>
+
+using namespace VSTGUI;
 
 namespace mam {
-using namespace ::VSTGUI;
+
+//------------------------------------------------------------------------
+enum
+{
+    kSearchFieldTag = 1000,
+    kSearchNextTag,
+    kSearchPreviousTag
+};
 
 //------------------------------------------------------------------------
 // SearchController
@@ -36,24 +38,19 @@ SearchController::~SearchController()
 void PLUGIN_API SearchController::update(FUnknown* changedUnknown,
                                          Steinberg::int32 message)
 {
-    if (auto* param =
-            Steinberg::FCast<Steinberg::Vst::Parameter>(changedUnknown))
-    {
-    }
 }
 
 //------------------------------------------------------------------------
-CView* SearchController::createView(const VSTGUI::UIAttributes& attributes,
-                                    const VSTGUI::IUIDescription* description)
+CView* SearchController::createView(const UIAttributes& attributes,
+                                    const IUIDescription* description)
 {
     return nullptr;
 }
 
 //------------------------------------------------------------------------
-VSTGUI::CView*
-SearchController::verifyView(VSTGUI::CView* view,
-                             const VSTGUI::UIAttributes& attributes,
-                             const VSTGUI::IUIDescription* description)
+CView* SearchController::verifyView(CView* view,
+                                    const UIAttributes& attributes,
+                                    const IUIDescription* description)
 {
     if (const auto* view_name = attributes.getAttributeValue("uidesc-label"))
     {
@@ -87,9 +84,9 @@ SearchController::verifyView(VSTGUI::CView* view,
 }
 
 //------------------------------------------------------------------------
-VSTGUI::IController*
-SearchController::createSubController(VSTGUI::UTF8StringPtr name,
-                                      const VSTGUI::IUIDescription* description)
+IController*
+SearchController::createSubController(UTF8StringPtr name,
+                                      const IUIDescription* description)
 {
     return nullptr;
 }
@@ -121,5 +118,4 @@ void SearchController::valueChanged(CControl* control)
 }
 
 //------------------------------------------------------------------------
-
 } // namespace mam
