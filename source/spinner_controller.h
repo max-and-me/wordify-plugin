@@ -22,7 +22,7 @@ namespace mam {
 class SpinnerView;
 
 //------------------------------------------------------------------------
-// HeaderController
+// SpinnerController
 //------------------------------------------------------------------------
 class SpinnerController : public Steinberg::FObject,
                           public VSTGUI::IController,
