@@ -21,14 +21,14 @@ namespace mam {
 class SpinnerView;
 
 //------------------------------------------------------------------------
-// HeaderController
+// SearchController
 //------------------------------------------------------------------------
-class HeaderController : public Steinberg::FObject, public VSTGUI::IController
+class SearchController : public Steinberg::FObject, public VSTGUI::IController
 {
 public:
     //--------------------------------------------------------------------
-    HeaderController(ARADocumentController* controller);
-    ~HeaderController() override;
+    SearchController(ARADocumentController* controller);
+    ~SearchController() override;
 
     void PLUGIN_API update(FUnknown* changedUnknown,
                            Steinberg::int32 message) override;
@@ -48,7 +48,7 @@ public:
     createSubController(VSTGUI::UTF8StringPtr name,
                         const VSTGUI::IUIDescription* description) override;
 
-    OBJ_METHODS(HeaderController, FObject)
+    OBJ_METHODS(SearchController, FObject)
 
     //--------------------------------------------------------------------
 private:

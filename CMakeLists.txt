@@ -40,11 +40,9 @@ smtg_add_vst3plugin(Wordify
     source/ara_document_controller.h
     source/ara_factory_config.cpp
     source/ara_factory_config.h
+    source/audio_buffer_management.h
     source/audio_source_analyze_worker.cpp
     source/audio_source_analyze_worker.h
-    source/audio_buffer_management.h
-    source/header_controller.cpp
-    source/header_controller.h
     source/hilite_text_button.cpp
     source/hilite_text_button.h
     source/hstack_layout.cpp
@@ -77,6 +75,8 @@ smtg_add_vst3plugin(Wordify
     source/preferences_serde.h
     source/region_order_manager.cpp
     source/region_order_manager.h
+    source/search_controller.cpp
+    source/search_controller.h
     source/search_engine.cpp
     source/search_engine.h
     source/spinner_controller.cpp

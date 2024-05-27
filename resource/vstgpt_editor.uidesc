@@ -155,7 +155,7 @@
 													"row-style": "false",
 													"size": "508, 48",
 													"spacing": "4",
-													"sub-controller": "HeaderController",
+													"sub-controller": "SearchController",
 													"transparent": "true",
 													"uidesc-label": "ALayout",
 													"view-resize-animation-time": "200",

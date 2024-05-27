@@ -2,7 +2,7 @@
 // Copyright(c) 2024 Max And Me.
 //------------------------------------------------------------------------
 
-#include "header_controller.h"
+#include "search_controller.h"
 #include "public.sdk/source/vst/utility/stringconvert.h"
 #include "public.sdk/source/vst/vstparameters.h"
 #include "spinner_view.h"
@@ -17,9 +17,9 @@ namespace mam {
 using namespace ::VSTGUI;
 
 //------------------------------------------------------------------------
-// HeaderController
+// SearchController
 //------------------------------------------------------------------------
-HeaderController::HeaderController(ARADocumentController* controller)
+SearchController::SearchController(ARADocumentController* controller)
 : controller(controller)
 {
     if (!controller)
@@ -27,13 +27,13 @@ HeaderController::HeaderController(ARADocumentController* controller)
 }
 
 //------------------------------------------------------------------------
-HeaderController::~HeaderController()
+SearchController::~SearchController()
 {
     changed(kWillDestroy);
 }
 
 //------------------------------------------------------------------------
-void PLUGIN_API HeaderController::update(FUnknown* changedUnknown,
+void PLUGIN_API SearchController::update(FUnknown* changedUnknown,
                                          Steinberg::int32 message)
 {
     if (auto* param =
@@ -43,7 +43,7 @@ void PLUGIN_API HeaderController::update(FUnknown* changedUnknown,
 }
 
 //------------------------------------------------------------------------
-CView* HeaderController::createView(const VSTGUI::UIAttributes& attributes,
+CView* SearchController::createView(const VSTGUI::UIAttributes& attributes,
                                     const VSTGUI::IUIDescription* description)
 {
     return nullptr;
@@ -51,7 +51,7 @@ CView* HeaderController::createView(const VSTGUI::UIAttributes& attributes,
 
 //------------------------------------------------------------------------
 VSTGUI::CView*
-HeaderController::verifyView(VSTGUI::CView* view,
+SearchController::verifyView(VSTGUI::CView* view,
                              const VSTGUI::UIAttributes& attributes,
                              const VSTGUI::IUIDescription* description)
 {
@@ -88,14 +88,14 @@ HeaderController::verifyView(VSTGUI::CView* view,
 
 //------------------------------------------------------------------------
 VSTGUI::IController*
-HeaderController::createSubController(VSTGUI::UTF8StringPtr name,
+SearchController::createSubController(VSTGUI::UTF8StringPtr name,
                                       const VSTGUI::IUIDescription* description)
 {
     return nullptr;
 }
 
 //------------------------------------------------------------------------
-void HeaderController::valueChanged(CControl* control)
+void SearchController::valueChanged(CControl* control)
 {
     switch (control->getTag())
     {
