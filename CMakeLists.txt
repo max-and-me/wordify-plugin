@@ -90,10 +90,11 @@ smtg_add_vst3plugin(Wordify
     source/version.h
     source/view_animations.cpp
     source/view_animations.h
-    source/vstgpt_cids.h
-    source/vstgpt_entry.cpp
-    source/vstgpt_single_component.cpp
-    source/vstgpt_single_component.h
+    source/wordify_cids.h
+    source/wordify_defines.h
+    source/wordify_entry.cpp
+    source/wordify_single_component.cpp
+    source/wordify_single_component.h
     source/waveform_controller.cpp
     source/waveform_controller.h
     source/waveform_view.cpp

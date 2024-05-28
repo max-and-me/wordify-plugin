@@ -3,8 +3,8 @@
 #include "whipser_cpp_wrapper.h"
 #include "base/source/fdebug.h"
 #include "hao/special_folders/special_folders.h"
-#include "vstgpt_defines.h"
 #include "whereami.h"
+#include "wordify_defines.h"
 #include <filesystem>
 #include <string>
 

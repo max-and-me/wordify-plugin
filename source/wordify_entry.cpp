@@ -5,11 +5,9 @@
 #include "ara_main_factory.h"
 #include "public.sdk/source/main/pluginfactory.h"
 #include "version.h"
-#include "vstgpt_cids.h"
-// #include "vstgpt_controller.h"
-#include "vstgpt_defines.h"
-// #include "vstgpt_processor.h"
-#include "vstgpt_single_component.h"
+#include "wordify_cids.h"
+#include "wordify_defines.h"
+#include "wordify_single_component.h"
 
 using namespace Steinberg::Vst;
 using namespace mam;

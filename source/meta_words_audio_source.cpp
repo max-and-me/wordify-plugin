@@ -7,7 +7,7 @@
 #include "mam/meta_words/runner.h"
 #include "samplerate.h"
 #include "sndfile.h"
-#include "vstgpt_defines.h"
+#include "wordify_defines.h"
 #include <cmath>
 #include <filesystem>
 #include <functional>

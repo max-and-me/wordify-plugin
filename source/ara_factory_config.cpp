@@ -4,12 +4,12 @@
 
 #include "ara_factory_config.h"
 #include "projectversion.h"
-#include "vstgpt_defines.h"
+#include "wordify_defines.h"
 
 #define WORDIFY_FACTORY_ID "org.wordify.plugin.arafactory"
-#define WORDIFY_DOCUMENT_ARCHIVE_ID                                             \
+#define WORDIFY_DOCUMENT_ARCHIVE_ID                                            \
     "org.wordify.plugin.aradocumentarchive.version1"
-#define WORDIFY_FILECHUNK_ARCHIVE_ID                                            \
+#define WORDIFY_FILECHUNK_ARCHIVE_ID                                           \
     "org.wordify.plugin.arafilechunkarchive.version1"
 
 namespace mam {

@@ -2,7 +2,7 @@
 // Copyright(c) 2023 Max And Me.
 //------------------------------------------------------------------------
 
-#include "vstgpt_single_component.h"
+#include "wordify_single_component.h"
 #include "ara_document_controller.h"
 #include "audio_source_analyze_worker.h"
 #include "base/source/fstreamer.h"
@@ -17,10 +17,10 @@
 #include "preferences_serde.h"
 #include "search_controller.h"
 #include "spinner_controller.h"
-#include "vstgpt_cids.h"
-#include "vstgpt_defines.h"
 #include "vstgui/uidescription/uidescription.h"
 #include "waveform_controller.h"
+#include "wordify_cids.h"
+#include "wordify_defines.h"
 #include <optional>
 
 using namespace Steinberg;
