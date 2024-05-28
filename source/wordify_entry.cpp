@@ -39,7 +39,7 @@ BEGIN_FACTORY_DEF(COMPANY_NAME_STR,
 		   VstGPTVST3Category,				// Subcategory for this Plug-in (to be changed)
 		   FULL_VERSION_STR,				// Plug-in version (to be changed)
 		   kVstVersionString,				// the VST 3 SDK version (do not changed this, use always this define)
-		   VstGPTSingleComponent::createInstance) // function pointer called when this component should be instantiated
+		   WordifySingleComponent::createInstance) // function pointer called when this component should be instantiated
 
 // its kVstComponentControllerClass component
 DEF_CLASS2(INLINE_UID_FROM_FUID(kVstGPTControllerUID),
@@ -60,7 +60,7 @@ DEF_CLASS2(INLINE_UID_FROM_FUID(kVstGPTProcessorUID),
 		   VstGPTVST3Category,				// Subcategory for this Plug-in (to be changed)
 		   FULL_VERSION_STR,				// Plug-in version (to be changed)
 		   kVstVersionString,				// the VST 3 SDK version (do not changed this, use always this define)
-		   VstGPTSingleComponent::createInstance) // function pointer called when this component should be instantiated
+		   WordifySingleComponent::createInstance) // function pointer called when this component should be instantiated
 
 // its kARAMainFactoryClass component
 DEF_CLASS2(INLINE_UID_FROM_FUID(ARAMainFactory::getClassFUID()),

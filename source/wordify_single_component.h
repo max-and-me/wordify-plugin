@@ -16,22 +16,22 @@ class SearchController;
 //------------------------------------------------------------------------
 //  VstGPTProcessor
 //------------------------------------------------------------------------
-class VstGPTSingleComponent : public Steinberg::Vst::SingleComponentEffect,
-                              public ARA::IPlugInEntryPoint,
-                              public ARA::IPlugInEntryPoint2,
-                              public VSTGUI::VST3EditorDelegate,
-                              public Presonus::IPlugInViewEmbedding
+class WordifySingleComponent : public Steinberg::Vst::SingleComponentEffect,
+                               public ARA::IPlugInEntryPoint,
+                               public ARA::IPlugInEntryPoint2,
+                               public VSTGUI::VST3EditorDelegate,
+                               public Presonus::IPlugInViewEmbedding
 {
 public:
     using Editors = std::vector<Steinberg::Vst::EditorView*>;
 
-    VstGPTSingleComponent();
-    ~VstGPTSingleComponent() SMTG_OVERRIDE;
+    WordifySingleComponent();
+    ~WordifySingleComponent() SMTG_OVERRIDE;
 
     // Create function
     static Steinberg::FUnknown* createInstance(void* /*context*/)
     {
-        return (Steinberg::Vst::IAudioProcessor*)new VstGPTSingleComponent;
+        return (Steinberg::Vst::IAudioProcessor*)new WordifySingleComponent;
     }
 
     //-------------------------------------------------------------------------
@@ -104,7 +104,7 @@ public:
     Steinberg::tresult PLUGIN_API setViewIsEmbedded(
         Steinberg::IPlugView* view, Steinberg::TBool embedded) override;
 
-    OBJ_METHODS(VstGPTSingleComponent, Steinberg::Vst::SingleComponentEffect)
+    OBJ_METHODS(WordifySingleComponent, Steinberg::Vst::SingleComponentEffect)
     DEFINE_INTERFACES
     DEF_INTERFACE(IPlugInEntryPoint)
     DEF_INTERFACE(IPlugInEntryPoint2)

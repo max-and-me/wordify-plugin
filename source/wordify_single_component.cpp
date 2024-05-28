@@ -139,7 +139,7 @@ static auto get_color_scheme(bool is_dark) -> const ColorSchemeDesc
 
 //------------------------------------------------------------------------
 using OptColorSchemeDesc = std::optional<ColorSchemeDesc>;
-static auto get_color_scheme(VstGPTSingleComponent& controller,
+static auto get_color_scheme(WordifySingleComponent& controller,
                              mam::ParamIds id) -> OptColorSchemeDesc
 {
     const auto* color_scheme_param = controller.getParameterObject(id);
@@ -152,7 +152,7 @@ static auto get_color_scheme(VstGPTSingleComponent& controller,
 }
 
 //------------------------------------------------------------------------
-static auto set_dark_scheme_on_editors(VstGPTSingleComponent::Editors& editors,
+static auto set_dark_scheme_on_editors(WordifySingleComponent::Editors& editors,
                                        bool is_dark)
 {
     for (auto& editor : editors)
@@ -176,13 +176,13 @@ static auto set_dark_scheme_on_editors(VstGPTSingleComponent::Editors& editors,
 //------------------------------------------------------------------------
 // VstGPTProcessor
 //------------------------------------------------------------------------
-VstGPTSingleComponent::VstGPTSingleComponent() {}
+WordifySingleComponent::WordifySingleComponent() {}
 
 //------------------------------------------------------------------------
-VstGPTSingleComponent::~VstGPTSingleComponent() {}
+WordifySingleComponent::~WordifySingleComponent() {}
 
 //------------------------------------------------------------------------
-tresult PLUGIN_API VstGPTSingleComponent::initialize(FUnknown* context)
+tresult PLUGIN_API WordifySingleComponent::initialize(FUnknown* context)
 {
     // Here the Plug-in will be instantiated
 
@@ -204,7 +204,7 @@ tresult PLUGIN_API VstGPTSingleComponent::initialize(FUnknown* context)
 }
 
 //------------------------------------------------------------------------
-tresult PLUGIN_API VstGPTSingleComponent::terminate()
+tresult PLUGIN_API WordifySingleComponent::terminate()
 {
     // Here the Plug-in will be de-instantiated, last possibility to remove
     // some memory!
@@ -216,7 +216,7 @@ tresult PLUGIN_API VstGPTSingleComponent::terminate()
 }
 
 //------------------------------------------------------------------------
-tresult PLUGIN_API VstGPTSingleComponent::setActive(TBool state)
+tresult PLUGIN_API WordifySingleComponent::setActive(TBool state)
 {
     //--- called when the Plug-in is enable/disable (On/Off) -----
 
@@ -237,7 +237,7 @@ tresult PLUGIN_API VstGPTSingleComponent::setActive(TBool state)
 }
 
 //------------------------------------------------------------------------
-tresult PLUGIN_API VstGPTSingleComponent::process(Vst::ProcessData& data)
+tresult PLUGIN_API WordifySingleComponent::process(Vst::ProcessData& data)
 {
     ARA_VALIDATE_API_CONDITION(data.outputs[0].numChannels ==
                                getAudioBusChannelCount(audioOutputs[0]));
@@ -271,14 +271,14 @@ tresult PLUGIN_API VstGPTSingleComponent::process(Vst::ProcessData& data)
 
 //------------------------------------------------------------------------
 tresult PLUGIN_API
-VstGPTSingleComponent::setupProcessing(Vst::ProcessSetup& newSetup)
+WordifySingleComponent::setupProcessing(Vst::ProcessSetup& newSetup)
 {
     return SingleComponentEffect::setupProcessing(newSetup);
 }
 
 //------------------------------------------------------------------------
 tresult PLUGIN_API
-VstGPTSingleComponent::canProcessSampleSize(int32 symbolicSampleSize)
+WordifySingleComponent::canProcessSampleSize(int32 symbolicSampleSize)
 {
     // by default kSample32 is supported
     if (symbolicSampleSize == Vst::kSample32)
@@ -292,19 +292,19 @@ VstGPTSingleComponent::canProcessSampleSize(int32 symbolicSampleSize)
 }
 
 //------------------------------------------------------------------------
-tresult PLUGIN_API VstGPTSingleComponent::setState(IBStream* state)
+tresult PLUGIN_API WordifySingleComponent::setState(IBStream* state)
 {
     return kResultOk;
 }
 
 //------------------------------------------------------------------------
-tresult PLUGIN_API VstGPTSingleComponent::getState(IBStream* state)
+tresult PLUGIN_API WordifySingleComponent::getState(IBStream* state)
 {
     return kResultOk;
 }
 
 //------------------------------------------------------------------------
-VSTGUI::IController* VstGPTSingleComponent::createSubController(
+VSTGUI::IController* WordifySingleComponent::createSubController(
     VSTGUI::UTF8StringPtr name,
     const VSTGUI::IUIDescription* description,
     VSTGUI::VST3Editor* /*editor*/)
@@ -352,17 +352,17 @@ VSTGUI::IController* VstGPTSingleComponent::createSubController(
 }
 
 //------------------------------------------------------------------------
-void VstGPTSingleComponent::didOpen(VSTGUI::VST3Editor* editor) {}
+void WordifySingleComponent::didOpen(VSTGUI::VST3Editor* editor) {}
 
 //------------------------------------------------------------------------
-void VstGPTSingleComponent::willClose(VSTGUI::VST3Editor* editor)
+void WordifySingleComponent::willClose(VSTGUI::VST3Editor* editor)
 {
     if (_araPlugInExtension.getEditorView())
         _araPlugInExtension.getEditorView()->setEditorOpen(false);
 }
 
 //------------------------------------------------------------------------
-IPlugView* PLUGIN_API VstGPTSingleComponent::createView(FIDString name)
+IPlugView* PLUGIN_API WordifySingleComponent::createView(FIDString name)
 {
     // Here the Host wants to open your editor (if you have one)
     if (FIDStringsEqual(name, Vst::ViewType::kEditor))
@@ -400,7 +400,7 @@ IPlugView* PLUGIN_API VstGPTSingleComponent::createView(FIDString name)
 
 //-----------------------------------------------------------------------------
 const ARA::ARAPlugInExtensionInstance* PLUGIN_API
-VstGPTSingleComponent::bindToDocumentController(
+WordifySingleComponent::bindToDocumentController(
     ARA::ARADocumentControllerRef /*documentControllerRef*/)
 {
     ARA_VALIDATE_API_STATE(
@@ -410,7 +410,7 @@ VstGPTSingleComponent::bindToDocumentController(
 
 //-----------------------------------------------------------------------------
 const ARA::ARAPlugInExtensionInstance* PLUGIN_API
-VstGPTSingleComponent::bindToDocumentControllerWithRoles(
+WordifySingleComponent::bindToDocumentControllerWithRoles(
     ARA::ARADocumentControllerRef documentControllerRef,
     ARA::ARAPlugInInstanceRoleFlags knownRoles,
     ARA::ARAPlugInInstanceRoleFlags assignedRoles)
@@ -420,39 +420,39 @@ VstGPTSingleComponent::bindToDocumentControllerWithRoles(
 }
 
 //-----------------------------------------------------------------------------
-const ARA::ARAFactory* PLUGIN_API VstGPTSingleComponent::getFactory()
+const ARA::ARAFactory* PLUGIN_API WordifySingleComponent::getFactory()
 {
     return ARADocumentController::getARAFactory();
 }
 
 //------------------------------------------------------------------------
-TBool PLUGIN_API VstGPTSingleComponent::isViewEmbeddingSupported()
+TBool PLUGIN_API WordifySingleComponent::isViewEmbeddingSupported()
 {
     return TBool(true);
 }
 
 //------------------------------------------------------------------------
-tresult PLUGIN_API VstGPTSingleComponent::setViewIsEmbedded(IPlugView* /*view*/,
-                                                            TBool /*embedded*/)
+tresult PLUGIN_API WordifySingleComponent::setViewIsEmbedded(
+    IPlugView* /*view*/, TBool /*embedded*/)
 {
     return kResultOk;
 }
 
 //------------------------------------------------------------------------
-void PLUGIN_API VstGPTSingleComponent::editorAttached(Vst::EditorView* editor)
+void PLUGIN_API WordifySingleComponent::editorAttached(Vst::EditorView* editor)
 {
     editors.push_back(editor);
 }
 
 //------------------------------------------------------------------------
-void PLUGIN_API VstGPTSingleComponent::editorRemoved(Vst::EditorView* editor)
+void PLUGIN_API WordifySingleComponent::editorRemoved(Vst::EditorView* editor)
 {
 
     editors.erase(std::find(editors.begin(), editors.end(), editor));
 }
 
 //------------------------------------------------------------------------
-auto VstGPTSingleComponent::restore_parameters() -> void
+auto WordifySingleComponent::restore_parameters() -> void
 {
     // Restore preferences from disc
     meta_words::serde::Preferences prefs;
@@ -472,7 +472,7 @@ auto VstGPTSingleComponent::restore_parameters() -> void
 }
 
 //------------------------------------------------------------------------
-auto VstGPTSingleComponent::store_parameters() -> void
+auto WordifySingleComponent::store_parameters() -> void
 {
     auto* color_scheme_param =
         getParameterObject(ParamIds::kParamIdColorScheme);
@@ -493,14 +493,14 @@ auto VstGPTSingleComponent::store_parameters() -> void
 }
 
 //------------------------------------------------------------------------
-Vst::Parameter* VstGPTSingleComponent::getParameterObject(Vst::ParamID id)
+Vst::Parameter* WordifySingleComponent::getParameterObject(Vst::ParamID id)
 {
     return ui_parameters.getParameter(id);
 }
 
 //------------------------------------------------------------------------
-void PLUGIN_API VstGPTSingleComponent::update(FUnknown* changedUnknown,
-                                              int32 tag)
+void PLUGIN_API WordifySingleComponent::update(FUnknown* changedUnknown,
+                                               int32 tag)
 {
     if (auto* param = FCast<Vst::Parameter>(changedUnknown))
     {
