@@ -8,6 +8,7 @@
 #include "meta_words_data.h"
 #include "meta_words_playback_region.h"
 #include "region_order_manager.h"
+#include "search_engine.h"
 #include "string_matcher.h"
 #include "tiny_observer_pattern.h"
 #include "tiny_selection_model.h"
@@ -53,19 +54,6 @@ struct RegionData
 using RegionSelectionModel = SelectionModel<RegionData>;
 
 //------------------------------------------------------------------------
-//  WordSelectData
-//------------------------------------------------------------------------
-struct WordSelectData
-{
-    using SelectedIdices    = std::vector<int>;
-    using HiliteSelectIndex = int;
-    meta_words::PlaybackRegion::Id region_id;
-    SelectedIdices indices{};
-    MetaWordsData meta_word_data;
-    HiliteSelectIndex hiliteSelectIndex;
-};
-
-//------------------------------------------------------------------------
 //------------------------------------------------------------------------
 // ARADocumentController
 //------------------------------------------------------------------------
@@ -98,7 +86,8 @@ public:
     using AnalysisProgressSubject =
         tiny_observer_pattern::Subject<meta_words::WordAnalysisProgressData>;
 
-    using WordSelectSubject = tiny_observer_pattern::Subject<WordSelectData>;
+    using SearchEngineSubject =
+        tiny_observer_pattern::Subject<search_engine::SearchResult>;
 
     // publish inherited constructor
     using ARA::PlugIn::DocumentController::DocumentController;
@@ -186,7 +175,10 @@ public:
     auto
     find_playback_region(PlaybackRegion::Id id) const -> OptPlaybackRegionPtr;
 
-    auto find_word_in_region(std::string search, int selectIndex) -> int;
+    auto search_word(std::string search) -> void;
+    auto clear_search_results() -> void;
+    auto focus_next_occurence() -> void;
+    auto focus_prev_occurence() -> void;
 
     template <typename Func>
     void for_each_playback_region_id(Func&& func)
@@ -214,9 +206,9 @@ public:
         return &playback_region_lifetimes_subject;
     }
 
-    auto get_selected_word_subject() -> WordSelectSubject*
+    auto get_selected_word_subject() -> SearchEngineSubject*
     {
-        return &selected_word_subject;
+        return &search_engine_subject;
     }
 
     auto register_word_analysis_progress_observer(
@@ -224,8 +216,8 @@ public:
 
     auto unregister_word_analysis_progress_observer(ObserverID id) -> bool;
 
-    auto register_word_selected_observer(WordSelectSubject::Callback&& callback)
-        -> ObserverID;
+    auto register_word_selected_observer(
+        SearchEngineSubject::Callback&& callback) -> ObserverID;
 
     auto unregister_word_selected_observer(ObserverID id) -> bool;
 
@@ -251,7 +243,7 @@ protected:
     PlaybackRegions playback_regions;
     PlaybackRegionLifetimesSubject playback_region_lifetimes_subject;
     AnalysisProgressSubject word_analysis_progress_subject;
-    WordSelectSubject selected_word_subject;
+    SearchEngineSubject search_engine_subject;
     RegionOrderManager region_order_manager;
     RegionSelectionModel region_selection_model;
 

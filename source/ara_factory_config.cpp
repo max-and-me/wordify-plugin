@@ -6,18 +6,18 @@
 #include "projectversion.h"
 #include "vstgpt_defines.h"
 
-#define VSTGPT_FACTORY_ID "org.maxandme.vstgptplugin.arafactory"
-#define VSTGPT_DOCUMENT_ARCHIVE_ID                                             \
-    "org.maxandme.vstgptplugin.aradocumentarchive.version1"
-#define VSTGPT_FILECHUNK_ARCHIVE_ID                                            \
-    "org.maxandme.vstgptplugin.arafilechunkarchive.version1"
+#define WORDIFY_FACTORY_ID "org.wordify.plugin.arafactory"
+#define WORDIFY_DOCUMENT_ARCHIVE_ID                                             \
+    "org.wordify.plugin.aradocumentarchive.version1"
+#define WORDIFY_FILECHUNK_ARCHIVE_ID                                            \
+    "org.wordify.plugin.arafilechunkarchive.version1"
 
 namespace mam {
 
 //------------------------------------------------------------------------
 const char* ARAFactoryConfig::getFactoryID() const noexcept
 {
-    return VSTGPT_FACTORY_ID;
+    return WORDIFY_FACTORY_ID;
 }
 
 //--------------------------------------------------------------------
@@ -47,7 +47,7 @@ const char* ARAFactoryConfig::getVersion() const noexcept
 //--------------------------------------------------------------------
 const char* ARAFactoryConfig::getDocumentArchiveID() const noexcept
 {
-    return VSTGPT_DOCUMENT_ARCHIVE_ID;
+    return WORDIFY_DOCUMENT_ARCHIVE_ID;
 }
 
 //--------------------------------------------------------------------

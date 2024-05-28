@@ -8,6 +8,7 @@
 #include "base/source/fobject.h"
 #include "vstgui/lib/iviewlistener.h"
 #include "vstgui/uidescription/icontroller.h"
+#include "search_engine.h"
 
 namespace VSTGUI {
 class CRowColumnView;
@@ -53,7 +54,7 @@ public:
                      const IUIDescription* description) override;
 
     using WordSelectObserver = tiny_observer_pattern::Observer<
-        ARADocumentController::WordSelectSubject>;
+        ARADocumentController::SearchEngineSubject>;
     using WordSelectObserverPtr = std::unique_ptr<WordSelectObserver>;
 
     // IControlListener
@@ -70,7 +71,7 @@ public:
 
     //--------------------------------------------------------------------
 private:
-    void checkSelectWord(const WordSelectData& data);
+    void checkSelectWord(const search_engine::SearchResult& search_result);
     void on_add_remove_playback_region(const PlaybackRegionLifetimeData& data);
     void on_playback_regions_reordered();
     auto create_list_item_view(const PlaybackRegion::Id id) -> VSTGUI::CView*;

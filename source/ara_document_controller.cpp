@@ -12,6 +12,7 @@
 #include "meta_words_playback_renderer.h"
 #include "meta_words_serde.h"
 #include "preferences_serde.h"
+#include "search_engine.h"
 #include "string_matcher.h"
 
 namespace mam {
@@ -395,72 +396,52 @@ auto ARADocumentController::find_playback_region(PlaybackRegion::Id id) const
 }
 
 //------------------------------------------------------------------------
-auto ARADocumentController::find_word_in_region(std::string search,
-                                                int selectIndex) -> int
+auto ARADocumentController::clear_search_results() -> void
 {
-    int selectIndexResult = selectIndex;
-    bool selectHiliteSet  = false;
-    int selectIndexInSet  = selectIndex;
-
-    using WordSelectDataList = std::vector<WordSelectData>;
-    WordSelectDataList dataList;
-
-    for (const auto& reg : playback_regions)
+    auto results = search_engine::clear_results();
+    for (const auto& result : results)
     {
-        auto regionPtr          = reg.second;
-        auto meta_words_data    = regionPtr->get_meta_words_data();
-        auto meta_words_dataSet = meta_words_data.words;
-
-        WordSelectData data{reg.first, {}, meta_words_data, -1};
-        if (search.empty())
-        {
-            selected_word_subject.notify_listeners(data);
-            continue;
-        }
-        else
-        {
-            for (size_t i = 0; i < meta_words_dataSet.size(); i++)
-            {
-                const auto& word_data = meta_words_dataSet[i];
-                if (word_data.is_clipped_by_region)
-                    continue;
-
-                auto word = word_data.word.word;
-               
-                if (StringMatcher::isMatch(word, search, string_match_method))
-                    data.indices.push_back(static_cast<int>(i));
-            }
-
-            dataList.push_back(data);
-        }
+        search_engine_subject.notify_listeners(result);
     }
-    for (auto data = dataList.begin(); data != dataList.end(); ++data)
+}
+
+//------------------------------------------------------------------------
+auto ARADocumentController::search_word(std::string search) -> void
+{
+    if (search.empty())
     {
-        if (selectIndexInSet + 1 <= data->indices.size() && !selectHiliteSet)
-        {
-            data->hiliteSelectIndex = selectIndexInSet;
-            selectHiliteSet         = true;
-        }
-        else if (!selectHiliteSet)
-        {
-            selectIndexInSet -= static_cast<int>(data->indices.size());
-        }
-
-        // catch out of range
-        if (std::next(data) == dataList.end() && !selectHiliteSet)
-        {
-            if (selectIndexInSet + 1 >= data->indices.size())
-            {
-                data->hiliteSelectIndex = selectIndexInSet;
-                selectHiliteSet         = true;
-                selectIndexResult       = selectIndex - 1;
-            }
-        }
-
-        selected_word_subject.notify_listeners(*data);
+        clear_search_results();
     }
+    else
+    {
+        const auto results = search_engine::search(
+            search, playback_regions,
+            [&](const auto& s0, const auto& s1) -> bool {
+                return StringMatcher::isMatch(s0, s1, string_match_method);
+            });
 
-    return selectIndexResult;
+        for (const auto& result : results)
+            search_engine_subject.notify_listeners(result);
+
+        if (results.empty())
+            clear_search_results();
+    }
+}
+
+//------------------------------------------------------------------------
+auto ARADocumentController::focus_next_occurence() -> void
+{
+    const auto results = search_engine::next_occurence();
+    for (const auto& result : results)
+        search_engine_subject.notify_listeners(result);
+}
+
+//------------------------------------------------------------------------
+auto ARADocumentController::focus_prev_occurence() -> void
+{
+    const auto results = search_engine::prev_occurence();
+    for (const auto& result : results)
+        search_engine_subject.notify_listeners(result);
 }
 
 //------------------------------------------------------------------------
@@ -504,16 +485,16 @@ auto ARADocumentController::unregister_playback_region_changed_observer(
 
 //------------------------------------------------------------------------
 auto ARADocumentController::register_word_selected_observer(
-    WordSelectSubject::Callback&& callback) -> ObserverID
+    SearchEngineSubject::Callback&& callback) -> ObserverID
 {
-    return selected_word_subject.add_listener(std::move(callback));
+    return search_engine_subject.add_listener(std::move(callback));
 }
 
 //------------------------------------------------------------------------
 auto ARADocumentController::unregister_word_selected_observer(ObserverID id)
     -> bool
 {
-    return selected_word_subject.remove_listener(id);
+    return search_engine_subject.remove_listener(id);
 }
 
 //------------------------------------------------------------------------

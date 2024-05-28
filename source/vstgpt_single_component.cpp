@@ -6,7 +6,6 @@
 #include "ara_document_controller.h"
 #include "audio_source_analyze_worker.h"
 #include "base/source/fstreamer.h"
-#include "header_controller.h"
 #include "list_controller.h"
 #include "meta_words_editor_renderer.h"
 #include "meta_words_editor_view.h"
@@ -16,6 +15,7 @@
 #include "pluginterfaces/vst/ivstprocesscontext.h"
 #include "preferences_controller.h"
 #include "preferences_serde.h"
+#include "search_controller.h"
 #include "spinner_controller.h"
 #include "vstgpt_cids.h"
 #include "vstgpt_defines.h"
@@ -332,9 +332,9 @@ VSTGUI::IController* VstGPTSingleComponent::createSubController(
 
         return subctrl;
     }
-    else if (VSTGUI::UTF8StringView(name) == "HeaderController")
+    else if (VSTGUI::UTF8StringView(name) == "SearchController")
     {
-        return new HeaderController(document_controller);
+        return new SearchController(document_controller);
     }
     else if (VSTGUI::UTF8StringView(name) == "SpinnerController")
     {
@@ -369,7 +369,7 @@ IPlugView* PLUGIN_API VstGPTSingleComponent::createView(FIDString name)
     {
         // create your editor here and return a IPlugView ptr of it
         auto* view =
-            new VSTGUI::VST3Editor(this, "view", "vstgpt_editor.uidesc");
+            new VSTGUI::VST3Editor(this, "view", "wordify_editor.uidesc");
 
         const auto uidesc = view->getUIDescription();
         if (uidesc)

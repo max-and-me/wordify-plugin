@@ -12,7 +12,7 @@
 #include "vstgui/plugin-bindings/vst3editor.h"
 #include <memory>
 namespace mam {
-class HeaderController;
+class SearchController;
 //------------------------------------------------------------------------
 //  VstGPTProcessor
 //------------------------------------------------------------------------

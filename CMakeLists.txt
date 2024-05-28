@@ -40,11 +40,9 @@ smtg_add_vst3plugin(Wordify
     source/ara_document_controller.h
     source/ara_factory_config.cpp
     source/ara_factory_config.h
+    source/audio_buffer_management.h
     source/audio_source_analyze_worker.cpp
     source/audio_source_analyze_worker.h
-    source/audio_buffer_management.h
-    source/header_controller.cpp
-    source/header_controller.h
     source/hilite_text_button.cpp
     source/hilite_text_button.h
     source/hstack_layout.cpp
@@ -71,12 +69,16 @@ smtg_add_vst3plugin(Wordify
     source/meta_words_serde.h
     source/nonstd.h
     source/parameter_ids.h
-    source/preferences_serde.cpp
-    source/preferences_serde.h
     source/preferences_controller.cpp
     source/preferences_controller.h
+    source/preferences_serde.cpp
+    source/preferences_serde.h
     source/region_order_manager.cpp
     source/region_order_manager.h
+    source/search_controller.cpp
+    source/search_controller.h
+    source/search_engine.cpp
+    source/search_engine.h
     source/spinner_controller.cpp
     source/spinner_controller.h
     source/spinner_view.cpp
@@ -102,18 +104,6 @@ smtg_add_vst3plugin(Wordify
 
 smtg_target_add_plugin_resources(Wordify
     RESOURCES
-        "resource/vstgpt_editor.uidesc"
-        "resource/editor_res_dark_scheme.uidesc"
-        "resource/editor_res_signal_dark_scheme.uidesc"
-        "resource/editor_res_signal_lite_scheme.uidesc"
-        "resource/moon-solid.png"
-        "resource/moon-solid_2x.png"
-        "resource/moon-solid_3x.png"
-        "resource/moon-solid_4x.png"
-        "resource/sun-solid.png"
-        "resource/sun-solid_2x.png"
-        "resource/sun-solid_3x.png"
-        "resource/sun-solid_4x.png"
         "resource/chevron-down-solid_dark.png"
         "resource/chevron-down-solid_dark_2x.png"
         "resource/chevron-down-solid_dark_3x.png"
@@ -130,14 +120,25 @@ smtg_target_add_plugin_resources(Wordify
         "resource/chevron-up-solid_lite_2x.png"
         "resource/chevron-up-solid_lite_3x.png"
         "resource/chevron-up-solid_lite_4x.png"
-        "resource/magnifying-glass-solid_dark_4x.png"
-        "resource/magnifying-glass-solid_dark_3x.png"
-        "resource/magnifying-glass-solid_dark_2x.png"
+        "resource/editor_res_dark_scheme.uidesc"
+        "resource/editor_res_signal_dark_scheme.uidesc"
+        "resource/editor_res_signal_lite_scheme.uidesc"
         "resource/magnifying-glass-solid_dark.png"
-        "resource/magnifying-glass-solid_lite_4x.png"
-        "resource/magnifying-glass-solid_lite_3x.png"
-        "resource/magnifying-glass-solid_lite_2x.png"
+        "resource/magnifying-glass-solid_dark_2x.png"
+        "resource/magnifying-glass-solid_dark_3x.png"
+        "resource/magnifying-glass-solid_dark_4x.png"
         "resource/magnifying-glass-solid_lite.png"
+        "resource/magnifying-glass-solid_lite_2x.png"
+        "resource/magnifying-glass-solid_lite_3x.png"
+        "resource/magnifying-glass-solid_lite_4x.png"
+        "resource/moon-solid.png"
+        "resource/moon-solid_2x.png"
+        "resource/moon-solid_3x.png"
+        "resource/moon-solid_4x.png"
+        "resource/sun-solid.png"
+        "resource/sun-solid_2x.png"
+        "resource/sun-solid_3x.png"
+        "resource/sun-solid_4x.png"
 )
 
 smtg_target_add_plugin_snapshots (Wordify
@@ -167,7 +168,7 @@ smtg_target_configure_version_file(Wordify)
 # VSTGUI support
 target_sources(Wordify
     PRIVATE
-        resource/vstgpt_editor.uidesc
+        resource/wordify_editor.uidesc
 )
 
 target_link_libraries(Wordify
