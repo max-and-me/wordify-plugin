@@ -15,10 +15,6 @@ using namespace mam;
 //------------------------------------------------------------------------
 //  VST Plug-in Entry
 //------------------------------------------------------------------------
-// Windows: do not forget to include a .def file in your project to export
-// GetPluginFactory function!
-//------------------------------------------------------------------------
-
 DEF_CLASS_IID(ARA::IMainFactory)
 DEF_CLASS_IID(ARA::IPlugInEntryPoint)
 DEF_CLASS_IID(ARA::IPlugInEntryPoint2)
