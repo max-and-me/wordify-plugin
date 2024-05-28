@@ -139,7 +139,6 @@ smtg_target_add_plugin_resources(Wordify
         "resource/sun-solid_2x.png"
         "resource/sun-solid_3x.png"
         "resource/sun-solid_4x.png"
-        "resource/wordify_editor.uidesc"
 )
 
 smtg_target_add_plugin_snapshots (Wordify
@@ -169,7 +168,7 @@ smtg_target_configure_version_file(Wordify)
 # VSTGUI support
 target_sources(Wordify
     PRIVATE
-        resource/vstgpt_editor.uidesc
+        resource/wordify_editor.uidesc
 )
 
 target_link_libraries(Wordify
