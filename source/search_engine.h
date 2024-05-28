@@ -37,7 +37,6 @@ struct SearchResult
 using SearchResults = std::vector<SearchResult>;
 using MatchFunc =
     std::function<bool(const StringType& s0, const StringType& s1)>;
-using RegionIDFunc = std::function<RegionID(RegionID)>;
 
 auto search(const StringType& search_word,
             const Regions& regions,
