@@ -414,8 +414,13 @@ auto ARADocumentController::search_word(std::string search) -> void
     }
     else
     {
+        search_engine::Regions regions {};
+        for (const auto& entry : playback_regions) {
+            regions[static_cast<search_engine::RegionID>(entry.first)] = static_cast<meta_words::PlaybackRegion*>(entry.second);
+        }
+        
         const auto results = search_engine::search(
-            search, playback_regions,
+            search, regions,
             [&](const auto& s0, const auto& s1) -> bool {
                 return StringMatcher::isMatch(s0, s1, string_match_method);
             });
