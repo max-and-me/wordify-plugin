@@ -169,7 +169,7 @@ private:
     {
 
         Steinberg::Vst::ParameterInfo paramInfo;
-        paramInfo.id        = ParamIdAnalyzeTaskCount;
+        paramInfo.id        = kParamIdAnalyzeTaskCount;
         paramInfo.stepCount = 100;
         task_count_param    = Steinberg::owned(
             new Steinberg::Vst::RangeParameter(paramInfo, 0, 100));

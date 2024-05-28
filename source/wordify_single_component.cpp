@@ -469,6 +469,17 @@ auto WordifySingleComponent::restore_parameters() -> void
         ui_parameters.addParameter(color_scheme_param);
         color_scheme_param->addDependent(this);
     }
+    if (auto* smart_search_param = new Vst::StringListParameter(
+            STR("SmartSearch"), ParamIds::kParamSmartSearch))
+    {
+        smart_search_param->appendString(STR("Off"));
+        smart_search_param->appendString(STR("On"));
+
+        // TODO
+
+        ui_parameters.addParameter(smart_search_param);
+        smart_search_param->addDependent(this);
+    }
 }
 
 //------------------------------------------------------------------------
@@ -480,13 +491,22 @@ auto WordifySingleComponent::store_parameters() -> void
     // Store preferences to disc
     meta_words::serde::Preferences prefs{};
 
-    if (color_scheme_param)
+    if (auto* color_scheme_param =
+            getParameterObject(ParamIds::kParamIdColorScheme))
     {
         prefs.color_scheme = color_scheme_param->getNormalized() > 0.
                                  ? meta_words::serde::ColorScheme::Dark
                                  : meta_words::serde::ColorScheme::Light;
 
         color_scheme_param->removeDependent(this);
+    }
+
+    if (auto* smart_search_param =
+            getParameterObject(ParamIds::kParamSmartSearch))
+    {
+        // TODO
+
+        smart_search_param->removeDependent(this);
     }
 
     meta_words::serde::write_to(prefs, COMPANY_NAME_STR, PLUGIN_NAME_STR);
