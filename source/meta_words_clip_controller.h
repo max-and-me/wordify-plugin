@@ -24,7 +24,7 @@ namespace mam {
 class HStackLayout;
 
 //------------------------------------------------------------------------
-// VstGPTWaveClipListController
+// MetaWordsClipController
 //------------------------------------------------------------------------
 class MetaWordsClipController : public Steinberg::FObject,
                                 public VSTGUI::IController,

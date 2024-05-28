@@ -174,7 +174,7 @@ static auto set_dark_scheme_on_editors(WordifySingleComponent::Editors& editors,
 }
 
 //------------------------------------------------------------------------
-// VstGPTProcessor
+// WordifySingleComponent
 //------------------------------------------------------------------------
 WordifySingleComponent::WordifySingleComponent() {}
 

@@ -11,10 +11,12 @@
 #include "tiny_observer_pattern.h"
 #include "vstgui/plugin-bindings/vst3editor.h"
 #include <memory>
+
 namespace mam {
 class SearchController;
+
 //------------------------------------------------------------------------
-//  VstGPTProcessor
+//  WordifySingleComponent
 //------------------------------------------------------------------------
 class WordifySingleComponent : public Steinberg::Vst::SingleComponentEffect,
                                public ARA::IPlugInEntryPoint,

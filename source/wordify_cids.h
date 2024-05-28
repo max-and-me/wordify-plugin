@@ -10,11 +10,11 @@
 namespace mam {
 //------------------------------------------------------------------------
 static const Steinberg::FUID
-    kVstGPTProcessorUID(0x76FA7B01, 0x4D2757B4, 0x9BA55204, 0x681B0F2C);
+    kWordifyProcessorUID(0x76FA7B01, 0x4D2757B4, 0x9BA55204, 0x681B0F2C);
 static const Steinberg::FUID
-    kVstGPTControllerUID(0xB7046436, 0x1AFA58A3, 0x99C5BA83, 0x7ED9EC1F);
+    kWordifyControllerUID(0xB7046436, 0x1AFA58A3, 0x99C5BA83, 0x7ED9EC1F);
 
-#define VstGPTVST3Category "Fx|OnlyARA"
+#define WordifyVST3Category "Fx|OnlyARA"
 
 //------------------------------------------------------------------------
 } // namespace mam

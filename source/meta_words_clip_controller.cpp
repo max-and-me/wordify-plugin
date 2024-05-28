@@ -438,7 +438,7 @@ struct FitContentHandler : public ViewListenerAdapter
 };
 
 //------------------------------------------------------------------------
-// VstGPTWaveClipListController
+// MetaWordsClipController
 //------------------------------------------------------------------------
 MetaWordsClipController::MetaWordsClipController(
     const IUIDescription* description)
