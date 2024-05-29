@@ -476,8 +476,8 @@ auto WordifySingleComponent::restore_parameters() -> void
     {
         smart_search_param->appendString(STR("Off"));
         smart_search_param->appendString(STR("On"));
-
-        // TODO
+        smart_search_param->setNormalized(
+            prefs.smart_search == meta_words::serde::SmartSearch::On ? 1. : 0.);
 
         ui_parameters.addParameter(smart_search_param);
         smart_search_param->addDependent(this);
@@ -503,7 +503,9 @@ auto WordifySingleComponent::store_parameters() -> void
     if (auto* smart_search_param =
             getParameterObject(ParamIds::kParamIdSmartSearch))
     {
-        // TODO
+        prefs.smart_search = smart_search_param->getNormalized() > 0.
+                                 ? meta_words::serde::SmartSearch::On
+                                 : meta_words::serde::SmartSearch::Off;
 
         smart_search_param->removeDependent(this);
     }
@@ -526,6 +528,11 @@ void PLUGIN_API WordifySingleComponent::update(FUnknown* changedUnknown,
         if (param->getInfo().id == ParamIds::kParamIdColorScheme)
         {
             set_dark_scheme_on_editors(editors, param->getNormalized() > 0.);
+            return;
+        }
+        else if (param->getInfo().id == ParamIds::kParamIdSmartSearch)
+        {
+            // Nothing here yet
             return;
         }
     }

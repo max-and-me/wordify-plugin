@@ -89,6 +89,8 @@ CView* SearchController::verifyView(CView* view,
             {
                 c->setTag(kSearchSmartSearchTag);
                 c->setListener(this);
+                if (smart_search_param)
+                    c->setValueNormalized(smart_search_param->getNormalized());
             }
         }
     }

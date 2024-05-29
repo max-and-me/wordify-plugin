@@ -17,6 +17,9 @@ static constexpr auto PREFS_VERSION_KEY       = "preferences_version";
 static constexpr auto COLOR_SCHEME_KEY        = "color_scheme";
 static constexpr auto COLOR_SCHEME_LITE_VALUE = "light";
 static constexpr auto COLOR_SCHEME_DARK_VALUE = "dark";
+static constexpr auto SMART_SEARCH_KEY        = "smart_search";
+static constexpr auto SMART_SEARCH_OFF_VALUE  = "off";
+static constexpr auto SMART_SEARCH_ON_VALUE   = "on";
 //------------------------------------------------------------------------
 NLOHMANN_JSON_SERIALIZE_ENUM(ColorScheme,
                              {
@@ -24,18 +27,28 @@ NLOHMANN_JSON_SERIALIZE_ENUM(ColorScheme,
                                  {Dark, COLOR_SCHEME_DARK_VALUE},
                              })
 
+NLOHMANN_JSON_SERIALIZE_ENUM(SmartSearch,
+                             {
+                                 {Off, SMART_SEARCH_OFF_VALUE},
+                                 {On, SMART_SEARCH_ON_VALUE},
+                             })
+
 //------------------------------------------------------------------------
 void to_json(json& j, const Preferences& prefs)
 {
     j = json{{PREFS_VERSION_KEY, prefs.version},
-             {COLOR_SCHEME_KEY, prefs.color_scheme}};
+             {COLOR_SCHEME_KEY, prefs.color_scheme},
+             {SMART_SEARCH_KEY, prefs.smart_search}};
 }
 
 //------------------------------------------------------------------------
 void from_json(const json& j, Preferences& prefs)
 {
     j.at(PREFS_VERSION_KEY).get_to(prefs.version);
-    j.at(COLOR_SCHEME_KEY).get_to(prefs.color_scheme);
+    if (j.contains(COLOR_SCHEME_KEY))
+        j.at(COLOR_SCHEME_KEY).get_to(prefs.color_scheme);
+    if (j.contains(SMART_SEARCH_KEY))
+        j.at(SMART_SEARCH_KEY).get_to(prefs.smart_search);
 }
 
 //------------------------------------------------------------------------
