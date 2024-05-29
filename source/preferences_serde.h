@@ -18,10 +18,17 @@ enum ColorScheme
     Dark
 };
 
+enum SmartSearch
+{
+    Off,
+    On
+};
+
 struct Preferences
 {
     size_t version = 1;
     ColorScheme color_scheme{Dark};
+    SmartSearch smart_search{Off};
 };
 
 //------------------------------------------------------------------------

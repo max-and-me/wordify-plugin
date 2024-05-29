@@ -13,7 +13,7 @@ enum ParamIds
 {
     kParamIdColorScheme = 0,
     kParamIdAnalyzeTaskCount,
-    kParamSmartSearch,
+    kParamIdSmartSearch,
 };
 
 //------------------------------------------------------------------------

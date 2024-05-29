@@ -87,6 +87,15 @@ auto search(const StringType& search_word,
 }
 
 //------------------------------------------------------------------------
+auto research(const Regions& regions,
+              MatchFunc&& match_func) -> const SearchResults&
+{
+    const auto& w = SearchEngineCache::instance().search_word;
+    clear_results();
+    return search(w, regions, std::move(match_func));
+}
+
+//------------------------------------------------------------------------
 auto next_occurence() -> SearchResults
 {
     auto& focused_word   = SearchEngineCache::instance().focused_word;

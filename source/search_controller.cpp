@@ -2,6 +2,7 @@
 
 #include "search_controller.h"
 #include "ara_document_controller.h"
+#include "public.sdk/source/vst/vstparameters.h"
 #include "vstgui/lib/controls/csearchtextedit.h"
 #include "vstgui/uidescription/iuidescription.h"
 #include "vstgui/uidescription/uiattributes.h"
@@ -15,14 +16,18 @@ enum
 {
     kSearchFieldTag = 1000,
     kSearchNextTag,
-    kSearchPreviousTag
+    kSearchPreviousTag,
+    kSearchSmartSearchTag
 };
 
 //------------------------------------------------------------------------
 // SearchController
 //------------------------------------------------------------------------
-SearchController::SearchController(ARADocumentController* controller)
+SearchController::SearchController(
+    ARADocumentController* controller,
+    Steinberg::Vst::Parameter* smart_search_param)
 : controller(controller)
+, smart_search_param(smart_search_param)
 {
     if (!controller)
         return;
@@ -78,6 +83,14 @@ CView* SearchController::verifyView(CView* view,
                 c->setListener(this);
             }
         }
+        else if (*view_name == "SmartSearch")
+        {
+            if (auto c = dynamic_cast<CControl*>(view))
+            {
+                c->setTag(kSearchSmartSearchTag);
+                c->setListener(this);
+            }
+        }
     }
 
     return view;
@@ -112,6 +125,11 @@ void SearchController::valueChanged(CControl* control)
             if (control->getValue() == control->getMax())
                 controller->focus_prev_occurence();
 
+            break;
+        }
+        case kSearchSmartSearchTag: {
+            controller->activate_smart_search(control->getValue() > 0);
+            smart_search_param->setNormalized(control->getValueNormalized());
             break;
         }
     }

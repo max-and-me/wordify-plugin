@@ -334,7 +334,9 @@ VSTGUI::IController* WordifySingleComponent::createSubController(
     }
     else if (VSTGUI::UTF8StringView(name) == "SearchController")
     {
-        return new SearchController(document_controller);
+        return new SearchController(
+            document_controller,
+            getParameterObject(ParamIds::kParamIdSmartSearch));
     }
     else if (VSTGUI::UTF8StringView(name) == "SpinnerController")
     {
@@ -470,7 +472,7 @@ auto WordifySingleComponent::restore_parameters() -> void
         color_scheme_param->addDependent(this);
     }
     if (auto* smart_search_param = new Vst::StringListParameter(
-            STR("SmartSearch"), ParamIds::kParamSmartSearch))
+            STR("SmartSearch"), ParamIds::kParamIdSmartSearch))
     {
         smart_search_param->appendString(STR("Off"));
         smart_search_param->appendString(STR("On"));
@@ -499,7 +501,7 @@ auto WordifySingleComponent::store_parameters() -> void
     }
 
     if (auto* smart_search_param =
-            getParameterObject(ParamIds::kParamSmartSearch))
+            getParameterObject(ParamIds::kParamIdSmartSearch))
     {
         // TODO
 

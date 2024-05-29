@@ -237,6 +237,8 @@ public:
         string_match_method = matchMethod;
     }
 
+    auto activate_smart_search(bool activate) -> void;
+
     //--------------------------------------------------------------------
 protected:
     PlaybackRegionObservers playback_region_observers;

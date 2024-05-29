@@ -61,13 +61,6 @@ CView* PreferencesController::verifyView(CView* view,
             {
                 options_menu->addEntry("Visit wordify.org ...");
                 options_menu->addEntry("Check for updates ...");
-                auto* sub_menu = new COptionMenu();
-                sub_menu->addEntry("Show direct matches");
-                sub_menu->addEntry("Show sub matches");
-                sub_menu->addEntry("Show nearby fuzzy matches");
-                sub_menu->addEntry("Show intermediate fuzzy matches");
-                options_menu->addEntry(sub_menu, "Search Settings");
-
                 options_menu->addEntry(UTF8String("v") + VERSION_STR, -1,
                                        CMenuItem::kDisabled);
                 options_menu->registerControlListener(this);
@@ -95,24 +88,7 @@ CView* PreferencesController::verifyView(CView* view,
 //------------------------------------------------------------------------
 void PreferencesController::valueChanged(CControl* pControl)
 {
-    if (pControl == options_menu)
-    {
-        int result;
-        auto sub = options_menu->getLastItemMenu(result);
-        if (result == 0)
-            controller->selectStringMatchMethod(
-                StringMatcher::MatchMethod::directMatch);
-        else if (result == 1)
-            controller->selectStringMatchMethod(
-                StringMatcher::MatchMethod::subMatch);
-        else if (result == 2)
-            controller->selectStringMatchMethod(
-                StringMatcher::MatchMethod::nearbyFuzzyMatch);
-        else if (result == 3)
-            controller->selectStringMatchMethod(
-                StringMatcher::MatchMethod::intermediateFuzzyMatch);
-    }
-    else if (pControl == scheme_switch)
+    if (pControl == scheme_switch)
     {
         if (!color_scheme_param)
             return;

@@ -314,6 +314,7 @@ void ARADocumentController::didUpdatePlaybackRegionProperties(
         playbackRegion);
 
     region_order_manager.reorder();
+    clear_search_results();
 
     this->notify_listeners({});
     if (auto* pbr = dynamic_cast<PlaybackRegion*>(playbackRegion))
@@ -414,14 +415,15 @@ auto ARADocumentController::search_word(std::string search) -> void
     }
     else
     {
-        search_engine::Regions regions {};
-        for (const auto& entry : playback_regions) {
-            regions[static_cast<search_engine::RegionID>(entry.first)] = static_cast<meta_words::PlaybackRegion*>(entry.second);
+        search_engine::Regions regions{};
+        for (const auto& entry : playback_regions)
+        {
+            regions[static_cast<search_engine::RegionID>(entry.first)] =
+                static_cast<meta_words::PlaybackRegion*>(entry.second);
         }
-        
+
         const auto results = search_engine::search(
-            search, regions,
-            [&](const auto& s0, const auto& s1) -> bool {
+            search, regions, [&](const auto& s0, const auto& s1) -> bool {
                 return StringMatcher::isMatch(s0, s1, string_match_method);
             });
 
@@ -575,6 +577,37 @@ auto ARADocumentController::onRequestSelectWord(
     int index, const meta_words::PlaybackRegion::Id id) -> void
 {
     on_request_select_word(index, this, id);
+}
+
+//------------------------------------------------------------------------
+auto ARADocumentController::activate_smart_search(bool activate) -> void
+{
+    if (activate)
+    {
+        string_match_method = StringMatcher::MatchMethod::nearbyFuzzyMatch;
+    }
+    else
+    {
+        string_match_method = StringMatcher::MatchMethod::directMatch;
+    }
+
+    search_engine::Regions regions{};
+    for (const auto& entry : playback_regions)
+    {
+        regions[static_cast<search_engine::RegionID>(entry.first)] =
+            static_cast<meta_words::PlaybackRegion*>(entry.second);
+    }
+
+    const auto results = search_engine::research(
+        regions, [&](const auto& s0, const auto& s1) -> bool {
+            return StringMatcher::isMatch(s0, s1, string_match_method);
+        });
+
+    for (const auto& result : results)
+        search_engine_subject.notify_listeners(result);
+
+    if (results.empty())
+        clear_search_results();
 }
 
 //------------------------------------------------------------------------

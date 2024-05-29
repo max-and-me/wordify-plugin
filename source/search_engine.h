@@ -41,6 +41,10 @@ using MatchFunc =
 auto search(const StringType& search_word,
             const Regions& regions,
             MatchFunc&& match_func) -> const SearchResults&;
+
+auto research(const Regions& regions,
+              MatchFunc&& match_func) -> const SearchResults&;
+
 auto next_occurence() -> SearchResults;
 auto prev_occurence() -> SearchResults;
 auto clear_results() -> SearchResults;
