@@ -485,9 +485,6 @@ auto WordifySingleComponent::restore_parameters() -> void
 //------------------------------------------------------------------------
 auto WordifySingleComponent::store_parameters() -> void
 {
-    auto* color_scheme_param =
-        getParameterObject(ParamIds::kParamIdColorScheme);
-
     // Store preferences to disc
     meta_words::serde::Preferences prefs{};
 
