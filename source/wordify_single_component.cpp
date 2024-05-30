@@ -468,7 +468,7 @@ auto WordifySingleComponent::restore_parameters() -> void
         color_scheme_param->setNormalized(
             prefs.color_scheme == meta_words::serde::ColorScheme::Dark ? 1.
                                                                        : 0.);
-        ui_parameters.addParameter(color_scheme_param);
+        parameters.addParameter(color_scheme_param);
         color_scheme_param->addDependent(this);
     }
     if (auto* smart_search_param = new Vst::StringListParameter(
@@ -479,7 +479,7 @@ auto WordifySingleComponent::restore_parameters() -> void
         smart_search_param->setNormalized(
             prefs.smart_search == meta_words::serde::SmartSearch::On ? 1. : 0.);
 
-        ui_parameters.addParameter(smart_search_param);
+        parameters.addParameter(smart_search_param);
         smart_search_param->addDependent(this);
     }
 }
@@ -511,12 +511,6 @@ auto WordifySingleComponent::store_parameters() -> void
     }
 
     meta_words::serde::write_to(prefs, COMPANY_NAME_STR, PLUGIN_NAME_STR);
-}
-
-//------------------------------------------------------------------------
-Vst::Parameter* WordifySingleComponent::getParameterObject(Vst::ParamID id)
-{
-    return ui_parameters.getParameter(id);
 }
 
 //------------------------------------------------------------------------

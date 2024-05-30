@@ -96,8 +96,6 @@ public:
         SMTG_OVERRIDE;
     void PLUGIN_API editorAttached(Steinberg::Vst::EditorView* editor) override;
     void PLUGIN_API editorRemoved(Steinberg::Vst::EditorView* editor) override;
-    Steinberg::Vst::Parameter*
-    getParameterObject(Steinberg::Vst::ParamID id) override;
     void PLUGIN_API update(Steinberg::FUnknown* changedUnknown,
                            Steinberg::int32 tag) override;
 
@@ -117,7 +115,7 @@ public:
 protected:
     ARA::PlugIn::PlugInExtension _araPlugInExtension;
     Editors editors;
-    Steinberg::Vst::ParameterContainer ui_parameters;
+
     auto restore_parameters() -> void;
     auto store_parameters() -> void;
 };

@@ -3,7 +3,10 @@
 		"version": "1",
 		"fonts": {},
 		"colors": {},
-		"control-tags": {},
+		"control-tags": {
+			"ColorScheme": "0",
+			"SmartSearch": "2"
+		},
 		"custom": {
 			"FocusDrawing": {},
 			"VST3Editor": {
@@ -354,7 +357,6 @@
 													"row-style": "false",
 													"size": "96, 48",
 													"spacing": "0",
-													"sub-controller": "PreferencesController",
 													"transparent": "true",
 													"uidesc-label": "HLayout",
 													"view-resize-animation-time": "200",
@@ -385,7 +387,7 @@
 															"CTextButton": {
 																"attributes": {
 																	"class": "CTextButton",
-																	"default-value": "0.5",
+																	"control-tag": "ColorScheme",
 																	"font": "~ SystemFont",
 																	"frame-color": "~ BlackCColor",
 																	"frame-color-highlighted": "~ BlackCColor",
@@ -397,9 +399,6 @@
 																	"icon-position": "center above text",
 																	"icon-text-margin": "0",
 																	"kick-style": "false",
-																	"max-value": "1",
-																	"min-value": "0",
-																	"mouse-enabled": "true",
 																	"opacity": "1",
 																	"origin": "8, 8",
 																	"round-radius": "6",
@@ -430,6 +429,7 @@
 															"row-style": "true",
 															"size": "48, 48",
 															"spacing": "0",
+															"sub-controller": "PreferencesController",
 															"transparent": "true",
 															"uidesc-label": "ALayout",
 															"view-resize-animation-time": "200",
