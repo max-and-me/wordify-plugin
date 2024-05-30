@@ -13,17 +13,11 @@ using namespace VSTGUI;
 //------------------------------------------------------------------------
 // PreferencesController
 //------------------------------------------------------------------------
-PreferencesController::PreferencesController(
-    ARADocumentController* controller,
-    Steinberg::Vst::Parameter* color_scheme_param)
+PreferencesController::PreferencesController(ARADocumentController* controller)
 : controller(controller)
-, color_scheme_param(color_scheme_param)
 {
     if (!controller)
         return;
-
-    if (color_scheme_param)
-        color_scheme_param->addDependent(this);
 }
 
 //------------------------------------------------------------------------
@@ -35,16 +29,6 @@ PreferencesController::~PreferencesController()
         options_menu->unregisterViewListener(this);
         options_menu = nullptr;
     }
-
-    if (scheme_switch)
-    {
-        scheme_switch->unregisterControlListener(this);
-        scheme_switch->unregisterViewListener(this);
-        scheme_switch = nullptr;
-    }
-
-    if (color_scheme_param)
-        color_scheme_param->removeDependent(this);
 }
 
 //------------------------------------------------------------------------
@@ -67,56 +51,18 @@ CView* PreferencesController::verifyView(CView* view,
                 options_menu->registerViewListener(this);
             }
         }
-        else if (*view_name == "SchemeSwitch")
-        {
-            if (scheme_switch = dynamic_cast<CControl*>(view))
-            {
-                if (color_scheme_param)
-                {
-                    const auto val = color_scheme_param->getNormalized();
-                    scheme_switch->setValueNormalized(val);
-                    scheme_switch->registerControlListener(this);
-                    scheme_switch->registerViewListener(this);
-                }
-            }
-        }
     }
 
     return view;
 }
 
 //------------------------------------------------------------------------
-void PreferencesController::valueChanged(CControl* pControl)
-{
-    if (pControl == scheme_switch)
-    {
-        if (!color_scheme_param)
-            return;
-
-        const auto val = pControl->getValueNormalized();
-        color_scheme_param->setNormalized(val);
-    }
-}
+void PreferencesController::valueChanged(CControl* /*pControl*/) {}
 
 //------------------------------------------------------------------------
-void PLUGIN_API PreferencesController::update(FUnknown* changedUnknown,
-                                              Steinberg::int32 tag)
+void PLUGIN_API PreferencesController::update(FUnknown* /*changedUnknown*/,
+                                              Steinberg::int32 /*tag*/)
 {
-    if (!color_scheme_param)
-        return;
-
-    if (!scheme_switch)
-        return;
-
-    if (const auto* tmp_param =
-            Steinberg::FCast<Steinberg::Vst::Parameter>(changedUnknown))
-    {
-        if (color_scheme_param->getInfo().id == tmp_param->getInfo().id)
-        {
-            scheme_switch->setValueNormalized(
-                color_scheme_param->getNormalized());
-        }
-    }
 }
 
 //------------------------------------------------------------------------
@@ -127,12 +73,6 @@ void PreferencesController::viewWillDelete(VSTGUI::CView* view)
         options_menu->unregisterControlListener(this);
         options_menu->unregisterViewListener(this);
         options_menu = nullptr;
-    }
-    else if (view == scheme_switch)
-    {
-        scheme_switch->unregisterControlListener(this);
-        scheme_switch->unregisterViewListener(this);
-        scheme_switch = nullptr;
     }
 }
 

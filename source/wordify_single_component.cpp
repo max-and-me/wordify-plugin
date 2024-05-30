@@ -345,9 +345,7 @@ VSTGUI::IController* WordifySingleComponent::createSubController(
     }
     else if (VSTGUI::UTF8StringView(name) == "PreferencesController")
     {
-        return new PreferencesController(
-            document_controller,
-            getParameterObject(ParamIds::kParamIdColorScheme));
+        return new PreferencesController(document_controller);
     }
 
     return nullptr;
@@ -468,6 +466,7 @@ auto WordifySingleComponent::restore_parameters() -> void
         color_scheme_param->setNormalized(
             prefs.color_scheme == meta_words::serde::ColorScheme::Dark ? 1.
                                                                        : 0.);
+        dark_scheme = color_scheme_param->getNormalized() > 0.;
         parameters.addParameter(color_scheme_param);
         color_scheme_param->addDependent(this);
     }
@@ -521,7 +520,12 @@ void PLUGIN_API WordifySingleComponent::update(FUnknown* changedUnknown,
     {
         if (param->getInfo().id == ParamIds::kParamIdColorScheme)
         {
-            set_dark_scheme_on_editors(editors, param->getNormalized() > 0.);
+            if (dark_scheme == param->getNormalized() > 0.)
+                return;
+
+            dark_scheme = param->getNormalized() > 0.;
+            set_dark_scheme_on_editors(editors, dark_scheme);
+
             return;
         }
         else if (param->getInfo().id == ParamIds::kParamIdSmartSearch)

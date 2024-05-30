@@ -10,10 +10,6 @@ namespace VSTGUI {
 class COptionMenu;
 }
 
-namespace Steinberg::Vst {
-class Parameter;
-}
-
 namespace mam {
 class ARADocumentController;
 
@@ -28,8 +24,7 @@ public:
     //--------------------------------------------------------------------
     using SchemeToggle = std::function<void(bool)>;
 
-    PreferencesController(ARADocumentController* controller,
-                          Steinberg::Vst::Parameter* color_scheme_param);
+    PreferencesController(ARADocumentController* controller);
     ~PreferencesController() override;
 
     // IController
@@ -50,10 +45,8 @@ public:
 
     //--------------------------------------------------------------------
 private:
-    ARADocumentController* controller             = nullptr;
-    VSTGUI::COptionMenu* options_menu             = nullptr;
-    VSTGUI::CControl* scheme_switch               = nullptr;
-    Steinberg::Vst::Parameter* color_scheme_param = nullptr;
+    ARADocumentController* controller = nullptr;
+    VSTGUI::COptionMenu* options_menu = nullptr;
 };
 
 //------------------------------------------------------------------------

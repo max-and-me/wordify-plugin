@@ -118,6 +118,8 @@ protected:
 
     auto restore_parameters() -> void;
     auto store_parameters() -> void;
+
+    bool dark_scheme = false;
 };
 
 //------------------------------------------------------------------------
