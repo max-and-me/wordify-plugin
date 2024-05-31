@@ -5,7 +5,9 @@
 		"colors": {},
 		"control-tags": {
 			"ColorScheme": "0",
-			"SmartSearch": "2"
+			"SmartSearchMode": "2",
+			"SmartSearchNext": "3",
+			"SmartSearchPrev": "4"
 		},
 		"custom": {
 			"FocusDrawing": {},
@@ -163,7 +165,6 @@
 													"row-style": "false",
 													"size": "508, 48",
 													"spacing": "4",
-													"sub-controller": "SearchController",
 													"transparent": "true",
 													"uidesc-label": "ALayout",
 													"view-resize-animation-time": "200",
@@ -227,6 +228,7 @@
 															"style-no-text": "false",
 															"style-round-rect": "true",
 															"style-shadow-text": "false",
+															"sub-controller": "SearchController",
 															"text-alignment": "left",
 															"text-inset": "0, 0",
 															"text-rotation": "0",
@@ -249,9 +251,9 @@
 															"margin": "0, 0, 0, 0",
 															"mouse-enabled": "true",
 															"opacity": "1",
-															"origin": "322, 8",
+															"origin": "322, 0",
 															"row-style": "false",
-															"size": "104, 32",
+															"size": "104, 48",
 															"spacing": "4",
 															"transparent": "true",
 															"uidesc-label": "HLayout",
@@ -262,6 +264,7 @@
 															"CTextButton": {
 																"attributes": {
 																	"class": "CTextButton",
+																	"control-tag": "SmartSearchPrev",
 																	"font": "~ SystemFont",
 																	"frame-color": "~ BlackCColor",
 																	"frame-color-highlighted": "~ BlackCColor",
@@ -273,7 +276,7 @@
 																	"icon-text-margin": "0",
 																	"kick-style": "true",
 																	"opacity": "1",
-																	"origin": "0, 0",
+																	"origin": "0, 8",
 																	"round-radius": "8",
 																	"size": "32, 32",
 																	"text-alignment": "center",
@@ -288,6 +291,7 @@
 															"CTextButton": {
 																"attributes": {
 																	"class": "CTextButton",
+																	"control-tag": "SmartSearchNext",
 																	"font": "~ SystemFont",
 																	"frame-color": "~ BlackCColor",
 																	"frame-color-highlighted": "~ BlackCColor",
@@ -299,7 +303,7 @@
 																	"icon-text-margin": "0",
 																	"kick-style": "true",
 																	"opacity": "1",
-																	"origin": "36, 0",
+																	"origin": "36, 8",
 																	"round-radius": "8",
 																	"size": "32, 32",
 																	"text-alignment": "center",
@@ -314,6 +318,7 @@
 															"CTextButton": {
 																"attributes": {
 																	"class": "CTextButton",
+																	"control-tag": "SmartSearchMode",
 																	"font": "~ SystemFont",
 																	"frame-color": "~ BlackCColor",
 																	"frame-color-highlighted": "~ BlackCColor",
@@ -325,7 +330,7 @@
 																	"icon-text-margin": "0",
 																	"kick-style": "false",
 																	"opacity": "1",
-																	"origin": "72, 0",
+																	"origin": "72, 8",
 																	"round-radius": "8",
 																	"size": "32, 32",
 																	"text-alignment": "center",

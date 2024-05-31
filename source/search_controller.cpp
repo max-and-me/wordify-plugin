@@ -23,11 +23,8 @@ enum
 //------------------------------------------------------------------------
 // SearchController
 //------------------------------------------------------------------------
-SearchController::SearchController(
-    ARADocumentController* controller,
-    Steinberg::Vst::Parameter* smart_search_param)
+SearchController::SearchController(ARADocumentController* controller)
 : controller(controller)
-, smart_search_param(smart_search_param)
 {
     if (!controller)
         return;
@@ -67,32 +64,6 @@ CView* SearchController::verifyView(CView* view,
                 c->setListener(this);
             }
         }
-        else if (*view_name == "Next")
-        {
-            if (auto c = dynamic_cast<CControl*>(view))
-            {
-                c->setTag(kSearchNextTag);
-                c->setListener(this);
-            }
-        }
-        else if (*view_name == "Previous")
-        {
-            if (auto c = dynamic_cast<CControl*>(view))
-            {
-                c->setTag(kSearchPreviousTag);
-                c->setListener(this);
-            }
-        }
-        else if (*view_name == "SmartSearch")
-        {
-            if (auto c = dynamic_cast<CControl*>(view))
-            {
-                c->setTag(kSearchSmartSearchTag);
-                c->setListener(this);
-                if (smart_search_param)
-                    c->setValueNormalized(smart_search_param->getNormalized());
-            }
-        }
     }
 
     return view;
@@ -115,23 +86,6 @@ void SearchController::valueChanged(CControl* control)
             if (auto sf = dynamic_cast<CSearchTextEdit*>(control))
                 controller->search_word(sf->getText().getString());
 
-            break;
-        }
-        case kSearchNextTag: {
-            if (control->getValue() == control->getMax())
-                controller->focus_next_occurence();
-
-            break;
-        }
-        case kSearchPreviousTag: {
-            if (control->getValue() == control->getMax())
-                controller->focus_prev_occurence();
-
-            break;
-        }
-        case kSearchSmartSearchTag: {
-            controller->activate_smart_search(control->getValue() > 0);
-            smart_search_param->setNormalized(control->getValueNormalized());
             break;
         }
     }

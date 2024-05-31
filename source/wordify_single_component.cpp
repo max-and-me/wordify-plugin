@@ -211,6 +211,12 @@ tresult PLUGIN_API WordifySingleComponent::terminate()
 
     store_parameters();
 
+    for (auto i = 0; i < parameters.getParameterCount(); i++)
+    {
+        if (auto* p = parameters.getParameterByIndex(i))
+            p->removeDependent(this);
+    }
+
     //---do not forget to call parent ------
     return SingleComponentEffect::terminate();
 }
@@ -334,9 +340,7 @@ VSTGUI::IController* WordifySingleComponent::createSubController(
     }
     else if (VSTGUI::UTF8StringView(name) == "SearchController")
     {
-        return new SearchController(
-            document_controller,
-            getParameterObject(ParamIds::kParamIdSmartSearch));
+        return new SearchController(document_controller);
     }
     else if (VSTGUI::UTF8StringView(name) == "SpinnerController")
     {
@@ -470,16 +474,26 @@ auto WordifySingleComponent::restore_parameters() -> void
         parameters.addParameter(color_scheme_param);
         color_scheme_param->addDependent(this);
     }
-    if (auto* smart_search_param = new Vst::StringListParameter(
-            STR("SmartSearch"), ParamIds::kParamIdSmartSearch))
+    if (auto* p = new Vst::Parameter(STR("SmartSearchMode"),
+                                     ParamIds::kParamIdSmartSearchMode))
     {
-        smart_search_param->appendString(STR("Off"));
-        smart_search_param->appendString(STR("On"));
-        smart_search_param->setNormalized(
-            prefs.smart_search == meta_words::serde::SmartSearch::On ? 1. : 0.);
-
-        parameters.addParameter(smart_search_param);
-        smart_search_param->addDependent(this);
+        const auto val =
+            prefs.smart_search == meta_words::serde::SmartSearch::On ? 1. : 0.;
+        p->setNormalized(val);
+        parameters.addParameter(p);
+        p->addDependent(this);
+    }
+    if (auto* p = new Vst::Parameter(STR("SmartSearchNext"),
+                                     ParamIds::kParamIdSmartSearchNext))
+    {
+        parameters.addParameter(p);
+        p->addDependent(this);
+    }
+    if (auto* p = new Vst::Parameter(STR("SmartSearchPrev"),
+                                     ParamIds::kParamIdSmartSearchPrev))
+    {
+        parameters.addParameter(p);
+        p->addDependent(this);
     }
 }
 
@@ -495,18 +509,14 @@ auto WordifySingleComponent::store_parameters() -> void
         prefs.color_scheme = color_scheme_param->getNormalized() > 0.
                                  ? meta_words::serde::ColorScheme::Dark
                                  : meta_words::serde::ColorScheme::Light;
-
-        color_scheme_param->removeDependent(this);
     }
 
     if (auto* smart_search_param =
-            getParameterObject(ParamIds::kParamIdSmartSearch))
+            getParameterObject(ParamIds::kParamIdSmartSearchMode))
     {
         prefs.smart_search = smart_search_param->getNormalized() > 0.
                                  ? meta_words::serde::SmartSearch::On
                                  : meta_words::serde::SmartSearch::Off;
-
-        smart_search_param->removeDependent(this);
     }
 
     meta_words::serde::write_to(prefs, COMPANY_NAME_STR, PLUGIN_NAME_STR);
@@ -525,13 +535,25 @@ void PLUGIN_API WordifySingleComponent::update(FUnknown* changedUnknown,
 
             dark_scheme = param->getNormalized() > 0.;
             set_dark_scheme_on_editors(editors, dark_scheme);
-
-            return;
         }
-        else if (param->getInfo().id == ParamIds::kParamIdSmartSearch)
+        else if (auto* dc = _araPlugInExtension
+                                .getDocumentController<ARADocumentController>())
         {
-            // Nothing here yet
-            return;
+            const bool activate = param->getNormalized() > 0.;
+            switch (param->getInfo().id)
+            {
+                case ParamIds::kParamIdSmartSearchMode:
+                    dc->activate_smart_search(activate);
+                    break;
+                case ParamIds::kParamIdSmartSearchNext:
+                    if (activate)
+                        dc->focus_next_occurence();
+                    break;
+                case ParamIds::kParamIdSmartSearchPrev:
+                    if (activate)
+                        dc->focus_prev_occurence();
+                    break;
+            }
         }
     }
 }

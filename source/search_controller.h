@@ -12,10 +12,6 @@ namespace VSTGUI {
 class CSearchTextEdit;
 } // namespace VSTGUI
 
-namespace Steinberg::Vst {
-class Parameter;
-} // namespace Steinberg::Vst
-
 namespace mam {
 class ARADocumentController;
 
@@ -26,8 +22,7 @@ class SearchController : public Steinberg::FObject, public VSTGUI::IController
 {
 public:
     //--------------------------------------------------------------------
-    SearchController(ARADocumentController* controller,
-                     Steinberg::Vst::Parameter* smart_search_param);
+    SearchController(ARADocumentController* controller);
     ~SearchController() override;
 
     void PLUGIN_API update(FUnknown* changedUnknown,
@@ -52,8 +47,7 @@ public:
 
     //--------------------------------------------------------------------
 private:
-    ARADocumentController* controller             = nullptr;
-    Steinberg::Vst::Parameter* smart_search_param = nullptr;
+    ARADocumentController* controller = nullptr;
 };
 
 //------------------------------------------------------------------------
