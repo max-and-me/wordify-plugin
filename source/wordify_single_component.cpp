@@ -462,17 +462,17 @@ auto WordifySingleComponent::restore_parameters() -> void
     meta_words::serde::Preferences prefs;
     meta_words::serde::read_from(COMPANY_NAME_STR, PLUGIN_NAME_STR, prefs);
 
-    if (auto* color_scheme_param = new Vst::StringListParameter(
-            STR("ColorScheme"), ParamIds::kParamIdColorScheme))
+    if (auto* p = new Vst::StringListParameter(STR("ColorScheme"),
+                                               ParamIds::kParamIdColorScheme))
     {
-        color_scheme_param->appendString(STR("Lite"));
-        color_scheme_param->appendString(STR("Dark"));
-        color_scheme_param->setNormalized(
+        p->appendString(STR("Lite"));
+        p->appendString(STR("Dark"));
+        p->setNormalized(
             prefs.color_scheme == meta_words::serde::ColorScheme::Dark ? 1.
                                                                        : 0.);
-        dark_scheme = color_scheme_param->getNormalized() > 0.;
-        parameters.addParameter(color_scheme_param);
-        color_scheme_param->addDependent(this);
+        dark_scheme = p->getNormalized() > 0.;
+        parameters.addParameter(p);
+        p->addDependent(this);
     }
     if (auto* p = new Vst::Parameter(STR("SmartSearchMode"),
                                      ParamIds::kParamIdSmartSearchMode))
