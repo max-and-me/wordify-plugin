@@ -128,7 +128,10 @@ ListController::ListController(ARADocumentController* controller,
             [&](const auto&) { this->on_playback_regions_reordered(); });
 
         word_selected_observer_id = controller->register_word_selected_observer(
-            [this](const auto& data) { this->checkSelectWord(data); });
+            [this](const auto& data) {
+                for (const auto& result : data)
+                    this->checkSelectWord(result);
+            });
     }
 }
 
@@ -289,7 +292,6 @@ ListController::createSubController(UTF8StringPtr name,
 void ListController::checkSelectWord(
     const search_engine::SearchResult& search_result)
 {
-
     // word search_result selection
     if (!search_result.indices.empty() &&
         search_result.focused_word.has_value())

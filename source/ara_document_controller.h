@@ -87,7 +87,7 @@ public:
         tiny_observer_pattern::Subject<meta_words::WordAnalysisProgressData>;
 
     using SearchEngineSubject =
-        tiny_observer_pattern::Subject<search_engine::SearchResult>;
+        tiny_observer_pattern::Subject<const search_engine::SearchResults&>;
 
     // publish inherited constructor
     using ARA::PlugIn::DocumentController::DocumentController;
