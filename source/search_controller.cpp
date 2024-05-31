@@ -31,10 +31,7 @@ SearchController::SearchController(ARADocumentController* controller)
 }
 
 //------------------------------------------------------------------------
-SearchController::~SearchController()
-{
-    changed(kWillDestroy);
-}
+SearchController::~SearchController() {}
 
 //------------------------------------------------------------------------
 void PLUGIN_API SearchController::update(FUnknown* changedUnknown,
