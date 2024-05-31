@@ -32,32 +32,39 @@ void SpinnerView::draw(CDrawContext* context)
 {
     CView::draw(context);
 
-    CRect bounds        = getViewSize();
-    const CPoint center = bounds.getCenter();
+    const CRect bounds     = getViewSize();
+    const CPoint center    = bounds.getCenter();
+    const auto width_half  = bounds.getWidth() * 0.5;
+    const auto height_half = bounds.getHeight() * 0.5;
+
+    constexpr auto numLines  = 12;
+    constexpr auto angleStep = 360. / numLines;
+
+    constexpr CCoord kLineLength = 0.5; // normalized from 0. to 1.
+    constexpr CCoord kLineWidth  = 2.0; // in pixel
+    constexpr CColor lineColor(150, 150, 150);
 
     context->setDrawMode(kAntiAliasing);
-    context->setLineWidth(2.0);
-
-    constexpr int numLines              = 12;
-    constexpr VSTGUI::CCoord lineLength = 5.0;
-    constexpr CColor lineColor(150, 150, 150);
-    constexpr VSTGUI::CCoord factor = 0.2;
-
+    context->setLineWidth(kLineWidth);
     context->setFrameColor(lineColor);
     context->setFillColor(lineColor);
 
+    LineList lines;
     for (int i = 0; i < numLines; ++i)
     {
-        const VSTGUI::CCoord angle =
-            (VSTGUI::CCoord(i) * 30.0 + rotationAngle) * (kPI / 180.0);
-        const CPoint start(center.x + cos(angle) * (bounds.getWidth() * factor),
-                           center.y +
-                               sin(angle) * (bounds.getHeight() * factor));
-        const CPoint end(start.x + cos(angle) * lineLength,
-                         start.y + sin(angle) * lineLength);
+        const CCoord angle =
+            (CCoord(i) * angleStep + rotationAngle) * (kPI / 180.0);
 
-        context->drawLine(start, end);
+        const auto width  = cos(angle) * width_half;
+        const auto height = sin(angle) * height_half;
+        const CPoint start(center.x + width, center.y + height);
+        const CPoint end(center.x + width * (1. - kLineLength),
+                         center.y + height * (1. - kLineLength));
+
+        lines.push_back({start, end});
     }
+
+    context->drawLines(lines);
 }
 
 //------------------------------------------------------------------------
@@ -67,29 +74,26 @@ const char* SpinAnimation::ANIMATION_ID = "SpinAnimation";
 SpinAnimation::SpinAnimation() {}
 
 //------------------------------------------------------------------------
-void SpinAnimation::animationStart(VSTGUI::CView* view,
-                                   VSTGUI::IdStringPtr name)
+void SpinAnimation::animationStart(CView* view, IdStringPtr name)
 {
     SpinnerView* spinner_view = dynamic_cast<SpinnerView*>(view);
     if (!spinner_view)
         return;
 
-    if (VSTGUI::UTF8String(name) == ANIMATION_ID)
+    if (UTF8String(name) == ANIMATION_ID)
     {
         spinner_view->set_dregree(start_value);
     }
 }
 
 //------------------------------------------------------------------------
-void SpinAnimation::animationTick(VSTGUI::CView* view,
-                                  VSTGUI::IdStringPtr name,
-                                  float pos)
+void SpinAnimation::animationTick(CView* view, IdStringPtr name, float pos)
 {
     SpinnerView* spinner_view = dynamic_cast<SpinnerView*>(view);
     if (!spinner_view)
         return;
 
-    if (VSTGUI::UTF8String(name) == ANIMATION_ID)
+    if (UTF8String(name) == ANIMATION_ID)
     {
         const auto current_degree = (end_value - start_value) * pos;
         spinner_view->set_dregree(current_degree);
@@ -97,15 +101,15 @@ void SpinAnimation::animationTick(VSTGUI::CView* view,
 }
 
 //------------------------------------------------------------------------
-void SpinAnimation::animationFinished(VSTGUI::CView* view,
-                                      VSTGUI::IdStringPtr name,
+void SpinAnimation::animationFinished(CView* view,
+                                      IdStringPtr name,
                                       bool wasCanceled)
 {
     SpinnerView* spinner_view = dynamic_cast<SpinnerView*>(view);
     if (!spinner_view)
         return;
 
-    if (VSTGUI::UTF8String(name) == ANIMATION_ID)
+    if (UTF8String(name) == ANIMATION_ID)
     {
         spinner_view->set_dregree(end_value);
     }
