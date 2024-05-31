@@ -576,14 +576,9 @@ auto ARADocumentController::onRequestSelectWord(
 //------------------------------------------------------------------------
 auto ARADocumentController::activate_smart_search(bool activate) -> void
 {
-    if (activate)
-    {
-        string_match_method = StringMatcher::MatchMethod::nearbyFuzzyMatch;
-    }
-    else
-    {
-        string_match_method = StringMatcher::MatchMethod::directMatch;
-    }
+    string_match_method = activate
+                              ? StringMatcher::MatchMethod::nearbyFuzzyMatch
+                              : StringMatcher::MatchMethod::directMatch;
 
     search_engine::Regions regions{};
     for (const auto& entry : playback_regions)
