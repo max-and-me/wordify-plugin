@@ -86,9 +86,6 @@ public:
     using AnalysisProgressSubject =
         tiny_observer_pattern::Subject<meta_words::WordAnalysisProgressData>;
 
-    using SearchEngineSubject =
-        tiny_observer_pattern::Subject<const search_engine::SearchResults&>;
-
     // publish inherited constructor
     using ARA::PlugIn::DocumentController::DocumentController;
     using Super = ARA::PlugIn::DocumentController;
@@ -175,10 +172,26 @@ public:
     auto
     find_playback_region(PlaybackRegion::Id id) const -> OptPlaybackRegionPtr;
 
+    // Search Engine
+    using SearchEngineSubject =
+        tiny_observer_pattern::Subject<const search_engine::SearchResults&>;
+
     auto search_word(std::string search) -> void;
     auto clear_search_results() -> void;
     auto focus_next_occurence() -> void;
     auto focus_prev_occurence() -> void;
+
+    auto register_word_selected_observer(
+        SearchEngineSubject::Callback&& callback) -> ObserverID;
+
+    auto unregister_word_selected_observer(ObserverID id) -> bool;
+    auto get_selected_word_subject() -> SearchEngineSubject*
+    {
+        return &search_engine_subject;
+    }
+
+    auto activate_smart_search(bool activate) -> void;
+    // Search Engine
 
     template <typename Func>
     void for_each_playback_region_id(Func&& func)
@@ -206,20 +219,10 @@ public:
         return &playback_region_lifetimes_subject;
     }
 
-    auto get_selected_word_subject() -> SearchEngineSubject*
-    {
-        return &search_engine_subject;
-    }
-
     auto register_word_analysis_progress_observer(
         AnalysisProgressSubject::Callback&& callback) -> ObserverID;
 
     auto unregister_word_analysis_progress_observer(ObserverID id) -> bool;
-
-    auto register_word_selected_observer(
-        SearchEngineSubject::Callback&& callback) -> ObserverID;
-
-    auto unregister_word_selected_observer(ObserverID id) -> bool;
 
     template <typename Func>
     auto for_each_playback_region_id_enumerated(Func& func) const -> void
@@ -236,8 +239,6 @@ public:
     {
         string_match_method = matchMethod;
     }
-
-    auto activate_smart_search(bool activate) -> void;
 
     //--------------------------------------------------------------------
 protected:
