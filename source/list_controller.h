@@ -6,9 +6,9 @@
 
 #include "ara_document_controller.h"
 #include "base/source/fobject.h"
+#include "search_engine.h"
 #include "vstgui/lib/iviewlistener.h"
 #include "vstgui/uidescription/icontroller.h"
-#include "search_engine.h"
 
 namespace VSTGUI {
 class CRowColumnView;
@@ -80,7 +80,8 @@ private:
     const IUIDescription* uidesc = nullptr;
 
     ARADocumentController* controller = nullptr;
-    LifetimeObserverPtr lifetime_observer;
+    ARADocumentController::PlaybackRegionLifetimesSubject::Handle
+        lifetime_observer;
     OrderObserverPtr order_observer;
     OptPlaybackRegionId playback_region_id;
     WordSelectObserverPtr word_selected_observer;

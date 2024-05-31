@@ -152,6 +152,7 @@ smtg_target_add_plugin_snapshots (Wordify
 target_link_libraries(Wordify
     PRIVATE
         ARA_PlugIn_Library
+        eventpp::eventpp
         fmt
         meta-words
         nlohmann_json

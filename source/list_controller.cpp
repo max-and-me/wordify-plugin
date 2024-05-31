@@ -117,11 +117,11 @@ ListController::ListController(ARADocumentController* controller,
 {
     if (controller)
     {
-        lifetime_observer = tiny_observer_pattern::make_observer(
-            controller->get_playback_region_lifetimes_subject(),
-            [&](const auto& data) {
-                this->on_add_remove_playback_region(data);
-            });
+        lifetime_observer =
+            controller->get_playback_region_lifetimes_subject()->append(
+                [&](const auto& data) {
+                    this->on_add_remove_playback_region(data);
+                });
 
         order_observer = tiny_observer_pattern::make_observer(
             controller->get_playback_region_order_subject(),
@@ -145,8 +145,13 @@ ListController::~ListController()
     }
 
     if (controller)
+    {
         controller->unregister_word_selected_observer(
             word_selected_observer_id);
+
+        controller->get_playback_region_lifetimes_subject()->remove(
+            lifetime_observer);
+    }
 }
 
 //------------------------------------------------------------------------

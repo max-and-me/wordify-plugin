@@ -5,6 +5,7 @@
 #pragma once
 
 #include "ARA_Library/PlugIn/ARAPlug.h"
+#include "eventpp/callbacklist.h"
 #include "meta_words_data.h"
 #include "meta_words_playback_region.h"
 #include "region_order_manager.h"
@@ -50,10 +51,8 @@ struct RegionData
 };
 
 //------------------------------------------------------------------------
-
 using RegionSelectionModel = SelectionModel<RegionData>;
 
-//------------------------------------------------------------------------
 //------------------------------------------------------------------------
 // ARADocumentController
 //------------------------------------------------------------------------
@@ -81,7 +80,8 @@ public:
 
     // Subjects
     using PlaybackRegionLifetimesSubject =
-        tiny_observer_pattern::Subject<PlaybackRegionLifetimeData>;
+        eventpp::CallbackList<void(const PlaybackRegionLifetimeData&)>;
+
     using PlaybackRegionsOrderSubject = RegionOrderManager::OrderSubject;
     using AnalysisProgressSubject =
         tiny_observer_pattern::Subject<meta_words::WordAnalysisProgressData>;

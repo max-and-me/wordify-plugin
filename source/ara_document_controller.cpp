@@ -504,14 +504,14 @@ void ARADocumentController::on_add_playback_region(PlaybackRegion* region)
     playback_regions.insert({region->get_id(), region});
     region_order_manager.push_back(region->get_id());
 
-    playback_region_lifetimes_subject.notify_listeners(
+    playback_region_lifetimes_subject(
         {PlaybackRegionLifetimeData::Event::HasBeenAdded, region->get_id()});
 }
 
 //------------------------------------------------------------------------
 void ARADocumentController::on_remove_playback_region(PlaybackRegion::Id id)
 {
-    playback_region_lifetimes_subject.notify_listeners(
+    playback_region_lifetimes_subject(
         {PlaybackRegionLifetimeData::Event::WillBeRemoved, id});
 
     region_order_manager.remove(id);
