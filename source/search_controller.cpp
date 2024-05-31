@@ -15,9 +15,6 @@ namespace mam {
 enum
 {
     kSearchFieldTag = 1000,
-    kSearchNextTag,
-    kSearchPreviousTag,
-    kSearchSmartSearchTag
 };
 
 //------------------------------------------------------------------------
