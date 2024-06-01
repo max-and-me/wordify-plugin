@@ -62,7 +62,7 @@ public:
     //--------------------------------------------------------------------
 private:
     void checkSelectWord(const search_engine::SearchResult& search_result);
-    void on_add_remove_playback_region(const PlaybackRegionLifetimeData& data);
+    void on_add_remove_playback_region(const RegionLifetimeEventData& data);
     void on_playback_regions_reordered();
     auto create_list_item_view(const PlaybackRegion::Id id) -> VSTGUI::CView*;
 
@@ -70,13 +70,11 @@ private:
     const IUIDescription* uidesc = nullptr;
 
     ARADocumentController* controller = nullptr;
-    ARADocumentController::PlaybackRegionLifetimesSubject::Handle
-        lifetime_observer_handle;
-    ARADocumentController::PlaybackRegionsOrderSubject::Handle
-        order_observer_handle;
     OptPlaybackRegionId playback_region_id;
-    ARADocumentController::SearchEngineSubject::Handle
-        word_selected_observer_handle;
+
+    RegionLifetimeCallback::Handle lifetime_observer_handle;
+    RegionsOrderCallback::Handle order_observer_handle;
+    SearchEngineCallback::Handle word_selected_observer_handle;
 };
 
 //------------------------------------------------------------------------

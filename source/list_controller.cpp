@@ -225,7 +225,7 @@ void ListController::on_playback_regions_reordered()
 
 //------------------------------------------------------------------------
 void ListController::on_add_remove_playback_region(
-    const PlaybackRegionLifetimeData& data)
+    const RegionLifetimeEventData& data)
 {
     if (!uidesc)
         return;
@@ -235,7 +235,7 @@ void ListController::on_add_remove_playback_region(
 
     switch (data.event)
     {
-        case PlaybackRegionLifetimeData::Event::HasBeenAdded: {
+        case RegionLifetimeEventData::Event::HasBeenAdded: {
             auto* viewToAdd = create_list_item_view(data.id);
             if (viewToAdd)
             {
@@ -246,7 +246,7 @@ void ListController::on_add_remove_playback_region(
 
             break;
         }
-        case PlaybackRegionLifetimeData::Event::WillBeRemoved: {
+        case RegionLifetimeEventData::Event::WillBeRemoved: {
             auto* viewToRemove = find_view_by_id(*rowColView, data.id);
             if (viewToRemove)
             {

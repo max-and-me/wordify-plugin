@@ -22,9 +22,9 @@ class PlaybackRenderer;
 } // namespace meta_words
 
 //------------------------------------------------------------------------
-// ARADocumentController
+// RegionLifetimeEventData
 //------------------------------------------------------------------------
-struct PlaybackRegionLifetimeData
+struct RegionLifetimeEventData
 {
     using PlaybackRegion = meta_words::PlaybackRegion;
 
@@ -38,9 +38,9 @@ struct PlaybackRegionLifetimeData
 };
 
 //------------------------------------------------------------------------
-//  SelectedWordData
+// SelectedWordEventData
 //------------------------------------------------------------------------
-struct SelectedWordData
+struct SelectedWordEventData
 {
     using RegionId  = size_t;
     using WordIndex = size_t;
@@ -49,8 +49,17 @@ struct SelectedWordData
     WordIndex word_index;
 };
 
+using RegionSelectionModel = SelectionModel<SelectedWordEventData>;
+
 //------------------------------------------------------------------------
-using RegionSelectionModel = SelectionModel<SelectedWordData>;
+using SelectedWordCallback =
+    eventpp::CallbackList<void(const SelectedWordEventData&)>;
+using RegionPropertiesChangedCallback = eventpp::CallbackList<void(void)>;
+using SearchEngineCallback =
+    eventpp::CallbackList<void(const search_engine::SearchResults&)>;
+using RegionLifetimeCallback =
+    eventpp::CallbackList<void(const RegionLifetimeEventData&)>;
+using RegionsOrderCallback = RegionOrderManager::OrderSubject;
 
 //------------------------------------------------------------------------
 // ARADocumentController
@@ -59,30 +68,20 @@ class ARADocumentController : public ARA::PlugIn::DocumentController
 {
 public:
     //--------------------------------------------------------------------
-    using AudioModification          = meta_words::AudioModification;
-    using AudioSource                = meta_words::AudioSource;
-    using MetaWordsDataList          = std::vector<MetaWordsData>;
-    using OptPlaybackRegionPtr       = meta_words::OptPlaybackRegionPtr;
-    using PlaybackRegion             = meta_words::PlaybackRegion;
-    using PlaybackRenderer           = meta_words::PlaybackRenderer;
-    using ChangedPlayRegionsCallback = eventpp::CallbackList<void(void)>;
+    using AudioModification    = meta_words::AudioModification;
+    using AudioSource          = meta_words::AudioSource;
+    using MetaWordsDataList    = std::vector<MetaWordsData>;
+    using OptPlaybackRegionPtr = meta_words::OptPlaybackRegionPtr;
+    using PlaybackRegion       = meta_words::PlaybackRegion;
+    using PlaybackRenderer     = meta_words::PlaybackRenderer;
 
     using SampleRate     = double;
     using FuncSampleRate = std::function<SampleRate()>;
 
     // Containers
     using PlaybackRegionObservers =
-        std::unordered_map<PlaybackRegion::Id, ChangedPlayRegionsCallback>;
+        std::unordered_map<PlaybackRegion::Id, RegionPropertiesChangedCallback>;
     using PlaybackRegions = std::map<PlaybackRegion::Id, PlaybackRegion*>;
-
-    // Subjects
-    using PlaybackRegionLifetimesSubject =
-        eventpp::CallbackList<void(const PlaybackRegionLifetimeData&)>;
-
-    using SelectedWordCallback =
-        eventpp::CallbackList<void(const SelectedWordData&)>;
-
-    using PlaybackRegionsOrderSubject = RegionOrderManager::OrderSubject;
 
     // publish inherited constructor
     using ARA::PlugIn::DocumentController::DocumentController;
@@ -171,15 +170,12 @@ public:
     find_playback_region(PlaybackRegion::Id id) const -> OptPlaybackRegionPtr;
 
     // Search Engine
-    using SearchEngineSubject =
-        eventpp::CallbackList<void(const search_engine::SearchResults&)>;
-
     auto search_word(std::string search) -> void;
     auto clear_search_results() -> void;
     auto focus_next_occurence() -> void;
     auto focus_prev_occurence() -> void;
 
-    auto get_selected_word_subject() -> SearchEngineSubject*
+    auto get_selected_word_subject() -> SearchEngineCallback*
     {
         return &search_engine_subject;
     }
@@ -198,18 +194,17 @@ public:
 
     auto get_playback_region_changed_subject(
         const PlaybackRegion::Id playback_region_id)
-        -> ChangedPlayRegionsCallback&
+        -> RegionPropertiesChangedCallback&
     {
         return playback_region_observers[playback_region_id];
     }
 
-    auto get_playback_region_order_subject() -> PlaybackRegionsOrderSubject*
+    auto get_playback_region_order_subject() -> RegionsOrderCallback*
     {
         return region_order_manager.get_order_subject();
     }
 
-    auto
-    get_playback_region_lifetimes_subject() -> PlaybackRegionLifetimesSubject*
+    auto get_playback_region_lifetimes_subject() -> RegionLifetimeCallback*
     {
         return &playback_region_lifetimes_subject;
     }
@@ -238,8 +233,8 @@ public:
     //--------------------------------------------------------------------
 private:
     PlaybackRegionObservers playback_region_observers;
-    PlaybackRegionLifetimesSubject playback_region_lifetimes_subject;
-    SearchEngineSubject search_engine_subject;
+    RegionLifetimeCallback playback_region_lifetimes_subject;
+    SearchEngineCallback search_engine_subject;
     SelectedWordCallback selected_word_callback;
     RegionOrderManager region_order_manager;
     RegionSelectionModel region_selection_model;
