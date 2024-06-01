@@ -454,51 +454,6 @@ void ARADocumentController::onRequestLocatorPosChanged(double pos)
 }
 
 //------------------------------------------------------------------------
-auto ARADocumentController::register_word_analysis_progress_observer(
-    AnalysisProgressSubject::Callback&& callback) -> ObserverID
-{
-    return word_analysis_progress_subject.add_listener(std::move(callback));
-}
-
-//------------------------------------------------------------------------
-auto ARADocumentController::unregister_word_analysis_progress_observer(
-    ObserverID id) -> bool
-{
-    return word_analysis_progress_subject.remove_listener(id);
-}
-
-//------------------------------------------------------------------------
-auto ARADocumentController::register_playback_region_changed_observer(
-    const PlaybackRegion::Id playback_region_id,
-    Subject::Callback&& callback) -> ObserverID
-{
-    auto& subject = playback_region_observers[playback_region_id];
-    return subject.add_listener(std::move(callback));
-}
-
-//------------------------------------------------------------------------
-auto ARADocumentController::unregister_playback_region_changed_observer(
-    const PlaybackRegion::Id playback_region_id, ObserverID id)
-{
-    auto& subject = playback_region_observers[playback_region_id];
-    return subject.remove_listener(id);
-}
-
-//------------------------------------------------------------------------
-auto ARADocumentController::register_word_selected_observer(
-    SearchEngineSubject::Callback&& callback) -> ObserverID
-{
-    return search_engine_subject.add_listener(std::move(callback));
-}
-
-//------------------------------------------------------------------------
-auto ARADocumentController::unregister_word_selected_observer(ObserverID id)
-    -> bool
-{
-    return search_engine_subject.remove_listener(id);
-}
-
-//------------------------------------------------------------------------
 void ARADocumentController::on_add_playback_region(PlaybackRegion* region)
 {
     playback_regions.insert({region->get_id(), region});
@@ -522,8 +477,6 @@ void ARADocumentController::on_remove_playback_region(PlaybackRegion::Id id)
 void ARADocumentController::on_analyze_audio_source_progress(
     const meta_words::WordAnalysisProgressData& data)
 {
-    word_analysis_progress_subject.notify_listeners(data);
-
     // Notify all regions which rely on this audio source
     if (data.state ==
         meta_words::WordAnalysisProgressData::State::kAnalysisStopped)

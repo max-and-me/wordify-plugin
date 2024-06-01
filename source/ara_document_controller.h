@@ -83,8 +83,6 @@ public:
         eventpp::CallbackList<void(const PlaybackRegionLifetimeData&)>;
 
     using PlaybackRegionsOrderSubject = RegionOrderManager::OrderSubject;
-    using AnalysisProgressSubject =
-        tiny_observer_pattern::Subject<meta_words::WordAnalysisProgressData>;
 
     // publish inherited constructor
     using ARA::PlugIn::DocumentController::DocumentController;
@@ -181,10 +179,6 @@ public:
     auto focus_next_occurence() -> void;
     auto focus_prev_occurence() -> void;
 
-    auto register_word_selected_observer(
-        SearchEngineSubject::Callback&& callback) -> ObserverID;
-
-    auto unregister_word_selected_observer(ObserverID id) -> bool;
     auto get_selected_word_subject() -> SearchEngineSubject*
     {
         return &search_engine_subject;
@@ -219,11 +213,6 @@ public:
         return &playback_region_lifetimes_subject;
     }
 
-    auto register_word_analysis_progress_observer(
-        AnalysisProgressSubject::Callback&& callback) -> ObserverID;
-
-    auto unregister_word_analysis_progress_observer(ObserverID id) -> bool;
-
     template <typename Func>
     auto for_each_playback_region_id_enumerated(Func& func) const -> void
     {
@@ -241,19 +230,18 @@ public:
     }
 
     //--------------------------------------------------------------------
-protected:
+private:
     PlaybackRegionObservers playback_region_observers;
-    PlaybackRegions playback_regions;
     PlaybackRegionLifetimesSubject playback_region_lifetimes_subject;
-    AnalysisProgressSubject word_analysis_progress_subject;
     SearchEngineSubject search_engine_subject;
     RegionOrderManager region_order_manager;
     RegionSelectionModel region_selection_model;
 
+    PlaybackRegions playback_regions;
+
     std::atomic<bool> _renderersCanAccessModelGraph{true};
     std::atomic<int> _countOfRenderersCurrentlyAccessingModelGraph{0};
 
-private:
     void on_add_playback_region(PlaybackRegion* region);
     void on_remove_playback_region(PlaybackRegion::Id id);
     void on_analyze_audio_source_progress(
@@ -277,13 +265,6 @@ private:
             }
         }
     }
-
-    auto register_playback_region_changed_observer(
-        const PlaybackRegion::Id playback_region_id,
-        Subject::Callback&& callback) -> ObserverID;
-
-    auto unregister_playback_region_changed_observer(
-        const PlaybackRegion::Id playback_region_id, ObserverID id);
 
     StringMatcher::MatchMethod string_match_method =
         StringMatcher::MatchMethod::nearbyFuzzyMatch;

@@ -127,11 +127,12 @@ ListController::ListController(ARADocumentController* controller,
             controller->get_playback_region_order_subject(),
             [&](const auto&) { this->on_playback_regions_reordered(); });
 
-        word_selected_observer_id = controller->register_word_selected_observer(
-            [this](const auto& data) {
-                for (const auto& result : data)
-                    this->checkSelectWord(result);
-            });
+        word_selected_observer_id =
+            controller->get_selected_word_subject()->add_listener(
+                [this](const auto& data) {
+                    for (const auto& result : data)
+                        this->checkSelectWord(result);
+                });
     }
 }
 
@@ -146,7 +147,7 @@ ListController::~ListController()
 
     if (controller)
     {
-        controller->unregister_word_selected_observer(
+        controller->get_selected_word_subject()->remove_listener(
             word_selected_observer_id);
 
         controller->get_playback_region_lifetimes_subject()->remove(
