@@ -11,7 +11,6 @@
 #include "region_order_manager.h"
 #include "search_engine.h"
 #include "string_matcher.h"
-#include "tiny_observer_pattern.h"
 #include "tiny_selection_model.h"
 
 namespace mam {
@@ -56,8 +55,7 @@ using RegionSelectionModel = SelectionModel<RegionData>;
 //------------------------------------------------------------------------
 // ARADocumentController
 //------------------------------------------------------------------------
-class ARADocumentController : public ARA::PlugIn::DocumentController,
-                              public tiny_observer_pattern::SimpleSubject
+class ARADocumentController : public ARA::PlugIn::DocumentController
 {
 public:
     //--------------------------------------------------------------------
@@ -68,7 +66,6 @@ public:
     using PlaybackRegion       = meta_words::PlaybackRegion;
     using PlaybackRenderer     = meta_words::PlaybackRenderer;
     using Subject              = eventpp::CallbackList<void(void)>;
-    using ObserverID           = tiny_observer_pattern::ObserverID;
 
     using SampleRate     = double;
     using FuncSampleRate = std::function<SampleRate()>;
@@ -81,6 +78,9 @@ public:
     // Subjects
     using PlaybackRegionLifetimesSubject =
         eventpp::CallbackList<void(const PlaybackRegionLifetimeData&)>;
+
+    using RegionSelectionSubject =
+        eventpp::CallbackList<void(const RegionData&)>;
 
     using PlaybackRegionsOrderSubject = RegionOrderManager::OrderSubject;
 
@@ -213,6 +213,11 @@ public:
         return &playback_region_lifetimes_subject;
     }
 
+    auto get_region_selection_subject() -> RegionSelectionSubject*
+    {
+        return &region_selection_subject;
+    }
+
     template <typename Func>
     auto for_each_playback_region_id_enumerated(Func& func) const -> void
     {
@@ -234,6 +239,7 @@ private:
     PlaybackRegionObservers playback_region_observers;
     PlaybackRegionLifetimesSubject playback_region_lifetimes_subject;
     SearchEngineSubject search_engine_subject;
+    RegionSelectionSubject region_selection_subject;
     RegionOrderManager region_order_manager;
     RegionSelectionModel region_selection_model;
 

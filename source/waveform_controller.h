@@ -4,9 +4,10 @@
 
 #pragma once
 
+#include "ara_document_controller.h"
 #include "base/source/fobject.h"
+#include "eventpp/callbacklist.h"
 #include "nonstd.h"
-#include "tiny_observer_pattern.h"
 #include "vstgui/lib/iviewlistener.h"
 #include "vstgui/uidescription/icontroller.h"
 #include "waveform_view.h"
@@ -27,10 +28,9 @@ class WaveFormController : public Steinberg::FObject,
 {
 public:
     //--------------------------------------------------------------------
-    using Subject     = tiny_observer_pattern::SimpleSubject;
-    using Observer    = tiny_observer_pattern::Observer<Subject>;
-    using ObserverPtr = std::unique_ptr<Observer>;
-    using Data        = const WaveFormView::Data;
+    using Subject        = eventpp::CallbackList<void(const RegionData&)>;
+    using ObserverHandle = Subject::Handle;
+    using Data           = const WaveFormView::Data;
 
     using FuncWaveFormData = std::function<Data()>;
 
@@ -64,7 +64,8 @@ public:
 private:
     void on_meta_words_data_changed();
 
-    ObserverPtr observer;
+    Subject* subject = nullptr;
+    ObserverHandle observer_handle;
     FuncWaveFormData waveform_data_func;
     WaveFormView* waveform_view            = nullptr;
     VSTGUI::CGradientView* background_view = nullptr;

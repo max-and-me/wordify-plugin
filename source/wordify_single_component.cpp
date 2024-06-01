@@ -332,9 +332,9 @@ VSTGUI::IController* WordifySingleComponent::createSubController(
         if (!subctrl)
             return nullptr;
 
-        subctrl->initialize(document_controller, [=]() {
-            return build_waveform_data(document_controller);
-        });
+        subctrl->initialize(
+            document_controller->get_region_selection_subject(),
+            [=]() { return build_waveform_data(document_controller); });
 
         return subctrl;
     }

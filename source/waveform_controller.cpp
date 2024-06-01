@@ -40,6 +40,9 @@ WaveFormController::WaveFormController() {}
 //------------------------------------------------------------------------
 WaveFormController::~WaveFormController()
 {
+    if (subject)
+        subject->remove(observer_handle);
+
     if (waveform_view)
         waveform_view->unregisterViewListener(this);
 
@@ -48,14 +51,15 @@ WaveFormController::~WaveFormController()
 }
 
 //------------------------------------------------------------------------
-bool WaveFormController::initialize(Subject* subject, FuncWaveFormData&& func)
+bool WaveFormController::initialize(Subject* _subject, FuncWaveFormData&& func)
 {
-    if (!subject)
+    if (!_subject)
         return false;
 
+    this->subject            = _subject;
     this->waveform_data_func = std::move(func);
-    this->observer           = tiny_observer_pattern::make_observer(
-        subject, [&](const auto&) { this->on_meta_words_data_changed(); });
+    this->observer_handle    = subject->append(
+        [&](const auto&) { this->on_meta_words_data_changed(); });
 
     return true;
 }

@@ -480,12 +480,12 @@ MetaWordsClipController::~MetaWordsClipController()
 }
 
 //------------------------------------------------------------------------
-bool MetaWordsClipController::initialize(Subject* subject)
+bool MetaWordsClipController::initialize(Subject* _subject)
 {
-    if (!subject)
+    if (!_subject)
         return false;
 
-    this->subject = subject;
+    this->subject = _subject;
 
     observer_handle =
         subject->append([&]() { this->on_meta_words_data_changed(); });

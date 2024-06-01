@@ -235,7 +235,6 @@ ARA::PlugIn::AudioSource* ARADocumentController::doCreateAudioSource(
                     obj->second();
             }
         }
-        this->notify_listeners({});
     };
 
     return new_audio_source;
@@ -258,8 +257,6 @@ void ARADocumentController::didUpdateAudioModificationProperties(
 {
     ARA::PlugIn::DocumentController::didUpdateAudioModificationProperties(
         audioModification);
-
-    this->notify_listeners({});
 }
 
 //------------------------------------------------------------------------
@@ -276,8 +273,6 @@ void ARADocumentController::didUpdateAudioSourceProperties(
         audioReader.readAudioSamples (0, static_cast<ARA::ARASampleCount>
         (sampleCount), dataPointers.data ());
     */
-
-    this->notify_listeners({});
 }
 
 //------------------------------------------------------------------------
@@ -316,7 +311,6 @@ void ARADocumentController::didUpdatePlaybackRegionProperties(
     region_order_manager.reorder();
     clear_search_results();
 
-    this->notify_listeners({});
     if (auto* pbr = dynamic_cast<PlaybackRegion*>(playbackRegion))
     {
         auto obj = playback_region_observers.find(pbr->get_id());
@@ -508,11 +502,8 @@ auto ARADocumentController::get_region_selection_model()
     if (!region_selection_model.on_select_func)
     {
         region_selection_model.on_select_func =
-            [&](const RegionSelectionModel::DataType&) {
-                // TODO: a bit overkill here to notify all observers without
-                // context. But hey, it s trial and error ;) At least observers
-                // should know that it is the 'selection' which changed.
-                this->notify_listeners({});
+            [&](const RegionSelectionModel::DataType& data) {
+                region_selection_subject(data);
             };
     }
 
