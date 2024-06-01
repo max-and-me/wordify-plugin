@@ -172,7 +172,7 @@ public:
 
     // Search Engine
     using SearchEngineSubject =
-        tiny_observer_pattern::Subject<const search_engine::SearchResults&>;
+        eventpp::CallbackList<void(const search_engine::SearchResults&)>;
 
     auto search_word(std::string search) -> void;
     auto clear_search_results() -> void;

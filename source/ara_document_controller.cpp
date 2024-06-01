@@ -400,7 +400,7 @@ auto ARADocumentController::find_playback_region(PlaybackRegion::Id id) const
 auto ARADocumentController::clear_search_results() -> void
 {
     auto results = search_engine::clear_results();
-    search_engine_subject.notify_listeners(results);
+    search_engine_subject(results);
 }
 
 //------------------------------------------------------------------------
@@ -424,7 +424,7 @@ auto ARADocumentController::search_word(std::string search) -> void
                 return StringMatcher::isMatch(s0, s1, string_match_method);
             });
 
-        search_engine_subject.notify_listeners(results);
+        search_engine_subject(results);
 
         if (results.empty())
             clear_search_results();
@@ -435,14 +435,14 @@ auto ARADocumentController::search_word(std::string search) -> void
 auto ARADocumentController::focus_next_occurence() -> void
 {
     const auto results = search_engine::next_occurence();
-    search_engine_subject.notify_listeners(results);
+    search_engine_subject(results);
 }
 
 //------------------------------------------------------------------------
 auto ARADocumentController::focus_prev_occurence() -> void
 {
     const auto results = search_engine::prev_occurence();
-    search_engine_subject.notify_listeners(results);
+    search_engine_subject(results);
 }
 
 //------------------------------------------------------------------------
@@ -545,7 +545,7 @@ auto ARADocumentController::activate_smart_search(bool activate) -> void
             return StringMatcher::isMatch(s0, s1, string_match_method);
         });
 
-    search_engine_subject.notify_listeners(results);
+    search_engine_subject(results);
 
     if (results.empty())
         clear_search_results();

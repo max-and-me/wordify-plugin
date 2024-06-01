@@ -117,7 +117,7 @@ ListController::ListController(ARADocumentController* controller,
 {
     if (controller)
     {
-        lifetime_observer =
+        lifetime_observer_handle =
             controller->get_playback_region_lifetimes_subject()->append(
                 [&](const auto& data) {
                     this->on_add_remove_playback_region(data);
@@ -127,8 +127,8 @@ ListController::ListController(ARADocumentController* controller,
             controller->get_playback_region_order_subject(),
             [&](const auto&) { this->on_playback_regions_reordered(); });
 
-        word_selected_observer_id =
-            controller->get_selected_word_subject()->add_listener(
+        word_selected_observer_handle =
+            controller->get_selected_word_subject()->append(
                 [this](const auto& data) {
                     for (const auto& result : data)
                         this->checkSelectWord(result);
@@ -147,11 +147,11 @@ ListController::~ListController()
 
     if (controller)
     {
-        controller->get_selected_word_subject()->remove_listener(
-            word_selected_observer_id);
+        controller->get_selected_word_subject()->remove(
+            word_selected_observer_handle);
 
         controller->get_playback_region_lifetimes_subject()->remove(
-            lifetime_observer);
+            lifetime_observer_handle);
     }
 }
 

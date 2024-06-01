@@ -27,19 +27,16 @@ class ListController : public Steinberg::FObject,
 {
 public:
     //--------------------------------------------------------------------
-    using PlaybackRegion   = meta_words::PlaybackRegion;
-    using Control          = VSTGUI::CControl;
-    using View             = VSTGUI::CView;
-    using RowColumnView    = VSTGUI::CRowColumnView;
-    using UIAttributes     = VSTGUI::UIAttributes;
-    using IUIDescription   = VSTGUI::IUIDescription;
-    using UTF8StringPtr    = VSTGUI::UTF8StringPtr;
-    using IController      = VSTGUI::IController;
-    using LifetimeObserver = tiny_observer_pattern::Observer<
-        ARADocumentController::PlaybackRegionLifetimesSubject>;
-    using LifetimeObserverPtr = std::unique_ptr<LifetimeObserver>;
-    using OrderObserver       = tiny_observer_pattern::Observer<
-              ARADocumentController::PlaybackRegionsOrderSubject>;
+    using PlaybackRegion = meta_words::PlaybackRegion;
+    using Control        = VSTGUI::CControl;
+    using View           = VSTGUI::CView;
+    using RowColumnView  = VSTGUI::CRowColumnView;
+    using UIAttributes   = VSTGUI::UIAttributes;
+    using IUIDescription = VSTGUI::IUIDescription;
+    using UTF8StringPtr  = VSTGUI::UTF8StringPtr;
+    using IController    = VSTGUI::IController;
+    using OrderObserver  = tiny_observer_pattern::Observer<
+         ARADocumentController::PlaybackRegionsOrderSubject>;
     using OrderObserverPtr    = std::unique_ptr<OrderObserver>;
     using OptPlaybackRegionId = std::optional<PlaybackRegion::Id>;
 
@@ -52,10 +49,6 @@ public:
     View* verifyView(View* view,
                      const UIAttributes& attributes,
                      const IUIDescription* description) override;
-
-    using WordSelectObserver = tiny_observer_pattern::Observer<
-        ARADocumentController::SearchEngineSubject>;
-    using WordSelectObserverPtr = std::unique_ptr<WordSelectObserver>;
 
     // IControlListener
     void valueChanged(Control* pControl) override {};
@@ -81,11 +74,11 @@ private:
 
     ARADocumentController* controller = nullptr;
     ARADocumentController::PlaybackRegionLifetimesSubject::Handle
-        lifetime_observer;
+        lifetime_observer_handle;
     OrderObserverPtr order_observer;
     OptPlaybackRegionId playback_region_id;
-    WordSelectObserverPtr word_selected_observer;
-    ARADocumentController::ObserverID word_selected_observer_id = 0;
+    ARADocumentController::SearchEngineSubject::Handle
+        word_selected_observer_handle;
 };
 
 //------------------------------------------------------------------------
