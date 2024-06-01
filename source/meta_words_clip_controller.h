@@ -7,7 +7,6 @@
 #include "base/source/fobject.h"
 #include "eventpp/callbacklist.h"
 #include "meta_words_data.h"
-#include "tiny_observer_pattern.h"
 #include "vstgui/lib/iviewlistener.h"
 #include "vstgui/uidescription/icontroller.h"
 #include "vstgui/uidescription/uiattributes.h"

@@ -8,7 +8,6 @@
 #include "ARA_Library/PlugIn/ARAPlug.h"
 #include "ipslviewembedding.h"
 #include "public.sdk/source/vst/vstsinglecomponenteffect.h"
-#include "tiny_observer_pattern.h"
 #include "vstgui/plugin-bindings/vst3editor.h"
 #include <memory>
 
