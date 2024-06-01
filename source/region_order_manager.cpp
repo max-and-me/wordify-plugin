@@ -39,20 +39,6 @@ auto RegionOrderManager::initialize(
 }
 
 //------------------------------------------------------------------------
-auto RegionOrderManager::register_observer(OrderSubject::Callback&& callback)
-    -> ObserverID
-{
-    return this->playback_region_order_subject.add_listener(
-        std::move(callback));
-}
-
-//------------------------------------------------------------------------
-auto RegionOrderManager::unregister_observer(ObserverID id) -> void
-{
-    playback_region_order_subject.remove_listener(id);
-}
-
-//------------------------------------------------------------------------
 auto RegionOrderManager::push_back(PlaybackRegion::Id id) -> void
 {
     playback_region_ids_ordered.push_back(id);
@@ -74,7 +60,7 @@ auto RegionOrderManager::reorder() -> void
                                         this->playback_region_ids_ordered);
 
     if (should_notify_listeners)
-        playback_region_order_subject.notify_listeners({});
+        playback_region_order_subject({});
 }
 
 //------------------------------------------------------------------------

@@ -27,17 +27,14 @@ class ListController : public Steinberg::FObject,
 {
 public:
     //--------------------------------------------------------------------
-    using PlaybackRegion = meta_words::PlaybackRegion;
-    using Control        = VSTGUI::CControl;
-    using View           = VSTGUI::CView;
-    using RowColumnView  = VSTGUI::CRowColumnView;
-    using UIAttributes   = VSTGUI::UIAttributes;
-    using IUIDescription = VSTGUI::IUIDescription;
-    using UTF8StringPtr  = VSTGUI::UTF8StringPtr;
-    using IController    = VSTGUI::IController;
-    using OrderObserver  = tiny_observer_pattern::Observer<
-         ARADocumentController::PlaybackRegionsOrderSubject>;
-    using OrderObserverPtr    = std::unique_ptr<OrderObserver>;
+    using PlaybackRegion      = meta_words::PlaybackRegion;
+    using Control             = VSTGUI::CControl;
+    using View                = VSTGUI::CView;
+    using RowColumnView       = VSTGUI::CRowColumnView;
+    using UIAttributes        = VSTGUI::UIAttributes;
+    using IUIDescription      = VSTGUI::IUIDescription;
+    using UTF8StringPtr       = VSTGUI::UTF8StringPtr;
+    using IController         = VSTGUI::IController;
     using OptPlaybackRegionId = std::optional<PlaybackRegion::Id>;
 
     ListController(ARADocumentController* controller,
@@ -75,7 +72,8 @@ private:
     ARADocumentController* controller = nullptr;
     ARADocumentController::PlaybackRegionLifetimesSubject::Handle
         lifetime_observer_handle;
-    OrderObserverPtr order_observer;
+    ARADocumentController::PlaybackRegionsOrderSubject::Handle
+        order_observer_handle;
     OptPlaybackRegionId playback_region_id;
     ARADocumentController::SearchEngineSubject::Handle
         word_selected_observer_handle;

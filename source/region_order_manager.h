@@ -4,8 +4,8 @@
 
 #pragma once
 
+#include "eventpp/callbacklist.h"
 #include "meta_words_playback_region.h"
-#include "tiny_observer_pattern.h"
 
 namespace mam {
 
@@ -29,15 +29,12 @@ public:
     using PlaybackRegion = meta_words::PlaybackRegion;
     using OrderedIds     = std::vector<PlaybackRegion::Id>;
     using OrderSubject =
-        tiny_observer_pattern::Subject<PlaybackRegionOrderChangeData>;
-    using ObserverID = tiny_observer_pattern::ObserverID;
+        eventpp::CallbackList<void(const PlaybackRegionOrderChangeData&)>;
 
     using FuncStartInPlaybackTime = std::function<double(PlaybackRegion::Id)>;
 
     auto
     initialize(FuncStartInPlaybackTime&& start_in_playback_time_func) -> bool;
-    auto register_observer(OrderSubject::Callback&& callback) -> ObserverID;
-    auto unregister_observer(ObserverID id) -> void;
     auto get_order_subject() -> OrderSubject*
     {
         return &playback_region_order_subject;

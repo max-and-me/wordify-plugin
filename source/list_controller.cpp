@@ -123,9 +123,9 @@ ListController::ListController(ARADocumentController* controller,
                     this->on_add_remove_playback_region(data);
                 });
 
-        order_observer = tiny_observer_pattern::make_observer(
-            controller->get_playback_region_order_subject(),
-            [&](const auto&) { this->on_playback_regions_reordered(); });
+        order_observer_handle =
+            controller->get_playback_region_order_subject()->append(
+                [&](const auto&) { this->on_playback_regions_reordered(); });
 
         word_selected_observer_handle =
             controller->get_selected_word_subject()->append(
@@ -147,6 +147,9 @@ ListController::~ListController()
 
     if (controller)
     {
+        controller->get_playback_region_order_subject()->remove(
+            order_observer_handle);
+
         controller->get_selected_word_subject()->remove(
             word_selected_observer_handle);
 
