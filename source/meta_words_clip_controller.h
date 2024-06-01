@@ -5,6 +5,7 @@
 #pragma once
 
 #include "base/source/fobject.h"
+#include "eventpp/callbacklist.h"
 #include "meta_words_data.h"
 #include "tiny_observer_pattern.h"
 #include "vstgui/lib/iviewlistener.h"
@@ -34,10 +35,9 @@ public:
     //--------------------------------------------------------------------
     using FuncMetaWordsData  = std::function<const MetaWordsData()>;
     using FuncOnSelectedWord = std::function<void(int)>;
-    using Subject            = tiny_observer_pattern::SimpleSubject;
+    using Subject            = eventpp::CallbackList<void(void)>;
+    using ObserverHandle     = Subject::Handle;
     using Width              = VSTGUI::CCoord;
-    using ObserverPtr =
-        std::unique_ptr<tiny_observer_pattern::Observer<Subject>>;
 
     struct Cache
     {
@@ -81,7 +81,8 @@ private:
     std::unique_ptr<HStackLayout> stack_layout;
     VSTGUI::UIAttributes meta_word_button_attributes;
 
-    ObserverPtr observer;
+    Subject* subject = nullptr;
+    ObserverHandle observer_handle;
     Cache cache;
 };
 //------------------------------------------------------------------------

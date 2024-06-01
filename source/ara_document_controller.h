@@ -67,7 +67,7 @@ public:
     using OptPlaybackRegionPtr = meta_words::OptPlaybackRegionPtr;
     using PlaybackRegion       = meta_words::PlaybackRegion;
     using PlaybackRenderer     = meta_words::PlaybackRenderer;
-    using Subject              = tiny_observer_pattern::SimpleSubject;
+    using Subject              = eventpp::CallbackList<void(void)>;
     using ObserverID           = tiny_observer_pattern::ObserverID;
 
     using SampleRate     = double;

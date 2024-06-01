@@ -449,6 +449,11 @@ MetaWordsClipController::MetaWordsClipController(
 //------------------------------------------------------------------------
 MetaWordsClipController::~MetaWordsClipController()
 {
+    if (subject)
+    {
+        subject->remove(observer_handle);
+    }
+
     if (region_title)
     {
         region_title->unregisterViewListener(this);
@@ -477,8 +482,13 @@ MetaWordsClipController::~MetaWordsClipController()
 //------------------------------------------------------------------------
 bool MetaWordsClipController::initialize(Subject* subject)
 {
-    observer = tiny_observer_pattern::make_observer(
-        subject, [&](const auto&) { on_meta_words_data_changed(); });
+    if (!subject)
+        return false;
+
+    this->subject = subject;
+
+    observer_handle =
+        subject->append([&]() { this->on_meta_words_data_changed(); });
 
     auto view = description->createView("TextWordTemplate", this);
     if (view)

@@ -232,7 +232,7 @@ ARA::PlugIn::AudioSource* ARADocumentController::doCreateAudioSource(
             {
                 auto obj = playback_region_observers.find(region->get_id());
                 if (obj != playback_region_observers.end())
-                    obj->second.notify_listeners({});
+                    obj->second();
             }
         }
         this->notify_listeners({});
@@ -321,7 +321,7 @@ void ARADocumentController::didUpdatePlaybackRegionProperties(
     {
         auto obj = playback_region_observers.find(pbr->get_id());
         if (obj != playback_region_observers.end())
-            obj->second.notify_listeners({});
+            obj->second();
     }
 }
 
@@ -484,7 +484,7 @@ void ARADocumentController::on_analyze_audio_source_progress(
         const auto func = [&](const PlaybackRegion& region) -> bool {
             auto obj = playback_region_observers.find(region.get_id());
             if (obj != playback_region_observers.end())
-                obj->second.notify_listeners({});
+                obj->second();
 
             return true;
         };
