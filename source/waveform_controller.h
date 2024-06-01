@@ -28,7 +28,7 @@ class WaveFormController : public Steinberg::FObject,
 {
 public:
     //--------------------------------------------------------------------
-    using Subject        = eventpp::CallbackList<void(const RegionData&)>;
+    using Subject        = eventpp::CallbackList<void(const SelectedWordData&)>;
     using ObserverHandle = Subject::Handle;
     using Data           = const WaveFormView::Data;
 

@@ -38,9 +38,9 @@ struct PlaybackRegionLifetimeData
 };
 
 //------------------------------------------------------------------------
-//  RegionData
+//  SelectedWordData
 //------------------------------------------------------------------------
-struct RegionData
+struct SelectedWordData
 {
     using RegionId  = size_t;
     using WordIndex = size_t;
@@ -50,7 +50,7 @@ struct RegionData
 };
 
 //------------------------------------------------------------------------
-using RegionSelectionModel = SelectionModel<RegionData>;
+using RegionSelectionModel = SelectionModel<SelectedWordData>;
 
 //------------------------------------------------------------------------
 // ARADocumentController
@@ -59,28 +59,28 @@ class ARADocumentController : public ARA::PlugIn::DocumentController
 {
 public:
     //--------------------------------------------------------------------
-    using AudioModification    = meta_words::AudioModification;
-    using AudioSource          = meta_words::AudioSource;
-    using MetaWordsDataList    = std::vector<MetaWordsData>;
-    using OptPlaybackRegionPtr = meta_words::OptPlaybackRegionPtr;
-    using PlaybackRegion       = meta_words::PlaybackRegion;
-    using PlaybackRenderer     = meta_words::PlaybackRenderer;
-    using Subject              = eventpp::CallbackList<void(void)>;
+    using AudioModification          = meta_words::AudioModification;
+    using AudioSource                = meta_words::AudioSource;
+    using MetaWordsDataList          = std::vector<MetaWordsData>;
+    using OptPlaybackRegionPtr       = meta_words::OptPlaybackRegionPtr;
+    using PlaybackRegion             = meta_words::PlaybackRegion;
+    using PlaybackRenderer           = meta_words::PlaybackRenderer;
+    using ChangedPlayRegionsCallback = eventpp::CallbackList<void(void)>;
 
     using SampleRate     = double;
     using FuncSampleRate = std::function<SampleRate()>;
 
     // Containers
     using PlaybackRegionObservers =
-        std::unordered_map<PlaybackRegion::Id, Subject>;
+        std::unordered_map<PlaybackRegion::Id, ChangedPlayRegionsCallback>;
     using PlaybackRegions = std::map<PlaybackRegion::Id, PlaybackRegion*>;
 
     // Subjects
     using PlaybackRegionLifetimesSubject =
         eventpp::CallbackList<void(const PlaybackRegionLifetimeData&)>;
 
-    using RegionSelectionSubject =
-        eventpp::CallbackList<void(const RegionData&)>;
+    using SelectedWordCallback =
+        eventpp::CallbackList<void(const SelectedWordData&)>;
 
     using PlaybackRegionsOrderSubject = RegionOrderManager::OrderSubject;
 
@@ -197,7 +197,8 @@ public:
     }
 
     auto get_playback_region_changed_subject(
-        const PlaybackRegion::Id playback_region_id) -> Subject&
+        const PlaybackRegion::Id playback_region_id)
+        -> ChangedPlayRegionsCallback&
     {
         return playback_region_observers[playback_region_id];
     }
@@ -213,9 +214,9 @@ public:
         return &playback_region_lifetimes_subject;
     }
 
-    auto get_region_selection_subject() -> RegionSelectionSubject*
+    auto get_region_selection_subject() -> SelectedWordCallback*
     {
-        return &region_selection_subject;
+        return &selected_word_callback;
     }
 
     template <typename Func>
@@ -239,7 +240,7 @@ private:
     PlaybackRegionObservers playback_region_observers;
     PlaybackRegionLifetimesSubject playback_region_lifetimes_subject;
     SearchEngineSubject search_engine_subject;
-    RegionSelectionSubject region_selection_subject;
+    SelectedWordCallback selected_word_callback;
     RegionOrderManager region_order_manager;
     RegionSelectionModel region_selection_model;
 

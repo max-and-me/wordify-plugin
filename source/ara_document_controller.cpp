@@ -503,7 +503,7 @@ auto ARADocumentController::get_region_selection_model()
     {
         region_selection_model.on_select_func =
             [&](const RegionSelectionModel::DataType& data) {
-                region_selection_subject(data);
+                selected_word_callback(data);
             };
     }
 
