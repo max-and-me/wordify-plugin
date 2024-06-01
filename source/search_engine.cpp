@@ -58,8 +58,10 @@ struct SearchEngineCache
     SearchResults search_results;
     StringType search_word;
     RegionWord focused_word;
+    SearchEngineCallback callback;
 };
 
+namespace detail {
 //------------------------------------------------------------------------
 auto search(const StringType& search_word,
             const Regions& regions,
@@ -84,15 +86,6 @@ auto search(const StringType& search_word,
     }
 
     return SearchEngineCache::instance().search_results;
-}
-
-//------------------------------------------------------------------------
-auto research(const Regions& regions,
-              MatchFunc&& match_func) -> const SearchResults&
-{
-    const auto w = SearchEngineCache::instance().search_word;
-    clear_results();
-    return search(w, regions, std::move(match_func));
 }
 
 //------------------------------------------------------------------------
@@ -196,5 +189,60 @@ auto clear_results() -> SearchResults
 
     return results;
 }
+//------------------------------------------------------------------------
+} // namespace detail
+
+//------------------------------------------------------------------------
+auto search(const StringType& search_word,
+            const Regions& regions,
+            MatchFunc&& match_func) -> void
+{
+    const auto& results =
+        detail::search(search_word, regions, std::move(match_func));
+
+    SearchEngineCache::instance().callback(results);
+}
+
+//------------------------------------------------------------------------
+auto research(const Regions& regions, MatchFunc&& match_func) -> void
+{
+    const auto w = SearchEngineCache::instance().search_word;
+    clear_results();
+    return search(w, regions, std::move(match_func));
+}
+
+//------------------------------------------------------------------------
+auto next_occurence() -> void
+{
+    const auto results = detail::next_occurence();
+    SearchEngineCache::instance().callback(results);
+}
+
+//------------------------------------------------------------------------
+auto prev_occurence() -> void
+{
+    const auto results = detail::prev_occurence();
+    SearchEngineCache::instance().callback(results);
+}
+
+//------------------------------------------------------------------------
+auto clear_results() -> void
+{
+    const auto results = detail::clear_results();
+    SearchEngineCache::instance().callback(results);
+}
+
+//------------------------------------------------------------------------
+auto get_callback() -> SearchEngineCallback&
+{
+    return SearchEngineCache::instance().callback;
+}
+
+//------------------------------------------------------------------------
+auto current_search_word() -> StringType
+{
+    return SearchEngineCache::instance().search_word;
+}
+
 //------------------------------------------------------------------------
 } // namespace mam::search_engine

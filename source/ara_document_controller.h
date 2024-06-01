@@ -55,8 +55,6 @@ using RegionSelectionModel = SelectionModel<SelectedWordEventData>;
 using SelectedWordCallback =
     eventpp::CallbackList<void(const SelectedWordEventData&)>;
 using RegionPropertiesChangedCallback = eventpp::CallbackList<void(void)>;
-using SearchEngineCallback =
-    eventpp::CallbackList<void(const search_engine::SearchResults&)>;
 using RegionLifetimeCallback =
     eventpp::CallbackList<void(const RegionLifetimeEventData&)>;
 using RegionsOrderCallback = RegionOrderManager::OrderSubject;
@@ -79,9 +77,9 @@ public:
     using FuncSampleRate = std::function<SampleRate()>;
 
     // Containers
-    using PlaybackRegionObservers =
+    using RegionsPropertiesObservers =
         std::unordered_map<PlaybackRegion::Id, RegionPropertiesChangedCallback>;
-    using PlaybackRegions = std::map<PlaybackRegion::Id, PlaybackRegion*>;
+    using RegionsById = std::map<PlaybackRegion::Id, PlaybackRegion*>;
 
     // publish inherited constructor
     using ARA::PlugIn::DocumentController::DocumentController;
@@ -171,14 +169,6 @@ public:
 
     // Search Engine
     auto search_word(std::string search) -> void;
-    auto clear_search_results() -> void;
-    auto focus_next_occurence() -> void;
-    auto focus_prev_occurence() -> void;
-
-    auto get_selected_word_subject() -> SearchEngineCallback*
-    {
-        return &search_engine_subject;
-    }
 
     auto activate_smart_search(bool activate) -> void;
     // Search Engine
@@ -232,14 +222,13 @@ public:
 
     //--------------------------------------------------------------------
 private:
-    PlaybackRegionObservers playback_region_observers;
+    RegionsPropertiesObservers playback_region_observers;
     RegionLifetimeCallback playback_region_lifetimes_subject;
-    SearchEngineCallback search_engine_subject;
     SelectedWordCallback selected_word_callback;
     RegionOrderManager region_order_manager;
     RegionSelectionModel region_selection_model;
 
-    PlaybackRegions playback_regions;
+    RegionsById playback_regions;
 
     std::atomic<bool> _renderersCanAccessModelGraph{true};
     std::atomic<int> _countOfRenderersCurrentlyAccessingModelGraph{0};

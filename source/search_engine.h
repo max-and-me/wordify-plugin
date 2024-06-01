@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "eventpp/callbacklist.h"
 #include <functional>
 #include <map>
 #include <optional>
@@ -40,14 +41,17 @@ using MatchFunc =
 
 auto search(const StringType& search_word,
             const Regions& regions,
-            MatchFunc&& match_func) -> const SearchResults&;
+            MatchFunc&& match_func) -> void;
 
-auto research(const Regions& regions,
-              MatchFunc&& match_func) -> const SearchResults&;
+auto research(const Regions& regions, MatchFunc&& match_func) -> void;
 
-auto next_occurence() -> SearchResults;
-auto prev_occurence() -> SearchResults;
-auto clear_results() -> SearchResults;
+auto next_occurence() -> void;
+auto prev_occurence() -> void;
+auto clear_results() -> void;
+auto current_search_word() -> StringType;
+
+using SearchEngineCallback = eventpp::CallbackList<void(const SearchResults&)>;
+auto get_callback() -> SearchEngineCallback&;
 
 //------------------------------------------------------------------------
 } // namespace mam::search_engine

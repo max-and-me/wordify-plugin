@@ -547,11 +547,11 @@ void PLUGIN_API WordifySingleComponent::update(FUnknown* changedUnknown,
                     break;
                 case ParamIds::kParamIdSmartSearchNext:
                     if (activate)
-                        dc->focus_next_occurence();
+                        search_engine::next_occurence();
                     break;
                 case ParamIds::kParamIdSmartSearchPrev:
                     if (activate)
-                        dc->focus_prev_occurence();
+                        search_engine::prev_occurence();
                     break;
             }
         }

@@ -309,7 +309,7 @@ void ARADocumentController::didUpdatePlaybackRegionProperties(
         playbackRegion);
 
     region_order_manager.reorder();
-    clear_search_results();
+    search_engine::clear_results();
 
     if (auto* pbr = dynamic_cast<PlaybackRegion*>(playbackRegion))
     {
@@ -391,52 +391,19 @@ auto ARADocumentController::find_playback_region(PlaybackRegion::Id id) const
 }
 
 //------------------------------------------------------------------------
-auto ARADocumentController::clear_search_results() -> void
-{
-    auto results = search_engine::clear_results();
-    search_engine_subject(results);
-}
-
-//------------------------------------------------------------------------
 auto ARADocumentController::search_word(std::string search) -> void
 {
-    if (search.empty())
+    search_engine::Regions regions{};
+    for (const auto& entry : playback_regions)
     {
-        clear_search_results();
+        regions[static_cast<search_engine::RegionID>(entry.first)] =
+            static_cast<meta_words::PlaybackRegion*>(entry.second);
     }
-    else
-    {
-        search_engine::Regions regions{};
-        for (const auto& entry : playback_regions)
-        {
-            regions[static_cast<search_engine::RegionID>(entry.first)] =
-                static_cast<meta_words::PlaybackRegion*>(entry.second);
-        }
 
-        const auto results = search_engine::search(
-            search, regions, [&](const auto& s0, const auto& s1) -> bool {
-                return StringMatcher::isMatch(s0, s1, string_match_method);
-            });
-
-        search_engine_subject(results);
-
-        if (results.empty())
-            clear_search_results();
-    }
-}
-
-//------------------------------------------------------------------------
-auto ARADocumentController::focus_next_occurence() -> void
-{
-    const auto results = search_engine::next_occurence();
-    search_engine_subject(results);
-}
-
-//------------------------------------------------------------------------
-auto ARADocumentController::focus_prev_occurence() -> void
-{
-    const auto results = search_engine::prev_occurence();
-    search_engine_subject(results);
+    search_engine::search(
+        search, regions, [&](const auto& s0, const auto& s1) -> bool {
+            return StringMatcher::isMatch(s0, s1, string_match_method);
+        });
 }
 
 //------------------------------------------------------------------------
@@ -531,15 +498,10 @@ auto ARADocumentController::activate_smart_search(bool activate) -> void
             static_cast<meta_words::PlaybackRegion*>(entry.second);
     }
 
-    const auto results = search_engine::research(
+    search_engine::research(
         regions, [&](const auto& s0, const auto& s1) -> bool {
             return StringMatcher::isMatch(s0, s1, string_match_method);
         });
-
-    search_engine_subject(results);
-
-    if (results.empty())
-        clear_search_results();
 }
 
 //------------------------------------------------------------------------

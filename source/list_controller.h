@@ -73,7 +73,7 @@ private:
 
     RegionLifetimeCallback::Handle lifetime_observer_handle;
     RegionsOrderCallback::Handle order_observer_handle;
-    SearchEngineCallback::Handle word_selected_observer_handle;
+    search_engine::SearchEngineCallback::Handle word_selected_observer_handle;
 };
 
 //------------------------------------------------------------------------

@@ -54,6 +54,7 @@ CView* SearchController::verifyView(CView* view,
         {
             if (auto c = dynamic_cast<CSearchTextEdit*>(view))
             {
+                c->setText(search_engine::current_search_word());
                 c->setTag(kSearchFieldTag);
                 c->setListener(this);
             }
@@ -78,7 +79,13 @@ void SearchController::valueChanged(CControl* control)
     {
         case kSearchFieldTag: {
             if (auto sf = dynamic_cast<CSearchTextEdit*>(control))
-                controller->search_word(sf->getText().getString());
+            {
+                const auto search_word = sf->getText().getString();
+                if (search_word.empty())
+                    search_engine::clear_results();
+                else
+                    controller->search_word(sf->getText().getString());
+            }
 
             break;
         }

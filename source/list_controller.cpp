@@ -5,6 +5,7 @@
 #include "list_controller.h"
 #include "hilite_text_button.h"
 #include "meta_words_clip_controller.h"
+#include "search_engine.h"
 #include "vstgui/lib/cframe.h"
 #include "vstgui/lib/controls/cbuttons.h"
 #include "vstgui/lib/crowcolumnview.h"
@@ -128,11 +129,10 @@ ListController::ListController(ARADocumentController* controller,
                 [&](const auto&) { this->on_playback_regions_reordered(); });
 
         word_selected_observer_handle =
-            controller->get_selected_word_subject()->append(
-                [this](const auto& data) {
-                    for (const auto& result : data)
-                        this->checkSelectWord(result);
-                });
+            search_engine::get_callback().append([this](const auto& data) {
+                for (const auto& result : data)
+                    this->checkSelectWord(result);
+            });
     }
 }
 
@@ -150,8 +150,7 @@ ListController::~ListController()
         controller->get_playback_region_order_subject()->remove(
             order_observer_handle);
 
-        controller->get_selected_word_subject()->remove(
-            word_selected_observer_handle);
+        search_engine::get_callback().remove(word_selected_observer_handle);
 
         controller->get_playback_region_lifetimes_subject()->remove(
             lifetime_observer_handle);
