@@ -1,6 +1,4 @@
-//------------------------------------------------------------------------
 // Copyright(c) 2024 Max And Me.
-//------------------------------------------------------------------------
 
 #pragma once
 
@@ -14,6 +12,7 @@ namespace VSTGUI {
 class CRowColumnView;
 class IUIDescription;
 } // namespace VSTGUI
+
 namespace mam {
 namespace meta_words {
 class PlaybackRegion;
