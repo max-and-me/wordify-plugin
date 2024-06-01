@@ -2,6 +2,8 @@
 
 [![CMake (Linux, macOS, Windows)](https://github.com/max-and-me/wordify-plugin/actions/workflows/cmake.yml/badge.svg)](https://github.com/max-and-me/wordify-plugin/actions/workflows/cmake.yml)
 
+Wordify is an ARA / VST 3 plug-in. It transcribes (speech to text) selected clips from the project in a chat-like manner. Clicking on a word, locates to the time position where the word is spoken. An intelligent search makes it possible to quickly find spoken words in clips.
+
 ## Getting Started
 
 To clone and create the project, open a command prompt and proceed as follows:
