@@ -16,9 +16,9 @@
 namespace mam {
 
 //------------------------------------------------------------------------
-static auto on_request_select_word(int index,
-                                   ARADocumentController* controller,
-                                   const Id id) -> void
+static auto on_request_select_word(const Id id,
+                                   const Index index,
+                                   ARADocumentController* controller) -> void
 {
     if (!controller)
         return;
@@ -460,9 +460,9 @@ auto ARADocumentController::get_region_selection_model()
 }
 
 //------------------------------------------------------------------------
-auto ARADocumentController::onRequestSelectWord(int index, const Id id) -> void
+auto ARADocumentController::onRequestSelectWord(const Index index, const Id id) -> void
 {
-    on_request_select_word(index, this, id);
+    on_request_select_word(id, index, this);
 }
 
 //------------------------------------------------------------------------

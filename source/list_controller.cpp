@@ -283,7 +283,7 @@ ListController::createSubController(UTF8StringPtr name,
             return build_meta_words_data(ctler, pbr_id);
         };
 
-        subctrl->on_select_word_func = [=](int index) {
+        subctrl->on_select_word_func = [=](Index index) {
             controller->get_region_selection_model().select(
                 {pbr_id, static_cast<size_t>(index)});
             controller->onRequestSelectWord(index, pbr_id);

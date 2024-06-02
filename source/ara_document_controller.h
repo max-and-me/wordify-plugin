@@ -197,7 +197,7 @@ public:
         region_order_manager.for_each_region_id_enumerated(tmp_func);
     }
 
-    auto onRequestSelectWord(int index, const Id id) -> void;
+    auto onRequestSelectWord(const Index index, const Id id) -> void;
 
     auto get_playback_regions() -> const RegionsById&
     {

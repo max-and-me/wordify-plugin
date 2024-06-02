@@ -4,9 +4,13 @@
 
 #pragma once
 
+#include <cstdint>
+
 namespace mam {
 //------------------------------------------------------------------------
-using Id = uint64_t;
+using u64   = uint64_t;
+using Id    = uint64_t;
+using Index = uint64_t;
 
 //------------------------------------------------------------------------
 } // namespace mam
