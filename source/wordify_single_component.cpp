@@ -227,7 +227,7 @@ tresult PLUGIN_API WordifySingleComponent::setActive(TBool state)
     //--- called when the Plug-in is enable/disable (On/Off) -----
 
     if (meta_words::PlaybackRenderer* playbackRenderer =
-            _araPlugInExtension
+            araPlugInExtension
                 .getPlaybackRenderer<meta_words::PlaybackRenderer>())
     {
         if (state)
@@ -251,19 +251,19 @@ tresult PLUGIN_API WordifySingleComponent::process(Vst::ProcessData& data)
                                processSetup.maxSamplesPerBlock);
 
     if (auto playbackRenderer =
-            _araPlugInExtension
+            araPlugInExtension
                 .getPlaybackRenderer<meta_words::PlaybackRenderer>())
     {
         on_playback_renderer(*playbackRenderer, data);
     }
     else if (auto editorRenderer =
-                 _araPlugInExtension
+                 araPlugInExtension
                      .getEditorRenderer<meta_words::EditorRenderer>())
     {
         on_editor_renderer(*editorRenderer, data);
     }
     else if (auto editorView =
-                 _araPlugInExtension.getEditorView<meta_words::EditorView>())
+                 araPlugInExtension.getEditorView<meta_words::EditorView>())
     {
         on_editor_view(*editorView, data);
     }
@@ -316,8 +316,8 @@ VSTGUI::IController* WordifySingleComponent::createSubController(
     VSTGUI::VST3Editor* /*editor*/)
 {
     auto* document_controller =
-        _araPlugInExtension.getDocumentController<ARADocumentController>();
-    // auto* editorView = _araPlugInExtension.getEditorView();
+        araPlugInExtension.getDocumentController<ARADocumentController>();
+    // auto* editorView = araPlugInExtension.getEditorView();
 
     if (!document_controller)
         return nullptr;
@@ -363,8 +363,8 @@ void WordifySingleComponent::didOpen(VSTGUI::VST3Editor* editor) {}
 //------------------------------------------------------------------------
 void WordifySingleComponent::willClose(VSTGUI::VST3Editor* editor)
 {
-    if (_araPlugInExtension.getEditorView())
-        _araPlugInExtension.getEditorView()->setEditorOpen(false);
+    if (araPlugInExtension.getEditorView())
+        araPlugInExtension.getEditorView()->setEditorOpen(false);
 }
 
 //------------------------------------------------------------------------
@@ -396,8 +396,8 @@ IPlugView* PLUGIN_API WordifySingleComponent::createView(FIDString name)
         }
 
         // Must be set to 'true' to get notified by a host selection change
-        if (_araPlugInExtension.getEditorView())
-            _araPlugInExtension.getEditorView()->setEditorOpen(true);
+        if (araPlugInExtension.getEditorView())
+            araPlugInExtension.getEditorView()->setEditorOpen(true);
 
         return view;
     }
@@ -421,8 +421,8 @@ WordifySingleComponent::bindToDocumentControllerWithRoles(
     ARA::ARAPlugInInstanceRoleFlags knownRoles,
     ARA::ARAPlugInInstanceRoleFlags assignedRoles)
 {
-    return _araPlugInExtension.bindToARA(documentControllerRef, knownRoles,
-                                         assignedRoles);
+    return araPlugInExtension.bindToARA(documentControllerRef, knownRoles,
+                                        assignedRoles);
 }
 
 //-----------------------------------------------------------------------------
@@ -538,7 +538,7 @@ void PLUGIN_API WordifySingleComponent::update(FUnknown* changedUnknown,
             dark_scheme = param->getNormalized() > 0.;
             set_dark_scheme_on_editors(editors, dark_scheme);
         }
-        else if (auto* dc = _araPlugInExtension
+        else if (auto* dc = araPlugInExtension
                                 .getDocumentController<ARADocumentController>())
         {
             const bool activate = param->getNormalized() > 0.;

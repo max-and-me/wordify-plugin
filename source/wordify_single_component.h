@@ -9,10 +9,8 @@
 #include "ipslviewembedding.h"
 #include "public.sdk/source/vst/vstsinglecomponenteffect.h"
 #include "vstgui/plugin-bindings/vst3editor.h"
-#include <memory>
 
 namespace mam {
-class SearchController;
 
 //------------------------------------------------------------------------
 //  WordifySingleComponent
@@ -24,10 +22,12 @@ class WordifySingleComponent : public Steinberg::Vst::SingleComponentEffect,
                                public Presonus::IPlugInViewEmbedding
 {
 public:
+    //--------------------------------------------------------------------
+
     using Editors = std::vector<Steinberg::Vst::EditorView*>;
 
     WordifySingleComponent();
-    ~WordifySingleComponent() SMTG_OVERRIDE;
+    ~WordifySingleComponent() override;
 
     // Create function
     static Steinberg::FUnknown* createInstance(void* /*context*/)
@@ -35,64 +35,57 @@ public:
         return (Steinberg::Vst::IAudioProcessor*)new WordifySingleComponent;
     }
 
-    //-------------------------------------------------------------------------
     // AudioEffect overrides:
-    //-------------------------------------------------------------------------
     /** Called at first after constructor */
-    Steinberg::tresult PLUGIN_API initialize(Steinberg::FUnknown* context)
-        SMTG_OVERRIDE;
+    Steinberg::tresult PLUGIN_API
+    initialize(Steinberg::FUnknown* context) override;
 
     /** Called at the end before destructor */
-    Steinberg::tresult PLUGIN_API terminate() SMTG_OVERRIDE;
+    Steinberg::tresult PLUGIN_API terminate() override;
 
     /** Switch the Plug-in on/off */
-    Steinberg::tresult PLUGIN_API setActive(Steinberg::TBool state)
-        SMTG_OVERRIDE;
+    Steinberg::tresult PLUGIN_API setActive(Steinberg::TBool state) override;
 
     /** Will be called before any process call */
     Steinberg::tresult PLUGIN_API
-    setupProcessing(Steinberg::Vst::ProcessSetup& newSetup) SMTG_OVERRIDE;
+    setupProcessing(Steinberg::Vst::ProcessSetup& newSetup) override;
 
     /** Asks if a given sample size is supported see SymbolicSampleSizes. */
     Steinberg::tresult PLUGIN_API
-    canProcessSampleSize(Steinberg::int32 symbolicSampleSize) SMTG_OVERRIDE;
+    canProcessSampleSize(Steinberg::int32 symbolicSampleSize) override;
 
     /** Here we go...the process call */
-    Steinberg::tresult PLUGIN_API process(Steinberg::Vst::ProcessData& data)
-        SMTG_OVERRIDE;
+    Steinberg::tresult PLUGIN_API
+    process(Steinberg::Vst::ProcessData& data) override;
 
     /** For persistence */
-    Steinberg::tresult PLUGIN_API setState(Steinberg::IBStream* state)
-        SMTG_OVERRIDE;
-    Steinberg::tresult PLUGIN_API getState(Steinberg::IBStream* state)
-        SMTG_OVERRIDE;
+    Steinberg::tresult PLUGIN_API setState(Steinberg::IBStream* state) override;
+    Steinberg::tresult PLUGIN_API getState(Steinberg::IBStream* state) override;
 
-    //------------------------------------------------------------------------
     // ARA::IPlugInEntryPoint2 overrides:
-    //------------------------------------------------------------------------
     /** Get associated ARA factory */
-    const ARA::ARAFactory* PLUGIN_API getFactory() SMTG_OVERRIDE;
+    const ARA::ARAFactory* PLUGIN_API getFactory() override;
 
     /** Bind to ARA document controller instance */
     const ARA::ARAPlugInExtensionInstance* PLUGIN_API bindToDocumentController(
-        ARA::ARADocumentControllerRef documentControllerRef) SMTG_OVERRIDE;
+        ARA::ARADocumentControllerRef documentControllerRef) override;
     const ARA::ARAPlugInExtensionInstance* PLUGIN_API
     bindToDocumentControllerWithRoles(
         ARA::ARADocumentControllerRef documentControllerRef,
         ARA::ARAPlugInInstanceRoleFlags knownRoles,
-        ARA::ARAPlugInInstanceRoleFlags assignedRoles) SMTG_OVERRIDE;
+        ARA::ARAPlugInInstanceRoleFlags assignedRoles) override;
 
     // VSTGUI::VST3EditorDelegate
     VSTGUI::IController*
     createSubController(VSTGUI::UTF8StringPtr name,
                         const VSTGUI::IUIDescription* description,
-                        VSTGUI::VST3Editor* editor) SMTG_OVERRIDE;
+                        VSTGUI::VST3Editor* editor) override;
     void didOpen(VSTGUI::VST3Editor* editor) override;
     void willClose(VSTGUI::VST3Editor* editor) override;
 
     // Edit Controller
-    Steinberg::IPlugView* PLUGIN_API createView(Steinberg::FIDString name)
-        SMTG_OVERRIDE;
+    Steinberg::IPlugView* PLUGIN_API
+    createView(Steinberg::FIDString name) override;
     void PLUGIN_API editorAttached(Steinberg::Vst::EditorView* editor) override;
     void PLUGIN_API editorRemoved(Steinberg::Vst::EditorView* editor) override;
     void PLUGIN_API update(Steinberg::FUnknown* changedUnknown,
@@ -110,9 +103,10 @@ public:
     DEF_INTERFACE(IPlugInViewEmbedding)
     END_DEFINE_INTERFACES(Steinberg::Vst::SingleComponentEffect)
     REFCOUNT_METHODS(Steinberg::Vst::SingleComponentEffect)
-    //------------------------------------------------------------------------
+
+    //--------------------------------------------------------------------
 protected:
-    ARA::PlugIn::PlugInExtension _araPlugInExtension;
+    ARA::PlugIn::PlugInExtension araPlugInExtension;
     Editors editors;
 
     auto restore_parameters() -> void;
