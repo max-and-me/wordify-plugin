@@ -340,7 +340,9 @@ VSTGUI::IController* WordifySingleComponent::createSubController(
     }
     else if (VSTGUI::UTF8StringView(name) == "SearchController")
     {
-        return new SearchController(document_controller);
+        return new SearchController(
+            document_controller,
+            getParameterObject(ParamIds::kParamIdSmartSearchMode));
     }
     else if (VSTGUI::UTF8StringView(name) == "SpinnerController")
     {
@@ -543,15 +545,15 @@ void PLUGIN_API WordifySingleComponent::update(FUnknown* changedUnknown,
             switch (param->getInfo().id)
             {
                 case ParamIds::kParamIdSmartSearchMode:
-                    dc->activate_smart_search(activate);
+                    // Nothing here
                     break;
                 case ParamIds::kParamIdSmartSearchNext:
                     if (activate)
-                        search_engine::next_occurence();
+                        SearchEngine::instance().next_occurence();
                     break;
                 case ParamIds::kParamIdSmartSearchPrev:
                     if (activate)
-                        search_engine::prev_occurence();
+                        SearchEngine::instance().prev_occurence();
                     break;
             }
         }

@@ -12,7 +12,6 @@
 #include "meta_words_playback_renderer.h"
 #include "meta_words_serde.h"
 #include "preferences_serde.h"
-#include "search_engine.h"
 #include "string_matcher.h"
 
 namespace mam {
@@ -309,7 +308,6 @@ void ARADocumentController::didUpdatePlaybackRegionProperties(
         playbackRegion);
 
     region_order_manager.reorder();
-    search_engine::clear_results();
 
     if (auto* pbr = dynamic_cast<PlaybackRegion*>(playbackRegion))
     {
@@ -391,22 +389,6 @@ auto ARADocumentController::find_playback_region(PlaybackRegion::Id id) const
 }
 
 //------------------------------------------------------------------------
-auto ARADocumentController::search_word(std::string search) -> void
-{
-    search_engine::Regions regions{};
-    for (const auto& entry : playback_regions)
-    {
-        regions[static_cast<search_engine::RegionID>(entry.first)] =
-            static_cast<meta_words::PlaybackRegion*>(entry.second);
-    }
-
-    search_engine::search(
-        search, regions, [&](const auto& s0, const auto& s1) -> bool {
-            return StringMatcher::isMatch(s0, s1, string_match_method);
-        });
-}
-
-//------------------------------------------------------------------------
 void ARADocumentController::onRequestLocatorPosChanged(double pos)
 {
     auto hostPBCtrl = getHostPlaybackController();
@@ -482,26 +464,6 @@ auto ARADocumentController::onRequestSelectWord(
     int index, const meta_words::PlaybackRegion::Id id) -> void
 {
     on_request_select_word(index, this, id);
-}
-
-//------------------------------------------------------------------------
-auto ARADocumentController::activate_smart_search(bool activate) -> void
-{
-    string_match_method = activate
-                              ? StringMatcher::MatchMethod::nearbyFuzzyMatch
-                              : StringMatcher::MatchMethod::directMatch;
-
-    search_engine::Regions regions{};
-    for (const auto& entry : playback_regions)
-    {
-        regions[static_cast<search_engine::RegionID>(entry.first)] =
-            static_cast<meta_words::PlaybackRegion*>(entry.second);
-    }
-
-    search_engine::research(
-        regions, [&](const auto& s0, const auto& s1) -> bool {
-            return StringMatcher::isMatch(s0, s1, string_match_method);
-        });
 }
 
 //------------------------------------------------------------------------

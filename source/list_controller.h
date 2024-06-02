@@ -60,7 +60,7 @@ public:
 
     //--------------------------------------------------------------------
 private:
-    void checkSelectWord(const search_engine::SearchResult& search_result);
+    void checkSelectWord(const SearchEngine::SearchResult& search_result);
     void on_add_remove_playback_region(const RegionLifetimeEventData& data);
     void on_playback_regions_reordered();
     auto create_list_item_view(const PlaybackRegion::Id id) -> VSTGUI::CView*;
@@ -73,7 +73,7 @@ private:
 
     RegionLifetimeCallback::Handle lifetime_observer_handle;
     RegionsOrderCallback::Handle order_observer_handle;
-    search_engine::SearchEngineCallback::Handle word_selected_observer_handle;
+    SearchEngine::SearchEngineCallback::Handle word_selected_observer_handle;
 };
 
 //------------------------------------------------------------------------

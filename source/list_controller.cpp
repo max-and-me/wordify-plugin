@@ -42,7 +42,7 @@ static auto find_view_by_id(const CRowColumnView& rowColView,
 }
 
 //------------------------------------------------------------------------
-auto get_button_state(const search_engine::SearchResult& search_results,
+auto get_button_state(const SearchEngine::SearchResult& search_results,
                       int32_t control_tag) -> HiliteTextButton::HiliteState
 {
     using State    = HiliteTextButton::HiliteState;
@@ -129,10 +129,11 @@ ListController::ListController(ARADocumentController* controller,
                 [&](const auto&) { this->on_playback_regions_reordered(); });
 
         word_selected_observer_handle =
-            search_engine::get_callback().append([this](const auto& data) {
-                for (const auto& result : data)
-                    this->checkSelectWord(result);
-            });
+            SearchEngine::instance().get_callback().append(
+                [this](const auto& data) {
+                    for (const auto& result : data)
+                        this->checkSelectWord(result);
+                });
     }
 }
 
@@ -150,7 +151,8 @@ ListController::~ListController()
         controller->get_playback_region_order_subject()->remove(
             order_observer_handle);
 
-        search_engine::get_callback().remove(word_selected_observer_handle);
+        SearchEngine::instance().get_callback().remove(
+            word_selected_observer_handle);
 
         controller->get_playback_region_lifetimes_subject()->remove(
             lifetime_observer_handle);
@@ -298,7 +300,7 @@ ListController::createSubController(UTF8StringPtr name,
 
 //------------------------------------------------------------------------
 void ListController::checkSelectWord(
-    const search_engine::SearchResult& search_result)
+    const SearchEngine::SearchResult& search_result)
 {
     // word search_result selection
     if (!search_result.indices.empty() &&

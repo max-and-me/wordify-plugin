@@ -3,14 +3,15 @@
 #include "search_engine.h"
 #include "meta_words_playback_region.h"
 
-namespace mam::search_engine {
+namespace mam {
 namespace {
 //------------------------------------------------------------------------
-auto collect_search_results(const StringType& search_word,
-                            const Regions& regions,
-                            MatchFunc&& match_func) -> const SearchResults
+auto collect_search_results(const SearchEngine::StringType& search_word,
+                            const SearchEngine::Regions& regions,
+                            SearchEngine::MatchFunc&& match_func)
+    -> const SearchEngine::SearchResults
 {
-    SearchResults results;
+    SearchEngine::SearchResults results;
 
     for (const auto& region : regions)
     {
@@ -18,7 +19,7 @@ auto collect_search_results(const StringType& search_word,
         auto meta_words_data    = regionPtr->get_meta_words_data();
         auto meta_words_dataSet = meta_words_data.words;
 
-        WordIndices indices;
+        SearchEngine::WordIndices indices;
         for (size_t i = 0; i < meta_words_dataSet.size(); i++)
         {
             const auto& word_data = meta_words_dataSet[i];
@@ -45,8 +46,8 @@ struct SearchEngineCache
 {
     struct RegionWord
     {
-        RegionID region_id   = 0;
-        WordIndex word_index = 0;
+        SearchEngine::RegionID region_id   = 0;
+        SearchEngine::WordIndex word_index = 0;
     };
 
     static SearchEngineCache& instance()
@@ -55,17 +56,17 @@ struct SearchEngineCache
         return cache;
     }
 
-    SearchResults search_results;
-    StringType search_word;
+    SearchEngine::SearchResults search_results;
+    SearchEngine::StringType search_word;
     RegionWord focused_word;
-    SearchEngineCallback callback;
 };
 
 namespace detail {
 //------------------------------------------------------------------------
-auto search(const StringType& search_word,
-            const Regions& regions,
-            MatchFunc&& match_func) -> const SearchResults&
+auto search(const SearchEngine::StringType& search_word,
+            const SearchEngine::Regions& regions,
+            SearchEngine::MatchFunc&& match_func)
+    -> const SearchEngine::SearchResults&
 {
     if (SearchEngineCache::instance().search_word == search_word)
         return SearchEngineCache::instance().search_results;
@@ -89,12 +90,12 @@ auto search(const StringType& search_word,
 }
 
 //------------------------------------------------------------------------
-auto next_occurence() -> SearchResults
+auto next_occurence() -> SearchEngine::SearchResults
 {
     auto& focused_word   = SearchEngineCache::instance().focused_word;
     auto& search_results = SearchEngineCache::instance().search_results;
 
-    SearchResults results;
+    SearchEngine::SearchResults results;
 
     auto iter = std::find_if(
         search_results.begin(), search_results.end(), [&](const auto& result) {
@@ -131,12 +132,12 @@ auto next_occurence() -> SearchResults
 }
 
 //------------------------------------------------------------------------
-auto prev_occurence() -> SearchResults
+auto prev_occurence() -> SearchEngine::SearchResults
 {
     auto& focused_word   = SearchEngineCache::instance().focused_word;
     auto& search_results = SearchEngineCache::instance().search_results;
 
-    SearchResults results;
+    SearchEngine::SearchResults results;
 
     auto iter =
         std::find_if(search_results.rbegin(), search_results.rend(),
@@ -175,7 +176,7 @@ auto prev_occurence() -> SearchResults
 }
 
 //------------------------------------------------------------------------
-auto clear_results() -> SearchResults
+auto clear_results() -> SearchEngine::SearchResults
 {
     auto results = SearchEngineCache::instance().search_results;
     for (auto& result : results)
@@ -193,56 +194,60 @@ auto clear_results() -> SearchResults
 } // namespace detail
 
 //------------------------------------------------------------------------
-auto search(const StringType& search_word,
-            const Regions& regions,
-            MatchFunc&& match_func) -> void
+// SearchEngine
+//------------------------------------------------------------------------
+auto SearchEngine::search(const StringType& search_word,
+                          MatchFunc&& match_func) -> void
 {
-    const auto& results =
-        detail::search(search_word, regions, std::move(match_func));
+    if (!get_regions)
+        return;
 
-    SearchEngineCache::instance().callback(results);
+    const auto& results =
+        detail::search(search_word, get_regions(), std::move(match_func));
+
+    callback(results);
 }
 
 //------------------------------------------------------------------------
-auto research(const Regions& regions, MatchFunc&& match_func) -> void
+auto SearchEngine::research(MatchFunc&& match_func) -> void
 {
     const auto w = SearchEngineCache::instance().search_word;
     clear_results();
-    return search(w, regions, std::move(match_func));
+    return search(w, std::move(match_func));
 }
 
 //------------------------------------------------------------------------
-auto next_occurence() -> void
+auto SearchEngine::next_occurence() -> void
 {
-    const auto results = detail::next_occurence();
-    SearchEngineCache::instance().callback(results);
+    const auto results = mam::detail::next_occurence();
+    callback(results);
 }
 
 //------------------------------------------------------------------------
-auto prev_occurence() -> void
+auto SearchEngine::prev_occurence() -> void
 {
-    const auto results = detail::prev_occurence();
-    SearchEngineCache::instance().callback(results);
+    const auto results = mam::detail::prev_occurence();
+    callback(results);
 }
 
 //------------------------------------------------------------------------
-auto clear_results() -> void
+auto SearchEngine::clear_results() -> void
 {
-    const auto results = detail::clear_results();
-    SearchEngineCache::instance().callback(results);
+    const auto results = mam::detail::clear_results();
+    callback(results);
 }
 
 //------------------------------------------------------------------------
-auto get_callback() -> SearchEngineCallback&
-{
-    return SearchEngineCache::instance().callback;
-}
-
-//------------------------------------------------------------------------
-auto current_search_word() -> StringType
+auto SearchEngine::current_search_word() -> StringType
 {
     return SearchEngineCache::instance().search_word;
 }
 
 //------------------------------------------------------------------------
-} // namespace mam::search_engine
+auto SearchEngine::get_callback() -> SearchEngineCallback&
+{
+    return callback;
+}
+
+//------------------------------------------------------------------------
+} // namespace mam

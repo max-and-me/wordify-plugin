@@ -9,8 +9,6 @@
 #include "meta_words_data.h"
 #include "meta_words_playback_region.h"
 #include "region_order_manager.h"
-#include "search_engine.h"
-#include "string_matcher.h"
 #include "tiny_selection_model.h"
 
 namespace mam {
@@ -167,12 +165,6 @@ public:
     auto
     find_playback_region(PlaybackRegion::Id id) const -> OptPlaybackRegionPtr;
 
-    // Search Engine
-    auto search_word(std::string search) -> void;
-
-    auto activate_smart_search(bool activate) -> void;
-    // Search Engine
-
     template <typename Func>
     void for_each_playback_region_id(Func&& func)
     {
@@ -215,9 +207,9 @@ public:
     auto onRequestSelectWord(int index,
                              const meta_words::PlaybackRegion::Id id) -> void;
 
-    auto selectStringMatchMethod(StringMatcher::MatchMethod matchMethod) -> void
+    auto get_playback_regions() -> const RegionsById&
     {
-        string_match_method = matchMethod;
+        return playback_regions;
     }
 
     //--------------------------------------------------------------------
@@ -256,9 +248,6 @@ private:
             }
         }
     }
-
-    StringMatcher::MatchMethod string_match_method =
-        StringMatcher::MatchMethod::nearbyFuzzyMatch;
 };
 
 //------------------------------------------------------------------------
