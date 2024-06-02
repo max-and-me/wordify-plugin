@@ -12,7 +12,6 @@
 #include "meta_words_playback_renderer.h"
 #include "meta_words_serde.h"
 #include "preferences_serde.h"
-#include "string_matcher.h"
 
 namespace mam {
 
