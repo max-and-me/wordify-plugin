@@ -42,8 +42,9 @@ static auto find_view_by_id(const CRowColumnView& rowColView,
 }
 
 //------------------------------------------------------------------------
-auto get_button_state(const SearchEngine::SearchResult& search_results,
-                      int32_t control_tag) -> HiliteTextButton::HiliteState
+static auto
+get_button_state(const SearchEngine::SearchResult& search_results,
+                 int32_t control_tag) -> HiliteTextButton::HiliteState
 {
     using State    = HiliteTextButton::HiliteState;
     auto new_state = State::kNone;
@@ -67,7 +68,7 @@ auto get_button_state(const SearchEngine::SearchResult& search_results,
 }
 
 //------------------------------------------------------------------------
-auto scroll_to_view(CRowColumnView* rowColView, const CView* view)
+static auto scroll_to_view(CRowColumnView* rowColView, const CView* view)
 {
     if (!rowColView)
         return;
@@ -105,6 +106,33 @@ static auto build_meta_words_data(const ARADocumentController* controller,
         return {};
 
     return opt_region.value()->get_meta_words_data();
+}
+
+//------------------------------------------------------------------------
+static auto on_request_select_word(const Id id,
+                                   const Index index,
+                                   ARADocumentController* controller) -> void
+{
+    if (!controller)
+        return;
+
+    // Region should be normally always valid (but who knows ;))
+    auto opt_region = controller->find_playback_region(id);
+    auto region     = opt_region.value_or(nullptr);
+    if (!region)
+        return;
+
+    // Get the selected word
+    const auto words_data = region->get_meta_words_data();
+    const auto& words     = words_data.words;
+    const auto& word      = words.at(index);
+
+    // Compute its time position, BUT limit it to the region start time
+    // so the locator will always jump to the beginning of the region
+    // no matter if the word start position is already partly outside
+    auto pos = word.word.begin + words_data.project_offset;
+    pos      = std::max(pos, region->getStartInPlaybackTime());
+    controller->onRequestLocatorPosChanged(pos);
 }
 
 //------------------------------------------------------------------------
@@ -286,7 +314,8 @@ ListController::createSubController(UTF8StringPtr name,
         subctrl->on_select_word_func = [=](Index index) {
             controller->get_region_selection_model().select(
                 {pbr_id, static_cast<size_t>(index)});
-            controller->onRequestSelectWord(index, pbr_id);
+
+            on_request_select_word(pbr_id, index, controller);
         };
 
         return subctrl->initialize(&subject) ? subctrl : nullptr;
@@ -303,9 +332,9 @@ void ListController::checkSelectWord(
     if (!search_result.indices.empty() &&
         search_result.focused_word.has_value())
     {
-        controller->onRequestSelectWord(
-            search_result.indices.at(search_result.focused_word.value()),
-            search_result.region_id);
+        const auto index =
+            search_result.indices.at(search_result.focused_word.value());
+        on_request_select_word(search_result.region_id, index, controller);
 
         // waveform selection
         controller->get_region_selection_model().select(

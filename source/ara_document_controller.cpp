@@ -16,33 +16,6 @@
 namespace mam {
 
 //------------------------------------------------------------------------
-static auto on_request_select_word(const Id id,
-                                   const Index index,
-                                   ARADocumentController* controller) -> void
-{
-    if (!controller)
-        return;
-
-    // Region should be normally always valid (but who knows ;))
-    auto opt_region = controller->find_playback_region(id);
-    auto region     = opt_region.value_or(nullptr);
-    if (!region)
-        return;
-
-    // Get the selected word
-    const auto words_data = region->get_meta_words_data();
-    const auto& words     = words_data.words;
-    const auto& word      = words.at(index);
-
-    // Compute its time position, BUT limit it to the region start time
-    // so the locator will always jump to the beginning of the region
-    // no matter if the word start position is already partly outside
-    auto pos = word.word.begin + words_data.project_offset;
-    pos      = std::max(pos, region->getStartInPlaybackTime());
-    controller->onRequestLocatorPosChanged(pos);
-}
-
-//------------------------------------------------------------------------
 static auto collect_meta_words_serde_dataset(
     const ARA::PlugIn::StoreObjectsFilter* filter,
     meta_words::serde::Archive& archive) -> meta_words::serde::Archive&
@@ -457,12 +430,6 @@ auto ARADocumentController::get_region_selection_model()
     }
 
     return region_selection_model;
-}
-
-//------------------------------------------------------------------------
-auto ARADocumentController::onRequestSelectWord(const Index index, const Id id) -> void
-{
-    on_request_select_word(id, index, this);
 }
 
 //------------------------------------------------------------------------
