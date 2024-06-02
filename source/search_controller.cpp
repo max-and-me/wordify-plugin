@@ -46,11 +46,34 @@ SearchController::SearchController(
 
     if (smart_search_param)
         smart_search_param->addDependent(this);
+
+    region_props_changed_observer_handle =
+        controller->get_region_changed_subject().append(
+            [&](const auto&) { clear_search(); });
+
+    region_lifetime_observer_handle =
+        controller->get_playback_region_lifetimes_subject()->append(
+            [&](const auto&) { clear_search(); });
 }
 
 //------------------------------------------------------------------------
 SearchController::~SearchController()
 {
+    if (search_field)
+    {
+        search_field->unregisterViewListener(this);
+        search_field = nullptr;
+    }
+
+    if (controller)
+    {
+        controller->get_region_changed_subject().remove(
+            region_props_changed_observer_handle);
+
+        controller->get_playback_region_lifetimes_subject()->remove(
+            region_lifetime_observer_handle);
+    }
+
     if (smart_search_param)
         smart_search_param->removeDependent(this);
 
@@ -93,9 +116,11 @@ CView* SearchController::verifyView(CView* view,
         {
             if (auto c = dynamic_cast<CSearchTextEdit*>(view))
             {
+                search_field = c;
                 c->setText(SearchEngine::instance().current_search_word());
                 c->setTag(kSearchFieldTag);
                 c->setListener(this);
+                c->registerViewListener(this);
             }
         }
     }
@@ -136,6 +161,25 @@ void SearchController::valueChanged(CControl* control)
             break;
         }
     }
+}
+
+//------------------------------------------------------------------------
+void SearchController::viewWillDelete(VSTGUI::CView* view)
+{
+    if (search_field == view)
+    {
+        search_field->unregisterViewListener(this);
+        search_field = nullptr;
+    }
+}
+
+//------------------------------------------------------------------------
+void SearchController::clear_search()
+{
+    if (search_field)
+        search_field->setText(UTF8String(""));
+
+    SearchEngine::instance().clear_results();
 }
 
 //------------------------------------------------------------------------

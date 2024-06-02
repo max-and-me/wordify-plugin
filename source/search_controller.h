@@ -1,9 +1,8 @@
-//------------------------------------------------------------------------
 // Copyright(c) 2024 Max And Me.
-//------------------------------------------------------------------------
 
 #pragma once
 
+#include "ara_document_controller.h"
 #include "base/source/fobject.h"
 #include "vstgui/lib/iviewlistener.h"
 #include "vstgui/uidescription/icontroller.h"
@@ -17,12 +16,13 @@ class Parameter;
 }; // namespace Steinberg::Vst
 
 namespace mam {
-class ARADocumentController;
 
 //------------------------------------------------------------------------
 // SearchController
 //------------------------------------------------------------------------
-class SearchController : public Steinberg::FObject, public VSTGUI::IController
+class SearchController : public Steinberg::FObject,
+                         public VSTGUI::IController,
+                         public VSTGUI::ViewListenerAdapter
 {
 public:
     //--------------------------------------------------------------------
@@ -48,12 +48,21 @@ public:
     createSubController(VSTGUI::UTF8StringPtr name,
                         const VSTGUI::IUIDescription* description) override;
 
+    // ViewListenerAdapter
+    void viewWillDelete(VSTGUI::CView* view) override;
+
     OBJ_METHODS(SearchController, FObject)
 
     //--------------------------------------------------------------------
 private:
     ARADocumentController* controller             = nullptr;
     Steinberg::Vst::Parameter* smart_search_param = nullptr;
+    VSTGUI::CSearchTextEdit* search_field         = nullptr;
+
+    RegionChangedCallback::Handle region_props_changed_observer_handle;
+    RegionLifetimeCallback::Handle region_lifetime_observer_handle;
+
+    void clear_search();
 };
 
 //------------------------------------------------------------------------

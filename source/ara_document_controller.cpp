@@ -314,6 +314,8 @@ void ARADocumentController::didUpdatePlaybackRegionProperties(
         auto obj = playback_region_observers.find(pbr->get_id());
         if (obj != playback_region_observers.end())
             obj->second();
+
+        region_changed_subject({pbr->get_id()});
     }
 }
 
@@ -464,6 +466,41 @@ auto ARADocumentController::onRequestSelectWord(
     int index, const meta_words::PlaybackRegion::Id id) -> void
 {
     on_request_select_word(index, this, id);
+}
+
+//------------------------------------------------------------------------
+auto ARADocumentController::get_playback_region_changed_subject(
+    const PlaybackRegion::Id playback_region_id) -> RegionPropsChangedCallback&
+{
+    return playback_region_observers[playback_region_id];
+}
+
+//------------------------------------------------------------------------
+auto ARADocumentController::get_playback_region_order_subject()
+    -> RegionsOrderCallback*
+{
+    return region_order_manager.get_order_subject();
+}
+
+//------------------------------------------------------------------------
+auto ARADocumentController::get_playback_region_lifetimes_subject()
+    -> RegionLifetimeCallback*
+{
+    return &playback_region_lifetimes_subject;
+}
+
+//------------------------------------------------------------------------
+auto ARADocumentController::get_region_selection_subject()
+    -> SelectedWordCallback*
+{
+    return &selected_word_callback;
+}
+
+//------------------------------------------------------------------------
+auto ARADocumentController::get_region_changed_subject()
+    -> RegionChangedCallback&
+{
+    return region_changed_subject;
 }
 
 //------------------------------------------------------------------------

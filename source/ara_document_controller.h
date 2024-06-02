@@ -36,6 +36,16 @@ struct RegionLifetimeEventData
 };
 
 //------------------------------------------------------------------------
+// RegionChangedEventData
+//------------------------------------------------------------------------
+struct RegionPropsChangedEventData
+{
+    using PlaybackRegion = meta_words::PlaybackRegion;
+
+    PlaybackRegion::Id id{0};
+};
+
+//------------------------------------------------------------------------
 // SelectedWordEventData
 //------------------------------------------------------------------------
 struct SelectedWordEventData
@@ -52,10 +62,12 @@ using RegionSelectionModel = SelectionModel<SelectedWordEventData>;
 //------------------------------------------------------------------------
 using SelectedWordCallback =
     eventpp::CallbackList<void(const SelectedWordEventData&)>;
-using RegionPropertiesChangedCallback = eventpp::CallbackList<void(void)>;
+using RegionPropsChangedCallback = eventpp::CallbackList<void(void)>;
 using RegionLifetimeCallback =
     eventpp::CallbackList<void(const RegionLifetimeEventData&)>;
 using RegionsOrderCallback = RegionOrderManager::OrderSubject;
+using RegionChangedCallback =
+    eventpp::CallbackList<void(const RegionPropsChangedEventData&)>;
 
 //------------------------------------------------------------------------
 // ARADocumentController
@@ -76,7 +88,7 @@ public:
 
     // Containers
     using RegionsPropertiesObservers =
-        std::unordered_map<PlaybackRegion::Id, RegionPropertiesChangedCallback>;
+        std::unordered_map<PlaybackRegion::Id, RegionPropsChangedCallback>;
     using RegionsById = std::map<PlaybackRegion::Id, PlaybackRegion*>;
 
     // publish inherited constructor
@@ -165,6 +177,21 @@ public:
     auto
     find_playback_region(PlaybackRegion::Id id) const -> OptPlaybackRegionPtr;
 
+    auto get_playback_region_changed_subject(
+        const PlaybackRegion::Id playback_region_id)
+        -> RegionPropsChangedCallback&;
+    auto get_playback_region_order_subject() -> RegionsOrderCallback*;
+    auto get_playback_region_lifetimes_subject() -> RegionLifetimeCallback*;
+    auto get_region_selection_subject() -> SelectedWordCallback*;
+    auto get_region_selection_model() -> RegionSelectionModel&;
+    auto get_region_changed_subject() -> RegionChangedCallback&;
+
+    template <typename Func>
+    auto for_each_playback_region_id_enumerated(Func& func) const -> void
+    {
+        region_order_manager.for_each_playback_region_id_enumerated(func);
+    }
+
     template <typename Func>
     void for_each_playback_region_id(Func&& func)
     {
@@ -173,36 +200,6 @@ public:
         };
         region_order_manager.for_each_playback_region_id_enumerated(tmp_func);
     }
-
-    auto get_playback_region_changed_subject(
-        const PlaybackRegion::Id playback_region_id)
-        -> RegionPropertiesChangedCallback&
-    {
-        return playback_region_observers[playback_region_id];
-    }
-
-    auto get_playback_region_order_subject() -> RegionsOrderCallback*
-    {
-        return region_order_manager.get_order_subject();
-    }
-
-    auto get_playback_region_lifetimes_subject() -> RegionLifetimeCallback*
-    {
-        return &playback_region_lifetimes_subject;
-    }
-
-    auto get_region_selection_subject() -> SelectedWordCallback*
-    {
-        return &selected_word_callback;
-    }
-
-    template <typename Func>
-    auto for_each_playback_region_id_enumerated(Func& func) const -> void
-    {
-        region_order_manager.for_each_playback_region_id_enumerated(func);
-    }
-
-    auto get_region_selection_model() -> RegionSelectionModel&;
 
     auto onRequestSelectWord(int index,
                              const meta_words::PlaybackRegion::Id id) -> void;
@@ -219,6 +216,7 @@ private:
     SelectedWordCallback selected_word_callback;
     RegionOrderManager region_order_manager;
     RegionSelectionModel region_selection_model;
+    RegionChangedCallback region_changed_subject;
 
     RegionsById playback_regions;
 
