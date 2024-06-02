@@ -43,7 +43,7 @@ public:
     auto remove(Id id) -> void;
     auto reorder() -> void;
     template <typename Func>
-    auto for_each_playback_region_id_enumerated(Func& func) const
+    auto for_each_region_id_enumerated(Func& func) const
     {
         for (OrderedIds::size_type i = 0;
              i < playback_region_ids_ordered.size(); i++)

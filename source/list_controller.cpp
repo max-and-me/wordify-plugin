@@ -170,7 +170,7 @@ CView* ListController::verifyView(CView* view,
             rowColView->registerViewListener(this);
             if (controller)
             {
-                controller->for_each_playback_region_id([&](const Id id) {
+                controller->for_each_region_id([&](const Id id) {
                     auto* newView = create_list_item_view(id);
                     if (newView)
                     {
@@ -216,7 +216,7 @@ void ListController::on_playback_regions_reordered()
         rowColView->changeViewZOrder(viewToMove, static_cast<uint32_t>(index));
     };
 
-    controller->for_each_playback_region_id_enumerated(func);
+    controller->for_each_region_id_enumerated(func);
 
     rowColView->invalid();
 }

@@ -185,16 +185,16 @@ public:
     auto get_region_changed_subject() -> RegionChangedCallback&;
 
     template <typename Func>
-    auto for_each_playback_region_id_enumerated(Func& func) const -> void
+    auto for_each_region_id_enumerated(Func& func) const -> void
     {
-        region_order_manager.for_each_playback_region_id_enumerated(func);
+        region_order_manager.for_each_region_id_enumerated(func);
     }
 
     template <typename Func>
-    void for_each_playback_region_id(Func&& func)
+    void for_each_region_id(Func&& func)
     {
         auto tmp_func = [func](size_t /*index*/, const Id id) { func(id); };
-        region_order_manager.for_each_playback_region_id_enumerated(tmp_func);
+        region_order_manager.for_each_region_id_enumerated(tmp_func);
     }
 
     auto onRequestSelectWord(int index, const Id id) -> void;
@@ -226,7 +226,6 @@ private:
     template <typename Func>
     void for_each_playback_region(Func&& func)
     {
-        ARADocumentController::MetaWordsDataList meta_words_data_list;
         if (auto* document = getDocument())
         {
             const auto& sequences = document->getRegionSequences();
