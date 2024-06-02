@@ -47,7 +47,7 @@ bool isFuzzyMatch(std::string toMatch,
 {
     std::transform(toMatch.begin(), toMatch.end(), toMatch.begin(), ::tolower);
     std::transform(string.begin(), string.end(), string.begin(), ::tolower);
-    
+
     int x = static_cast<int>(toMatch.length());
     int y = static_cast<int>(string.length());
 

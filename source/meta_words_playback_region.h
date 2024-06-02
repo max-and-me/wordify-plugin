@@ -8,6 +8,7 @@
 #include "meta_words_audio_source.h"
 #include "meta_words_data.h"
 #include "nonstd.h"
+#include "wordify_types.h"
 #include <optional>
 
 namespace mam::meta_words {
@@ -17,7 +18,6 @@ class PlaybackRegion : public ARA::PlugIn::PlaybackRegion
 {
 public:
     //--------------------------------------------------------------------
-    using Id                       = uint64_t;
     static constexpr Id INVALID_ID = -1;
     using Color                    = MetaWordsData::Color;
 

@@ -17,10 +17,9 @@
 namespace mam {
 
 //------------------------------------------------------------------------
-static auto
-on_request_select_word(int index,
-                       ARADocumentController* controller,
-                       const meta_words::PlaybackRegion::Id id) -> void
+static auto on_request_select_word(int index,
+                                   ARADocumentController* controller,
+                                   const Id id) -> void
 {
     if (!controller)
         return;
@@ -118,7 +117,7 @@ ARADocumentController::ARADocumentController(
     const ARA::ARADocumentControllerHostInstance* instance) noexcept
 : ARA::PlugIn::DocumentController(entry, instance)
 {
-    region_order_manager.initialize([this](PlaybackRegion::Id id) {
+    region_order_manager.initialize([this](Id id) {
         const auto opt_region = find_playback_region(id);
         if (opt_region)
             return opt_region.value()->getStartInPlaybackTime();
@@ -380,7 +379,7 @@ void ARADocumentController::willRemovePlaybackRegionFromRegionSequence(
 }
 
 //------------------------------------------------------------------------
-auto ARADocumentController::find_playback_region(PlaybackRegion::Id id) const
+auto ARADocumentController::find_playback_region(Id id) const
     -> OptPlaybackRegionPtr
 {
     auto iter = playback_regions.find(id);
@@ -409,7 +408,7 @@ void ARADocumentController::on_add_playback_region(PlaybackRegion* region)
 }
 
 //------------------------------------------------------------------------
-void ARADocumentController::on_remove_playback_region(PlaybackRegion::Id id)
+void ARADocumentController::on_remove_playback_region(Id id)
 {
     playback_region_lifetimes_subject(
         {RegionLifetimeEventData::Event::WillBeRemoved, id});
@@ -462,15 +461,14 @@ auto ARADocumentController::get_region_selection_model()
 }
 
 //------------------------------------------------------------------------
-auto ARADocumentController::onRequestSelectWord(
-    int index, const meta_words::PlaybackRegion::Id id) -> void
+auto ARADocumentController::onRequestSelectWord(int index, const Id id) -> void
 {
     on_request_select_word(index, this, id);
 }
 
 //------------------------------------------------------------------------
 auto ARADocumentController::get_playback_region_changed_subject(
-    const PlaybackRegion::Id playback_region_id) -> RegionPropsChangedCallback&
+    const Id playback_region_id) -> RegionPropsChangedCallback&
 {
     return playback_region_observers[playback_region_id];
 }

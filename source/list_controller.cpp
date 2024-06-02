@@ -23,14 +23,14 @@ constexpr auto LIST_ENTRY_VIEW_TEMPLATE  = "ClipTemplate";
 
 //------------------------------------------------------------------------
 static auto find_view_by_id(const CRowColumnView& rowColView,
-                            ListController::PlaybackRegion::Id pbr_id) -> CView*
+                            Id pbr_id) -> CView*
 {
     CView* viewToFind = nullptr;
     rowColView.forEachChild([&, pbr_id](CView* view) {
         if (viewToFind)
             return;
 
-        meta_words::PlaybackRegion::Id id = 0;
+        Id id = 0;
         if (view->getAttribute(PLAYBACK_REGION_ID_ATTR, id))
         {
             if (pbr_id == size_t(id))
@@ -95,8 +95,7 @@ auto scroll_to_view(CRowColumnView* rowColView, const CView* view)
 
 //------------------------------------------------------------------------
 static auto build_meta_words_data(const ARADocumentController* controller,
-                                  const meta_words::PlaybackRegion::Id id)
-    -> const MetaWordsData
+                                  const Id id) -> const MetaWordsData
 {
     if (!controller)
         return {};
@@ -171,16 +170,15 @@ CView* ListController::verifyView(CView* view,
             rowColView->registerViewListener(this);
             if (controller)
             {
-                controller->for_each_playback_region_id(
-                    [&](const PlaybackRegion::Id id) {
-                        auto* newView = create_list_item_view(id);
-                        if (newView)
-                        {
-                            rowColView->addView(newView);
-                            rowColView->sizeToFit();
-                            newView->setAttribute('prid', id);
-                        }
-                    });
+                controller->for_each_playback_region_id([&](const Id id) {
+                    auto* newView = create_list_item_view(id);
+                    if (newView)
+                    {
+                        rowColView->addView(newView);
+                        rowColView->sizeToFit();
+                        newView->setAttribute('prid', id);
+                    }
+                });
             }
         }
     }
@@ -189,8 +187,7 @@ CView* ListController::verifyView(CView* view,
 }
 
 //------------------------------------------------------------------------
-auto ListController::create_list_item_view(const PlaybackRegion::Id id)
-    -> CView*
+auto ListController::create_list_item_view(const Id id) -> CView*
 {
     if (!uidesc)
         return nullptr;
@@ -214,7 +211,7 @@ void ListController::on_playback_regions_reordered()
     if (!controller)
         return;
 
-    auto func = [&](size_t index, meta_words::PlaybackRegion::Id id) {
+    auto func = [&](size_t index, Id id) {
         auto* viewToMove = find_view_by_id(*rowColView, id);
         rowColView->changeViewZOrder(viewToMove, static_cast<uint32_t>(index));
     };
@@ -326,7 +323,7 @@ void ListController::checkSelectWord(
         if (toFind)
             return;
 
-        meta_words::PlaybackRegion::Id region_id = 0;
+        Id region_id = 0;
 
         if (child->getAttribute('prid', region_id))
         {

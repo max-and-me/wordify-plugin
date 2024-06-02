@@ -89,17 +89,18 @@ smtg_add_vst3plugin(Wordify
     source/version.h
     source/view_animations.cpp
     source/view_animations.h
-    source/wordify_cids.h
-    source/wordify_defines.h
-    source/wordify_entry.cpp
-    source/wordify_single_component.cpp
-    source/wordify_single_component.h
     source/waveform_controller.cpp
     source/waveform_controller.h
     source/waveform_view.cpp
     source/waveform_view.h
     source/whipser_cpp_wrapper.cpp
     source/whipser_cpp_wrapper.h
+    source/wordify_cids.h
+    source/wordify_defines.h
+    source/wordify_entry.cpp
+    source/wordify_single_component.cpp
+    source/wordify_single_component.h
+    source/wordify_types.h
 )
 
 smtg_target_add_plugin_resources(Wordify

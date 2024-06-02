@@ -7,6 +7,7 @@
 #include "search_engine.h"
 #include "vstgui/lib/iviewlistener.h"
 #include "vstgui/uidescription/icontroller.h"
+#include "wordify_types.h"
 
 namespace VSTGUI {
 class CRowColumnView;
@@ -34,7 +35,7 @@ public:
     using IUIDescription      = VSTGUI::IUIDescription;
     using UTF8StringPtr       = VSTGUI::UTF8StringPtr;
     using IController         = VSTGUI::IController;
-    using OptPlaybackRegionId = std::optional<PlaybackRegion::Id>;
+    using OptPlaybackRegionId = std::optional<Id>;
 
     ListController(ARADocumentController* controller,
                    const IUIDescription* uidesc);
@@ -63,7 +64,7 @@ private:
     void checkSelectWord(const SearchEngine::SearchResult& search_result);
     void on_add_remove_playback_region(const RegionLifetimeEventData& data);
     void on_playback_regions_reordered();
-    auto create_list_item_view(const PlaybackRegion::Id id) -> VSTGUI::CView*;
+    auto create_list_item_view(const Id id) -> VSTGUI::CView*;
 
     RowColumnView* rowColView    = nullptr;
     const IUIDescription* uidesc = nullptr;

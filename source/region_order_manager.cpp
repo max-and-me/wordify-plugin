@@ -10,7 +10,7 @@ namespace mam {
 bool sort(RegionOrderManager::FuncStartInPlaybackTime& start_in_playback_time,
           RegionOrderManager::OrderedIds& ids)
 {
-    using Id = meta_words::PlaybackRegion::Id;
+    using Id = Id;
 
     auto sorter = [&](const Id id0, const Id id1) {
         const auto time0 = start_in_playback_time(id0);
@@ -39,14 +39,14 @@ auto RegionOrderManager::initialize(
 }
 
 //------------------------------------------------------------------------
-auto RegionOrderManager::push_back(PlaybackRegion::Id id) -> void
+auto RegionOrderManager::push_back(Id id) -> void
 {
     playback_region_ids_ordered.push_back(id);
     reorder();
 }
 
 //------------------------------------------------------------------------
-auto RegionOrderManager::remove(PlaybackRegion::Id id) -> void
+auto RegionOrderManager::remove(Id id) -> void
 {
     auto iter = std::remove(playback_region_ids_ordered.begin(),
                             playback_region_ids_ordered.end(), id);

@@ -135,7 +135,7 @@ static auto modify_time_stamps(MetaWordDataset& word_dataset,
 }
 
 //------------------------------------------------------------------------
-PlaybackRegion::Id PlaybackRegion::new_id = PlaybackRegion::INVALID_ID;
+Id PlaybackRegion::new_id = PlaybackRegion::INVALID_ID;
 PlaybackRegion::PlaybackRegion(
     ARA::PlugIn::AudioModification* audioModification,
     ARA::ARAPlaybackRegionHostRef hostRef) noexcept

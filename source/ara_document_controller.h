@@ -32,7 +32,7 @@ struct RegionLifetimeEventData
         WillBeRemoved,
     };
     Event event;
-    PlaybackRegion::Id id{0};
+    Id id{0};
 };
 
 //------------------------------------------------------------------------
@@ -42,7 +42,7 @@ struct RegionPropsChangedEventData
 {
     using PlaybackRegion = meta_words::PlaybackRegion;
 
-    PlaybackRegion::Id id{0};
+    Id id{0};
 };
 
 //------------------------------------------------------------------------
@@ -88,8 +88,8 @@ public:
 
     // Containers
     using RegionsPropertiesObservers =
-        std::unordered_map<PlaybackRegion::Id, RegionPropsChangedCallback>;
-    using RegionsById = std::map<PlaybackRegion::Id, PlaybackRegion*>;
+        std::unordered_map<Id, RegionPropsChangedCallback>;
+    using RegionsById = std::map<Id, PlaybackRegion*>;
 
     // publish inherited constructor
     using ARA::PlugIn::DocumentController::DocumentController;
@@ -174,11 +174,9 @@ public:
     void
     rendererDidAccessModelGraph(PlaybackRenderer* playbackRenderer) noexcept;
 
-    auto
-    find_playback_region(PlaybackRegion::Id id) const -> OptPlaybackRegionPtr;
+    auto find_playback_region(Id id) const -> OptPlaybackRegionPtr;
 
-    auto get_playback_region_changed_subject(
-        const PlaybackRegion::Id playback_region_id)
+    auto get_playback_region_changed_subject(const Id playback_region_id)
         -> RegionPropsChangedCallback&;
     auto get_playback_region_order_subject() -> RegionsOrderCallback*;
     auto get_playback_region_lifetimes_subject() -> RegionLifetimeCallback*;
@@ -195,14 +193,11 @@ public:
     template <typename Func>
     void for_each_playback_region_id(Func&& func)
     {
-        auto tmp_func = [func](size_t /*index*/, const PlaybackRegion::Id id) {
-            func(id);
-        };
+        auto tmp_func = [func](size_t /*index*/, const Id id) { func(id); };
         region_order_manager.for_each_playback_region_id_enumerated(tmp_func);
     }
 
-    auto onRequestSelectWord(int index,
-                             const meta_words::PlaybackRegion::Id id) -> void;
+    auto onRequestSelectWord(int index, const Id id) -> void;
 
     auto get_playback_regions() -> const RegionsById&
     {
@@ -224,7 +219,7 @@ private:
     std::atomic<int> _countOfRenderersCurrentlyAccessingModelGraph{0};
 
     void on_add_playback_region(PlaybackRegion* region);
-    void on_remove_playback_region(PlaybackRegion::Id id);
+    void on_remove_playback_region(Id id);
     void on_analyze_audio_source_progress(
         const meta_words::WordAnalysisProgressData& data);
 

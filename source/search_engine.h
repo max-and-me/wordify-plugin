@@ -28,8 +28,7 @@ public:
     using WordIndices = std::vector<WordIndex>;
     using RegionID    = size_t;
     using OptWord     = std::optional<WordIndex>;
-    using Regions =
-        std::map<meta_words::PlaybackRegion::Id, meta_words::PlaybackRegion*>;
+    using Regions     = std::map<Id, meta_words::PlaybackRegion*>;
 
     struct RegionWord
     {
