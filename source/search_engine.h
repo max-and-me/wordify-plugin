@@ -3,6 +3,7 @@
 #pragma once
 
 #include "eventpp/callbacklist.h"
+#include "meta_words_playback_region.h"
 #include <functional>
 #include <map>
 #include <optional>
@@ -27,7 +28,8 @@ public:
     using WordIndices = std::vector<WordIndex>;
     using RegionID    = size_t;
     using OptWord     = std::optional<WordIndex>;
-    using Regions     = std::map<RegionID, meta_words::PlaybackRegion*>;
+    using Regions =
+        std::map<meta_words::PlaybackRegion::Id, meta_words::PlaybackRegion*>;
 
     struct RegionWord
     {
