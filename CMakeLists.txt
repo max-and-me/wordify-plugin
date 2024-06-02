@@ -105,6 +105,14 @@ smtg_add_vst3plugin(Wordify
 
 smtg_target_add_plugin_resources(Wordify
     RESOURCES
+        "resource/bulb-solid_dark.png"
+        "resource/bulb-solid_dark_2x.png"
+        "resource/bulb-solid_dark_3x.png"
+        "resource/bulb-solid_dark_4x.png"
+        "resource/bulb-solid_lite.png"
+        "resource/bulb-solid_lite_2x.png"
+        "resource/bulb-solid_lite_3x.png"
+        "resource/bulb-solid_lite_4x.png"
         "resource/chevron-down-solid_dark.png"
         "resource/chevron-down-solid_dark_2x.png"
         "resource/chevron-down-solid_dark_3x.png"

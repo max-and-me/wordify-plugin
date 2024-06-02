@@ -325,7 +325,7 @@
 																	"frame-width": "0",
 																	"gradient": "transparent_gradient",
 																	"gradient-highlighted": "search_next_previous_button_highlighted_background_gradient",
-																	"icon": "chevron-down",
+																	"icon": "bulb",
 																	"icon-position": "center below text",
 																	"icon-text-margin": "0",
 																	"kick-style": "false",

@@ -38,6 +38,18 @@
       "magnifying-glass_4x": {
         "path": "magnifying-glass-solid_lite_4x.png"
       },
+      "bulb": {
+        "path": "bulb-solid_lite.png"
+      },
+      "bulb_2x": {
+        "path": "bulb-solid_lite_2x.png"
+      },
+      "bulb_3x": {
+        "path": "bulb-solid_lite_3x.png"
+      },
+      "bulb_4x": {
+        "path": "bulb-solid_lite_4x.png"
+      },
       "chevron-up": {
         "path": "chevron-up-solid_lite.png"
       },
