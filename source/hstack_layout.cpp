@@ -1,4 +1,4 @@
-// Copyright(c) 2023 Max And Me.
+// Copyright(c) 2024 Max And Me.
 
 #include "hstack_layout.h"
 #include "vstgui/lib/controls/ccontrol.h"
