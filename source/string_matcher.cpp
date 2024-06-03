@@ -19,6 +19,19 @@ enum class FuzzyMatchStyle
 };
 
 //------------------------------------------------------------------------
+void prepareStrings(std::string& toMatch, std::string& string)
+{
+    std::transform(toMatch.begin(), toMatch.end(), toMatch.begin(), ::tolower);
+    std::transform(string.begin(), string.end(), string.begin(), ::tolower);
+
+    toMatch.erase(
+        std::remove_if(
+            toMatch.begin(), toMatch.end(),
+            [](char c) { return std::ispunct(static_cast<unsigned char>(c)); }),
+        toMatch.end());
+}
+
+//------------------------------------------------------------------------
 bool isDirectMatch(std::string toMatch, std::string string)
 {
     if (toMatch.length() != string.length())
@@ -87,6 +100,7 @@ bool isFuzzyMatch(std::string toMatch,
 //------------------------------------------------------------------------
 bool isMatch(std::string toMatch, std::string string, MatchMethod method)
 {
+    prepareStrings(toMatch, string);
     if (method == MatchMethod::directMatch)
         return isDirectMatch(toMatch, string);
     else if (method == MatchMethod::subMatch)
