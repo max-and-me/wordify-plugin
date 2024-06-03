@@ -328,7 +328,7 @@ VSTGUI::IController* WordifySingleComponent::createSubController(
     }
     else if (VSTGUI::UTF8StringView(name) == "WaveFormController")
     {
-        auto* subctrl = new WaveFormController();
+        auto* subctrl = new WaveFormController(document_controller);
         if (!subctrl)
             return nullptr;
 

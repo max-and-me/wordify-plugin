@@ -35,13 +35,18 @@ static auto update_background_view(CGradientView* view,
 //------------------------------------------------------------------------
 // WaveFormController
 //------------------------------------------------------------------------
-WaveFormController::WaveFormController() {}
+WaveFormController::WaveFormController(ARADocumentController* controller)
+: controller(controller)
+{
+}
 
 //------------------------------------------------------------------------
 WaveFormController::~WaveFormController()
 {
     if (subject)
         subject->remove(observer_handle);
+
+    unregister_current_region_props_observer();
 
     if (waveform_view)
         waveform_view->unregisterViewListener(this);
@@ -56,22 +61,25 @@ bool WaveFormController::initialize(Subject* _subject, FuncWaveFormData&& func)
     if (!_subject)
         return false;
 
-    this->subject            = _subject;
-    this->waveform_data_func = std::move(func);
-    this->observer_handle    = subject->append(
-        [&](const auto&) { this->on_meta_words_data_changed(); });
+    subject            = _subject;
+    waveform_data_func = std::move(func);
+    observer_handle    = subject->append(
+        [&](const auto& data) { this->on_selected_region_word(data); });
 
     return true;
 }
 
 //------------------------------------------------------------------------
-void WaveFormController::on_meta_words_data_changed()
+void WaveFormController::on_selected_region_word(
+    const SelectedWordEventData& new_selected_word)
 {
-    if (waveform_view)
-        waveform_view->invalid();
+    if (selected_word.region_id != new_selected_word.region_id)
+    {
+        unregister_current_region_props_observer();
+        register_region_props_observer(new_selected_word);
+    }
 
-    const auto data = this->waveform_data_func();
-    update_background_view(background_view, data);
+    update_waveform();
 }
 
 //------------------------------------------------------------------------
@@ -142,6 +150,40 @@ void WaveFormController::viewWillDelete(CView* view)
         background_view->unregisterViewListener(this);
         background_view = nullptr;
     }
+}
+
+//------------------------------------------------------------------------
+void WaveFormController::update_waveform()
+{
+    if (waveform_view)
+        waveform_view->invalid();
+
+    const auto data = this->waveform_data_func();
+    update_background_view(background_view, data);
+}
+
+//------------------------------------------------------------------------
+void WaveFormController::register_region_props_observer(
+    const SelectedWordEventData& new_selected_word)
+{
+    if (!controller)
+        return;
+
+    selected_word = new_selected_word;
+
+    region_props_observer_handle =
+        controller->get_playback_region_changed_subject(selected_word.region_id)
+            .append([&]() { update_waveform(); });
+}
+
+//------------------------------------------------------------------------
+void WaveFormController::unregister_current_region_props_observer()
+{
+    if (!controller)
+        return;
+
+    controller->get_playback_region_changed_subject(selected_word.region_id)
+        .remove(region_props_observer_handle);
 }
 
 //------------------------------------------------------------------------

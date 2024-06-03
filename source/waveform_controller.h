@@ -34,7 +34,7 @@ public:
 
     using FuncWaveFormData = std::function<Data()>;
 
-    WaveFormController();
+    WaveFormController(ARADocumentController* controller);
     ~WaveFormController() override;
 
     bool initialize(Subject* subject, FuncWaveFormData&& waveform_data_func);
@@ -62,13 +62,21 @@ public:
 
     //--------------------------------------------------------------------
 private:
-    void on_meta_words_data_changed();
+    void on_selected_region_word(const SelectedWordEventData& selected_word);
+    void update_waveform();
+    void
+    register_region_props_observer(const SelectedWordEventData& selected_word);
+    void unregister_current_region_props_observer();
 
-    Subject* subject = nullptr;
+    ARADocumentController* controller = nullptr;
+    Subject* subject                  = nullptr;
     ObserverHandle observer_handle;
     FuncWaveFormData waveform_data_func;
     WaveFormView* waveform_view            = nullptr;
     VSTGUI::CGradientView* background_view = nullptr;
+
+    RegionPropsChangedCallback::Handle region_props_observer_handle;
+    SelectedWordEventData selected_word;
 };
 
 //------------------------------------------------------------------------

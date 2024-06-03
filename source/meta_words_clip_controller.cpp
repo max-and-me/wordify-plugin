@@ -488,7 +488,7 @@ bool MetaWordsClipController::initialize(Subject* _subject)
     this->subject = _subject;
 
     observer_handle =
-        subject->append([&]() { this->on_meta_words_data_changed(); });
+        subject->append([&]() { this->on_select_word(); });
 
     auto view = description->createView("TextWordTemplate", this);
     if (view)
@@ -501,7 +501,7 @@ bool MetaWordsClipController::initialize(Subject* _subject)
 }
 
 //------------------------------------------------------------------------
-void MetaWordsClipController::on_meta_words_data_changed()
+void MetaWordsClipController::on_select_word()
 {
     const auto& data = meta_words_data_func();
 
