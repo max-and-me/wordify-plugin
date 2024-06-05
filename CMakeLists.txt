@@ -237,6 +237,12 @@ elseif(SMTG_WIN)
         resource/win32resource.rc
     )
 
+    target_link_libraries(Wordify 
+        PRIVATE
+            utf-8-everywhere
+            shell32
+    )
+
     set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT Wordify)
 
     target_compile_definitions(Wordify

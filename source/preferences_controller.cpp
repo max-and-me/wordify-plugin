@@ -6,9 +6,35 @@
 #include "version.h"
 #include "vstgui/lib/controls/coptionmenu.h"
 #include "vstgui/uidescription/uiattributes.h"
+#include <string>
+
+#ifdef WIN32
+#include <windows.h>
+
+#include "utf_8_everywhere/convert.h"
+#include <shellapi.h>
+#endif
 
 namespace mam {
 using namespace VSTGUI;
+
+//------------------------------------------------------------------------
+using URL = const struct
+{
+    std::string value;
+};
+
+auto open_url(URL& url) -> void
+{
+#if defined(WIN32)
+    std::wstring wurl = utf_8_everywhere::convert(url.value);
+    ShellExecuteW(0, L"open", wurl.c_str(), NULL, NULL, SW_SHOWDEFAULT);
+#elif __APPLE__
+    system((std::string("open ") + url.value).c_str());
+#elif __linux__
+    system((std::string("xdg-open ") + url.value).c_str());
+#endif
+}
 
 //------------------------------------------------------------------------
 // PreferencesController
@@ -44,7 +70,6 @@ CView* PreferencesController::verifyView(CView* view,
             if (options_menu = dynamic_cast<COptionMenu*>(view))
             {
                 options_menu->addEntry("Visit wordify.org ...");
-                options_menu->addEntry("Check for updates ...");
                 options_menu->addEntry(UTF8String("v") + VERSION_STR, -1,
                                        CMenuItem::kDisabled);
                 options_menu->registerControlListener(this);
@@ -57,7 +82,13 @@ CView* PreferencesController::verifyView(CView* view,
 }
 
 //------------------------------------------------------------------------
-void PreferencesController::valueChanged(CControl* /*pControl*/) {}
+void PreferencesController::valueChanged(CControl* pControl)
+{
+    if (pControl == options_menu)
+    {
+        open_url(URL{"https://www.wordify.org"});
+    }
+}
 
 //------------------------------------------------------------------------
 void PLUGIN_API PreferencesController::update(FUnknown* /*changedUnknown*/,
