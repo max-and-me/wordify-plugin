@@ -1726,8 +1726,8 @@
 							"class": "CView",
 							"mouse-enabled": "true",
 							"opacity": "1",
-							"origin": "0, 0",
-							"size": "48, 48",
+							"origin": "8, 8",
+							"size": "32, 32",
 							"transparent": "false",
 							"uidesc-label": "SpinnerView",
 							"wants-focus": "false"
