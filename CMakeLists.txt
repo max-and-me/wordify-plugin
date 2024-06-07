@@ -232,6 +232,25 @@ if(SMTG_MAC)
         BUNDLE_IDENTIFIER ${PROJECT_BUNDLE_IDENTIFIER}
         COMPANY_NAME "${CPACK_PACKAGE_VENDOR}"
     )
+
+    # How ugly, just to add ggml-common.h and ggml-metal.metal to the bundle :-/
+    get_target_property(whisper_SOURCE_DIR whisper whisper_SOURCE_DIR)
+    message(STATUS "[MAM] whisper_SOURCE_DIR: ${whisper_SOURCE_DIR}")
+    get_target_property(PLUGIN_PACKAGE_PATH Wordify SMTG_PLUGIN_PACKAGE_PATH)
+    get_target_property(PLUGIN_PACKAGE_RESOURCES Wordify SMTG_PLUGIN_PACKAGE_RESOURCES)
+    set(resources_folder "${PLUGIN_PACKAGE_PATH}/${PLUGIN_PACKAGE_RESOURCES}")
+    add_custom_command(
+            TARGET Wordify POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E copy_if_different
+                ${whisper_SOURCE_DIR}/ggml-common.h
+                ${resources_folder}/ggml-common.h
+    )
+    add_custom_command(
+        TARGET Wordify POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            ${whisper_SOURCE_DIR}/ggml-metal.metal
+            ${resources_folder}/ggml-metal.metal
+    )   
 elseif(SMTG_WIN)
     target_sources(Wordify PRIVATE 
         resource/win32resource.rc
