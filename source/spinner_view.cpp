@@ -15,6 +15,17 @@ namespace mam {
 #endif
 
 //------------------------------------------------------------------------
+auto inset_for_round_line_caps(CRect& size, const CCoord line_width) -> CRect&
+{
+    size.left += std::floor(line_width / 2.);
+    size.right -= std::ceil(line_width / 2.);
+    size.top += std::floor(line_width / 2.);
+    size.bottom -= std::ceil(line_width / 2.);
+
+    return size;
+}
+
+//------------------------------------------------------------------------
 SpinnerView::SpinnerView(const CRect& size)
 : CView(size)
 {
@@ -32,20 +43,30 @@ void SpinnerView::draw(CDrawContext* context)
 {
     CView::draw(context);
 
-    const CRect bounds     = getViewSize();
+    constexpr auto use_round_caps = true;
+    constexpr auto numLines       = 12;
+    constexpr auto angleStep      = 360. / numLines;
+
+    constexpr CCoord kNormLineLength = 0.4; // normalized from 0. to 1.
+    constexpr CCoord kNormLineWidth  = 0.1; // normalized from 0. to 1.
+    constexpr CColor lineColor(150, 150, 150);
+
+    CRect bounds = getViewSize();
+    if (use_round_caps)
+    {
+        // When using round caps, we need to have an inset to avoid clipping
+        bounds = inset_for_round_line_caps(bounds,
+                                           kNormLineWidth * bounds.getWidth());
+        context->setLineStyle(
+            CLineStyle(CLineStyle::kLineCapRound, CLineStyle::kLineJoinRound));
+    }
+
     const CPoint center    = bounds.getCenter();
     const auto width_half  = bounds.getWidth() * 0.5;
     const auto height_half = bounds.getHeight() * 0.5;
 
-    constexpr auto numLines  = 12;
-    constexpr auto angleStep = 360. / numLines;
-
-    constexpr CCoord kLineLength = 0.5; // normalized from 0. to 1.
-    constexpr CCoord kLineWidth  = 2.0; // in pixel
-    constexpr CColor lineColor(150, 150, 150);
-
     context->setDrawMode(kAntiAliasing);
-    context->setLineWidth(kLineWidth);
+    context->setLineWidth(kNormLineWidth * bounds.getWidth());
     context->setFrameColor(lineColor);
     context->setFillColor(lineColor);
 
@@ -58,8 +79,8 @@ void SpinnerView::draw(CDrawContext* context)
         const auto width  = cos(angle) * width_half;
         const auto height = sin(angle) * height_half;
         const CPoint start(center.x + width, center.y + height);
-        const CPoint end(center.x + width * (1. - kLineLength),
-                         center.y + height * (1. - kLineLength));
+        const CPoint end(center.x + width * (1. - kNormLineLength),
+                         center.y + height * (1. - kNormLineLength));
 
         lines.push_back({start, end});
     }
