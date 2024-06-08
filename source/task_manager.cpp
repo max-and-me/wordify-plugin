@@ -2,12 +2,45 @@
 
 #include "task_manager.h"
 #include "base/source/timer.h"
+#include "mam/meta_words/runner.h"
+#include "whipser_cpp_wrapper.h"
 #include <array>
 #include <future>
 #include <optional>
 
 namespace mam::task_managing {
 namespace {
+
+//------------------------------------------------------------------------
+auto create_whisper_cmd(const meta_words::PathType& file_path)
+    -> const meta_words::Command
+{
+    using Options    = const meta_words::Options;
+    using OneValArgs = const meta_words::OneValArgs;
+    using Command    = const meta_words::Command;
+
+    //  The whisper.cpp library takes the audio file and writes the result
+    //  of its analysis into a CSV file. The file is named like the audio
+    //  file and by prepending ".csv" e.g. my_speech.wav ->
+    //  my_speech.wav.csv
+    Options options = {"-ocsv" /* output result in a CSV file */,
+                       "-sow" /* split on word rather than on token */};
+
+    OneValArgs one_val_args = {
+        // model file resp. binary
+        {"-m", whisper_cpp::get_ggml_file_path()},
+        // audio file to analyse
+        {"-f", file_path},
+        // maximum segment length in characters: "1" mains one word
+        {"-ml", "1"},
+        // auto language detection
+        {"-l", "auto"}};
+
+    Command cmd{whisper_cpp::get_worker_executable_path(), options,
+                one_val_args};
+
+    return cmd;
+}
 
 //------------------------------------------------------------------------
 using OptionalId   = std::optional<Id>;
@@ -52,6 +85,9 @@ auto Worker::do_work() -> void
         auto meta_words = future_result.get();
         auto& task      = optional_task.value();
         task.finished_callback(meta_words);
+
+        optional_task.reset();
+        future_result;
     }
 }
 
@@ -130,6 +166,9 @@ auto TaskManager::append_task(const InputData& input_data,
         assign_next_tasks();
     }
 
+    if (task_count_callback)
+        task_count_callback(count_tasks());
+
     return next_task_id;
 }
 
@@ -144,7 +183,6 @@ auto TaskManager::cancel_task(Id task_id) -> bool
     if (iter != tasks.end())
     {
         tasks.erase(iter, tasks.end());
-        task_count_callback(count_tasks());
         return true;
     }
 
@@ -176,6 +214,9 @@ auto TaskManager::work() -> void
             continue;
         }
 
+        if (task_count_callback)
+            task_count_callback(count_tasks());
+
         assign_next_tasks();
     }
 
@@ -196,6 +237,17 @@ auto TaskManager::assign_next_tasks() -> void
             continue;
 
         worker.optional_task = task;
+        worker.future_result = std::async([&]() {
+            auto progress_func = [&](auto) {};
+
+            auto cancel_func = [&]() { return worker.is_canceled.load(); };
+
+            const auto cmd =
+                create_whisper_cmd(worker.optional_task.value().input_data);
+            return meta_words::run(cmd, std::move(progress_func),
+                                   std::move(cancel_func));
+        });
+
         tasks.erase(tasks.begin());
 
         if (tasks.empty())
@@ -232,7 +284,8 @@ auto terminate() -> void
 }
 
 //------------------------------------------------------------------------
-auto append_task(const InputData input_data, FuncFinished&& finished_func) -> Id
+auto append_task(const InputData& input_data,
+                 FuncFinished&& finished_func) -> Id
 {
     return TaskManager::instance().append_task(input_data,
                                                std::move(finished_func));

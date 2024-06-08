@@ -13,6 +13,7 @@
 #include <functional>
 #include <iostream>
 #include <thread>
+#include "task_manager.h"
 
 namespace mam::meta_words {
 namespace {
@@ -244,6 +245,7 @@ void AudioSource::updateRenderSampleCache()
     const auto path     = PathType{tmp_file.generic_u8string()};
     write_audio_to_file(*this, path);
 
+    /*
     task_id = analysing::push_task(
         path,
         [&](auto meta_words_) {
@@ -255,7 +257,12 @@ void AudioSource::updateRenderSampleCache()
             this->analysis_progress = value;
             this->perform_analysis();
         });
-
+*/
+    task_id = task_managing::append_task(path, [&](auto meta_words_) {
+        // TODO
+        this->meta_words = meta_words_;
+        this->end_analysis();
+    });
     this->begin_analysis();
 }
 
@@ -326,7 +333,8 @@ auto AudioSource::get_meta_words() const -> const MetaWords&
 auto AudioSource::set_meta_words(const MetaWords& meta_words_) -> void
 {
     if (task_id.has_value())
-        analysing::cancel_task(task_id.value());
+        //analysing::cancel_task(task_id.value());
+        task_managing::cancel_task(task_id.value());
 
     this->meta_words = meta_words_;
     trim_meta_words(this->meta_words);

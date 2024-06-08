@@ -175,6 +175,15 @@ static auto set_dark_scheme_on_editors(WordifySingleComponent::Editors& editors,
 }
 
 //------------------------------------------------------------------------
+static auto update_task_count_param(size_t count,
+                                    WordifySingleComponent* component)
+{
+    auto p = component->getParameterObject(ParamIds::kParamIdAnalyzeTaskCount);
+    const auto norm = p->toNormalized(count);
+    p->setNormalized(norm);
+}
+
+//------------------------------------------------------------------------
 // WordifySingleComponent
 //------------------------------------------------------------------------
 WordifySingleComponent::WordifySingleComponent() {}
@@ -341,14 +350,18 @@ VSTGUI::IController* WordifySingleComponent::createSubController(
     }
     else if (VSTGUI::UTF8StringView(name) == "SearchController")
     {
+        task_managing::initialise(
+            [&](size_t count) { update_task_count_param(count, this); });
+
         return new SearchController(
             document_controller,
             getParameterObject(ParamIds::kParamIdSmartSearchMode));
     }
     else if (VSTGUI::UTF8StringView(name) == "SpinnerController")
     {
-        return new SpinnerController(document_controller,
-                                     analysing::task_count_param());
+        return new SpinnerController(
+            document_controller,
+            getParameterObject(ParamIds::kParamIdAnalyzeTaskCount));
     }
     else if (VSTGUI::UTF8StringView(name) == "PreferencesController")
     {
@@ -500,11 +513,9 @@ auto WordifySingleComponent::restore_parameters() -> void
     }
     if (auto* p = new Vst::RangeParameter(STR("TaskCount"),
                                           ParamIds::kParamIdAnalyzeTaskCount,
-                                          STR(""), 0., 99., 100.))
+                                          STR(""), 0., 100., 0., 100.))
     {
         parameters.addParameter(p);
-        task_managing::initialise(
-            [p](size_t count) { p->setNormalized(p->toNormalized(count)); });
         p->addDependent(this);
     }
 }
