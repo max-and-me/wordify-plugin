@@ -17,6 +17,7 @@
 #include "preferences_serde.h"
 #include "search_controller.h"
 #include "spinner_controller.h"
+#include "task_manager.h"
 #include "vstgui/uidescription/uidescription.h"
 #include "waveform_controller.h"
 #include "wordify_cids.h"
@@ -495,6 +496,15 @@ auto WordifySingleComponent::restore_parameters() -> void
                                      ParamIds::kParamIdSmartSearchPrev))
     {
         parameters.addParameter(p);
+        p->addDependent(this);
+    }
+    if (auto* p = new Vst::RangeParameter(STR("TaskCount"),
+                                          ParamIds::kParamIdAnalyzeTaskCount,
+                                          STR(""), 0., 99., 100.))
+    {
+        parameters.addParameter(p);
+        task_managing::initialise(
+            [p](size_t count) { p->setNormalized(p->toNormalized(count)); });
         p->addDependent(this);
     }
 }
