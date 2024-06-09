@@ -20,6 +20,7 @@ auto terminate() -> void;
 auto append_task(const InputData& input_data,
                  FuncFinished&& finished_callback) -> Id;
 auto cancel_task(Id task_id) -> bool;
+auto count_tasks() -> size_t;
 
 //------------------------------------------------------------------------
 } // namespace mam::task_managing

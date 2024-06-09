@@ -69,7 +69,7 @@ struct Worker
     FutureResult future_result;
 
     auto do_work() -> void;
-    auto is_busy() -> bool;
+    auto is_busy() const -> bool;
 };
 
 //------------------------------------------------------------------------
@@ -83,27 +83,31 @@ auto Worker::do_work() -> void
     {
         is_canceled     = false;
         auto meta_words = future_result.get();
-        auto& task      = optional_task.value();
-        task.finished_callback(meta_words);
 
+        auto& task = optional_task.value();
+        task.finished_callback(meta_words);
         optional_task.reset();
-        future_result;
     }
 }
 
 //------------------------------------------------------------------------
-auto Worker::is_busy() -> bool
+auto Worker::is_busy() const -> bool
 {
     return optional_task.has_value();
 }
 
 //------------------------------------------------------------------------
 // TaskManager
+/* Has a list of tasks and a list of workers. A worker can work on one task
+ * at a time. The task will be removed from the list and transfered to a worker.
+ *
+ */
 //------------------------------------------------------------------------
 struct TaskManager
 {
-    using TaskList = std::vector<Task>;
-    using Workers  = std::array<Worker, 2>;
+    static constexpr auto kNumWorkers = 2;
+    using TaskList                    = std::vector<Task>;
+    using WorkerList                  = std::array<Worker, kNumWorkers>;
 
     static auto instance() -> TaskManager&
     {
@@ -116,13 +120,14 @@ struct TaskManager
     auto append_task(const InputData& input_data,
                      FuncFinished&& finished_func) -> Id;
     auto cancel_task(Id task_id) -> bool;
+    auto count_tasks() const -> size_t;
 
+    // private:
     auto work() -> void;
     auto assign_next_tasks() -> void;
-    auto count_tasks() -> size_t;
 
     FuncTaskCount task_count_callback;
-    Workers workers;
+    WorkerList workers;
     TaskList tasks;
 
     Steinberg::IPtr<Steinberg::Timer> timer;
@@ -230,36 +235,36 @@ auto TaskManager::assign_next_tasks() -> void
     if (tasks.empty())
         return;
 
-    auto task = tasks.front();
     for (auto& worker : workers)
     {
         if (worker.is_busy())
             continue;
 
+        if (tasks.empty())
+            break;
+
+        auto task = tasks.front();
+        tasks.erase(tasks.begin());
+
         worker.optional_task = task;
+        worker.is_canceled   = false;
         worker.future_result = std::async([&]() {
             auto progress_func = [&](auto) {};
-
-            auto cancel_func = [&]() { return worker.is_canceled.load(); };
+            auto cancel_func   = [&]() { return worker.is_canceled.load(); };
 
             const auto cmd =
                 create_whisper_cmd(worker.optional_task.value().input_data);
             return meta_words::run(cmd, std::move(progress_func),
                                    std::move(cancel_func));
         });
-
-        tasks.erase(tasks.begin());
-
-        if (tasks.empty())
-            return;
     }
 }
 
 //------------------------------------------------------------------------
-auto TaskManager::count_tasks() -> size_t
+auto TaskManager::count_tasks() const -> size_t
 {
     auto count = tasks.size();
-    for (auto& worker : workers)
+    for (const auto& worker : workers)
     {
         if (worker.is_busy())
             count++;
@@ -295,6 +300,12 @@ auto append_task(const InputData& input_data,
 auto cancel_task(Id task_id) -> bool
 {
     return TaskManager::instance().cancel_task(task_id);
+}
+
+//------------------------------------------------------------------------
+auto count_tasks() -> size_t
+{
+    return TaskManager::instance().count_tasks();
 }
 
 //------------------------------------------------------------------------

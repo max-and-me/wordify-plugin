@@ -350,15 +350,23 @@ VSTGUI::IController* WordifySingleComponent::createSubController(
     }
     else if (VSTGUI::UTF8StringView(name) == "SearchController")
     {
-        task_managing::initialise(
-            [&](size_t count) { update_task_count_param(count, this); });
-
         return new SearchController(
             document_controller,
             getParameterObject(ParamIds::kParamIdSmartSearchMode));
     }
     else if (VSTGUI::UTF8StringView(name) == "SpinnerController")
     {
+        // TODO: Needs improvement!
+        if (auto p = getParameterObject(ParamIds::kParamIdAnalyzeTaskCount))
+        {
+            const auto num_tasks = task_managing::count_tasks();
+            const auto norm      = p->toNormalized(num_tasks);
+            p->setNormalized(norm);
+        }
+
+        task_managing::initialise(
+            [&](size_t count) { update_task_count_param(count, this); });
+
         return new SpinnerController(
             document_controller,
             getParameterObject(ParamIds::kParamIdAnalyzeTaskCount));
