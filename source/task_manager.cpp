@@ -120,7 +120,7 @@ auto Worker::cancel() -> void
 //------------------------------------------------------------------------
 struct TaskManager
 {
-    static constexpr auto kNumWorkers = 2;
+    static constexpr auto kNumWorkers = 1;
     using TaskList                    = std::vector<Task>;
     using WorkerList                  = std::array<Worker, kNumWorkers>;
 
