@@ -218,6 +218,8 @@ tresult PLUGIN_API WordifySingleComponent::terminate()
 {
     // Here the Plug-in will be de-instantiated, last possibility to remove
     // some memory!
+    
+    task_managing::terminate();
 
     store_parameters();
 

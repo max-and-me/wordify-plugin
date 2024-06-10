@@ -70,6 +70,7 @@ struct Worker
 
     auto do_work() -> void;
     auto is_busy() const -> bool;
+    auto cancel() -> void;
 };
 
 //------------------------------------------------------------------------
@@ -84,9 +85,12 @@ auto Worker::do_work() -> void
         is_canceled     = false;
         auto meta_words = future_result.get();
 
-        auto& task = optional_task.value();
-        task.finished_callback(meta_words);
-        optional_task.reset();
+        if (optional_task.has_value())
+        {
+            auto& task = optional_task.value();
+            task.finished_callback(meta_words);
+            optional_task.reset();
+        }
     }
 }
 
@@ -94,6 +98,17 @@ auto Worker::do_work() -> void
 auto Worker::is_busy() const -> bool
 {
     return optional_task.has_value();
+}
+
+//------------------------------------------------------------------------
+auto Worker::cancel() -> void
+{
+    is_canceled = true;
+    if (is_busy())
+    {
+        optional_task.reset();
+        future_result.wait_for(std::chrono::seconds(5));
+    }
 }
 
 //------------------------------------------------------------------------
@@ -145,10 +160,11 @@ auto TaskManager::initialise(FuncTaskCount&& task_count_callback_) -> bool
 //------------------------------------------------------------------------
 auto TaskManager::terminate() -> void
 {
+    task_count_callback = nullptr;
     tasks.clear();
     for (auto& worker : workers)
     {
-        worker.is_canceled = true;
+        worker.cancel();
     }
 }
 
