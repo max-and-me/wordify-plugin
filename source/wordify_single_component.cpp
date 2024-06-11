@@ -17,6 +17,7 @@
 #include "preferences_serde.h"
 #include "search_controller.h"
 #include "spinner_controller.h"
+#include "task_manager.h"
 #include "vstgui/uidescription/uidescription.h"
 #include "waveform_controller.h"
 #include "wordify_cids.h"
@@ -174,6 +175,15 @@ static auto set_dark_scheme_on_editors(WordifySingleComponent::Editors& editors,
 }
 
 //------------------------------------------------------------------------
+static auto update_task_count_param(size_t count,
+                                    WordifySingleComponent* component)
+{
+    auto p = component->getParameterObject(ParamIds::kParamIdAnalyzeTaskCount);
+    const auto norm = p->toNormalized(count);
+    p->setNormalized(norm);
+}
+
+//------------------------------------------------------------------------
 // WordifySingleComponent
 //------------------------------------------------------------------------
 WordifySingleComponent::WordifySingleComponent() {}
@@ -208,6 +218,8 @@ tresult PLUGIN_API WordifySingleComponent::terminate()
 {
     // Here the Plug-in will be de-instantiated, last possibility to remove
     // some memory!
+    
+    task_managing::terminate();
 
     store_parameters();
 
@@ -346,8 +358,20 @@ VSTGUI::IController* WordifySingleComponent::createSubController(
     }
     else if (VSTGUI::UTF8StringView(name) == "SpinnerController")
     {
-        return new SpinnerController(document_controller,
-                                     analysing::task_count_param());
+        // TODO: Needs improvement!
+        if (auto p = getParameterObject(ParamIds::kParamIdAnalyzeTaskCount))
+        {
+            const auto num_tasks = task_managing::count_tasks();
+            const auto norm      = p->toNormalized(num_tasks);
+            p->setNormalized(norm);
+        }
+
+        task_managing::initialise(
+            [&](size_t count) { update_task_count_param(count, this); });
+
+        return new SpinnerController(
+            document_controller,
+            getParameterObject(ParamIds::kParamIdAnalyzeTaskCount));
     }
     else if (VSTGUI::UTF8StringView(name) == "PreferencesController")
     {
@@ -493,6 +517,13 @@ auto WordifySingleComponent::restore_parameters() -> void
     }
     if (auto* p = new Vst::Parameter(STR("SmartSearchPrev"),
                                      ParamIds::kParamIdSmartSearchPrev))
+    {
+        parameters.addParameter(p);
+        p->addDependent(this);
+    }
+    if (auto* p = new Vst::RangeParameter(STR("TaskCount"),
+                                          ParamIds::kParamIdAnalyzeTaskCount,
+                                          STR(""), 0., 100., 0., 100.))
     {
         parameters.addParameter(p);
         p->addDependent(this);

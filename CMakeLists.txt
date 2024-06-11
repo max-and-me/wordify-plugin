@@ -85,6 +85,8 @@ smtg_add_vst3plugin(Wordify
     source/spinner_view.h
     source/string_matcher.cpp
     source/string_matcher.h
+    source/task_manager.cpp
+    source/task_manager.h
     source/tiny_selection_model.h
     source/version.h
     source/view_animations.cpp
