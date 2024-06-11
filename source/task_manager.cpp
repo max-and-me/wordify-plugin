@@ -67,47 +67,37 @@ struct Worker
     OptionalTask optional_task;
     AtomicBool is_canceled = false;
     FutureResult future_result;
-
-    auto do_work() -> void;
-    auto is_busy() const -> bool;
-    auto cancel() -> void;
 };
 
 //------------------------------------------------------------------------
-auto Worker::do_work() -> void
+auto do_work(Worker& worker) -> void
 {
-    if (!is_busy())
+    if (!worker.optional_task.has_value())
         return;
 
-    if (future_result.wait_for(std::chrono::seconds(0)) ==
+    if (worker.future_result.wait_for(std::chrono::seconds(0)) ==
         std::future_status::ready)
     {
-        is_canceled     = false;
-        auto meta_words = future_result.get();
+        worker.is_canceled     = false;
+        auto meta_words = worker.future_result.get();
 
-        if (optional_task.has_value())
+        if (worker.optional_task.has_value())
         {
-            auto& task = optional_task.value();
+            auto& task = worker.optional_task.value();
             task.finished_callback(meta_words);
-            optional_task.reset();
+            worker.optional_task.reset();
         }
     }
 }
 
 //------------------------------------------------------------------------
-auto Worker::is_busy() const -> bool
+auto cancel(Worker& worker) -> void
 {
-    return optional_task.has_value();
-}
-
-//------------------------------------------------------------------------
-auto Worker::cancel() -> void
-{
-    is_canceled = true;
-    if (is_busy())
+    worker.is_canceled = true;
+    if (worker.optional_task.has_value())
     {
-        optional_task.reset();
-        future_result.wait_for(std::chrono::seconds(5));
+        worker.optional_task.reset();
+        worker.future_result.wait_for(std::chrono::seconds(5));
     }
 }
 
@@ -164,7 +154,7 @@ auto TaskManager::terminate() -> void
     tasks.clear();
     for (auto& worker : workers)
     {
-        worker.cancel();
+        cancel(worker);
     }
 }
 
@@ -209,7 +199,7 @@ auto TaskManager::cancel_task(Id task_id) -> bool
 
     for (auto& worker : workers)
     {
-        if (!worker.is_busy())
+        if (!worker.optional_task.has_value())
             continue;
 
         if (worker.optional_task.value().task_id == task_id)
@@ -228,8 +218,8 @@ auto TaskManager::work() -> void
     bool stop_work_timer = true;
     for (auto& worker : workers)
     {
-        worker.do_work();
-        if (worker.is_busy())
+        do_work(worker);
+        if (worker.optional_task.has_value())
         {
             stop_work_timer = false;
             continue;
@@ -253,7 +243,7 @@ auto TaskManager::assign_next_tasks() -> void
 
     for (auto& worker : workers)
     {
-        if (worker.is_busy())
+        if (worker.optional_task.has_value())
             continue;
 
         if (tasks.empty())
@@ -282,7 +272,7 @@ auto TaskManager::count_tasks() const -> size_t
     auto count = tasks.size();
     for (const auto& worker : workers)
     {
-        if (worker.is_busy())
+        if (worker.optional_task.has_value())
             count++;
     }
 
