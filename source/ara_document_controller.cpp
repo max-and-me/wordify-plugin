@@ -133,16 +133,16 @@ bool ARADocumentController::doStoreObjectsToArchive(
 
 //------------------------------------------------------------------------
 void ARADocumentController::doUpdateMusicalContextContent(
-    ARA::PlugIn::MusicalContext* musicalContext,
-    const ARA::ARAContentTimeRange* range,
-    ARA::ContentUpdateScopes scopeFlags) noexcept
+    ARA::PlugIn::MusicalContext* /*musicalContext*/,
+    const ARA::ARAContentTimeRange* /*range*/,
+    ARA::ContentUpdateScopes /*scopeFlags*/) noexcept
 {
 }
 
 //------------------------------------------------------------------------
 void ARADocumentController::doUpdateAudioSourceContent(
     ARA::PlugIn::AudioSource* audioSource,
-    const ARA::ARAContentTimeRange* range,
+    const ARA::ARAContentTimeRange* /*range*/,
     ARA::ContentUpdateScopes scopeFlags) noexcept
 {
     if (auto as = dynamic_cast<AudioSource*>(audioSource))
@@ -154,7 +154,7 @@ void ARADocumentController::doUpdateAudioSourceContent(
 
 //------------------------------------------------------------------------
 void ARADocumentController::willEnableAudioSourceSamplesAccess(
-    ARA::PlugIn::AudioSource* audioSource, bool enable) noexcept
+    ARA::PlugIn::AudioSource* /*audioSource*/, bool /*enable*/) noexcept
 {
 }
 
@@ -231,7 +231,7 @@ void ARADocumentController::didUpdateAudioModificationProperties(
 
 //------------------------------------------------------------------------
 void ARADocumentController::didUpdateAudioSourceProperties(
-    ARA::PlugIn::AudioSource* audioSource) noexcept
+    ARA::PlugIn::AudioSource* /*audioSource*/) noexcept
 {
     // TODO: Trigger or schedule analysis here!
     /* From the ARA doc
@@ -328,7 +328,7 @@ void ARADocumentController::rendererDidAccessModelGraph(
 
 //------------------------------------------------------------------------
 void ARADocumentController::didAddPlaybackRegionToRegionSequence(
-    ARA::PlugIn::RegionSequence* regionSequence,
+    ARA::PlugIn::RegionSequence* /*regionSequence*/,
     ARA::PlugIn::PlaybackRegion* playbackRegion) noexcept
 {
     auto* pbr = dynamic_cast<PlaybackRegion*>(playbackRegion);
@@ -340,7 +340,7 @@ void ARADocumentController::didAddPlaybackRegionToRegionSequence(
 
 //------------------------------------------------------------------------
 void ARADocumentController::willRemovePlaybackRegionFromRegionSequence(
-    ARA::PlugIn::RegionSequence* regionSequence,
+    ARA::PlugIn::RegionSequence* /*regionSequence*/,
     ARA::PlugIn::PlaybackRegion* playbackRegion) noexcept
 {
     auto* pbr = dynamic_cast<meta_words::PlaybackRegion*>(playbackRegion);

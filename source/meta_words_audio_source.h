@@ -8,6 +8,7 @@
 #include "audio_buffer_management.h"
 #include "base/source/timer.h"
 #include "mam/meta_words/meta_word.h"
+#include "wordify_types.h"
 #include <future>
 #include <optional>
 
@@ -87,7 +88,7 @@ protected:
     MetaWords meta_words;
     FuncAnalyzeProgress analyze_progress_func;
 
-    Identifier identifier = -1;
+    Id identifier{0};
 
     using OptTaskId = std::optional<size_t>;
     OptTaskId task_id;

@@ -41,16 +41,16 @@ public:
                    const IUIDescription* uidesc);
     ~ListController();
 
-    void PLUGIN_API update(FUnknown* changedUnknown,
-                           Steinberg::int32 message) override {};
+    void PLUGIN_API update(FUnknown* /*changedUnknown*/,
+                           Steinberg::int32 /*message*/) override {};
     View* verifyView(View* view,
                      const UIAttributes& attributes,
                      const IUIDescription* description) override;
 
     // IControlListener
-    void valueChanged(Control* pControl) override {};
-    void controlBeginEdit(Control* pControl) override {};
-    void controlEndEdit(Control* pControl) override {};
+    void valueChanged(Control* /*pControl*/) override {};
+    void controlBeginEdit(Control* /*pControl*/) override {};
+    void controlEndEdit(Control* /*pControl*/) override {};
     IController*
     createSubController(UTF8StringPtr name,
                         const IUIDescription* description) override;

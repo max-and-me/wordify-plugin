@@ -18,7 +18,7 @@ class PlaybackRegion : public ARA::PlugIn::PlaybackRegion
 {
 public:
     //--------------------------------------------------------------------
-    static constexpr Id INVALID_ID = -1;
+    static constexpr Id INVALID_ID = 0;
     using Color                    = MetaWordsData::Color;
 
     using AudioBuf =

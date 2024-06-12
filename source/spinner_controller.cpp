@@ -20,7 +20,7 @@ namespace mam {
 namespace {
 //------------------------------------------------------------------------
 auto create_spinner_view(const UIAttributes& attributes,
-                         const IUIDescription* description) -> SpinnerView*
+                         const IUIDescription* /*description*/) -> SpinnerView*
 {
     CPoint origin;
     CPoint size;
@@ -166,7 +166,7 @@ auto SpinnerController::count_tasks() const -> size_t
 
 //------------------------------------------------------------------------
 void PLUGIN_API SpinnerController::update(FUnknown* changedUnknown,
-                                          Steinberg::int32 message)
+                                          Steinberg::int32 /*message*/)
 {
     if (auto* param =
             Steinberg::FCast<Steinberg::Vst::Parameter>(changedUnknown))
@@ -196,7 +196,7 @@ CView* SpinnerController::createView(const UIAttributes& attributes,
 //------------------------------------------------------------------------
 VSTGUI::CView* SpinnerController::verifyView(VSTGUI::CView* view,
                                              const UIAttributes& attributes,
-                                             const IUIDescription* description)
+                                             const IUIDescription* /*description*/)
 {
     if (!view)
         return view;
@@ -234,8 +234,8 @@ VSTGUI::CView* SpinnerController::verifyView(VSTGUI::CView* view,
 
 //------------------------------------------------------------------------
 VSTGUI::IController*
-SpinnerController::createSubController(UTF8StringPtr name,
-                                       const IUIDescription* description)
+SpinnerController::createSubController(UTF8StringPtr /*name*/,
+                                       const IUIDescription* /*description*/)
 {
     return nullptr;
 }

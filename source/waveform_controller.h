@@ -39,8 +39,8 @@ public:
 
     bool initialize(Subject* subject, FuncWaveFormData&& waveform_data_func);
 
-    void PLUGIN_API update(FUnknown* changedUnknown,
-                           Steinberg::int32 message) override {};
+    void PLUGIN_API update(FUnknown* /*changedUnknown*/,
+                           Steinberg::int32 /*message*/) override {};
 
     VSTGUI::CView*
     createView(const VSTGUI::UIAttributes& attributes,
@@ -52,7 +52,7 @@ public:
                const VSTGUI::IUIDescription* description) override;
 
     // IControlListener
-    void valueChanged(VSTGUI::CControl* pControl) override {};
+    void valueChanged(VSTGUI::CControl* /*pControl*/) override {};
 
     // ViewListenerAdapter
     void viewAttached(VSTGUI::CView* view) override;

@@ -2,7 +2,6 @@
 // Copyright(c) 2024 Max And Me.
 //------------------------------------------------------------------------
 #include "meta_words_audio_source.h"
-#include "audio_source_analyze_worker.h"
 #include "little_helpers.h"
 #include "mam/meta_words/runner.h"
 #include "samplerate.h"
@@ -220,7 +219,7 @@ auto trim_meta_words(MetaWords& meta_words) -> void
 AudioSource::~AudioSource()
 {
     if (task_id.has_value())
-        analysing::cancel_task(task_id.value());
+        task_managing::cancel_task(task_id.value());
 };
 
 //------------------------------------------------------------------------

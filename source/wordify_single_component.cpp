@@ -4,7 +4,6 @@
 
 #include "wordify_single_component.h"
 #include "ara_document_controller.h"
-#include "audio_source_analyze_worker.h"
 #include "base/source/fstreamer.h"
 #include "list_controller.h"
 #include "meta_words_editor_renderer.h"
@@ -179,7 +178,7 @@ static auto update_task_count_param(size_t count,
                                     WordifySingleComponent* component)
 {
     auto p = component->getParameterObject(ParamIds::kParamIdAnalyzeTaskCount);
-    const auto norm = p->toNormalized(count);
+    const auto norm = p->toNormalized(static_cast<Vst::ParamValue>(count));
     p->setNormalized(norm);
 }
 
@@ -218,7 +217,7 @@ tresult PLUGIN_API WordifySingleComponent::terminate()
 {
     // Here the Plug-in will be de-instantiated, last possibility to remove
     // some memory!
-    
+
     task_managing::terminate();
 
     store_parameters();
@@ -310,13 +309,13 @@ WordifySingleComponent::canProcessSampleSize(int32 symbolicSampleSize)
 }
 
 //------------------------------------------------------------------------
-tresult PLUGIN_API WordifySingleComponent::setState(IBStream* state)
+tresult PLUGIN_API WordifySingleComponent::setState(IBStream* /*state*/)
 {
     return kResultOk;
 }
 
 //------------------------------------------------------------------------
-tresult PLUGIN_API WordifySingleComponent::getState(IBStream* state)
+tresult PLUGIN_API WordifySingleComponent::getState(IBStream* /*state*/)
 {
     return kResultOk;
 }
@@ -361,8 +360,9 @@ VSTGUI::IController* WordifySingleComponent::createSubController(
         // TODO: Needs improvement!
         if (auto p = getParameterObject(ParamIds::kParamIdAnalyzeTaskCount))
         {
-            const auto num_tasks = task_managing::count_tasks();
-            const auto norm      = p->toNormalized(num_tasks);
+            const auto num_tasks =
+                static_cast<Vst::ParamValue>(task_managing::count_tasks());
+            const auto norm = p->toNormalized(num_tasks);
             p->setNormalized(norm);
         }
 
@@ -382,10 +382,10 @@ VSTGUI::IController* WordifySingleComponent::createSubController(
 }
 
 //------------------------------------------------------------------------
-void WordifySingleComponent::didOpen(VSTGUI::VST3Editor* editor) {}
+void WordifySingleComponent::didOpen(VSTGUI::VST3Editor* /*editor*/) {}
 
 //------------------------------------------------------------------------
-void WordifySingleComponent::willClose(VSTGUI::VST3Editor* editor)
+void WordifySingleComponent::willClose(VSTGUI::VST3Editor* /*editor*/)
 {
     if (araPlugInExtension.getEditorView())
         araPlugInExtension.getEditorView()->setEditorOpen(false);
@@ -523,7 +523,7 @@ auto WordifySingleComponent::restore_parameters() -> void
     }
     if (auto* p = new Vst::RangeParameter(STR("TaskCount"),
                                           ParamIds::kParamIdAnalyzeTaskCount,
-                                          STR(""), 0., 100., 0., 100.))
+                                          STR(""), 0., 100., 0., 100))
     {
         parameters.addParameter(p);
         p->addDependent(this);
@@ -557,7 +557,7 @@ auto WordifySingleComponent::store_parameters() -> void
 
 //------------------------------------------------------------------------
 void PLUGIN_API WordifySingleComponent::update(FUnknown* changedUnknown,
-                                               int32 tag)
+                                               int32 /*tag*/)
 {
     if (auto* param = FCast<Vst::Parameter>(changedUnknown))
     {

@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 3.25.0)
 
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules")
+include(MAM_TargetCompileOptions)
+
 set(CMAKE_OSX_DEPLOYMENT_TARGET 10.15 CACHE STRING "")
 string(TIMESTAMP VERSION_NOW "%Y.%m") # VERSION_NOW e.g. 2023.08
 
@@ -41,8 +44,6 @@ smtg_add_vst3plugin(Wordify
     source/ara_factory_config.cpp
     source/ara_factory_config.h
     source/audio_buffer_management.h
-    source/audio_source_analyze_worker.cpp
-    source/audio_source_analyze_worker.h
     source/hilite_text_button.cpp
     source/hilite_text_button.h
     source/hstack_layout.cpp
@@ -193,6 +194,8 @@ target_compile_features(Wordify
     PRIVATE
         cxx_std_17
 )
+
+mam_target_compile_options(Wordify)
 
 set_property(
     TARGET

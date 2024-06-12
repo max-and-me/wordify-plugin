@@ -120,19 +120,19 @@ static auto modify_time_stamps(MetaWordData& word,
 // played back in 44.1Khz but the original sample is in 16kHz. We need to
 // modify the timestamps then.
 //------------------------------------------------------------------------
-static auto modify_time_stamps(MetaWordDataset& word_dataset,
-                               const PlaybackRegion& region,
-                               ARA::ARASampleRate playback_sample_rate)
-    -> const MetaWordDataset
-{
-    const auto speed_factor =
-        compute_speed_factor(region, playback_sample_rate);
-
-    for (auto& word : word_dataset)
-        word = modify_time_stamps(word, speed_factor);
-
-    return word_dataset;
-}
+//static auto modify_time_stamps(MetaWordDataset& word_dataset,
+//                               const PlaybackRegion& region,
+//                               ARA::ARASampleRate playback_sample_rate)
+//    -> const MetaWordDataset
+//{
+//    const auto speed_factor =
+//        compute_speed_factor(region, playback_sample_rate);
+//
+//    for (auto& word : word_dataset)
+//        word = modify_time_stamps(word, speed_factor);
+//
+//    return word_dataset;
+//}
 
 //------------------------------------------------------------------------
 Id PlaybackRegion::new_id = PlaybackRegion::INVALID_ID;

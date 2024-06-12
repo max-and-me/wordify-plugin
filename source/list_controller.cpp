@@ -189,11 +189,12 @@ ListController::~ListController()
 //------------------------------------------------------------------------
 CView* ListController::verifyView(CView* view,
                                   const UIAttributes& /*attributes*/,
-                                  const IUIDescription* description)
+                                  const IUIDescription* /*description*/)
 {
     if (!rowColView)
     {
-        if (rowColView = dynamic_cast<CRowColumnView*>(view))
+        rowColView = dynamic_cast<CRowColumnView*>(view);
+        if (rowColView)
         {
             rowColView->registerViewListener(this);
             if (controller)

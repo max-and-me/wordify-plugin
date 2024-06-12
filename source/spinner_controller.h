@@ -51,7 +51,7 @@ public:
                const VSTGUI::IUIDescription* description) override;
 
     // IControlListener
-    void valueChanged(VSTGUI::CControl* pControl) override {}
+    void valueChanged(VSTGUI::CControl* /*pControl*/) override {}
     VSTGUI::IController*
     createSubController(VSTGUI::UTF8StringPtr name,
                         const VSTGUI::IUIDescription* description) override;
