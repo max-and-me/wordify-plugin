@@ -37,8 +37,8 @@ public:
         samples_read = 0;
         return *this;
     }
-    template <typename Func>
 
+    template <typename Func>
     auto read(Func&& func) -> size_t
     {
         if (sample_pos > samples_total)
@@ -55,6 +55,7 @@ public:
         sample_pos += samples_read;
         return samples_read;
     }
+
     //--------------------------------------------------------------------
 private:
     size_t block_size    = 0;
@@ -217,7 +218,10 @@ AudioSource::AudioSource(ARA::PlugIn::Document* document,
 AudioSource::~AudioSource()
 {
     if (task_id.has_value())
+    {
         task_managing::cancel_task(task_id.value());
+        task_id.reset();
+    }
 };
 
 //------------------------------------------------------------------------
@@ -228,12 +232,14 @@ void AudioSource::updateRenderSampleCache()
     if (audio_buffers.size() > 0)
         return;
 
+    // Read audio buffers from host
     audio_buffers =
         audio_buffer_management::create_multi_channel_buffers<SampleType>(
             getChannelCount(), getSampleCount());
 
     read_audio_from_host(*this);
 
+    // Write audio buffers to temporary audio file
     const auto tmp_dir =
         std::filesystem::temp_directory_path() / PLUGIN_IDENTIFIER;
     std::filesystem::create_directories(tmp_dir);
@@ -242,6 +248,7 @@ void AudioSource::updateRenderSampleCache()
     const auto path     = PathType{tmp_file.generic_u8string()};
     write_audio_to_file(*this, path);
 
+    // Start analyse task on temporary audio file
     task_id = task_managing::append_task(path, [&](auto meta_words_) {
         meta_words = meta_words_;
         end_analysis();
