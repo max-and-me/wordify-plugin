@@ -144,15 +144,16 @@ auto write_audio_to_file(AudioSource& audio_src,
         /* int			channels = */ audio_src.getChannelCount(),
         /* int			format = */ (SF_FORMAT_WAV | SF_FORMAT_PCM_16)};
 
-    SNDFILE* file = nullptr;
-    if (!(file = sf_open(file_path.data(), SFM_RDWR, &sfinfo)))
+    SNDFILE* file = sf_open(file_path.data(), SFM_RDWR, &sfinfo);
+    if (!file)
     {
         printf("Error : Not able to open output file.\n");
         return 1;
     };
 
-    if (sf_write_float(file, interleaved_buf.data(), interleaved_buf.size()) !=
-        interleaved_buf.size())
+    const auto write_count =
+        sf_write_float(file, interleaved_buf.data(), interleaved_buf.size());
+    if (static_cast<size_t>(write_count) != interleaved_buf.size())
     {
         puts(sf_strerror(file));
     }
