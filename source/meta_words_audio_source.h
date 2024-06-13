@@ -49,12 +49,7 @@ public:
     AudioSource(ARA::PlugIn::Document* document,
                 ARA::ARAAudioSourceHostRef hostRef,
                 FuncAnalyzeProgress&& analyze_progress_func,
-                Identifier identifier)
-    : ARA::PlugIn::AudioSource{document, hostRef}
-    , analyze_progress_func(analyze_progress_func)
-    , identifier(identifier)
-    {
-    }
+                Identifier identifier);
     ~AudioSource() override;
 
     // render thread sample access:

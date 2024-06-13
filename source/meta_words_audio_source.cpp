@@ -6,13 +6,13 @@
 #include "mam/meta_words/runner.h"
 #include "samplerate.h"
 #include "sndfile.h"
+#include "task_manager.h"
 #include "wordify_defines.h"
 #include <cmath>
 #include <filesystem>
 #include <functional>
 #include <iostream>
 #include <thread>
-#include "task_manager.h"
 
 namespace mam::meta_words {
 namespace {
@@ -216,6 +216,18 @@ auto trim_meta_words(MetaWords& meta_words) -> void
 //------------------------------------------------------------------------
 // AudioSource
 //------------------------------------------------------------------------
+AudioSource::AudioSource(ARA::PlugIn::Document* document,
+                         ARA::ARAAudioSourceHostRef hostRef,
+                         FuncAnalyzeProgress&& analyze_progress_func,
+                         Identifier identifier)
+: ARA::PlugIn::AudioSource{document, hostRef}
+, analyze_progress_func(analyze_progress_func)
+, identifier(identifier)
+{
+}
+
+//------------------------------------------------------------------------
+
 AudioSource::~AudioSource()
 {
     if (task_id.has_value())
@@ -332,7 +344,7 @@ auto AudioSource::get_meta_words() const -> const MetaWords&
 auto AudioSource::set_meta_words(const MetaWords& meta_words_) -> void
 {
     if (task_id.has_value())
-        //analysing::cancel_task(task_id.value());
+        // analysing::cancel_task(task_id.value());
         task_managing::cancel_task(task_id.value());
 
     this->meta_words = meta_words_;
