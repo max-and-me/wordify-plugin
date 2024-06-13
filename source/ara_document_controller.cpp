@@ -190,23 +190,6 @@ ARA::PlugIn::AudioSource* ARADocumentController::doCreateAudioSource(
     if (!new_audio_source)
         return nullptr;
 
-    new_audio_source->changed_func = [this](AudioSource* audio_source) {
-        if (!audio_source)
-            return;
-
-        auto audio_modifications = audio_source->getAudioModifications();
-        for (auto& am : audio_modifications)
-        {
-            auto regions = am->getPlaybackRegions<PlaybackRegion>();
-            for (auto& region : regions)
-            {
-                auto obj = playback_region_observers.find(region->get_id());
-                if (obj != playback_region_observers.end())
-                    obj->second();
-            }
-        }
-    };
-
     return new_audio_source;
 }
 

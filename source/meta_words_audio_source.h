@@ -42,11 +42,11 @@ public:
         mam::audio_buffer_management::MultiChannelBuffers<SampleType>;
     using MetaWords           = mam::meta_words::MetaWords;
     using FnChanged           = std::function<void(AudioSource*)>;
-    using FuncAnalyzeProgress = std::function<void(const AnalyseProgressData&)>;
+    using FuncAnalyseProgress = std::function<void(const AnalyseProgressData&)>;
 
     AudioSource(ARA::PlugIn::Document* document,
                 ARA::ARAAudioSourceHostRef hostRef,
-                FuncAnalyzeProgress&& analyze_progress_func,
+                FuncAnalyseProgress&& analyse_progress_func,
                 Id id);
     ~AudioSource() override;
 
@@ -59,21 +59,17 @@ public:
     auto set_meta_words(const MetaWords& meta_words) -> void;
     auto get_id() const -> const Id { return id; }
 
-    FnChanged changed_func;
-
     //--------------------------------------------------------------------
 protected:
     void begin_analysis();
     void perform_analysis();
     void end_analysis();
-    //std::atomic<double> analysis_progress = 0.;
-
-    MultiChannelBufferType audio_buffers;
-    MetaWords meta_words;
-    FuncAnalyzeProgress analyze_progress_func;
 
     Id id{0};
     OptionalId task_id;
+    MultiChannelBufferType audio_buffers;
+    MetaWords meta_words;
+    FuncAnalyseProgress analyse_progress_func;
 };
 
 //------------------------------------------------------------------------

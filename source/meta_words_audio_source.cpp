@@ -33,8 +33,8 @@ public:
 
     auto set_size(size_t value) -> AudioBlockReader&
     {
-        this->block_size   = value;
-        this->samples_read = 0;
+        block_size   = value;
+        samples_read = 0;
         return *this;
     }
     template <typename Func>
@@ -84,20 +84,6 @@ auto read_audio_from_host(AudioSource& audio_src) -> void
         if (num_read == 0)
             break;
     }
-
-    /*
-    // create temporary host audio reader and let it fill the buffers
-    // (we can safely ignore any errors while reading since host must clear
-    // buffers in that case, as well as report the error to the user)
-
-    auto data_pointers = mam::audio_buffer_management::to_channel_data(
-        audio_src.get_audio_buffers());
-
-    ARA::PlugIn::HostAudioReader audioReader{&audio_src};
-    audioReader.readAudioSamples(
-        0, static_cast<ARA::ARASampleCount>(audio_src.getSampleCount()),
-        data_pointers.data());
-        */
 }
 
 //------------------------------------------------------------------------
@@ -218,10 +204,10 @@ auto trim_meta_words(MetaWords& meta_words) -> void
 //------------------------------------------------------------------------
 AudioSource::AudioSource(ARA::PlugIn::Document* document,
                          ARA::ARAAudioSourceHostRef hostRef,
-                         FuncAnalyzeProgress&& analyze_progress_func,
+                         FuncAnalyseProgress&& analyse_progress_func,
                          Id id)
 : ARA::PlugIn::AudioSource{document, hostRef}
-, analyze_progress_func(analyze_progress_func)
+, analyse_progress_func(analyse_progress_func)
 , id(id)
 {
 }
@@ -239,12 +225,12 @@ void AudioSource::updateRenderSampleCache()
 {
     ARA_INTERNAL_ASSERT(isSampleAccessEnabled());
 
-    if (this->audio_buffers.size() > 0)
+    if (audio_buffers.size() > 0)
         return;
 
-    this->audio_buffers =
+    audio_buffers =
         audio_buffer_management::create_multi_channel_buffers<SampleType>(
-            this->getChannelCount(), this->getSampleCount());
+            getChannelCount(), getSampleCount());
 
     read_audio_from_host(*this);
 
@@ -252,29 +238,16 @@ void AudioSource::updateRenderSampleCache()
         std::filesystem::temp_directory_path() / PLUGIN_IDENTIFIER;
     std::filesystem::create_directories(tmp_dir);
 
-    const auto tmp_file = tmp_dir / PathType(this->getName());
+    const auto tmp_file = tmp_dir / PathType(getName());
     const auto path     = PathType{tmp_file.generic_u8string()};
     write_audio_to_file(*this, path);
 
-    /*
-    task_id = analysing::push_task(
-        path,
-        [&](auto meta_words_) {
-            // TODO
-            this->meta_words = meta_words_;
-            this->end_analysis();
-        },
-        [&](auto value) { // TODO
-            this->analysis_progress = value;
-            this->perform_analysis();
-        });
-*/
     task_id = task_managing::append_task(path, [&](auto meta_words_) {
-        // TODO
-        this->meta_words = meta_words_;
-        this->end_analysis();
+        meta_words = meta_words_;
+        end_analysis();
     });
-    this->begin_analysis();
+
+    begin_analysis();
 }
 
 //------------------------------------------------------------------------
@@ -285,7 +258,7 @@ void AudioSource::begin_analysis()
         /*.state*/ AnalyseProgressData::State::BeginAnalyse,
     };
 
-    analyze_progress_func(data);
+    analyse_progress_func(data);
 }
 
 //------------------------------------------------------------------------
@@ -296,21 +269,21 @@ void AudioSource::perform_analysis()
         /*.state*/ AnalyseProgressData::State::PerformAnalyse,
     };
 
-    analyze_progress_func(data);
+    analyse_progress_func(data);
 }
 
 //------------------------------------------------------------------------
 void AudioSource::end_analysis()
 {
-    transform_to_seconds(this->meta_words);
-    trim_meta_words(this->meta_words);
+    transform_to_seconds(meta_words);
+    trim_meta_words(meta_words);
 
     const AnalyseProgressData& data = {
         /*.id*/ get_id(),
         /*.state*/ AnalyseProgressData::State::EndAnalyse,
     };
 
-    analyze_progress_func(data);
+    analyse_progress_func(data);
 
     task_id.reset();
 }
@@ -341,8 +314,8 @@ auto AudioSource::set_meta_words(const MetaWords& meta_words_) -> void
         // analysing::cancel_task(task_id.value());
         task_managing::cancel_task(task_id.value());
 
-    this->meta_words = meta_words_;
-    trim_meta_words(this->meta_words);
+    meta_words = meta_words_;
+    trim_meta_words(meta_words);
 }
 
 //------------------------------------------------------------------------
