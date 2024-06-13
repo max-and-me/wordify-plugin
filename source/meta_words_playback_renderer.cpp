@@ -115,7 +115,7 @@ void PlaybackRenderer::renderPlaybackRegions(
                     for (auto c{0}; c < sourceChannelCount; ++c)
                     {
                         const auto* channel_samples =
-                            audioSource->getRenderSampleCacheForChannel(c);
+                            audioSource->getRenderSampleCache(c);
                         ppOutput[c][posInBuffer] +=
                             channel_samples[posInSource];
                     }
@@ -133,7 +133,7 @@ void PlaybackRenderer::renderPlaybackRegions(
                     //       not distinguish ambisonics
                     float monoSum{0.0f};
                     for (auto c{0}; c < sourceChannelCount; ++c)
-                        monoSum += audioSource->getRenderSampleCacheForChannel(
+                        monoSum += audioSource->getRenderSampleCache(
                             c)[posInSource];
                     if (sourceChannelCount > 1)
                         monoSum /= static_cast<float>(sourceChannelCount);

@@ -36,6 +36,7 @@ struct AnalyseProgressData
 class AudioSource : public ARA::PlugIn::AudioSource
 {
 public:
+    //--------------------------------------------------------------------
     using SampleType = float;
     using MultiChannelBufferType =
         mam::audio_buffer_management::MultiChannelBuffers<SampleType>;
@@ -49,32 +50,23 @@ public:
                 Id id);
     ~AudioSource() override;
 
-    // render thread sample access:
-    // in order to keep this test code as simple as possible, our test audio
-    // source uses brute force and caches all samples in-memory so that
-    // renderers can access it without threading issues the document controller
-    // triggers filling this cache on the main thread, immediately after access
-    // is enabled. actual plug-ins will use a multi-threaded setup to only cache
-    // sections of the audio source on demand - a sophisticated file I/O
-    // threading implementation is needed for file-based processing regardless
-    // of ARA.
-    void updateRenderSampleCache();
-    const float*
-    getRenderSampleCacheForChannel(ARA::ARAChannelCount channel) const;
-    void destroyRenderSampleCache();
-    MultiChannelBufferType& get_audio_buffers() { return audio_buffers; }
-
+    auto updateRenderSampleCache() -> void;
+    auto destroyRenderSampleCache() -> void;
+    auto getRenderSampleCache(ARA::ARAChannelCount channel) const -> const
+        float*;
+    auto get_audio_buffers() -> MultiChannelBufferType&;
     auto get_meta_words() const -> const MetaWords&;
     auto set_meta_words(const MetaWords& meta_words) -> void;
+    auto get_id() const -> const Id { return id; }
+
     FnChanged changed_func;
 
-    const Id get_id() const { return id; }
-
+    //--------------------------------------------------------------------
 protected:
     void begin_analysis();
     void perform_analysis();
     void end_analysis();
-    std::atomic<double> analysis_progress = 0.;
+    //std::atomic<double> analysis_progress = 0.;
 
     MultiChannelBufferType audio_buffers;
     MetaWords meta_words;

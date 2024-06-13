@@ -317,7 +317,7 @@ void AudioSource::end_analysis()
 
 //------------------------------------------------------------------------
 const float*
-AudioSource::getRenderSampleCacheForChannel(ARA::ARAChannelCount channel) const
+AudioSource::getRenderSampleCache(ARA::ARAChannelCount channel) const
 {
     return audio_buffers[channel].data();
 }
@@ -343,6 +343,12 @@ auto AudioSource::set_meta_words(const MetaWords& meta_words_) -> void
 
     this->meta_words = meta_words_;
     trim_meta_words(this->meta_words);
+}
+
+//------------------------------------------------------------------------
+auto AudioSource::get_audio_buffers() -> MultiChannelBufferType&
+{
+    return audio_buffers;
 }
 
 //------------------------------------------------------------------------
