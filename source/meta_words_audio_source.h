@@ -81,9 +81,7 @@ protected:
     FuncAnalyzeProgress analyze_progress_func;
 
     Id id{0};
-
-    using OptTaskId = std::optional<size_t>;
-    OptTaskId task_id;
+    OptionalId task_id;
 };
 
 //------------------------------------------------------------------------
