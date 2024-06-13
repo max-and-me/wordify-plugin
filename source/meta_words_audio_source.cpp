@@ -165,13 +165,11 @@ auto write_audio_to_file(AudioSource& audio_src,
 //------------------------------------------------------------------------
 auto transform_to_seconds(MetaWords& meta_words) -> void
 {
-    std::transform(meta_words.begin(), meta_words.end(), meta_words.begin(),
-                   [](MetaWord word) {
-                       // ms to s
-                       word.begin *= 0.001;
-                       word.duration *= 0.001;
-                       return word;
-                   });
+    for (auto& meta_word : meta_words)
+    {
+        meta_word.begin *= 0.001;
+        meta_word.duration *= 0.001;
+    }
 }
 
 //------------------------------------------------------------------------
