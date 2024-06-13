@@ -219,10 +219,10 @@ auto trim_meta_words(MetaWords& meta_words) -> void
 AudioSource::AudioSource(ARA::PlugIn::Document* document,
                          ARA::ARAAudioSourceHostRef hostRef,
                          FuncAnalyzeProgress&& analyze_progress_func,
-                         Identifier identifier)
+                         Id id)
 : ARA::PlugIn::AudioSource{document, hostRef}
 , analyze_progress_func(analyze_progress_func)
-, identifier(identifier)
+, id(id)
 {
 }
 
@@ -281,7 +281,7 @@ void AudioSource::updateRenderSampleCache()
 void AudioSource::begin_analysis()
 {
     const WordAnalysisProgressData& data = {
-        /*.id*/ this->getIdentifier(),
+        /*.id*/ this->get_id(),
         /*.progress*/ 0.,
         /*.state*/ WordAnalysisProgressData::State::BeginAnalyse,
     };
@@ -296,7 +296,7 @@ void AudioSource::perform_analysis()
     // fn_progress_changed(*this, progress_val);
 
     const WordAnalysisProgressData& data = {
-        /*.id*/ this->getIdentifier(),
+        /*.id*/ this->get_id(),
         /*.progress*/ progress_val,
         /*.state*/ WordAnalysisProgressData::State::PerformAnalyse,
     };
@@ -311,7 +311,7 @@ void AudioSource::end_analysis()
     trim_meta_words(this->meta_words);
 
     const WordAnalysisProgressData& data = {
-        /*.id*/ this->getIdentifier(),
+        /*.id*/ this->get_id(),
         /*.progress*/ 1.,
         /*.state*/ WordAnalysisProgressData::State::EndAnalyse,
     };

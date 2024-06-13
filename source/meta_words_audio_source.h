@@ -38,7 +38,6 @@ class AudioSource : public ARA::PlugIn::AudioSource
 {
 public:
     using SampleType = float;
-    using Identifier = std::size_t;
     using MultiChannelBufferType =
         mam::audio_buffer_management::MultiChannelBuffers<SampleType>;
     using MetaWords = mam::meta_words::MetaWords;
@@ -49,7 +48,7 @@ public:
     AudioSource(ARA::PlugIn::Document* document,
                 ARA::ARAAudioSourceHostRef hostRef,
                 FuncAnalyzeProgress&& analyze_progress_func,
-                Identifier identifier);
+                Id id);
     ~AudioSource() override;
 
     // render thread sample access:
@@ -71,7 +70,7 @@ public:
     auto set_meta_words(const MetaWords& meta_words) -> void;
     FnChanged changed_func;
 
-    const Identifier getIdentifier() const { return identifier; }
+    const Id get_id() const { return id; }
 
 protected:
     void begin_analysis();
@@ -83,7 +82,7 @@ protected:
     MetaWords meta_words;
     FuncAnalyzeProgress analyze_progress_func;
 
-    Id identifier{0};
+    Id id{0};
 
     using OptTaskId = std::optional<size_t>;
     OptTaskId task_id;

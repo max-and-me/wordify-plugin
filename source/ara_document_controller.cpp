@@ -177,7 +177,7 @@ ARA::PlugIn::AudioSource* ARADocumentController::doCreateAudioSource(
     ARA::ARAAudioSourceHostRef hostRef) noexcept
 {
 
-    static AudioSource::Identifier id = 0;
+    static Id id = 0;
 
     auto* new_audio_source = new AudioSource(
         document, hostRef,
@@ -394,8 +394,7 @@ void ARADocumentController::on_analyze_audio_source_progress(
     const meta_words::WordAnalysisProgressData& data)
 {
     // Notify all regions which rely on this audio source
-    if (data.state ==
-        meta_words::WordAnalysisProgressData::State::EndAnalyse)
+    if (data.state == meta_words::WordAnalysisProgressData::State::EndAnalyse)
     {
         const auto func = [&](const PlaybackRegion& region) -> bool {
             auto obj = playback_region_observers.find(region.get_id());
@@ -408,7 +407,7 @@ void ARADocumentController::on_analyze_audio_source_progress(
         const auto& sources = getDocument()->getAudioSources<AudioSource>();
         for (const auto& source : sources)
         {
-            if (source->getIdentifier() == data.audio_source_id)
+            if (source->get_id() == data.audio_source_id)
             {
                 for_each_playback_region_(*source, std::move(func));
                 break;
