@@ -90,51 +90,6 @@ collect_meta_words(const PlaybackRegion& region) -> const MetaWordDataset
 }
 
 //------------------------------------------------------------------------
-static auto
-compute_speed_factor(const PlaybackRegion& region,
-                     ARA::ARASampleRate playback_sample_rate) -> double
-{
-    double speed_factor = 1.;
-    if (const auto* modification = region.getAudioModification())
-    {
-        if (const auto* source = modification->getAudioSource<AudioSource>())
-        {
-            speed_factor = source->getSampleRate() / playback_sample_rate;
-        }
-    }
-
-    return speed_factor;
-}
-
-//------------------------------------------------------------------------
-static auto modify_time_stamps(MetaWordData& word,
-                               double speed_factor) -> MetaWordData&
-{
-    word.word.begin *= speed_factor;
-    word.word.duration *= speed_factor;
-    return word;
-}
-
-//------------------------------------------------------------------------
-// Playback speed can differ from the real speed. Imagine the sample being
-// played back in 44.1Khz but the original sample is in 16kHz. We need to
-// modify the timestamps then.
-//------------------------------------------------------------------------
-//static auto modify_time_stamps(MetaWordDataset& word_dataset,
-//                               const PlaybackRegion& region,
-//                               ARA::ARASampleRate playback_sample_rate)
-//    -> const MetaWordDataset
-//{
-//    const auto speed_factor =
-//        compute_speed_factor(region, playback_sample_rate);
-//
-//    for (auto& word : word_dataset)
-//        word = modify_time_stamps(word, speed_factor);
-//
-//    return word_dataset;
-//}
-
-//------------------------------------------------------------------------
 Id PlaybackRegion::new_id = PlaybackRegion::INVALID_ID;
 PlaybackRegion::PlaybackRegion(
     ARA::PlugIn::AudioModification* audioModification,
