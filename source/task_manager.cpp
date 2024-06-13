@@ -78,8 +78,8 @@ auto do_work(Worker& worker) -> void
     if (worker.future_result.wait_for(std::chrono::seconds(0)) ==
         std::future_status::ready)
     {
-        worker.is_canceled     = false;
-        auto meta_words = worker.future_result.get();
+        worker.is_canceled = false;
+        auto meta_words    = worker.future_result.get();
 
         if (worker.optional_task.has_value())
         {
@@ -171,7 +171,7 @@ auto TaskManager::append_task(const InputData& input_data,
     {
         timer = Steinberg::owned(Steinberg::Timer::create(
             Steinberg::newTimerCallback(
-                [this](Steinberg::Timer* timer) { this->work(); }),
+                [this](Steinberg::Timer* /*timer*/) { this->work(); }),
             1.));
 
         assign_next_tasks();
