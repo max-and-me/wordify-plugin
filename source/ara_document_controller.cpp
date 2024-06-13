@@ -56,15 +56,15 @@ apply_meta_words_serde_dataset(const ARA::PlugIn::RestoreObjectsFilter* filter,
 
 //------------------------------------------------------------------------
 template <typename Func>
-static auto
-for_each_playback_region_(const ARADocumentController::AudioSource& source,
-                          Func&& func) -> void
+static auto for_each_playback_region_(
+    const ARADocumentController::AudioSource& audio_source, Func&& func) -> void
 {
-    const auto& sources = source.getAudioModifications();
-    for (const auto& source : sources)
+    const auto& modifications = audio_source.getAudioModifications();
+    for (const auto& modification : modifications)
     {
         const auto& regions =
-            source->getPlaybackRegions<ARADocumentController::PlaybackRegion>();
+            modification
+                ->getPlaybackRegions<ARADocumentController::PlaybackRegion>();
         for (const auto& region : regions)
         {
             if (!func(*region))
