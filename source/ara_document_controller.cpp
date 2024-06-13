@@ -36,9 +36,9 @@ static auto collect_meta_words_serde_dataset(
 }
 
 //------------------------------------------------------------------------
-static auto
-apply_meta_words_serde_dataset(const ARA::PlugIn::RestoreObjectsFilter* filter,
-                               meta_words::serde::Archive& archive) -> void
+static auto apply_meta_words_serde_dataset(
+    const ARA::PlugIn::RestoreObjectsFilter* filter,
+    const meta_words::serde::Archive& archive) -> void
 {
     using AudioSource = ARADocumentController::AudioSource;
 
