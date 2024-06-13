@@ -395,7 +395,7 @@ void ARADocumentController::on_analyze_audio_source_progress(
 {
     // Notify all regions which rely on this audio source
     if (data.state ==
-        meta_words::WordAnalysisProgressData::State::kAnalysisStopped)
+        meta_words::WordAnalysisProgressData::State::EndAnalyse)
     {
         const auto func = [&](const PlaybackRegion& region) -> bool {
             auto obj = playback_region_observers.find(region.get_id());

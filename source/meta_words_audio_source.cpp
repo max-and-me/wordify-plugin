@@ -271,7 +271,7 @@ void AudioSource::begin_analysis()
     const WordAnalysisProgressData& data = {
         /*.id*/ this->getIdentifier(),
         /*.progress*/ 0.,
-        /*.state*/ WordAnalysisProgressData::State::kAnalysisStarted,
+        /*.state*/ WordAnalysisProgressData::State::BeginAnalyse,
     };
 
     analyze_progress_func(data);
@@ -286,7 +286,7 @@ void AudioSource::perform_analysis()
     const WordAnalysisProgressData& data = {
         /*.id*/ this->getIdentifier(),
         /*.progress*/ progress_val,
-        /*.state*/ WordAnalysisProgressData::State::kAnalysisRunning,
+        /*.state*/ WordAnalysisProgressData::State::PerformAnalyse,
     };
 
     analyze_progress_func(data);
@@ -301,7 +301,7 @@ void AudioSource::end_analysis()
     const WordAnalysisProgressData& data = {
         /*.id*/ this->getIdentifier(),
         /*.progress*/ 1.,
-        /*.state*/ WordAnalysisProgressData::State::kAnalysisStopped,
+        /*.state*/ WordAnalysisProgressData::State::EndAnalyse,
     };
 
     analyze_progress_func(data);

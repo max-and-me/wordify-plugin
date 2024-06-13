@@ -21,9 +21,9 @@ struct WordAnalysisProgressData
 {
     enum class State
     {
-        kAnalysisStarted,
-        kAnalysisRunning,
-        kAnalysisStopped,
+        BeginAnalyse,
+        PerformAnalyse,
+        EndAnalyse,
     };
 
     size_t audio_source_id = 0;
