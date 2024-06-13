@@ -32,9 +32,9 @@ bool sort(RegionOrderManager::FuncStartInPlaybackTime& start_in_playback_time,
 // RegionOrderManager
 //------------------------------------------------------------------------
 auto RegionOrderManager::initialize(
-    FuncStartInPlaybackTime&& start_in_playback_time_func) -> bool
+    FuncStartInPlaybackTime&& start_in_playback_time_func_) -> bool
 {
-    this->start_in_playback_time_func = start_in_playback_time_func;
+    this->start_in_playback_time_func = start_in_playback_time_func_;
     return true;
 }
 
