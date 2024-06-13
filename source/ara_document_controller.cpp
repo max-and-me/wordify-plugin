@@ -391,10 +391,10 @@ void ARADocumentController::on_remove_playback_region(Id id)
 
 //------------------------------------------------------------------------
 void ARADocumentController::on_analyze_audio_source_progress(
-    const meta_words::WordAnalysisProgressData& data)
+    const meta_words::AnalyseProgressData& data)
 {
     // Notify all regions which rely on this audio source
-    if (data.state == meta_words::WordAnalysisProgressData::State::EndAnalyse)
+    if (data.state == meta_words::AnalyseProgressData::State::EndAnalyse)
     {
         const auto func = [&](const PlaybackRegion& region) -> bool {
             auto obj = playback_region_observers.find(region.get_id());

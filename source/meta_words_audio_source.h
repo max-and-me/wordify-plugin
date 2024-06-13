@@ -15,9 +15,9 @@
 namespace mam::meta_words {
 
 //------------------------------------------------------------------------
-//  WordAnalysisProgressData
+//  AnalyseProgressData
 //------------------------------------------------------------------------
-struct WordAnalysisProgressData
+struct AnalyseProgressData
 {
     enum class State
     {
@@ -26,9 +26,8 @@ struct WordAnalysisProgressData
         EndAnalyse,
     };
 
-    size_t audio_source_id = 0;
-    double progress_val    = 0.;
-    State state;
+    Id audio_source_id{0};
+    State state{State::BeginAnalyse};
 };
 
 //------------------------------------------------------------------------
@@ -40,10 +39,9 @@ public:
     using SampleType = float;
     using MultiChannelBufferType =
         mam::audio_buffer_management::MultiChannelBuffers<SampleType>;
-    using MetaWords = mam::meta_words::MetaWords;
-    using FnChanged = std::function<void(AudioSource*)>;
-    using FuncAnalyzeProgress =
-        std::function<void(const WordAnalysisProgressData&)>;
+    using MetaWords           = mam::meta_words::MetaWords;
+    using FnChanged           = std::function<void(AudioSource*)>;
+    using FuncAnalyzeProgress = std::function<void(const AnalyseProgressData&)>;
 
     AudioSource(ARA::PlugIn::Document* document,
                 ARA::ARAAudioSourceHostRef hostRef,

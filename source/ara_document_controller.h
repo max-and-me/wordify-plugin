@@ -219,7 +219,7 @@ private:
     void on_add_playback_region(PlaybackRegion* region);
     void on_remove_playback_region(Id id);
     void on_analyze_audio_source_progress(
-        const meta_words::WordAnalysisProgressData& data);
+        const meta_words::AnalyseProgressData& data);
 
     template <typename Func>
     void for_each_playback_region(Func&& func)
