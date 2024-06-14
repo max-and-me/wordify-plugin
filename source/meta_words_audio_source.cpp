@@ -1,11 +1,9 @@
-//------------------------------------------------------------------------
 // Copyright(c) 2024 Max And Me.
-//------------------------------------------------------------------------
+
 #include "meta_words_audio_source.h"
 #include "little_helpers.h"
 #include "mam/meta_words/runner.h"
-#include "samplerate.h"
-#include "sndfile.h"
+#include "supress_warnings.h"
 #include "task_manager.h"
 #include "wordify_defines.h"
 #include <cmath>
@@ -13,6 +11,10 @@
 #include <functional>
 #include <iostream>
 #include <thread>
+BEGIN_SUPRESS_WARNINGS
+#include "samplerate.h"
+#include "sndfile.h"
+END_SUPRESS_WARNINGS
 
 namespace mam::meta_words {
 namespace {

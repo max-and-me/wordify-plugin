@@ -1,11 +1,11 @@
-//------------------------------------------------------------------------
 // Copyright(c) 2024 Max And Me.
-//------------------------------------------------------------------------
 
 #include "meta_words_playback_region.h"
-#include "ARA_Library/PlugIn/ARAPlug.h"
 #include "meta_words_audio_source.h"
 #include <array>
+BEGIN_SUPRESS_WARNINGS
+#include "ARA_Library/PlugIn/ARAPlug.h"
+END_SUPRESS_WARNINGS
 
 namespace mam::meta_words {
 
@@ -102,7 +102,7 @@ PlaybackRegion::PlaybackRegion(
 //------------------------------------------------------------------------
 auto PlaybackRegion::get_effective_color() const -> Color
 {
-    Color color = std::make_tuple(0, 0, 0);
+    Color color = std::make_tuple(0.f, 0.f, 0.f);
     if (const auto& tmp_color = getEffectiveColor())
     {
         color = std::make_tuple(tmp_color->r, tmp_color->g, tmp_color->b);

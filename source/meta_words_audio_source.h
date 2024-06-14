@@ -1,16 +1,17 @@
-//------------------------------------------------------------------------
 // Copyright(c) 2024 Max And Me.
-//------------------------------------------------------------------------
 
 #pragma once
 
-#include "ARA_Library/PlugIn/ARAPlug.h"
 #include "audio_buffer_management.h"
-#include "base/source/timer.h"
 #include "mam/meta_words/meta_word.h"
+#include "supress_warnings.h"
 #include "wordify_types.h"
 #include <future>
 #include <optional>
+BEGIN_SUPRESS_WARNINGS
+#include "ARA_Library/PlugIn/ARAPlug.h"
+#include "base/source/timer.h"
+END_SUPRESS_WARNINGS
 
 namespace mam::meta_words {
 
