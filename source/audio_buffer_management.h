@@ -48,7 +48,7 @@ auto to_channel_data(MultiChannelBuffers<T>& multi_channel_bufs,
 {
     MultiChannelData channel_data;
     channel_data.reserve(multi_channel_bufs.size());
-    for (auto ch = 0; ch < multi_channel_bufs.size(); ++ch)
+    for (size_t ch = 0; ch < multi_channel_bufs.size(); ++ch)
         channel_data.push_back(
             static_cast<void*>(multi_channel_bufs[ch].data() + sample_start));
 
@@ -67,8 +67,8 @@ auto to_interleaved(const MultiChannelBuffers<T>& multi_channel_bufs)
     const auto num_channels = multi_channel_bufs.size();
     const auto num_samples  = multi_channel_bufs[0].size();
 
-    for (auto sample = 0; sample < num_samples; sample++)
-        for (auto channel = 0; channel < num_channels; channel++)
+    for (size_t sample = 0; sample < num_samples; sample++)
+        for (size_t channel = 0; channel < num_channels; channel++)
             interleaved_buf.push_back(multi_channel_bufs[channel][sample]);
 
     return interleaved_buf;
