@@ -57,7 +57,7 @@ public:
     auto get_audio_buffers() -> MultiChannelBufferType&;
     auto get_meta_words() const -> const MetaWords&;
     auto set_meta_words(const MetaWords& meta_words) -> void;
-    auto get_id() const -> const Id { return id; }
+    auto get_id() const -> Id { return id; }
 
     //--------------------------------------------------------------------
 protected:

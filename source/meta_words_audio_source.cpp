@@ -67,8 +67,8 @@ private:
 //------------------------------------------------------------------------
 auto read_audio_from_host(AudioSource& audio_src) -> void
 {
-    auto block_reader =
-        AudioBlockReader(audio_src.getSampleCount()).set_size(4096);
+    const auto sample_count = static_cast<size_t>(audio_src.getSampleCount());
+    auto block_reader       = AudioBlockReader(sample_count).set_size(4096);
 
     while (true)
     {
@@ -78,8 +78,8 @@ auto read_audio_from_host(AudioSource& audio_src) -> void
 
             ARA::PlugIn::HostAudioReader audioReader{&audio_src};
             audioReader.readAudioSamples(
-                pos, static_cast<ARA::ARASampleCount>(count),
-                data_pointers.data());
+                static_cast<ARA::ARASamplePosition>(pos),
+                static_cast<ARA::ARASampleCount>(count), data_pointers.data());
         });
 
         if (num_read == 0)
@@ -106,13 +106,13 @@ auto resample_to_16kHz(
     audio_buffer_management::AudioBuffer<AudioSource::SampleType> resampled_buf;
     resampled_buf.resize(new_size);
 
-    SRC_DATA data{0};
-    data.data_in  = buf.data();
-    data.data_out = resampled_buf.data();
-    data.input_frames =
-        static_cast<long>(buf.size() / audio_src.getChannelCount());
+    const auto channel_count = static_cast<size_t>(audio_src.getChannelCount());
+    SRC_DATA data{};
+    data.data_in      = buf.data();
+    data.data_out     = resampled_buf.data();
+    data.input_frames = static_cast<long>(buf.size() / channel_count);
     data.output_frames =
-        static_cast<long>(resampled_buf.size() / audio_src.getChannelCount());
+        static_cast<long>(resampled_buf.size() / channel_count);
     data.src_ratio = ratio;
 
     const auto error =
@@ -142,7 +142,9 @@ auto write_audio_to_file(AudioSource& audio_src,
         /* int			samplerate = */
         static_cast<int>(WHISPER_CPP_SAMPLE_RATE),
         /* int			channels = */ audio_src.getChannelCount(),
-        /* int			format = */ (SF_FORMAT_WAV | SF_FORMAT_PCM_16)};
+        /* int			format = */ (SF_FORMAT_WAV | SF_FORMAT_PCM_16),
+        /* int          sections = */ 0,
+        /* int          seekable = */ 0};
 
     SNDFILE* file = sf_open(file_path.data(), SFM_RDWR, &sfinfo);
     if (!file)
@@ -152,7 +154,8 @@ auto write_audio_to_file(AudioSource& audio_src,
     };
 
     const auto write_count =
-        sf_write_float(file, interleaved_buf.data(), interleaved_buf.size());
+        sf_write_float(file, interleaved_buf.data(),
+                       static_cast<sf_count_t>(interleaved_buf.size()));
     if (static_cast<size_t>(write_count) != interleaved_buf.size())
     {
         puts(sf_strerror(file));
@@ -170,20 +173,6 @@ auto transform_to_seconds(MetaWords& meta_words) -> void
         meta_word.begin *= 0.001;
         meta_word.duration *= 0.001;
     }
-}
-
-//------------------------------------------------------------------------
-auto trim_first_meta_word(MetaWords& meta_words) -> MetaWords
-{
-    // Check the first entry, which can be empty. If so, remove it.
-    auto iter = meta_words.begin();
-    if (iter != meta_words.end())
-    {
-        if (iter->word.empty())
-            iter = meta_words.erase(iter);
-    }
-
-    return meta_words;
 }
 
 //------------------------------------------------------------------------
@@ -232,9 +221,11 @@ void AudioSource::updateRenderSampleCache()
         return;
 
     // Read audio buffers from host
+    const auto channel_count = static_cast<size_t>(getChannelCount());
+    const auto sample_count  = static_cast<size_t>(getChannelCount());
     audio_buffers =
         audio_buffer_management::create_multi_channel_buffers<SampleType>(
-            getChannelCount(), getSampleCount());
+            channel_count, sample_count);
 
     read_audio_from_host(*this);
 
@@ -298,7 +289,7 @@ void AudioSource::end_analysis()
 const float*
 AudioSource::getRenderSampleCache(ARA::ARAChannelCount channel) const
 {
-    return audio_buffers[channel].data();
+    return static_cast<const float*>(audio_buffers[channel].data());
 }
 
 //------------------------------------------------------------------------
