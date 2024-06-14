@@ -1,13 +1,12 @@
-//------------------------------------------------------------------------
 // Copyright(c) 2024 Max And Me.
-//------------------------------------------------------------------------
 
 #include "waveform_controller.h"
+#include <optional>
+BEGIN_SUPRESS_WARNINGS
 #include "vstgui/lib/cgradientview.h"
 #include "vstgui/uidescription/uiattributes.h"
-#include <optional>
+END_SUPRESS_WARNINGS
 
-//------------------------------------------------------------------------
 namespace mam {
 using namespace ::VSTGUI;
 
@@ -22,7 +21,7 @@ read_view_size(const VSTGUI::UIAttributes& attributes) -> VSTGUI::CPoint
 
 //------------------------------------------------------------------------
 static auto update_background_view(CGradientView* view,
-                                   const WaveFormController::Data& data) -> void
+                                   const WaveFormController::Data& /*data*/) -> void
 {
     if (!view)
         return;
@@ -84,7 +83,7 @@ void WaveFormController::on_selected_region_word(
 
 //------------------------------------------------------------------------
 CView* WaveFormController::createView(const VSTGUI::UIAttributes& attributes,
-                                      const VSTGUI::IUIDescription* description)
+                                      const VSTGUI::IUIDescription* /*description*/)
 {
     if (const auto* view_name =
             attributes.getAttributeValue("custom-view-name"))
@@ -103,7 +102,7 @@ CView* WaveFormController::createView(const VSTGUI::UIAttributes& attributes,
 VSTGUI::CView*
 WaveFormController::verifyView(VSTGUI::CView* view,
                                const VSTGUI::UIAttributes& attributes,
-                               const VSTGUI::IUIDescription* description)
+                               const VSTGUI::IUIDescription* /*description*/)
 {
     if (const auto* view_name =
             attributes.getAttributeValue("custom-view-name"))

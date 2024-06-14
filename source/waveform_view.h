@@ -1,12 +1,13 @@
-//------------------------------------------------------------------------
 // Copyright(c) 2024 Max And Me.
-//------------------------------------------------------------------------
 
 #pragma once
 
 #include "nonstd.h"
+#include "supress_warnings.h"
+BEGIN_SUPRESS_WARNINGS
 #include "vstgui/lib/ccolor.h"
 #include "vstgui/lib/cview.h"
+END_SUPRESS_WARNINGS
 
 namespace mam {
 

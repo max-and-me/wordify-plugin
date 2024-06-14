@@ -1,13 +1,13 @@
-//------------------------------------------------------------------------
 // Copyright(c) 2024 Max And Me.
-//------------------------------------------------------------------------
 
 #include "waveform_view.h"
 #include "little_helpers.h"
 #include "mam/wave-draw/wave-draw.h"
+#include <optional>
+BEGIN_SUPRESS_WARNINGS
 #include "vstgui/lib/cdrawcontext.h"
 #include "vstgui/lib/cgraphicspath.h"
-#include <optional>
+END_SUPRESS_WARNINGS
 
 using namespace VSTGUI;
 

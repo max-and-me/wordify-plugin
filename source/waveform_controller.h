@@ -1,16 +1,17 @@
-//------------------------------------------------------------------------
 // Copyright(c) 2024 Max And Me.
-//------------------------------------------------------------------------
 
 #pragma once
 
 #include "ara_document_controller.h"
+#include "nonstd.h"
+#include "supress_warnings.h"
+#include "waveform_view.h"
+BEGIN_SUPRESS_WARNINGS
 #include "base/source/fobject.h"
 #include "eventpp/callbacklist.h"
-#include "nonstd.h"
 #include "vstgui/lib/iviewlistener.h"
 #include "vstgui/uidescription/icontroller.h"
-#include "waveform_view.h"
+END_SUPRESS_WARNINGS
 
 namespace VSTGUI {
 class CListControl;
