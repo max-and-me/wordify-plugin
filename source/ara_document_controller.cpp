@@ -45,7 +45,7 @@ static auto apply_meta_words_serde_dataset(
     for (const auto& el : archive.audio_sources)
     {
         auto audio_sources = filter->getAudioSourceToRestoreStateWithID(
-            (ARA::ARAPersistentID)el.persistent_id.data());
+            static_cast<ARA::ARAPersistentID>(el.persistent_id.data()));
 
         if (auto as = dynamic_cast<AudioSource*>(audio_sources))
         {

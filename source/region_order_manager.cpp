@@ -10,8 +10,6 @@ namespace mam {
 bool sort(RegionOrderManager::FuncStartInPlaybackTime& start_in_playback_time,
           RegionOrderManager::OrderedIds& ids)
 {
-    using Id = Id;
-
     auto sorter = [&](const Id id0, const Id id1) {
         const auto time0 = start_in_playback_time(id0);
         const auto time1 = start_in_playback_time(id1);

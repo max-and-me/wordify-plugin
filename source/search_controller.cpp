@@ -83,7 +83,7 @@ SearchController::~SearchController()
 
 //------------------------------------------------------------------------
 void PLUGIN_API SearchController::update(FUnknown* changedUnknown,
-                                         Steinberg::int32 message)
+                                         Steinberg::int32 /*message*/)
 {
     if (auto* param = FCast<Vst::Parameter>(changedUnknown))
     {
@@ -99,8 +99,8 @@ void PLUGIN_API SearchController::update(FUnknown* changedUnknown,
 }
 
 //------------------------------------------------------------------------
-CView* SearchController::createView(const UIAttributes& attributes,
-                                    const IUIDescription* description)
+CView* SearchController::createView(const UIAttributes& /*attributes*/,
+                                    const IUIDescription* /*description*/)
 {
     return nullptr;
 }
@@ -108,7 +108,7 @@ CView* SearchController::createView(const UIAttributes& attributes,
 //------------------------------------------------------------------------
 CView* SearchController::verifyView(CView* view,
                                     const UIAttributes& attributes,
-                                    const IUIDescription* description)
+                                    const IUIDescription* /*description*/)
 {
     if (const auto* view_name = attributes.getAttributeValue("uidesc-label"))
     {
@@ -130,8 +130,8 @@ CView* SearchController::verifyView(CView* view,
 
 //------------------------------------------------------------------------
 IController*
-SearchController::createSubController(UTF8StringPtr name,
-                                      const IUIDescription* description)
+SearchController::createSubController(UTF8StringPtr /*name*/,
+                                      const IUIDescription* /*description*/)
 {
     return nullptr;
 }
