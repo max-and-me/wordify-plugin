@@ -3,16 +3,18 @@
 //------------------------------------------------------------------------
 
 #include "spinner_controller.h"
+#include "spinner_view.h"
+#include <cassert>
+#include <limits>
+BEGIN_SUPRESS_WARNINGS
 #include "public.sdk/source/vst/utility/stringconvert.h"
 #include "public.sdk/source/vst/vstparameters.h"
-#include "spinner_view.h"
 #include "view_animations.h"
 #include "vstgui/lib/animation/timingfunctions.h"
 #include "vstgui/lib/controls/ctextlabel.h"
 #include "vstgui/uidescription/iuidescription.h"
 #include "vstgui/uidescription/uiattributes.h"
-#include <cassert>
-#include <limits>
+END_SUPRESS_WARNINGS
 
 using namespace VSTGUI;
 

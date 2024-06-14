@@ -5,10 +5,13 @@
 #pragma once
 
 #include "ara_document_controller.h"
+#include "supress_warnings.h"
+#include <string>
+BEGIN_SUPRESS_WARNINGS
 #include "base/source/fobject.h"
 #include "vstgui/lib/iviewlistener.h"
 #include "vstgui/uidescription/icontroller.h"
-#include <string>
+END_SUPRESS_WARNINGS
 
 namespace VSTGUI {
 class CViewContainer;
