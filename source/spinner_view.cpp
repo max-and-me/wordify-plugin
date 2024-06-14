@@ -1,10 +1,10 @@
-//------------------------------------------------------------------------
 // Copyright(c) 2024 Max And Me.
-//------------------------------------------------------------------------
 
 #include "spinner_view.h"
-#include "vstgui/lib/cdrawcontext.h"
 #include <chrono>
+BEGIN_SUPRESS_WARNINGS
+#include "vstgui/lib/cdrawcontext.h"
+END_SUPRESS_WARNINGS
 
 using namespace VSTGUI;
 
@@ -116,7 +116,8 @@ void SpinAnimation::animationTick(CView* view, IdStringPtr name, float pos)
 
     if (UTF8String(name) == ANIMATION_ID)
     {
-        const auto current_degree = (end_value - start_value) * static_cast<double>(pos);
+        const auto current_degree =
+            (end_value - start_value) * static_cast<double>(pos);
         spinner_view->set_dregree(current_degree);
     }
 }

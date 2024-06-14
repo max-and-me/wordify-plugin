@@ -1,11 +1,12 @@
-//------------------------------------------------------------------------
 // Copyright(c) 2024 Max And Me.
-//------------------------------------------------------------------------
 
 #pragma once
 
+#include "supress_warnings.h"
+BEGIN_SUPRESS_WARNINGS
 #include "vstgui/lib/animation/ianimationtarget.h"
 #include "vstgui/lib/cview.h"
+END_SUPRESS_WARNINGS
 
 namespace mam {
 
