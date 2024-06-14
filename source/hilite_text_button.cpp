@@ -1,9 +1,10 @@
-//------------------------------------------------------------------------
 // Copyright(c) 2024 Max And Me.
-//------------------------------------------------------------------------
+
 #include "hilite_text_button.h"
+BEGIN_SUPRESS_WARNINGS
 #include "vstgui/lib/cdrawcontext.h"
 #include "vstgui/uidescription/uidescription.h"
+END_SUPRESS_WARNINGS
 
 using namespace VSTGUI;
 

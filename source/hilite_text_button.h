@@ -1,9 +1,11 @@
-//------------------------------------------------------------------------
 // Copyright(c) 2024 Max And Me.
-//------------------------------------------------------------------------
-#include "vstgui/lib/controls/cbuttons.h"
 
 #pragma once
+
+#include "supress_warnings.h"
+BEGIN_SUPRESS_WARNINGS
+#include "vstgui/lib/controls/cbuttons.h"
+END_SUPRESS_WARNINGS
 
 namespace VSTGUI {
 class IUIDescription;
