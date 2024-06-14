@@ -1,15 +1,16 @@
-//------------------------------------------------------------------------
 // Copyright(c) 2024 Max And Me.
-//------------------------------------------------------------------------
 
 #pragma once
 
+#include "meta_words_data.h"
+#include "supress_warnings.h"
+BEGIN_SUPRESS_WARNINGS
 #include "base/source/fobject.h"
 #include "eventpp/callbacklist.h"
-#include "meta_words_data.h"
 #include "vstgui/lib/iviewlistener.h"
 #include "vstgui/uidescription/icontroller.h"
 #include "vstgui/uidescription/uiattributes.h"
+END_SUPRESS_WARNINGS
 
 namespace VSTGUI {
 class IUIDescription;

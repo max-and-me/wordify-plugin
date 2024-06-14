@@ -1,13 +1,13 @@
-//------------------------------------------------------------------------
 // Copyright(c) 2024 Max And Me.
-//------------------------------------------------------------------------
 
 #include "meta_words_clip_controller.h"
-
 #include "hilite_text_button.h"
 #include "hstack_layout.h"
 #include "little_helpers.h"
 #include "meta_words_data.h"
+#include <cmath>
+#include <optional>
+BEGIN_SUPRESS_WARNINGS
 #include "vstgui/lib/animation/ianimationtarget.h"
 #include "vstgui/lib/animation/timingfunctions.h"
 #include "vstgui/lib/ccolor.h"
@@ -22,8 +22,7 @@
 #include "vstgui/uidescription/detail/uiviewcreatorattributes.h"
 #include "vstgui/uidescription/iviewfactory.h"
 #include "vstgui/uidescription/uiattributes.h"
-#include <cmath>
-#include <optional>
+END_SUPRESS_WARNINGS
 
 using namespace VSTGUI;
 
@@ -102,7 +101,7 @@ static auto find_view_with_tag(CViewContainer* container, size_t tag) -> CView*
         auto* view = container->getView(i);
         if (auto control = dynamic_cast<CControl*>(view))
         {
-            if (control->getTag() == uint32_t(tag))
+            if (control->getTag() == static_cast<int32_t>(tag))
                 return control;
         }
     }
@@ -221,7 +220,7 @@ class LoadingIndicatorAnimationHandler : public ViewListenerAdapter
         using Rects = std::vector<CRect>;
         Rects rects;
 
-        void animationStart(CView* view, IdStringPtr name) override
+        void animationStart(CView* view, IdStringPtr /*name*/) override
         {
             if (const auto* container = view->asViewContainer())
             {
@@ -231,7 +230,8 @@ class LoadingIndicatorAnimationHandler : public ViewListenerAdapter
             }
         }
 
-        void animationTick(CView* view, IdStringPtr name, float pos) override
+        void
+        animationTick(CView* view, IdStringPtr /*name*/, float pos) override
         {
             if (!view)
                 return;
@@ -249,7 +249,9 @@ class LoadingIndicatorAnimationHandler : public ViewListenerAdapter
                     const auto val_positive = std::max(0., value);
 
                     // Only fade dots out half
-                    child->setAlphaValue(0.5 + val_positive * 0.5);
+                    const auto alpha_val =
+                        static_cast<float>(0.5 + val_positive * 0.5);
+                    child->setAlphaValue(alpha_val);
 
                     // Move them up by delta in pixel
                     constexpr auto DELTA_PX = .5;
@@ -266,16 +268,16 @@ class LoadingIndicatorAnimationHandler : public ViewListenerAdapter
             }
         }
 
-        void animationFinished(CView* view,
-                               IdStringPtr name,
-                               bool wasCanceled) override
+        void animationFinished(CView* /*view*/,
+                               IdStringPtr /*name*/,
+                               bool /*wasCanceled*/) override
         {
         }
     };
 
     void viewAttached(CView* view) override
     {
-        constexpr auto PERIOD_DURATION = 1200.;
+        constexpr auto PERIOD_DURATION = 1200;
         constexpr auto REPEAT_FOREVER  = std::numeric_limits<int32_t>().max();
 
         auto* timing_function =
@@ -421,7 +423,7 @@ struct FitContentHandler : public ViewListenerAdapter
             fit_content(view->getParentView());
     }
 
-    void viewSizeChanged(CView* view, const CRect& oldSize) override
+    void viewSizeChanged(CView* view, const CRect& /*oldSize*/) override
     {
         if (view)
             fit_content(view->getParentView());
@@ -487,8 +489,7 @@ bool MetaWordsClipController::initialize(Subject* _subject)
 
     this->subject = _subject;
 
-    observer_handle =
-        subject->append([&]() { this->on_select_word(); });
+    observer_handle = subject->append([&]() { this->on_select_word(); });
 
     auto view = description->createView("TextWordTemplate", this);
     if (view)
@@ -622,7 +623,7 @@ void MetaWordsClipController::viewAttached(CView* view)
 }
 
 //------------------------------------------------------------------------
-void MetaWordsClipController::viewRemoved(CView* view) {}
+void MetaWordsClipController::viewRemoved(CView* /*view*/) {}
 
 //------------------------------------------------------------------------
 void MetaWordsClipController::viewWillDelete(CView* view)
