@@ -316,7 +316,6 @@ auto AudioSource::get_meta_words() const -> const MetaWords&
 auto AudioSource::set_meta_words(const MetaWords& meta_words_) -> void
 {
     if (task_id.has_value())
-        // analysing::cancel_task(task_id.value());
         task_managing::cancel_task(task_id.value());
 
     meta_words = meta_words_;
