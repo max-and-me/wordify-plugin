@@ -2,12 +2,15 @@
 
 #pragma once
 
+#include "search_engine.h"
+#include "supress_warnings.h"
+#include "wordify_types.h"
+BEGIN_SUPRESS_WARNINGS
 #include "ara_document_controller.h"
 #include "base/source/fobject.h"
-#include "search_engine.h"
 #include "vstgui/lib/iviewlistener.h"
 #include "vstgui/uidescription/icontroller.h"
-#include "wordify_types.h"
+END_SUPRESS_WARNINGS
 
 namespace VSTGUI {
 class CRowColumnView;

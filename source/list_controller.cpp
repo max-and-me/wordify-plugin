@@ -6,12 +6,14 @@
 #include "hilite_text_button.h"
 #include "meta_words_clip_controller.h"
 #include "search_engine.h"
+#include <string>
+BEGIN_SUPRESS_WARNINGS
 #include "vstgui/lib/cframe.h"
 #include "vstgui/lib/controls/cbuttons.h"
 #include "vstgui/lib/crowcolumnview.h"
 #include "vstgui/lib/cscrollview.h"
 #include "vstgui/uidescription/iuidescription.h"
-#include <string>
+END_SUPRESS_WARNINGS
 
 using namespace VSTGUI;
 
