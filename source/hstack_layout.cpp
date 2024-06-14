@@ -1,8 +1,10 @@
 // Copyright(c) 2024 Max And Me.
 
 #include "hstack_layout.h"
-#include "vstgui/lib/controls/ccontrol.h"
 #include <vector>
+BEGIN_SUPRESS_WARNINGS
+#include "vstgui/lib/controls/ccontrol.h"
+END_SUPRESS_WARNINGS
 
 namespace mam {
 
@@ -133,7 +135,8 @@ void HStackLayout::viewWillDelete(View* view)
 }
 
 //------------------------------------------------------------------------
-void HStackLayout::viewContainerViewAdded(ViewContainer* container, View* view)
+void HStackLayout::viewContainerViewAdded(ViewContainer* container,
+                                          View* /*view*/)
 {
     if (observed_container == container)
         do_layout(observed_container, spacing, padding);
@@ -141,14 +144,14 @@ void HStackLayout::viewContainerViewAdded(ViewContainer* container, View* view)
 
 //------------------------------------------------------------------------
 void HStackLayout::viewContainerViewRemoved(ViewContainer* container,
-                                            View* view)
+                                            View* /*view*/)
 {
     if (observed_container == container)
         do_layout(observed_container, spacing, padding);
 }
 
 //------------------------------------------------------------------------
-void HStackLayout::viewSizeChanged(View* view, const Rect& oldSize)
+void HStackLayout::viewSizeChanged(View* /*view*/, const Rect& /*oldSize*/)
 {
     do_layout(observed_container, spacing, padding);
 }
