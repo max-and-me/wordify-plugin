@@ -116,7 +116,7 @@ void SpinAnimation::animationTick(CView* view, IdStringPtr name, float pos)
 
     if (UTF8String(name) == ANIMATION_ID)
     {
-        const auto current_degree = (end_value - start_value) * pos;
+        const auto current_degree = (end_value - start_value) * static_cast<double>(pos);
         spinner_view->set_dregree(current_degree);
     }
 }
@@ -124,7 +124,7 @@ void SpinAnimation::animationTick(CView* view, IdStringPtr name, float pos)
 //------------------------------------------------------------------------
 void SpinAnimation::animationFinished(CView* view,
                                       IdStringPtr name,
-                                      bool wasCanceled)
+                                      bool /*wasCanceled*/)
 {
     SpinnerView* spinner_view = dynamic_cast<SpinnerView*>(view);
     if (!spinner_view)
