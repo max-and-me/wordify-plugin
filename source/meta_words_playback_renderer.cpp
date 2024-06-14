@@ -1,12 +1,12 @@
-//------------------------------------------------------------------------
 // Copyright(c) 2024 Max And Me.
-//------------------------------------------------------------------------
 
 #include "meta_words_playback_renderer.h"
-#include "ARA_Library/Utilities/ARASamplePositionConversion.h"
 #include "ara_document_controller.h"
 #include "meta_words_audio_source.h"
 #include <algorithm>
+BEGIN_SUPRESS_WARNINGS
+#include "ARA_Library/Utilities/ARASamplePositionConversion.h"
+END_SUPRESS_WARNINGS
 
 namespace mam::meta_words {
 
@@ -133,8 +133,8 @@ void PlaybackRenderer::renderPlaybackRegions(
                     //       not distinguish ambisonics
                     float monoSum{0.0f};
                     for (auto c{0}; c < sourceChannelCount; ++c)
-                        monoSum += audioSource->getRenderSampleCache(
-                            c)[posInSource];
+                        monoSum +=
+                            audioSource->getRenderSampleCache(c)[posInSource];
                     if (sourceChannelCount > 1)
                         monoSum /= static_cast<float>(sourceChannelCount);
                     for (auto c{0}; c < _channelCount; ++c)
