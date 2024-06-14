@@ -230,7 +230,7 @@ void AudioSource::updateRenderSampleCache()
 
     // Read audio buffers from host
     const auto channel_count = static_cast<size_t>(getChannelCount());
-    const auto sample_count  = static_cast<size_t>(getChannelCount());
+    const auto sample_count  = static_cast<size_t>(getSampleCount());
     audio_buffers =
         audio_buffer_management::create_multi_channel_buffers<SampleType>(
             channel_count, sample_count);
