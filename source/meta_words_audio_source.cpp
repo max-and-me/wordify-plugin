@@ -6,6 +6,7 @@
 #include "supress_warnings.h"
 #include "task_manager.h"
 #include "wordify_defines.h"
+#include <cctype>
 #include <cmath>
 #include <filesystem>
 #include <functional>
@@ -183,7 +184,12 @@ auto trim_meta_words(MetaWords& meta_words) -> void
     for (auto& word : meta_words)
     {
         auto& str = word.word;
-        str.erase(std::remove_if(str.begin(), str.end(), ::isspace), str.end());
+        str.erase(std::remove_if(str.begin(), str.end(),
+                                 [](char c) {
+                                     return std::isspace(
+                                         static_cast<unsigned char>(c));
+                                 }),
+                  str.end());
     }
 }
 
