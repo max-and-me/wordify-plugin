@@ -2,9 +2,12 @@
 
 #pragma once
 
+#include "supress_warnings.h"
+BEGIN_SUPRESS_WARNINGS
 #include "base/source/fobject.h"
 #include "vstgui/lib/iviewlistener.h"
 #include "vstgui/uidescription/icontroller.h"
+END_SUPRESS_WARNINGS
 
 namespace VSTGUI {
 class COptionMenu;

@@ -2,11 +2,13 @@
 
 #include "preferences_controller.h"
 #include "ara_document_controller.h"
-#include "public.sdk/source/vst/vstparameters.h"
 #include "version.h"
+#include <string>
+BEGIN_SUPRESS_WARNINGS
+#include "public.sdk/source/vst/vstparameters.h"
 #include "vstgui/lib/controls/coptionmenu.h"
 #include "vstgui/uidescription/uiattributes.h"
-#include <string>
+END_SUPRESS_WARNINGS
 
 #ifdef WIN32
 #include <windows.h>
@@ -60,14 +62,15 @@ PreferencesController::~PreferencesController()
 //------------------------------------------------------------------------
 CView* PreferencesController::verifyView(CView* view,
                                          const UIAttributes& attributes,
-                                         const IUIDescription* description)
+                                         const IUIDescription* /*description*/)
 {
 
     if (const auto* view_name = attributes.getAttributeValue("uidesc-label"))
     {
         if (*view_name == "PreferencesMenu")
         {
-            if (options_menu = dynamic_cast<COptionMenu*>(view))
+            options_menu = dynamic_cast<COptionMenu*>(view);
+            if (options_menu)
             {
                 options_menu->addEntry("Visit wordify.org ...");
                 options_menu->addEntry(UTF8String("v") + VERSION_STR, -1,
