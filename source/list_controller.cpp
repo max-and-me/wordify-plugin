@@ -61,8 +61,9 @@ get_button_state(const SearchEngine::SearchResult& search_results,
         new_state    = State::kSearchHilite;
         if (opt_focused)
         {
-            new_state = (i == opt_focused.value()) ? State::kSearchSelectHilite
-                                                   : State::kSearchHilite;
+            new_state = (static_cast<Id>(i) == opt_focused.value())
+                            ? State::kSearchSelectHilite
+                            : State::kSearchHilite;
         }
     }
 

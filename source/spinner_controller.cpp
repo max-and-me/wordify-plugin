@@ -59,7 +59,7 @@ struct SpinnerViewListener : ViewListenerAdapter
     {
         if (dynamic_cast<SpinnerView*>(view))
         {
-            constexpr auto SPIN_PERIOD_DURATION = 3000.;
+            constexpr auto SPIN_PERIOD_DURATION = 3000;
             constexpr auto SPIN_FOREVER = std::numeric_limits<int32_t>().max();
 
             auto* timing_function =
@@ -194,9 +194,10 @@ CView* SpinnerController::createView(const UIAttributes& attributes,
 }
 
 //------------------------------------------------------------------------
-VSTGUI::CView* SpinnerController::verifyView(VSTGUI::CView* view,
-                                             const UIAttributes& attributes,
-                                             const IUIDescription* /*description*/)
+VSTGUI::CView*
+SpinnerController::verifyView(VSTGUI::CView* view,
+                              const UIAttributes& attributes,
+                              const IUIDescription* /*description*/)
 {
     if (!view)
         return view;
@@ -249,11 +250,11 @@ void SpinnerController::viewAttached(CView* view)
         const auto num_tasks = count_num_tasks(task_counter, str);
         spinner_badge->setText(str.c_str());
 
-        view->setAlphaValue(num_tasks > 0 ? 1. : 0.);
+        view->setAlphaValue(num_tasks > 0 ? 1.f : 0.f);
     }
 
     if (view == spinner_view)
-        view->setAlphaValue(count_tasks() > 0 ? 1. : 0.);
+        view->setAlphaValue(count_tasks() > 0 ? 1.f : 0.f);
 }
 
 //------------------------------------------------------------------------
