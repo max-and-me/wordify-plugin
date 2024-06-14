@@ -15,9 +15,9 @@ EditorView::EditorView(
 
 //--------------------------------------------------------------------
 void EditorView::doNotifySelection(
-    const ARA::PlugIn::ViewSelection* selection) noexcept
+    const ARA::PlugIn::ViewSelection* /*selection*/) noexcept
 {
-    const auto& playback_regions = selection->getPlaybackRegions();
+    // const auto& playback_regions = selection->getPlaybackRegions();
 }
 
 //------------------------------------------------------------------------

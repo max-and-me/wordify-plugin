@@ -14,9 +14,9 @@ EditorRenderer::EditorRenderer(
 }
 
 //------------------------------------------------------------------------
-auto EditorRenderer::update_project_time(Seconds time) -> void
+auto EditorRenderer::update_project_time(Seconds time_) -> void
 {
-    this->time = time;
+    this->time = time_;
 }
 
 //------------------------------------------------------------------------
