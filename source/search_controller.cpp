@@ -2,12 +2,14 @@
 
 #include "search_controller.h"
 #include "ara_document_controller.h"
-#include "public.sdk/source/vst/vstparameters.h"
 #include "search_engine.h"
 #include "string_matcher.h"
+BEGIN_SUPRESS_WARNINGS
+#include "public.sdk/source/vst/vstparameters.h"
 #include "vstgui/lib/controls/csearchtextedit.h"
 #include "vstgui/uidescription/iuidescription.h"
 #include "vstgui/uidescription/uiattributes.h"
+END_SUPRESS_WARNINGS
 
 using namespace VSTGUI;
 using namespace Steinberg;
