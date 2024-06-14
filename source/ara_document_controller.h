@@ -4,12 +4,15 @@
 
 #pragma once
 
-#include "ARA_Library/PlugIn/ARAPlug.h"
-#include "eventpp/callbacklist.h"
 #include "meta_words_data.h"
 #include "meta_words_playback_region.h"
 #include "region_order_manager.h"
+#include "supress_warnings.h"
 #include "tiny_selection_model.h"
+BEGIN_SUPRESS_WARNINGS
+#include "ARA_Library/PlugIn/ARAPlug.h"
+#include "eventpp/callbacklist.h"
+END_SUPRESS_WARNINGS
 
 namespace mam {
 namespace meta_words {
