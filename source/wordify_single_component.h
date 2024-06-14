@@ -4,11 +4,15 @@
 
 #pragma once
 
+#include "supress_warnings.h"
+
+BEGIN_SUPRESS_WARNINGS
 #include "ARA_API/ARAVST3.h"
 #include "ARA_Library/PlugIn/ARAPlug.h"
 #include "ipslviewembedding.h"
 #include "public.sdk/source/vst/vstsinglecomponenteffect.h"
 #include "vstgui/plugin-bindings/vst3editor.h"
+END_SUPRESS_WARNINGS
 
 namespace mam {
 
