@@ -749,9 +749,9 @@
 							"size": "608, 80",
 							"spacing": "0",
 							"sub-controller": "RegionController",
-							"template": "ClipTemplate",
+							"template": "RegionTemplate",
 							"transparent": "false",
-							"uidesc-label": "ClipTemplate",
+							"uidesc-label": "RegionTemplate",
 							"view-resize-animation-time": "200",
 							"wants-focus": "false"
 						}
@@ -1112,7 +1112,7 @@
 					}
 				}
 			},
-			"ClipTemplate": {
+			"RegionTemplate": {
 				"attributes": {
 					"animate-view-resizing": "false",
 					"background-color": "body_background_color",
@@ -1129,7 +1129,7 @@
 					"spacing": "0",
 					"sub-controller": "RegionController",
 					"transparent": "false",
-					"uidesc-label": "ClipTemplate",
+					"uidesc-label": "RegionTemplate",
 					"view-resize-animation-time": "200",
 					"wants-focus": "false"
 				},
