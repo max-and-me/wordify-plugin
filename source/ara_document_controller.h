@@ -43,8 +43,6 @@ struct RegionLifetimeEventData
 //------------------------------------------------------------------------
 struct RegionPropsChangedEventData
 {
-    using PlaybackRegion = meta_words::PlaybackRegion;
-
     Id id{0};
 };
 
