@@ -155,11 +155,11 @@ ListController::ListController(ARADocumentController* controller,
             controller->get_playback_region_order_subject()->append(
                 [&](const auto&) { on_playback_regions_reordered(); });
 
-        focus_searched_word_observer_handle =
+        focus_word_observer_handle =
             SearchEngine::instance().get_callback().append(
                 [this](const auto& data) {
                     for (const auto& result : data)
-                        focusSearchedWord(result);
+                        on_focus_word(result);
                 });
     }
 }
@@ -179,7 +179,7 @@ ListController::~ListController()
             order_observer_handle);
 
         SearchEngine::instance().get_callback().remove(
-            focus_searched_word_observer_handle);
+            focus_word_observer_handle);
 
         controller->get_playback_region_lifetimes_subject()->remove(
             lifetime_observer_handle);
@@ -326,7 +326,7 @@ ListController::createSubController(UTF8StringPtr name,
 }
 
 //------------------------------------------------------------------------
-void ListController::focusSearchedWord(
+void ListController::on_focus_word(
     const SearchEngine::SearchResult& search_result)
 {
     // word search_result selection
