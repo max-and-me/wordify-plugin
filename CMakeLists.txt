@@ -44,8 +44,6 @@ smtg_add_vst3plugin(Wordify
     source/ara_factory_config.cpp
     source/ara_factory_config.h
     source/audio_buffer_management.h
-    source/hilite_text_button.cpp
-    source/hilite_text_button.h
     source/hstack_layout.cpp
     source/hstack_layout.h
     source/list_controller.cpp
@@ -99,6 +97,8 @@ smtg_add_vst3plugin(Wordify
     source/waveform_view.h
     source/whipser_cpp_wrapper.cpp
     source/whipser_cpp_wrapper.h
+    source/word_button.cpp
+    source/word_button.h
     source/wordify_cids.h
     source/wordify_defines.h
     source/wordify_entry.cpp

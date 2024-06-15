@@ -1,10 +1,10 @@
 // Copyright(c) 2024 Max And Me.
 
 #include "meta_words_clip_controller.h"
-#include "hilite_text_button.h"
 #include "hstack_layout.h"
 #include "little_helpers.h"
 #include "meta_words_data.h"
+#include "word_button.h"
 #include <cmath>
 #include <optional>
 BEGIN_SUPRESS_WARNINGS
@@ -381,7 +381,7 @@ update_region_transcript(CViewContainer* region_transcript,
         {
             if (*view_name == "MetaWordButton")
             {
-                auto* btn = new HiliteTextButton(CRect(), listener);
+                auto* btn = new WordButton(CRect(), listener);
                 but_factory->applyCustomViewAttributeValues(
                     btn, IdStringPtr("CTextButton"), attributes, description);
 

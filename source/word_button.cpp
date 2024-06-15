@@ -1,6 +1,6 @@
 // Copyright(c) 2024 Max And Me.
 
-#include "hilite_text_button.h"
+#include "word_button.h"
 BEGIN_SUPRESS_WARNINGS
 #include "vstgui/lib/cdrawcontext.h"
 #include "vstgui/uidescription/uidescription.h"
@@ -26,19 +26,19 @@ auto drawHiliteBackground(CDrawContext* context,
 } // namespace
 
 //------------------------------------------------------------------------
-HiliteTextButton::HiliteTextButton(const CRect& size,
-                                   IControlListener* listener,
-                                   int32_t tag,
-                                   UTF8StringPtr title,
-                                   Style style)
+WordButton::WordButton(const CRect& size,
+                       IControlListener* listener,
+                       int32_t tag,
+                       UTF8StringPtr title,
+                       Style style)
 : CTextButton(size, listener, tag, title, style)
 {
 }
 
 //------------------------------------------------------------------------
-void HiliteTextButton::draw(CDrawContext* context)
+void WordButton::draw(CDrawContext* context)
 {
-    if (hilite != HiliteState::kNone)
+    if (state != State::kNone)
         drawHiliteBackground(context, getViewSize(), getRoundRadius(),
                              currentBackgroundColor);
 
@@ -46,30 +46,30 @@ void HiliteTextButton::draw(CDrawContext* context)
 }
 
 //------------------------------------------------------------------------
-bool HiliteTextButton::setHilite(HiliteState state)
+bool WordButton::setState(State state_)
 {
-    const bool changed = hilite != state;
-    hilite             = state;
+    const bool changed = state != state_;
+    state              = state_;
     if (!changed)
         return false;
 
-    switch (hilite)
+    switch (state)
     {
-        case mam::HiliteTextButton::HiliteState::kNone: {
+        case mam::WordButton::State::kNone: {
             setTextColor(normalTextColor);
             currentBackgroundColor = VSTGUI::kTransparentCColor;
             break;
         }
 
-        case mam::HiliteTextButton::HiliteState::kSearchHilite: {
-            setTextColor(searchHiliteTextColor);
-            currentBackgroundColor = searchHiliteBgrColor;
+        case mam::WordButton::State::kSearched: {
+            setTextColor(searchedTextColor);
+            currentBackgroundColor = searchedBgrColor;
             break;
         }
 
-        case mam::HiliteTextButton::HiliteState::kSearchSelectHilite: {
-            setTextColor(searchSelectHiliteTextColor);
-            currentBackgroundColor = searchSelectHiliteBgrColor;
+        case mam::WordButton::State::kFocused: {
+            setTextColor(focusedTextColor);
+            currentBackgroundColor = focusedBgrColor;
             break;
         }
 
@@ -84,19 +84,12 @@ bool HiliteTextButton::setHilite(HiliteState state)
 }
 
 //------------------------------------------------------------------------
-void HiliteTextButton::verifyTextButtonView(
-    const VSTGUI::IUIDescription* description)
+void WordButton::verifyTextButtonView(const VSTGUI::IUIDescription* description)
 {
-    description->getColor("search_hilite_bgr_color", searchHiliteBgrColor);
-
-    description->getColor("search_hilite_text_color", searchHiliteTextColor);
-
-    description->getColor("search_select_hilite_bgr_color",
-                          searchSelectHiliteBgrColor);
-
-    description->getColor("search_select_hilite_text_color",
-                          searchSelectHiliteTextColor);
-
+    description->getColor("search_hilite_bgr_color", searchedBgrColor);
+    description->getColor("search_hilite_text_color", searchedTextColor);
+    description->getColor("search_select_hilite_bgr_color", focusedBgrColor);
+    description->getColor("search_select_hilite_text_color", focusedTextColor);
     description->getColor("transcript_text_color", normalTextColor);
 }
 

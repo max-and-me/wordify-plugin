@@ -3,9 +3,9 @@
 //------------------------------------------------------------------------
 
 #include "list_controller.h"
-#include "hilite_text_button.h"
 #include "meta_words_clip_controller.h"
 #include "search_engine.h"
+#include "word_button.h"
 #include <string>
 BEGIN_SUPRESS_WARNINGS
 #include "vstgui/lib/cframe.h"
@@ -44,11 +44,10 @@ static auto find_view_by_id(const CRowColumnView& rowColView,
 }
 
 //------------------------------------------------------------------------
-static auto
-get_button_state(const SearchEngine::SearchResult& search_results,
-                 int32_t control_tag) -> HiliteTextButton::HiliteState
+static auto get_button_state(const SearchEngine::SearchResult& search_results,
+                             int32_t control_tag) -> WordButton::State
 {
-    using State    = HiliteTextButton::HiliteState;
+    using State    = WordButton::State;
     auto new_state = State::kNone;
 
     const auto& indices    = search_results.indices;
@@ -58,12 +57,12 @@ get_button_state(const SearchEngine::SearchResult& search_results,
     if (iter != indices.end())
     {
         const auto i = std::distance(indices.begin(), iter);
-        new_state    = State::kSearchHilite;
+        new_state    = State::kSearched;
         if (opt_focused)
         {
             new_state = (static_cast<Id>(i) == opt_focused.value())
-                            ? State::kSearchSelectHilite
-                            : State::kSearchHilite;
+                            ? State::kFocused
+                            : State::kSearched;
         }
     }
 
@@ -366,20 +365,20 @@ void ListController::focusSearchedWord(
     if (toFind == nullptr)
         return;
 
-    using State   = HiliteTextButton::HiliteState;
-    using Buttons = std::vector<HiliteTextButton*>;
+    using State   = WordButton::State;
+    using Buttons = std::vector<WordButton*>;
     if (const auto* container = toFind->asViewContainer())
     {
         Buttons btns;
-        container->getChildViewsOfType<HiliteTextButton>(btns, true);
+        container->getChildViewsOfType<WordButton>(btns, true);
         for (auto& btn : btns)
         {
             const auto new_state =
                 get_button_state(search_result, btn->getTag());
-            if (new_state == HiliteTextButton::HiliteState::kSearchSelectHilite)
+            if (new_state == WordButton::State::kFocused)
                 scroll_to_view(rowColView, btn);
 
-            if (btn->setHilite(new_state))
+            if (btn->setState(new_state))
                 btn->invalid();
         }
     }
