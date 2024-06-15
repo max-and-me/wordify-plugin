@@ -12,10 +12,10 @@ namespace mam {
 namespace {
 
 //------------------------------------------------------------------------
-auto drawHiliteBackground(CDrawContext* context,
-                          const CRect& rect,
-                          const CCoord radius,
-                          const CColor background) -> void
+auto highlightBackground(CDrawContext* context,
+                         const CRect& rect,
+                         const CCoord radius,
+                         const CColor background) -> void
 {
     context->setFillColor(background);
     if (auto path = owned(context->createRoundRectGraphicsPath(rect, radius)))
@@ -39,8 +39,8 @@ WordButton::WordButton(const CRect& size,
 void WordButton::draw(CDrawContext* context)
 {
     if (state != State::kNone)
-        drawHiliteBackground(context, getViewSize(), getRoundRadius(),
-                             currentBackgroundColor);
+        highlightBackground(context, getViewSize(), getRoundRadius(),
+                            currentBgrColor);
 
     CTextButton::draw(context);
 }
@@ -57,25 +57,25 @@ bool WordButton::setState(State value)
     {
         case mam::WordButton::State::kNone: {
             setTextColor(normalTextColor);
-            currentBackgroundColor = VSTGUI::kTransparentCColor;
+            currentBgrColor = VSTGUI::kTransparentCColor;
             break;
         }
 
         case mam::WordButton::State::kSearched: {
             setTextColor(searchedTextColor);
-            currentBackgroundColor = searchedBgrColor;
+            currentBgrColor = searchedBgrColor;
             break;
         }
 
         case mam::WordButton::State::kFocused: {
             setTextColor(focusedTextColor);
-            currentBackgroundColor = focusedBgrColor;
+            currentBgrColor = focusedBgrColor;
             break;
         }
 
         default: {
             setTextColor(normalTextColor);
-            currentBackgroundColor = VSTGUI::kTransparentCColor;
+            currentBgrColor = VSTGUI::kTransparentCColor;
             break;
         }
     }

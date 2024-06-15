@@ -37,13 +37,13 @@ public:
 
     //--------------------------------------------------------------------
 private:
-    VSTGUI::CColor searchedBgrColor       = VSTGUI::kGreyCColor;
-    VSTGUI::CColor searchedTextColor      = VSTGUI::kWhiteCColor;
-    VSTGUI::CColor focusedBgrColor        = VSTGUI::kYellowCColor;
-    VSTGUI::CColor focusedTextColor       = VSTGUI::kBlackCColor;
-    VSTGUI::CColor normalTextColor        = VSTGUI::kBlackCColor;
-    VSTGUI::CColor currentBackgroundColor = VSTGUI::kTransparentCColor;
-    State state                           = State::kNone;
+    VSTGUI::CColor searchedBgrColor  = VSTGUI::kGreyCColor;
+    VSTGUI::CColor searchedTextColor = VSTGUI::kWhiteCColor;
+    VSTGUI::CColor focusedBgrColor   = VSTGUI::kYellowCColor;
+    VSTGUI::CColor focusedTextColor  = VSTGUI::kBlackCColor;
+    VSTGUI::CColor normalTextColor   = VSTGUI::kBlackCColor;
+    VSTGUI::CColor currentBgrColor   = VSTGUI::kTransparentCColor;
+    State state                      = State::kNone;
 };
 
 //------------------------------------------------------------------------
