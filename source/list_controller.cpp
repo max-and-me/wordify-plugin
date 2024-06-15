@@ -112,15 +112,15 @@ static auto build_meta_words_data(const ARADocumentController* controller,
 }
 
 //------------------------------------------------------------------------
-static auto on_request_select_word(const Id id,
-                                   const Index index,
+static auto on_request_select_word(const Id region_id,
+                                   const Index word_index,
                                    ARADocumentController* controller) -> void
 {
     if (!controller)
         return;
 
     // Region should be normally always valid (but who knows ;))
-    auto opt_region = controller->find_playback_region(id);
+    auto opt_region = controller->find_playback_region(region_id);
     auto region     = opt_region.value_or(nullptr);
     if (!region)
         return;
@@ -128,7 +128,7 @@ static auto on_request_select_word(const Id id,
     // Get the selected word
     const auto words_data = region->get_meta_words_data();
     const auto& words     = words_data.words;
-    const auto& word      = words.at(index);
+    const auto& word      = words.at(word_index);
 
     // Compute its time position, BUT limit it to the region start time
     // so the locator will always jump to the beginning of the region
@@ -150,19 +150,17 @@ ListController::ListController(ARADocumentController* controller,
     {
         lifetime_observer_handle =
             controller->get_playback_region_lifetimes_subject()->append(
-                [&](const auto& data) {
-                    this->on_add_remove_playback_region(data);
-                });
+                [&](const auto& data) { on_add_remove_playback_region(data); });
 
         order_observer_handle =
             controller->get_playback_region_order_subject()->append(
-                [&](const auto&) { this->on_playback_regions_reordered(); });
+                [&](const auto&) { on_playback_regions_reordered(); });
 
-        word_selected_observer_handle =
+        focus_searched_word_observer_handle =
             SearchEngine::instance().get_callback().append(
                 [this](const auto& data) {
                     for (const auto& result : data)
-                        this->checkSelectWord(result);
+                        focusSearchedWord(result);
                 });
     }
 }
@@ -182,7 +180,7 @@ ListController::~ListController()
             order_observer_handle);
 
         SearchEngine::instance().get_callback().remove(
-            word_selected_observer_handle);
+            focus_searched_word_observer_handle);
 
         controller->get_playback_region_lifetimes_subject()->remove(
             lifetime_observer_handle);
@@ -329,7 +327,7 @@ ListController::createSubController(UTF8StringPtr name,
 }
 
 //------------------------------------------------------------------------
-void ListController::checkSelectWord(
+void ListController::focusSearchedWord(
     const SearchEngine::SearchResult& search_result)
 {
     // word search_result selection
