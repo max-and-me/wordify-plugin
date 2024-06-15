@@ -50,28 +50,28 @@ void WordButton::draw(CDrawContext* context)
 }
 
 //------------------------------------------------------------------------
-bool WordButton::setState(State value)
+bool WordButton::setState(State new_state)
 {
-    const bool changed = state != value;
-    state              = value;
+    const bool changed = state != new_state;
+    state              = new_state;
     if (!changed)
         return false;
 
     switch (state)
     {
-        case mam::WordButton::State::kNone: {
+        case WordButton::State::kNone: {
             setTextColor(normalTextColor);
             currentBgrColor = VSTGUI::kTransparentCColor;
             break;
         }
 
-        case mam::WordButton::State::kSearched: {
+        case WordButton::State::kSearched: {
             setTextColor(searchedTextColor);
             currentBgrColor = searchedBgrColor;
             break;
         }
 
-        case mam::WordButton::State::kFocused: {
+        case WordButton::State::kFocused: {
             setTextColor(focusedTextColor);
             currentBgrColor = focusedBgrColor;
             break;
