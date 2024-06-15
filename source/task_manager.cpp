@@ -1,12 +1,15 @@
 // Copyright(c) 2024 Max And Me.
 
 #include "task_manager.h"
-#include "base/source/timer.h"
 #include "mam/meta_words/runner.h"
+#include "supress_warnings.h"
 #include "whipser_cpp_wrapper.h"
 #include <array>
 #include <future>
 #include <optional>
+BEGIN_SUPRESS_WARNINGS
+#include "base/source/timer.h"
+END_SUPRESS_WARNINGS
 
 namespace mam::task_managing {
 namespace {

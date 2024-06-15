@@ -1,12 +1,15 @@
 // Copyright(c) 2024 Max And Me.
 
 #include "whipser_cpp_wrapper.h"
-#include "base/source/fdebug.h"
 #include "hao/special_folders/special_folders.h"
-#include "whereami.h"
+#include "supress_warnings.h"
 #include "wordify_defines.h"
 #include <filesystem>
 #include <string>
+BEGIN_SUPRESS_WARNINGS
+#include "base/source/fdebug.h"
+#include "whereami.h"
+END_SUPRESS_WARNINGS
 
 namespace mam::whisper_cpp {
 
