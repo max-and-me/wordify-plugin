@@ -4,8 +4,11 @@
 
 #pragma once
 
-#include "ARA_Library/PlugIn/ARAPlug.h"
 #include "mam/meta_words/meta_word.h"
+#include "supress_warnings.h"
+BEGIN_SUPRESS_WARNINGS
+#include "ARA_Library/PlugIn/ARAPlug.h"
+END_SUPRESS_WARNINGS
 
 namespace mam::meta_words {
 
