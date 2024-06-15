@@ -24,7 +24,7 @@ auto collect_search_results(const SearchEngine::StringType& search_word,
             if (word_data.is_clipped_by_region)
                 continue;
 
-            auto word = word_data.word.word;
+            auto word = word_data.word.value;
             if (match_func(word, search_word))
                 indices.push_back(i);
         }

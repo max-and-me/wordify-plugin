@@ -51,8 +51,9 @@ static auto is_in_playback_region(const PlaybackRegion& region,
 }
 
 //------------------------------------------------------------------------
-static auto mark_clipped_words(RegionWordDataset& words,
-                               const PlaybackRegion& region) -> RegionWordDataset
+static auto
+mark_clipped_words(RegionWordDataset& words,
+                   const PlaybackRegion& region) -> RegionWordDataset
 {
     for (auto& word_data : words)
     {
@@ -80,7 +81,7 @@ collect_meta_words(const PlaybackRegion& region) -> const RegionWordDataset
                 word_data.word                 = meta_word;
                 word_data.is_clipped_by_region = true;
                 word_data.is_punctuation_mark =
-                    is_puntuation_mark(meta_word.word);
+                    is_puntuation_mark(meta_word.value);
                 word_dataset.push_back(word_data);
             }
         }

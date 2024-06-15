@@ -68,7 +68,7 @@ static auto compute_word_widths(const RegionData& region_data,
     WordWidths widths;
     for (const auto& meta_word_data : region_data.words)
     {
-        const auto width = width_func(meta_word_data.word.word);
+        const auto width = width_func(meta_word_data.word.value);
         widths.push_back(width);
     }
 
@@ -171,7 +171,7 @@ void insert_word_buttons(const mam::RegionController::Cache& cache,
         // Setting gradients to nullptr improves performance quite a lot when
         // redrawing
         const auto but_gradient = nullptr;
-        const auto but_title    = UTF8String(word_data.word.word);
+        const auto but_title    = UTF8String(word_data.word.value);
         const auto but_width    = word_widths[word_index];
         const auto but_enabled  = !word_data.is_punctuation_mark;
         const auto but_tag      = int32_t(word_index);

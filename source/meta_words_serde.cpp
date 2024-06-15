@@ -12,13 +12,13 @@ using JsonString = std::string;
 using json       = nlohmann::json;
 void to_json(json& j, const MetaWord& m)
 {
-    j = json{{"word", m.word}, {"begin", m.begin}, {"duration", m.duration}};
+    j = json{{"word", m.value}, {"begin", m.begin}, {"duration", m.duration}};
 }
 
 //------------------------------------------------------------------------
 void from_json(const json& j, MetaWord& m)
 {
-    j.at("word").get_to(m.word);
+    j.at("word").get_to(m.value);
     j.at("begin").get_to(m.begin);
     j.at("duration").get_to(m.duration);
 }

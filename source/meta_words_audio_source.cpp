@@ -183,7 +183,7 @@ auto trim_meta_words(MetaWords& meta_words) -> void
 {
     for (auto& word : meta_words)
     {
-        auto& str = word.word;
+        auto& str = word.value;
         str.erase(std::remove_if(str.begin(), str.end(),
                                  [](char c) {
                                      return std::isspace(
