@@ -3,7 +3,7 @@
 //------------------------------------------------------------------------
 
 #include "list_controller.h"
-#include "meta_words_clip_controller.h"
+#include "region_controller.h"
 #include "search_engine.h"
 #include "word_button.h"
 #include <string>
@@ -294,7 +294,7 @@ ListController::createSubController(UTF8StringPtr name,
     if (!playback_region_id.has_value())
         return nullptr;
 
-    if (UTF8StringView(name) == "MetaWordsClipController")
+    if (UTF8StringView(name) == "RegionController")
     {
         if (!controller)
             return nullptr;
@@ -302,7 +302,7 @@ ListController::createSubController(UTF8StringPtr name,
         auto pbr_id = playback_region_id.value();
         auto ctler  = this->controller;
 
-        auto* subctrl = new MetaWordsClipController(description);
+        auto* subctrl = new RegionController(description);
         if (!subctrl)
             return nullptr;
 

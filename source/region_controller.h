@@ -25,11 +25,11 @@ namespace mam {
 class HStackLayout;
 
 //------------------------------------------------------------------------
-// MetaWordsClipController
+// RegionController
 //------------------------------------------------------------------------
-class MetaWordsClipController : public Steinberg::FObject,
-                                public VSTGUI::IController,
-                                public VSTGUI::ViewListenerAdapter
+class RegionController : public Steinberg::FObject,
+                         public VSTGUI::IController,
+                         public VSTGUI::ViewListenerAdapter
 {
 public:
     //--------------------------------------------------------------------
@@ -45,8 +45,8 @@ public:
         Widths word_widths;
     };
 
-    MetaWordsClipController(const VSTGUI::IUIDescription* description);
-    ~MetaWordsClipController() override;
+    RegionController(const VSTGUI::IUIDescription* description);
+    ~RegionController() override;
 
     bool initialize(Subject* subject);
 
@@ -66,7 +66,7 @@ public:
     FuncOnSelectedWord on_select_word_func;
     FuncRegionData region_data_func;
 
-    OBJ_METHODS(MetaWordsClipController, FObject)
+    OBJ_METHODS(RegionController, FObject)
     //--------------------------------------------------------------------
 private:
     void on_select_word();

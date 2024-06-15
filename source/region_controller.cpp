@@ -1,8 +1,8 @@
 // Copyright(c) 2024 Max And Me.
 
-#include "meta_words_clip_controller.h"
 #include "hstack_layout.h"
 #include "little_helpers.h"
+#include "region_controller.h"
 #include "region_data.h"
 #include "word_button.h"
 #include <cmath>
@@ -150,7 +150,7 @@ static auto remove_word_buttons(CViewContainer& region_transcript,
 //------------------------------------------------------------------------
 using OptTextButton = std::optional<CTextButton*>;
 template <typename Func>
-void insert_word_buttons(const mam::MetaWordsClipController::Cache& cache,
+void insert_word_buttons(const mam::RegionController::Cache& cache,
                          const mam::RegionData& region_data,
                          CViewContainer* region_transcript,
                          Func&& but_create_func)
@@ -364,7 +364,7 @@ update_region_transcript(CViewContainer* region_transcript,
                          const IUIDescription* description,
                          const UIAttributes& attributes,
                          IControlListener* listener,
-                         const MetaWordsClipController::Cache& cache) -> void
+                         const RegionController::Cache& cache) -> void
 {
     if (!region_transcript)
         return;
@@ -438,16 +438,15 @@ struct FitContentHandler : public ViewListenerAdapter
 };
 
 //------------------------------------------------------------------------
-// MetaWordsClipController
+// RegionController
 //------------------------------------------------------------------------
-MetaWordsClipController::MetaWordsClipController(
-    const IUIDescription* description)
+RegionController::RegionController(const IUIDescription* description)
 : description(description)
 {
 }
 
 //------------------------------------------------------------------------
-MetaWordsClipController::~MetaWordsClipController()
+RegionController::~RegionController()
 {
     if (subject)
     {
@@ -480,7 +479,7 @@ MetaWordsClipController::~MetaWordsClipController()
 }
 
 //------------------------------------------------------------------------
-bool MetaWordsClipController::initialize(Subject* _subject)
+bool RegionController::initialize(Subject* _subject)
 {
     if (!_subject)
         return false;
@@ -500,7 +499,7 @@ bool MetaWordsClipController::initialize(Subject* _subject)
 }
 
 //------------------------------------------------------------------------
-void MetaWordsClipController::on_select_word()
+void RegionController::on_select_word()
 {
     const auto& data = region_data_func();
 
@@ -527,7 +526,7 @@ void MetaWordsClipController::on_select_word()
 }
 
 //------------------------------------------------------------------------
-void MetaWordsClipController::init_words_width_cache(const RegionData& data)
+void RegionController::init_words_width_cache(const RegionData& data)
 {
     if (cache.word_widths.empty())
     {
@@ -538,8 +537,7 @@ void MetaWordsClipController::init_words_width_cache(const RegionData& data)
 }
 
 //------------------------------------------------------------------------
-CView*
-MetaWordsClipController::verifyView(CView* view,
+CView* RegionController::verifyView(CView* view,
                                     const UIAttributes& attributes,
                                     const IUIDescription* /*description*/)
 {
@@ -589,7 +587,7 @@ MetaWordsClipController::verifyView(CView* view,
 };
 
 //------------------------------------------------------------------------
-void MetaWordsClipController::valueChanged(CControl* pControl)
+void RegionController::valueChanged(CControl* pControl)
 {
     if (pControl && on_select_word_func)
     {
@@ -598,7 +596,7 @@ void MetaWordsClipController::valueChanged(CControl* pControl)
 }
 
 //------------------------------------------------------------------------
-void MetaWordsClipController::viewAttached(CView* view)
+void RegionController::viewAttached(CView* view)
 {
     const auto& data = region_data_func();
     if (view == region_start_time)
@@ -621,10 +619,10 @@ void MetaWordsClipController::viewAttached(CView* view)
 }
 
 //------------------------------------------------------------------------
-void MetaWordsClipController::viewRemoved(CView* /*view*/) {}
+void RegionController::viewRemoved(CView* /*view*/) {}
 
 //------------------------------------------------------------------------
-void MetaWordsClipController::viewWillDelete(CView* view)
+void RegionController::viewWillDelete(CView* view)
 {
     if (view == region_title)
     {
