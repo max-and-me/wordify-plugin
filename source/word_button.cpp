@@ -46,10 +46,10 @@ void WordButton::draw(CDrawContext* context)
 }
 
 //------------------------------------------------------------------------
-bool WordButton::setState(State state_)
+bool WordButton::setState(State value)
 {
-    const bool changed = state != state_;
-    state              = state_;
+    const bool changed = state != value;
+    state              = value;
     if (!changed)
         return false;
 
