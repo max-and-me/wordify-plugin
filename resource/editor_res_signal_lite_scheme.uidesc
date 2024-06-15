@@ -113,7 +113,7 @@
       "region_start_time_color": "#545863ff",
       "region_duration_time_color": "#545863ff",
       "scroll_bar_handle_color": "#878889ff",
-      "search_field_background_color": "#00000000",
+      "search_field_background_color": "#edf0f6ff",
       "search_field_text_color": "#1c1a1dff",
       "spinner_badge_background_color": "#2c6bedff",
       "spinner_badge_text_color": "#e2e1e6ff",

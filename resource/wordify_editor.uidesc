@@ -203,7 +203,7 @@
 													},
 													"CSearchTextEdit": {
 														"attributes": {
-															"back-color": "~ TransparentCColor",
+															"back-color": "search_field_background_color",
 															"background-offset": "0, 0",
 															"class": "CSearchTextEdit",
 															"clearmark-inset": "7, 7",
