@@ -1,10 +1,10 @@
 // Copyright(c) 2024 Max And Me.
 
-#include "hstack_layout.h"
-#include "little_helpers.h"
 #include "region_controller.h"
+#include "little_helpers.h"
 #include "region_data.h"
-#include "word_button.h"
+#include "views/hstack_layout.h"
+#include "views/word_button.h"
 #include <cmath>
 #include <optional>
 BEGIN_SUPRESS_WARNINGS

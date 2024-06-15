@@ -44,10 +44,18 @@ smtg_add_vst3plugin(Wordify
     source/ara_factory_config.cpp
     source/ara_factory_config.h
     source/audio_buffer_management.h
-    source/hstack_layout.cpp
-    source/hstack_layout.h
-    source/list_controller.cpp
-    source/list_controller.h
+    source/controllers/list_controller.cpp
+    source/controllers/list_controller.h
+    source/controllers/preferences_controller.cpp
+    source/controllers/preferences_controller.h
+    source/controllers/region_controller.cpp
+    source/controllers/region_controller.h
+    source/controllers/search_controller.cpp
+    source/controllers/search_controller.h
+    source/controllers/spinner_controller.cpp
+    source/controllers/spinner_controller.h
+    source/controllers/waveform_controller.cpp
+    source/controllers/waveform_controller.h
     source/little_helpers.h
     source/meta_words_audio_modification.cpp
     source/meta_words_audio_modification.h
@@ -65,23 +73,13 @@ smtg_add_vst3plugin(Wordify
     source/meta_words_serde.h
     source/nonstd.h
     source/parameter_ids.h
-    source/preferences_controller.cpp
-    source/preferences_controller.h
     source/preferences_serde.cpp
     source/preferences_serde.h
-    source/region_controller.cpp
-    source/region_controller.h
     source/region_data.h
     source/region_order_manager.cpp
     source/region_order_manager.h
-    source/search_controller.cpp
-    source/search_controller.h
     source/search_engine.cpp
     source/search_engine.h
-    source/spinner_controller.cpp
-    source/spinner_controller.h
-    source/spinner_view.cpp
-    source/spinner_view.h
     source/string_matcher.cpp
     source/string_matcher.h
     source/supress_warnings.h
@@ -89,16 +87,18 @@ smtg_add_vst3plugin(Wordify
     source/task_manager.h
     source/tiny_selection_model.h
     source/version.h
-    source/view_animations.cpp
-    source/view_animations.h
-    source/waveform_controller.cpp
-    source/waveform_controller.h
-    source/waveform_view.cpp
-    source/waveform_view.h
+    source/views/hstack_layout.cpp
+    source/views/hstack_layout.h
+    source/views/spinner_view.cpp
+    source/views/spinner_view.h
+    source/views/view_animations.cpp
+    source/views/view_animations.h
+    source/views/waveform_view.cpp
+    source/views/waveform_view.h
+    source/views/word_button.cpp
+    source/views/word_button.h
     source/whipser_cpp_wrapper.cpp
     source/whipser_cpp_wrapper.h
-    source/word_button.cpp
-    source/word_button.h
     source/wordify_cids.h
     source/wordify_defines.h
     source/wordify_entry.cpp
@@ -194,6 +194,11 @@ target_link_libraries(Wordify
 target_compile_features(Wordify 
     PRIVATE
         cxx_std_17
+)
+
+target_include_directories(Wordify
+    PRIVATE
+        source
 )
 
 mam_target_compile_options(Wordify)

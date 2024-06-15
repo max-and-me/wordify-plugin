@@ -5,7 +5,7 @@
 #include "ara_document_controller.h"
 #include "nonstd.h"
 #include "supress_warnings.h"
-#include "waveform_view.h"
+#include "views/waveform_view.h"
 BEGIN_SUPRESS_WARNINGS
 #include "base/source/fobject.h"
 #include "eventpp/callbacklist.h"

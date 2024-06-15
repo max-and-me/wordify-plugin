@@ -1,13 +1,13 @@
 // Copyright(c) 2024 Max And Me.
 
 #include "spinner_controller.h"
-#include "spinner_view.h"
+#include "views/spinner_view.h"
+#include "views/view_animations.h"
 #include <cassert>
 #include <limits>
 BEGIN_SUPRESS_WARNINGS
 #include "public.sdk/source/vst/utility/stringconvert.h"
 #include "public.sdk/source/vst/vstparameters.h"
-#include "view_animations.h"
 #include "vstgui/lib/animation/timingfunctions.h"
 #include "vstgui/lib/controls/ctextlabel.h"
 #include "vstgui/uidescription/iuidescription.h"

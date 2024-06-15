@@ -1,20 +1,20 @@
 // Copyright(c) 2024 Max And Me.
 
 #include "wordify_single_component.h"
+#include "controllers/list_controller.h"
+#include "controllers/preferences_controller.h"
+#include "controllers/search_controller.h"
+#include "controllers/spinner_controller.h"
+#include "controllers/waveform_controller.h"
 #include "meta_words_editor_renderer.h"
 #include "meta_words_editor_view.h"
 #include "meta_words_playback_renderer.h"
 #include "parameter_ids.h"
-#include "preferences_controller.h"
 #include "preferences_serde.h"
-#include "search_controller.h"
-#include "spinner_controller.h"
 #include "task_manager.h"
-#include "waveform_controller.h"
 #include "wordify_cids.h"
 #include "wordify_defines.h"
 #include <optional>
-
 BEGIN_SUPRESS_WARNINGS
 #include "ara_document_controller.h"
 #include "base/source/fstreamer.h"
@@ -22,8 +22,6 @@ BEGIN_SUPRESS_WARNINGS
 #include "pluginterfaces/vst/ivstprocesscontext.h"
 #include "vstgui/uidescription/uidescription.h"
 END_SUPRESS_WARNINGS
-
-#include "list_controller.h"
 
 using namespace Steinberg;
 
