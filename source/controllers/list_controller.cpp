@@ -5,7 +5,7 @@
 #include "list_controller.h"
 #include "region_controller.h"
 #include "search_engine.h"
-#include "word_button.h"
+#include "views/word_button.h"
 #include <string>
 BEGIN_SUPRESS_WARNINGS
 #include "vstgui/lib/cframe.h"
