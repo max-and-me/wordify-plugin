@@ -17,8 +17,8 @@ namespace VSTGUI {
 class CListControl;
 class CGradientView;
 } // namespace VSTGUI
+
 namespace mam {
-class WaveFormView;
 
 //------------------------------------------------------------------------
 // WaveFormController
