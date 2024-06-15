@@ -15,14 +15,12 @@ auto collect_search_results(const SearchEngine::StringType& search_word,
 
     for (const auto& region : regions)
     {
-        auto regionPtr          = region.second;
-        auto meta_words_data    = regionPtr->get_meta_words_data();
-        auto meta_words_dataSet = meta_words_data.words;
+        auto region_data = region.second->get_region_data();
 
         SearchEngine::WordIndices indices;
-        for (size_t i = 0; i < meta_words_dataSet.size(); i++)
+        for (size_t i = 0; i < region_data.words.size(); i++)
         {
-            const auto& word_data = meta_words_dataSet[i];
+            const auto& word_data = region_data.words[i];
             if (word_data.is_clipped_by_region)
                 continue;
 

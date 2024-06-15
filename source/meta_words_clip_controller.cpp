@@ -3,7 +3,7 @@
 #include "meta_words_clip_controller.h"
 #include "hstack_layout.h"
 #include "little_helpers.h"
-#include "meta_words_data.h"
+#include "region_data.h"
 #include "word_button.h"
 #include <cmath>
 #include <optional>
@@ -33,42 +33,40 @@ static CViewAttributeID kTemplateNameAttributeID = 'uitl';
 
 //------------------------------------------------------------------------
 static auto update_region_title(CTextLabel& region_title,
-                                const MetaWordsData& meta_words_data) -> void
+                                const RegionData& region_data) -> void
 {
-    auto [r, g, b]     = meta_words_data.color;
+    auto [r, g, b]     = region_data.color;
     const CColor color = make_color<float>(r, g, b, std::nullopt);
 
     region_title.setFontColor(color);
-    region_title.setText(UTF8String(meta_words_data.name));
+    region_title.setText(UTF8String(region_data.name));
     region_title.sizeToFit();
 }
 
 //------------------------------------------------------------------------
-static auto
-update_region_start_time(CTextLabel& region_start_time,
-                         const MetaWordsData& meta_words_data) -> void
+static auto update_region_start_time(CTextLabel& region_start_time,
+                                     const RegionData& region_data) -> void
 {
-    const auto str = to_time_display_string(meta_words_data.project_time_start);
+    const auto str = to_time_display_string(region_data.project_time_start);
     region_start_time.setText(UTF8String(str));
 }
 
 //------------------------------------------------------------------------
-static auto
-update_region_duration_time(CTextLabel& region_duration_time,
-                            const MetaWordsData& meta_words_data) -> void
+static auto update_region_duration_time(CTextLabel& region_duration_time,
+                                        const RegionData& region_data) -> void
 {
-    const auto str = to_time_display_string(meta_words_data.duration);
+    const auto str = to_time_display_string(region_data.duration);
     region_duration_time.setText(UTF8String(str));
 }
 
 //------------------------------------------------------------------------
 using WordWidths = std::vector<CCoord>;
 template <typename Func>
-static auto compute_word_widths(const MetaWordsData& meta_words_data,
+static auto compute_word_widths(const RegionData& region_data,
                                 const Func& width_func) -> WordWidths
 {
     WordWidths widths;
-    for (const auto& meta_word_data : meta_words_data.words)
+    for (const auto& meta_word_data : region_data.words)
     {
         const auto width = width_func(meta_word_data.word.word);
         widths.push_back(width);
@@ -123,7 +121,7 @@ static auto compute_word_width(const IUIDescription* description,
 
 //------------------------------------------------------------------------
 static auto remove_word_buttons(CViewContainer& region_transcript,
-                                const MetaWordsData& meta_words_data)
+                                const RegionData& region_data)
 {
     using Controls = std::vector<CControl*>;
 
@@ -134,10 +132,10 @@ static auto remove_word_buttons(CViewContainer& region_transcript,
         {
             const auto word_index = control->getTag();
             bool to_be_removed    = true;
-            if (size_t(word_index) < meta_words_data.words.size())
+            if (size_t(word_index) < region_data.words.size())
             {
                 to_be_removed =
-                    meta_words_data.words[word_index].is_clipped_by_region;
+                    region_data.words[word_index].is_clipped_by_region;
             }
 
             if (to_be_removed)
@@ -153,16 +151,16 @@ static auto remove_word_buttons(CViewContainer& region_transcript,
 using OptTextButton = std::optional<CTextButton*>;
 template <typename Func>
 void insert_word_buttons(const mam::MetaWordsClipController::Cache& cache,
-                         const mam::MetaWordsData& meta_words_data,
+                         const mam::RegionData& region_data,
                          CViewContainer* region_transcript,
                          Func&& but_create_func)
 {
     const auto& word_widths = cache.word_widths;
-    for (size_t word_index = 0; word_index < meta_words_data.words.size();
+    for (size_t word_index = 0; word_index < region_data.words.size();
          ++word_index)
     {
         // Don't add a button for words which are clipped
-        const auto word_data = meta_words_data.words[word_index];
+        const auto word_data = region_data.words[word_index];
         if (word_data.is_clipped_by_region)
             continue;
 
@@ -362,7 +360,7 @@ static auto remove_loading_indicator(CViewContainer* region_transcript) -> void
 //------------------------------------------------------------------------
 static auto
 update_region_transcript(CViewContainer* region_transcript,
-                         const MetaWordsData& meta_words_data,
+                         const RegionData& region_data,
                          const IUIDescription* description,
                          const UIAttributes& attributes,
                          IControlListener* listener,
@@ -394,8 +392,8 @@ update_region_transcript(CViewContainer* region_transcript,
         return std::nullopt;
     };
 
-    remove_word_buttons(*region_transcript, meta_words_data);
-    insert_word_buttons(cache, meta_words_data, region_transcript, but_creator);
+    remove_word_buttons(*region_transcript, region_data);
+    insert_word_buttons(cache, region_data, region_transcript, but_creator);
 }
 
 //------------------------------------------------------------------------
@@ -495,7 +493,7 @@ bool MetaWordsClipController::initialize(Subject* _subject)
     if (view)
         view->forget();
 
-    if (!meta_words_data_func)
+    if (!region_data_func)
         return false;
 
     return true;
@@ -504,7 +502,7 @@ bool MetaWordsClipController::initialize(Subject* _subject)
 //------------------------------------------------------------------------
 void MetaWordsClipController::on_select_word()
 {
-    const auto& data = meta_words_data_func();
+    const auto& data = region_data_func();
 
     if (region_start_time)
         update_region_start_time(*region_start_time, data);
@@ -529,7 +527,7 @@ void MetaWordsClipController::on_select_word()
 }
 
 //------------------------------------------------------------------------
-void MetaWordsClipController::init_words_width_cache(const MetaWordsData& data)
+void MetaWordsClipController::init_words_width_cache(const RegionData& data)
 {
     if (cache.word_widths.empty())
     {
@@ -568,7 +566,7 @@ MetaWordsClipController::verifyView(CView* view,
         }
         else if (*viewLabel == "RegionTranscript")
         {
-            const auto data = meta_words_data_func();
+            const auto data = region_data_func();
 
             init_words_width_cache(data);
             region_transcript = view->asViewContainer();
@@ -602,7 +600,7 @@ void MetaWordsClipController::valueChanged(CControl* pControl)
 //------------------------------------------------------------------------
 void MetaWordsClipController::viewAttached(CView* view)
 {
-    const auto& data = meta_words_data_func();
+    const auto& data = region_data_func();
     if (view == region_start_time)
     {
         update_region_start_time(*region_start_time, data);

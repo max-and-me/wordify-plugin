@@ -55,7 +55,6 @@ smtg_add_vst3plugin(Wordify
     source/meta_words_audio_source.h
     source/meta_words_clip_controller.cpp
     source/meta_words_clip_controller.h
-    source/meta_words_data.h
     source/meta_words_editor_renderer.cpp
     source/meta_words_editor_renderer.h
     source/meta_words_editor_view.cpp
@@ -72,6 +71,7 @@ smtg_add_vst3plugin(Wordify
     source/preferences_controller.h
     source/preferences_serde.cpp
     source/preferences_serde.h
+    source/region_data.h
     source/region_order_manager.cpp
     source/region_order_manager.h
     source/search_controller.cpp

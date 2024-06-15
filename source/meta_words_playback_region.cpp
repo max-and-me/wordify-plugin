@@ -26,7 +26,7 @@ static auto is_puntuation_mark(const Word& word) -> bool
 }
 
 //------------------------------------------------------------------------
-using Seconds = const MetaWordsData::Seconds;
+using Seconds = const RegionData::Seconds;
 
 static auto calculate_project_offset(const PlaybackRegion& region) -> Seconds
 {
@@ -51,8 +51,8 @@ static auto is_in_playback_region(const PlaybackRegion& region,
 }
 
 //------------------------------------------------------------------------
-static auto mark_clipped_words(MetaWordDataset& words,
-                               const PlaybackRegion& region) -> MetaWordDataset
+static auto mark_clipped_words(RegionWordDataset& words,
+                               const PlaybackRegion& region) -> RegionWordDataset
 {
     for (auto& word_data : words)
     {
@@ -65,9 +65,9 @@ static auto mark_clipped_words(MetaWordDataset& words,
 
 //------------------------------------------------------------------------
 static auto
-collect_meta_words(const PlaybackRegion& region) -> const MetaWordDataset
+collect_meta_words(const PlaybackRegion& region) -> const RegionWordDataset
 {
-    MetaWordDataset word_dataset;
+    RegionWordDataset word_dataset;
 
     if (const auto* modification = region.getAudioModification())
     {
@@ -76,7 +76,7 @@ collect_meta_words(const PlaybackRegion& region) -> const MetaWordDataset
             const auto meta_words = source->get_meta_words();
             for (const auto& meta_word : meta_words)
             {
-                MetaWordData word_data;
+                RegionWordData word_data;
                 word_data.word                 = meta_word;
                 word_data.is_clipped_by_region = true;
                 word_data.is_punctuation_mark =
@@ -111,9 +111,9 @@ auto PlaybackRegion::get_effective_color() const -> Color
     return color;
 }
 //------------------------------------------------------------------------
-const MetaWordsData PlaybackRegion::get_meta_words_data() const
+const RegionData PlaybackRegion::get_region_data() const
 {
-    MetaWordsData data;
+    RegionData data;
 
     data.words = collect_meta_words(*this);
     // Since we calculate everything in seconds, we dont need modify timestamps

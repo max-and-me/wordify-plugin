@@ -1,6 +1,5 @@
-//------------------------------------------------------------------------
 // Copyright(c) 2024 Max And Me.
-//------------------------------------------------------------------------
+
 
 #pragma once
 
@@ -12,17 +11,17 @@
 namespace mam {
 
 //------------------------------------------------------------------------
-struct MetaWordData
+struct RegionWordData
 {
     bool is_clipped_by_region = true;
     bool is_punctuation_mark  = false;
     meta_words::MetaWord word;
 };
 
-using MetaWordDataset = std::vector<MetaWordData>;
+using RegionWordDataset = std::vector<RegionWordData>;
 
 //------------------------------------------------------------------------
-struct MetaWordsData
+struct RegionData
 {
     using Seconds = double;
     using String  = std::string;
@@ -33,7 +32,7 @@ struct MetaWordsData
     Seconds project_offset{0.};
     Seconds project_time_start{0.};
     Seconds duration{0.};
-    MetaWordDataset words;
+    RegionWordDataset words;
 };
 
 //------------------------------------------------------------------------

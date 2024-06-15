@@ -4,8 +4,8 @@
 
 #pragma once
 
-#include "meta_words_data.h"
 #include "meta_words_playback_region.h"
+#include "region_data.h"
 #include "region_order_manager.h"
 #include "supress_warnings.h"
 #include "tiny_selection_model.h"
@@ -79,7 +79,6 @@ public:
     //--------------------------------------------------------------------
     using AudioModification    = meta_words::AudioModification;
     using AudioSource          = meta_words::AudioSource;
-    using MetaWordsDataList    = std::vector<MetaWordsData>;
     using OptPlaybackRegionPtr = meta_words::OptPlaybackRegionPtr;
     using PlaybackRegion       = meta_words::PlaybackRegion;
     using PlaybackRenderer     = meta_words::PlaybackRenderer;

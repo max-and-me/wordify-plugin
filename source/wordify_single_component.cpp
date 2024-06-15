@@ -102,14 +102,14 @@ static auto build_waveform_data(ARADocumentController* controller)
 
     const auto sample_rate = audioSrc->getSampleRate();
 
-    const auto span_data    = region->get_audio_buffer();
-    const auto word_dataset = region->get_meta_words_data().words;
-    size_t a                = 0;
-    size_t b                = 0;
-    if ((selection.word_index < word_dataset.size()))
+    const auto span_data   = region->get_audio_buffer();
+    const auto region_data = region->get_region_data().words;
+    size_t a               = 0;
+    size_t b               = 0;
+    if ((selection.word_index < region_data.size()))
     {
         const auto word_sample_range = to_sample_range(
-            word_dataset.at(selection.word_index).word, sample_rate);
+            region_data.at(selection.word_index).word, sample_rate);
 
         // Wow, wild calculations here. But it seems to work for now :)
         const auto span_begin_samples = span_data.offset_samples;

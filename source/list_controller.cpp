@@ -97,8 +97,8 @@ static auto scroll_to_view(CRowColumnView* rowColView, const CView* view)
 }
 
 //------------------------------------------------------------------------
-static auto build_meta_words_data(const ARADocumentController* controller,
-                                  const Id id) -> const MetaWordsData
+static auto find_region_data(const ARADocumentController* controller,
+                             const Id id) -> const RegionData
 {
     if (!controller)
         return {};
@@ -107,7 +107,7 @@ static auto build_meta_words_data(const ARADocumentController* controller,
     if (!opt_region)
         return {};
 
-    return opt_region.value()->get_meta_words_data();
+    return opt_region.value()->get_region_data();
 }
 
 //------------------------------------------------------------------------
@@ -125,7 +125,7 @@ static auto on_request_select_word(const Id region_id,
         return;
 
     // Get the selected word
-    const auto words_data = region->get_meta_words_data();
+    const auto words_data = region->get_region_data();
     const auto& words     = words_data.words;
     const auto& word      = words.at(word_index);
 
@@ -308,8 +308,8 @@ ListController::createSubController(UTF8StringPtr name,
 
         auto& subject = controller->get_playback_region_changed_subject(pbr_id);
 
-        subctrl->meta_words_data_func = [=]() {
-            return build_meta_words_data(ctler, pbr_id);
+        subctrl->region_data_func = [=]() {
+            return find_region_data(ctler, pbr_id);
         };
 
         subctrl->on_select_word_func = [=](Index index) {

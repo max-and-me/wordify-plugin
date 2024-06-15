@@ -3,7 +3,7 @@
 #pragma once
 
 #include "meta_words_audio_source.h"
-#include "meta_words_data.h"
+#include "region_data.h"
 #include "nonstd.h"
 #include "supress_warnings.h"
 #include "wordify_types.h"
@@ -20,7 +20,7 @@ class PlaybackRegion : public ARA::PlugIn::PlaybackRegion
 public:
     //--------------------------------------------------------------------
     static constexpr Id INVALID_ID = 0;
-    using Color                    = MetaWordsData::Color;
+    using Color                    = RegionData::Color;
 
     using AudioBuf =
         mam::audio_buffer_management::AudioBuffer<AudioSource::SampleType>;
@@ -35,7 +35,7 @@ public:
     explicit PlaybackRegion(ARA::PlugIn::AudioModification* audioModification,
                             ARA::ARAPlaybackRegionHostRef hostRef) noexcept;
 
-    auto get_meta_words_data() const -> const MetaWordsData;
+    auto get_region_data() const -> const RegionData;
     auto get_audio_buffer() const -> const AudioBufferSpanData;
     auto get_id() const -> Id { return id; }
     auto get_effective_color() const -> Color;

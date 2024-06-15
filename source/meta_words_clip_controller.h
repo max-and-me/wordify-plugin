@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "meta_words_data.h"
+#include "region_data.h"
 #include "supress_warnings.h"
 BEGIN_SUPRESS_WARNINGS
 #include "base/source/fobject.h"
@@ -33,7 +33,7 @@ class MetaWordsClipController : public Steinberg::FObject,
 {
 public:
     //--------------------------------------------------------------------
-    using FuncMetaWordsData  = std::function<const MetaWordsData()>;
+    using FuncRegionData     = std::function<const RegionData()>;
     using FuncOnSelectedWord = std::function<void(int)>;
     using Subject            = eventpp::CallbackList<void(void)>;
     using ObserverHandle     = Subject::Handle;
@@ -64,13 +64,13 @@ public:
     void viewWillDelete(VSTGUI::CView* view) override;
 
     FuncOnSelectedWord on_select_word_func;
-    FuncMetaWordsData meta_words_data_func;
+    FuncRegionData region_data_func;
 
     OBJ_METHODS(MetaWordsClipController, FObject)
     //--------------------------------------------------------------------
 private:
     void on_select_word();
-    void init_words_width_cache(const MetaWordsData& data);
+    void init_words_width_cache(const RegionData& data);
 
     const VSTGUI::IUIDescription* description = nullptr;
     VSTGUI::CTextLabel* region_title          = nullptr;
