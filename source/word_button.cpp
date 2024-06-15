@@ -59,19 +59,19 @@ bool WordButton::setState(State new_state)
 
     switch (state)
     {
-        case WordButton::State::kNone: {
+        case State::kNone: {
             setTextColor(normalTextColor);
             currentBgrColor = VSTGUI::kTransparentCColor;
             break;
         }
 
-        case WordButton::State::kSearched: {
+        case State::kSearched: {
             setTextColor(searchedTextColor);
             currentBgrColor = searchedBgrColor;
             break;
         }
 
-        case WordButton::State::kFocused: {
+        case State::kFocused: {
             setTextColor(focusedTextColor);
             currentBgrColor = focusedBgrColor;
             break;
