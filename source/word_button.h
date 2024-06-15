@@ -14,17 +14,19 @@ class IUIDescription;
 namespace mam {
 
 //------------------------------------------------------------------------
+// WordButton
+//------------------------------------------------------------------------
 class WordButton : public VSTGUI::CTextButton
 {
 public:
     //--------------------------------------------------------------------
-
     enum class State
     {
         kNone = 0,
         kSearched,
         kFocused
     };
+
     WordButton(const VSTGUI::CRect& size,
                VSTGUI::IControlListener* listener = nullptr,
                int32_t tag                        = -1,

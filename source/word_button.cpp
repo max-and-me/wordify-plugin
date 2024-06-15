@@ -12,10 +12,10 @@ namespace mam {
 namespace {
 
 //------------------------------------------------------------------------
-auto highlightBackground(CDrawContext* context,
-                         const CRect& rect,
-                         const CCoord radius,
-                         const CColor background) -> void
+auto drawBackground(CDrawContext* context,
+                    const CRect& rect,
+                    const CCoord radius,
+                    const CColor background) -> void
 {
     context->setFillColor(background);
     if (auto path = owned(context->createRoundRectGraphicsPath(rect, radius)))
@@ -25,6 +25,8 @@ auto highlightBackground(CDrawContext* context,
 //------------------------------------------------------------------------
 } // namespace
 
+//------------------------------------------------------------------------
+// WordButton
 //------------------------------------------------------------------------
 WordButton::WordButton(const CRect& size,
                        IControlListener* listener,
@@ -39,8 +41,10 @@ WordButton::WordButton(const CRect& size,
 void WordButton::draw(CDrawContext* context)
 {
     if (state != State::kNone)
-        highlightBackground(context, getViewSize(), getRoundRadius(),
-                            currentBgrColor);
+    {
+        drawBackground(context, getViewSize(), getRoundRadius(),
+                       currentBgrColor);
+    }
 
     CTextButton::draw(context);
 }
