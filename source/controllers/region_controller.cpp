@@ -486,7 +486,7 @@ bool RegionController::initialize(Subject* _subject)
 
     this->subject = _subject;
 
-    observer_handle = subject->append([&]() { this->on_select_word(); });
+    observer_handle = subject->append([&]() { this->on_region_changed(); });
 
     auto view = description->createView("TextWordTemplate", this);
     if (view)
@@ -499,27 +499,27 @@ bool RegionController::initialize(Subject* _subject)
 }
 
 //------------------------------------------------------------------------
-void RegionController::on_select_word()
+void RegionController::on_region_changed()
 {
-    const auto& data = region_data_func();
+    const auto& region_data = region_data_func();
 
     if (region_start_time)
-        update_region_start_time(*region_start_time, data);
+        update_region_start_time(*region_start_time, region_data);
 
     if (region_duration_time)
-        update_region_duration_time(*region_duration_time, data);
+        update_region_duration_time(*region_duration_time, region_data);
 
     if (region_title)
-        update_region_title(*region_title, data);
+        update_region_title(*region_title, region_data);
 
     if (region_transcript)
     {
-        init_words_width_cache(data);
+        init_words_width_cache(region_data);
 
-        if (!data.words.empty())
+        if (!region_data.words.empty())
             remove_loading_indicator(region_transcript);
 
-        update_region_transcript(region_transcript, data, description,
+        update_region_transcript(region_transcript, region_data, description,
                                  meta_word_button_attributes, this, cache);
         region_transcript->invalid();
     }
