@@ -479,14 +479,14 @@ RegionController::~RegionController()
 }
 
 //------------------------------------------------------------------------
-bool RegionController::initialize(Subject* _subject)
+bool RegionController::initialize(Subject* subject_)
 {
-    if (!_subject)
+    if (!subject_)
         return false;
 
-    this->subject = _subject;
+    subject = subject_;
 
-    observer_handle = subject->append([&]() { this->on_region_changed(); });
+    observer_handle = subject->append([&]() { on_region_changed(); });
 
     auto view = description->createView("TextWordTemplate", this);
     if (view)
