@@ -216,7 +216,9 @@ set_property(
         sndfile
         special-folders
         tiny-process-library
+        vstgui
         vstgui_support
+        vstgui_uidescription
         wave-draw
         whereami
         whisper
