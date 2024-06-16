@@ -47,6 +47,14 @@ struct RegionPropsChangedEventData
 };
 
 //------------------------------------------------------------------------
+// RegionSelectedByHostEventData
+//------------------------------------------------------------------------
+struct RegionSelectedByHostEventData
+{
+    Id id{0};
+};
+
+//------------------------------------------------------------------------
 // SelectedWordEventData
 //------------------------------------------------------------------------
 struct SelectedWordEventData
@@ -69,7 +77,8 @@ using RegionLifetimeCallback =
 using RegionsOrderCallback = RegionOrderManager::OrderSubject;
 using RegionChangedCallback =
     eventpp::CallbackList<void(const RegionPropsChangedEventData&)>;
-
+using RegionSelectedByHostCallback =
+    eventpp::CallbackList<void(const RegionSelectedByHostEventData&)>;
 //------------------------------------------------------------------------
 // ARADocumentController
 //------------------------------------------------------------------------
@@ -183,6 +192,7 @@ public:
     auto get_region_selection_subject() -> SelectedWordCallback*;
     auto get_region_selection_model() -> RegionSelectionModel&;
     auto get_region_changed_subject() -> RegionChangedCallback&;
+    auto get_region_selected_by_host_subject() -> RegionSelectedByHostCallback*;
 
     template <typename Func>
     auto for_each_region_id_enumerated(Func& func) const -> void
@@ -202,11 +212,14 @@ public:
         return playback_regions;
     }
 
+    auto on_region_selected_by_host(Id region_id) -> void;
+
     //--------------------------------------------------------------------
 private:
     RegionsPropertiesObservers playback_region_observers;
     RegionLifetimeCallback playback_region_lifetimes_subject;
     SelectedWordCallback selected_word_callback;
+    RegionSelectedByHostCallback region_selected_by_host_callback;
     RegionOrderManager region_order_manager;
     RegionSelectionModel region_selection_model;
     RegionChangedCallback region_changed_subject;

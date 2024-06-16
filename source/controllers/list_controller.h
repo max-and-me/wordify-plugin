@@ -67,6 +67,7 @@ private:
     void on_focus_word(const SearchEngine::SearchResult& search_result);
     void on_add_remove_playback_region(const RegionLifetimeEventData& data);
     void on_playback_regions_reordered();
+    void on_region_selected_by_host(Id region_id);
     auto create_list_item_view(const Id id) -> VSTGUI::CView*;
 
     RowColumnView* rowColView    = nullptr;
@@ -77,6 +78,7 @@ private:
 
     RegionLifetimeCallback::Handle lifetime_observer_handle;
     RegionsOrderCallback::Handle order_observer_handle;
+    RegionSelectedByHostCallback::Handle region_selected_by_host_handle;
     SearchEngine::SearchEngineCallback::Handle focus_word_observer_handle;
 };
 

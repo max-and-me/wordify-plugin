@@ -450,4 +450,17 @@ auto ARADocumentController::get_region_changed_subject()
 }
 
 //------------------------------------------------------------------------
+auto ARADocumentController::get_region_selected_by_host_subject()
+    -> RegionSelectedByHostCallback*
+{
+    return &region_selected_by_host_callback;
+}
+
+//------------------------------------------------------------------------
+auto ARADocumentController::on_region_selected_by_host(Id region_id) -> void
+{
+    region_selected_by_host_callback({region_id});
+}
+
+//------------------------------------------------------------------------
 } // namespace mam

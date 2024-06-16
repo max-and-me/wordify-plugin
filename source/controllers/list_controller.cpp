@@ -161,6 +161,12 @@ ListController::ListController(ARADocumentController* controller,
                     for (const auto& result : data)
                         on_focus_word(result);
                 });
+
+        region_selected_by_host_handle =
+            controller->get_region_selected_by_host_subject()->append(
+                [this](const auto& region_id_data) {
+                    on_region_selected_by_host(region_id_data.id);
+                });
     }
 }
 
@@ -183,6 +189,9 @@ ListController::~ListController()
 
         controller->get_playback_region_lifetimes_subject()->remove(
             lifetime_observer_handle);
+
+        controller->get_region_selected_by_host_subject()->remove(
+            region_selected_by_host_handle);
     }
 }
 
@@ -248,6 +257,31 @@ void ListController::on_playback_regions_reordered()
     controller->for_each_region_id_enumerated(func);
 
     rowColView->invalid();
+}
+
+//------------------------------------------------------------------------
+void ListController::on_region_selected_by_host(Id region_id)
+{
+    if (!rowColView)
+        return;
+
+    CView* toFind = nullptr;
+    rowColView->forEachChild([&](CView* child) {
+        if (toFind)
+            return;
+
+        Id tmp_region_id = 0;
+        if (child->getAttribute('prid', tmp_region_id))
+        {
+            if (region_id == tmp_region_id)
+                toFind = child;
+        }
+    });
+
+    if (toFind == nullptr)
+        return;
+
+    scroll_to_view(rowColView, toFind);
 }
 
 //------------------------------------------------------------------------
