@@ -69,7 +69,7 @@ public:
     OBJ_METHODS(RegionController, FObject)
     //--------------------------------------------------------------------
 private:
-    void on_select_word();
+    void on_region_changed();
     void init_words_width_cache(const RegionData& data);
 
     const VSTGUI::IUIDescription* description = nullptr;
