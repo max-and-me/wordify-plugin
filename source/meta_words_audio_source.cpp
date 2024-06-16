@@ -127,8 +127,8 @@ auto resample_to_16kHz(
 }
 
 //------------------------------------------------------------------------
-auto write_audio_to_file(AudioSource& audio_src,
-                         const PathType& file_path) -> int
+auto write_audio_to_file(AudioSource& audio_src, const PathType& file_path)
+    -> int
 {
     const auto buffers   = audio_src.get_audio_buffers();
     auto interleaved_buf = audio_buffer_management::to_interleaved(buffers);
@@ -243,7 +243,13 @@ void AudioSource::updateRenderSampleCache()
     std::filesystem::create_directories(tmp_dir);
 
     const auto tmp_file = tmp_dir / PathType(getName());
-    const auto path     = PathType{tmp_file.generic_u8string()};
+
+    // TODO: no idea why this does not build with GCC
+#if defined(__GNUC__) || defined(__GNUG__)
+    const auto path = PathType{tmp_file};
+#else
+    const auto path = PathType{tmp_file.generic_u8string()};
+#endif
     write_audio_to_file(*this, path);
 
     // Start analyse task on temporary audio file

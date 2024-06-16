@@ -21,7 +21,7 @@ public:
     struct Data
     {
         using Color       = std::tuple<float, float, float>;
-        using AudioBuffer = gsl::span<const float>;
+        using AudioBuffer = nonstd::span<const float>;
         using Range       = std::pair<size_t, size_t>; // start and duration
 
         Color color;
@@ -37,8 +37,8 @@ public:
 
     //--------------------------------------------------------------------
 private:
-    auto drawFull(VSTGUI::CDrawContext* pContext,
-                  const VSTGUI::CRect& viewSize) -> void;
+    auto drawFull(VSTGUI::CDrawContext* pContext, const VSTGUI::CRect& viewSize)
+        -> void;
     auto draw_like_spotify(VSTGUI::CDrawContext& pContext,
                            const VSTGUI::CRect& viewSize) -> void;
 };

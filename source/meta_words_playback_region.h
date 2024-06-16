@@ -3,8 +3,8 @@
 #pragma once
 
 #include "meta_words_audio_source.h"
-#include "region_data.h"
 #include "nonstd.h"
+#include "region_data.h"
 #include "supress_warnings.h"
 #include "wordify_types.h"
 #include <optional>
@@ -24,7 +24,7 @@ public:
 
     using AudioBuf =
         mam::audio_buffer_management::AudioBuffer<AudioSource::SampleType>;
-    using AudioBufferSpan = gsl::span<const AudioSource::SampleType>;
+    using AudioBufferSpan = nonstd::span<const AudioSource::SampleType>;
 
     struct AudioBufferSpanData
     {
