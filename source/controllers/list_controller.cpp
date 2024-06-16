@@ -20,12 +20,12 @@ using namespace VSTGUI;
 namespace mam {
 
 //------------------------------------------------------------------------
-constexpr size_t PLAYBACK_REGION_ID_ATTR = 123456789;
-constexpr auto LIST_ENTRY_VIEW_TEMPLATE  = "RegionTemplate";
+constexpr size_t PLAYBACK_REGION_ID_ATTR = 'prid';
+constexpr auto REGION_VIEW_TEMPLATE      = "RegionTemplate";
 
 //------------------------------------------------------------------------
-static auto find_view_by_id(const CRowColumnView& rowColView,
-                            Id pbr_id) -> CView*
+static auto find_region_view_by_id(const CRowColumnView& rowColView,
+                                   Id pbr_id) -> CView*
 {
     CView* viewToFind = nullptr;
     rowColView.forEachChild([&, pbr_id](CView* view) {
@@ -214,7 +214,7 @@ CView* ListController::verifyView(CView* view,
                     {
                         rowColView->addView(newView);
                         rowColView->sizeToFit();
-                        newView->setAttribute('prid', id);
+                        newView->setAttribute(PLAYBACK_REGION_ID_ATTR, id);
                     }
                 });
             }
@@ -232,7 +232,7 @@ auto ListController::create_list_item_view(const Id id) -> CView*
 
     playback_region_id = id;
 
-    auto* newView = uidesc->createView(LIST_ENTRY_VIEW_TEMPLATE, this);
+    auto* newView = uidesc->createView(REGION_VIEW_TEMPLATE, this);
     newView->setAttribute(PLAYBACK_REGION_ID_ATTR, id);
 
     playback_region_id.reset();
@@ -250,7 +250,7 @@ void ListController::on_playback_regions_reordered()
         return;
 
     auto func = [&](size_t index, Id id) {
-        auto* viewToMove = find_view_by_id(*rowColView, id);
+        auto* viewToMove = find_region_view_by_id(*rowColView, id);
         rowColView->changeViewZOrder(viewToMove, static_cast<uint32_t>(index));
     };
 
@@ -265,21 +265,13 @@ void ListController::on_region_selected_by_host(Id region_id)
     if (!rowColView)
         return;
 
-    CView* toFind = nullptr;
-    rowColView->forEachChild([&](CView* child) {
-        if (toFind)
-            return;
-
-        Id tmp_region_id = 0;
-        if (child->getAttribute('prid', tmp_region_id))
-        {
-            if (region_id == tmp_region_id)
-                toFind = child;
-        }
-    });
-
+    CView* toFind = find_region_view_by_id(*rowColView, region_id);
     if (toFind == nullptr)
         return;
+
+    // Somehow only scrolling to the first child seems to work, no idea why!?
+    auto* vc = toFind->asViewContainer();
+    toFind   = vc->getView(0);
 
     scroll_to_view(rowColView, toFind);
 }
@@ -308,7 +300,7 @@ void ListController::on_add_remove_playback_region(
             break;
         }
         case RegionLifetimeEventData::Event::WillBeRemoved: {
-            auto* viewToRemove = find_view_by_id(*rowColView, data.id);
+            auto* viewToRemove = find_region_view_by_id(*rowColView, data.id);
             if (viewToRemove)
             {
                 rowColView->removeView(viewToRemove);
@@ -382,20 +374,8 @@ void ListController::on_focus_word(
     if (!rowColView)
         return;
 
-    CView* toFind = nullptr;
-    rowColView->forEachChild([&](CView* child) {
-        if (toFind)
-            return;
-
-        Id region_id = 0;
-
-        if (child->getAttribute('prid', region_id))
-        {
-            if (region_id == search_result.region_id)
-                toFind = child;
-        }
-    });
-
+    CView* toFind =
+        find_region_view_by_id(*rowColView, search_result.region_id);
     if (toFind == nullptr)
         return;
 
