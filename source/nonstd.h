@@ -4,8 +4,6 @@
 
 #if __cplusplus >= 202002L
 #include <span>
-#elif defined(__GNUC__) || defined(__GNUG__)
-#include <span>
 #else
 #include "gsl/span"
 #endif

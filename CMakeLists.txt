@@ -288,6 +288,11 @@ elseif(SMTG_WIN)
             -D_UNICODE
             -DUNICODE
     )
+elseif(SMTG_LINUX)
+    target_compile_features(Wordify 
+        PRIVATE
+            cxx_std_20
+    )
 endif()
 
 # This needs to be fixed in vst3sdk.
