@@ -10,7 +10,7 @@ END_SUPRESS_WARNINGS
 namespace mam::meta_words {
 
 //------------------------------------------------------------------------
-using Word                                      = std::string;
+using Word                                      = StringType;
 using PunctuationMarks                          = std::array<Word, 15>;
 static const PunctuationMarks PUNCTUATION_MARKS = {".", "?", "!", ",",  ";",
                                                    "-", "(", ")", "[",  "]",

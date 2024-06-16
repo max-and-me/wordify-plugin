@@ -4,10 +4,10 @@
 
 #include "eventpp/callbacklist.h"
 #include "meta_words_playback_region.h"
+#include "wordify_types.h"
 #include <functional>
 #include <map>
 #include <optional>
-#include <string>
 #include <vector>
 
 namespace mam::meta_words {
@@ -23,7 +23,6 @@ class SearchEngine
 {
 public:
     //--------------------------------------------------------------------
-    using StringType  = std::string;
     using WordIndex   = size_t;
     using WordIndices = std::vector<WordIndex>;
     using RegionID    = size_t;

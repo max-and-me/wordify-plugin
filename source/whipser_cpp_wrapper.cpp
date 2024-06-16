@@ -5,7 +5,6 @@
 #include "supress_warnings.h"
 #include "wordify_defines.h"
 #include <filesystem>
-#include <string>
 BEGIN_SUPRESS_WARNINGS
 #include "base/source/fdebug.h"
 #include "whereami.h"
@@ -15,7 +14,6 @@ namespace mam::whisper_cpp {
 
 //------------------------------------------------------------------------
 namespace {
-using StringType = std::string;
 
 //------------------------------------------------------------------------
 auto get_ggml_file_path(const StringType& company_name,

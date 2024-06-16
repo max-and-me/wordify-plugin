@@ -105,7 +105,7 @@ bool ARADocumentController::doRestoreObjectsFromArchive(
 {
     // Retore archive
     const auto archive_size = archiveReader->getArchiveSize();
-    std::string deserialized;
+    StringType deserialized;
     deserialized.resize(archive_size);
     bool result = archiveReader->readBytesFromArchive(
         0, archive_size, (ARA::ARAByte*)deserialized.data());
@@ -125,7 +125,7 @@ bool ARADocumentController::doStoreObjectsToArchive(
     meta_words::serde::Archive archive;
     archive = collect_meta_words_serde_dataset(filter, archive);
 
-    std::string serialized;
+    StringType serialized;
     meta_words::serde::serialize(archive, serialized);
     return archiveWriter->writeBytesToArchive(0, serialized.length(),
                                               (ARA::ARAByte*)serialized.data());

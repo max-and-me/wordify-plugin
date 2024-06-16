@@ -5,12 +5,11 @@
 #pragma once
 
 #include "mam/meta_words/meta_word.h"
-#include <string>
+#include "wordify_types.h"
 
 namespace mam::meta_words::serde {
 //------------------------------------------------------------------------
-using PersistentId = std::string;
-using String       = std::string;
+using PersistentId = StringType;
 
 struct AudioSource
 {
@@ -27,8 +26,8 @@ struct Archive
 };
 
 //------------------------------------------------------------------------
-auto serialize(const Archive& archive, String& s) -> bool;
-auto deserialize(const String& s, Archive& archive) -> bool;
+auto serialize(const Archive& archive, StringType& s) -> bool;
+auto deserialize(const StringType& s, Archive& archive) -> bool;
 
 //------------------------------------------------------------------------
 } // namespace mam::meta_words::serde

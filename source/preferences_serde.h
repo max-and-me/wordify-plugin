@@ -5,12 +5,12 @@
 #pragma once
 
 #include "mam/meta_words/meta_word.h"
-#include <string>
+#include "wordify_types.h"
 
 namespace mam::meta_words::serde {
+
 //------------------------------------------------------------------------
-using String   = std::string;
-using PathType = std::string;
+using PathType = StringType;
 
 enum ColorScheme
 {
@@ -32,14 +32,14 @@ struct Preferences
 };
 
 //------------------------------------------------------------------------
-auto serialize(const Preferences& prefs, String& s) -> bool;
-auto deserialize(const String& s, Preferences& prefs) -> bool;
+auto serialize(const Preferences& prefs, StringType& s) -> bool;
+auto deserialize(const StringType& s, Preferences& prefs) -> bool;
 
 auto write_to(const Preferences& prefs,
-              const String& company_name,
-              const String& plugin_name) -> bool;
-auto read_from(const String& company_name,
-               const String& plugin_name,
+              const StringType& company_name,
+              const StringType& plugin_name) -> bool;
+auto read_from(const StringType& company_name,
+               const StringType& plugin_name,
                Preferences& prefs) -> bool;
 
 //------------------------------------------------------------------------

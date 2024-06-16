@@ -3,6 +3,7 @@
 #include "preferences_controller.h"
 #include "ara_document_controller.h"
 #include "version.h"
+#include "wordify_types.h"
 #include <string>
 BEGIN_SUPRESS_WARNINGS
 #include "public.sdk/source/vst/vstparameters.h"
@@ -23,7 +24,7 @@ using namespace VSTGUI;
 //------------------------------------------------------------------------
 using URL = const struct
 {
-    std::string value;
+    StringType value;
 };
 
 auto open_url(URL& url) -> void

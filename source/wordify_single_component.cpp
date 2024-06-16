@@ -130,7 +130,7 @@ static auto build_waveform_data(ARADocumentController* controller)
 }
 
 //------------------------------------------------------------------------
-using ColorSchemeDesc = std::string;
+using ColorSchemeDesc = StringType;
 static auto get_color_scheme(bool is_dark) -> const ColorSchemeDesc
 {
     return is_dark ? "editor_res_signal_dark_scheme.uidesc"

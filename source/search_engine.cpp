@@ -2,11 +2,12 @@
 
 #include "search_engine.h"
 #include "meta_words_playback_region.h"
+#include "wordify_types.h"
 
 namespace mam {
 namespace {
 //------------------------------------------------------------------------
-auto collect_search_results(const SearchEngine::StringType& search_word,
+auto collect_search_results(const StringType& search_word,
                             const SearchEngine::Regions& regions,
                             SearchEngine::MatchFunc&& match_func)
     -> const SearchEngine::SearchResults
@@ -55,13 +56,13 @@ struct SearchEngineCache
     }
 
     SearchEngine::SearchResults search_results;
-    SearchEngine::StringType search_word;
+    StringType search_word;
     RegionWord focused_word;
 };
 
 namespace detail {
 //------------------------------------------------------------------------
-auto search(const SearchEngine::StringType& search_word,
+auto search(const StringType& search_word,
             const SearchEngine::Regions& regions,
             SearchEngine::MatchFunc&& match_func)
     -> const SearchEngine::SearchResults&

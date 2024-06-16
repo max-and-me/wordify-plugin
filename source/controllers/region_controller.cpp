@@ -108,7 +108,7 @@ static auto find_view_with_tag(CViewContainer* container, size_t tag) -> CView*
 }
 
 //------------------------------------------------------------------------
-using Word = std::string;
+using Word = StringType;
 static auto compute_word_width(const IUIDescription* description,
                                Word word) -> CCoord
 {

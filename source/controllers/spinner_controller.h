@@ -4,7 +4,7 @@
 
 #include "ara_document_controller.h"
 #include "supress_warnings.h"
-#include <string>
+#include "wordify_types.h"
 BEGIN_SUPRESS_WARNINGS
 #include "base/source/fobject.h"
 #include "vstgui/lib/iviewlistener.h"
@@ -32,7 +32,6 @@ class SpinnerController : public Steinberg::FObject,
 public:
     //--------------------------------------------------------------------
     using TextLabel     = VSTGUI::CTextLabel;
-    using StringType    = std::string;
     using ViewContainer = VSTGUI::CViewContainer;
 
     SpinnerController(ARADocumentController* controller,

@@ -6,7 +6,6 @@
 #include "region_controller.h"
 #include "search_engine.h"
 #include "views/word_button.h"
-#include <string>
 BEGIN_SUPRESS_WARNINGS
 #include "vstgui/lib/cframe.h"
 #include "vstgui/lib/controls/cbuttons.h"

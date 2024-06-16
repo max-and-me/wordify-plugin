@@ -9,7 +9,7 @@
 namespace mam::task_managing {
 
 //------------------------------------------------------------------------
-using PathType      = std::string;
+using PathType      = StringType;
 using ResultData    = meta_words::MetaWords;
 using InputData     = PathType;
 using FuncFinished  = std::function<void(const ResultData&)>;

@@ -8,7 +8,7 @@
 namespace mam::meta_words {
 
 //------------------------------------------------------------------------
-using JsonString = std::string;
+using JsonString = StringType;
 using json       = nlohmann::json;
 void to_json(json& j, const MetaWord& m)
 {

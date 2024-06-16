@@ -52,7 +52,7 @@ void from_json(const json& j, Preferences& prefs)
 }
 
 //------------------------------------------------------------------------
-auto serialize(const Preferences& prefs, String& s) -> bool
+auto serialize(const Preferences& prefs, StringType& s) -> bool
 {
     json j = prefs;
     s      = j.dump();
@@ -60,7 +60,7 @@ auto serialize(const Preferences& prefs, String& s) -> bool
     return true;
 }
 //------------------------------------------------------------------------
-auto deserialize(const String& s, Preferences& prefs) -> bool
+auto deserialize(const StringType& s, Preferences& prefs) -> bool
 {
     if (s.empty())
         return false;
@@ -73,8 +73,8 @@ auto deserialize(const String& s, Preferences& prefs) -> bool
 
 //------------------------------------------------------------------------
 auto write_to(const Preferences& prefs,
-              const String& company_name,
-              const String& plugin_name) -> bool
+              const StringType& company_name,
+              const StringType& plugin_name) -> bool
 {
     const auto prefs_folder = hao::special_folders::get_preferences_folder();
     auto prefs_folder_path  = std::filesystem::path(prefs_folder);
@@ -97,8 +97,8 @@ auto write_to(const Preferences& prefs,
 }
 
 //------------------------------------------------------------------------
-auto read_from(const String& company_name,
-               const String& plugin_name,
+auto read_from(const StringType& company_name,
+               const StringType& plugin_name,
                Preferences& prefs) -> bool
 {
     const auto prefs_folder = hao::special_folders::get_preferences_folder();

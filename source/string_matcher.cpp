@@ -19,7 +19,7 @@ enum class FuzzyMatchStyle
 };
 
 //------------------------------------------------------------------------
-void prepareStrings(std::string& toMatch, std::string& string)
+void prepareStrings(StringType& toMatch, StringType& string)
 {
     std::transform(toMatch.begin(), toMatch.end(), toMatch.begin(), ::tolower);
     std::transform(string.begin(), string.end(), string.begin(), ::tolower);
@@ -32,7 +32,7 @@ void prepareStrings(std::string& toMatch, std::string& string)
 }
 
 //------------------------------------------------------------------------
-bool isDirectMatch(std::string toMatch, std::string string)
+bool isDirectMatch(StringType toMatch, StringType string)
 {
     if (toMatch.length() != string.length())
         return false;
@@ -41,16 +41,14 @@ bool isDirectMatch(std::string toMatch, std::string string)
 }
 
 //------------------------------------------------------------------------
-bool isSubMatch(std::string toMatch, std::string string)
+bool isSubMatch(StringType toMatch, StringType string)
 {
     return std::search(toMatch.begin(), toMatch.end(), string.begin(),
                        string.end()) != toMatch.end();
 }
 
 //------------------------------------------------------------------------
-bool isFuzzyMatch(std::string toMatch,
-                  std::string string,
-                  FuzzyMatchStyle style)
+bool isFuzzyMatch(StringType toMatch, StringType string, FuzzyMatchStyle style)
 {
     int x = static_cast<int>(toMatch.length());
     int y = static_cast<int>(string.length());
@@ -89,7 +87,7 @@ bool isFuzzyMatch(std::string toMatch,
 }
 
 //------------------------------------------------------------------------
-bool isMatch(std::string toMatch, std::string string, MatchMethod method)
+bool isMatch(StringType toMatch, StringType string, MatchMethod method)
 {
     prepareStrings(toMatch, string);
     if (method == MatchMethod::directMatch)

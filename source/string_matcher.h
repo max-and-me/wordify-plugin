@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include <string>
+#include "wordify_types.h"
 
 namespace mam {
 
@@ -21,7 +21,7 @@ enum class MatchMethod
 
 };
 
-bool isMatch(std::string toMatch, std::string string, MatchMethod method);
+bool isMatch(StringType toMatch, StringType string, MatchMethod method);
 
 }; // namespace StringMatcher
 

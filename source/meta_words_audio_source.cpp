@@ -6,6 +6,7 @@
 #include "supress_warnings.h"
 #include "task_manager.h"
 #include "wordify_defines.h"
+#include "wordify_types.h"
 #include <cctype>
 #include <cmath>
 #include <filesystem>
@@ -21,7 +22,7 @@ namespace mam::meta_words {
 namespace {
 
 //------------------------------------------------------------------------
-using PathType                       = const std::string;
+using PathType                       = const StringType;
 const double WHISPER_CPP_SAMPLE_RATE = 16000.;
 
 //------------------------------------------------------------------------
@@ -127,8 +128,8 @@ auto resample_to_16kHz(
 }
 
 //------------------------------------------------------------------------
-auto write_audio_to_file(AudioSource& audio_src, const PathType& file_path)
-    -> int
+auto write_audio_to_file(AudioSource& audio_src,
+                         const PathType& file_path) -> int
 {
     const auto buffers   = audio_src.get_audio_buffers();
     auto interleaved_buf = audio_buffer_management::to_interleaved(buffers);

@@ -6,9 +6,9 @@
 
 #include "fmt/format.h"
 #include "vstgui/lib/ccolor.h"
+#include "wordify_types.h"
 #include <chrono>
 #include <optional>
-#include <string>
 
 namespace mam {
 
@@ -57,16 +57,16 @@ static auto make_color(const T& norm_r,
 }
 
 //------------------------------------------------------------------------
-inline std::string trim(const std::string& source)
+inline StringType trim(const StringType& source)
 {
-    std::string s(source);
+    StringType s(source);
     s.erase(0, s.find_first_not_of(" \n\r\t"));
     s.erase(s.find_last_not_of(" \n\r\t") + 1);
     return s;
 }
 
 //------------------------------------------------------------------------
-using TimeDisplayString = std::string;
+using TimeDisplayString = StringType;
 template <typename T>
 auto to_time_display_string(T seconds) -> TimeDisplayString
 {

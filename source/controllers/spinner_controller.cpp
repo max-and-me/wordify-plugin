@@ -3,6 +3,7 @@
 #include "spinner_controller.h"
 #include "views/spinner_view.h"
 #include "views/view_animations.h"
+#include "wordify_types.h"
 #include <cassert>
 #include <limits>
 BEGIN_SUPRESS_WARNINGS
@@ -35,7 +36,7 @@ auto create_spinner_view(const UIAttributes& attributes,
 
 //------------------------------------------------------------------------
 auto count_num_tasks(Steinberg::IPtr<Steinberg::Vst::Parameter> task_counter,
-                     SpinnerController::StringType& value_str) -> size_t
+                     StringType& value_str) -> size_t
 {
     const auto norm  = task_counter->getNormalized();
     const auto count = task_counter->toPlain(norm);
