@@ -561,32 +561,27 @@ void PLUGIN_API WordifySingleComponent::update(FUnknown* changedUnknown,
 {
     if (auto* param = FCast<Vst::Parameter>(changedUnknown))
     {
-        if (param->getInfo().id == ParamIds::kParamIdColorScheme)
+        switch (param->getInfo().id)
         {
-            if (dark_scheme == param->getNormalized() > 0.)
-                return;
+            case ParamIds::kParamIdColorScheme: {
+                if (dark_scheme == param->getNormalized() > 0.)
+                    return;
 
-            dark_scheme = param->getNormalized() > 0.;
-            set_dark_scheme_on_editors(editors, dark_scheme);
-        }
-        else if (auto* dc = araPlugInExtension
-                                .getDocumentController<ARADocumentController>())
-        {
-            const bool activate = param->getNormalized() > 0.;
-            switch (param->getInfo().id)
-            {
-                case ParamIds::kParamIdSmartSearchMode:
-                    // Nothing here
-                    break;
-                case ParamIds::kParamIdSmartSearchNext:
-                    if (activate)
-                        SearchEngine::instance().next_occurence();
-                    break;
-                case ParamIds::kParamIdSmartSearchPrev:
-                    if (activate)
-                        SearchEngine::instance().prev_occurence();
-                    break;
+                dark_scheme = param->getNormalized() > 0.;
+                set_dark_scheme_on_editors(editors, dark_scheme);
+                break;
             }
+            case ParamIds::kParamIdSmartSearchMode:
+                // Nothing here
+                break;
+            case ParamIds::kParamIdSmartSearchNext:
+                if (param->getNormalized() > 0.)
+                    SearchEngine::instance().next_occurence();
+                break;
+            case ParamIds::kParamIdSmartSearchPrev:
+                if (param->getNormalized() > 0.)
+                    SearchEngine::instance().prev_occurence();
+                break;
         }
     }
 }
