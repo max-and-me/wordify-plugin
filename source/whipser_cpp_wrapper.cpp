@@ -10,6 +10,8 @@ BEGIN_SUPRESS_WARNINGS
 #include "whereami.h"
 END_SUPRESS_WARNINGS
 
+using namespace hao::special_folders;
+
 namespace mam::whisper_cpp {
 
 //------------------------------------------------------------------------
@@ -25,8 +27,7 @@ auto get_ggml_file_path(const StringType& company_name,
     std::filesystem::path file_path(MAM_WHISPER_CPP_MODEL_DOWNLOAD_DIR);
     file_path /= "ggml-base.en.bin";
 #else
-    const auto model_path_str = hao::special_folders::get_application_data(
-        hao::special_folders::Domain::kLocal);
+    const auto model_path_str = get_application_data_folder(Domain::kLocal);
 
     std::filesystem::path file_path(model_path_str);
     file_path /= company_name;
