@@ -6,7 +6,7 @@ include(FetchContent)
 FetchContent_Declare(
     special-folders
     GIT_REPOSITORY "https://github.com/hansen-audio/special-folders.git"
-    GIT_TAG c056bf053a2c7de183ce2c9146e1575b144ed1d1
+    GIT_TAG b209cffd230a0d2c807837c4192f1cc72a943c58
 )
 
 FetchContent_MakeAvailable(special-folders)
