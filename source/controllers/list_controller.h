@@ -45,15 +45,15 @@ public:
     ~ListController();
 
     void PLUGIN_API update(FUnknown* /*changedUnknown*/,
-                           Steinberg::int32 /*message*/) override {};
+                           Steinberg::int32 /*message*/) override{};
     View* verifyView(View* view,
                      const UIAttributes& attributes,
                      const IUIDescription* description) override;
 
     // IControlListener
-    void valueChanged(Control* /*pControl*/) override {};
-    void controlBeginEdit(Control* /*pControl*/) override {};
-    void controlEndEdit(Control* /*pControl*/) override {};
+    void valueChanged(Control* /*pControl*/) override{};
+    void controlBeginEdit(Control* /*pControl*/) override{};
+    void controlEndEdit(Control* /*pControl*/) override{};
     IController*
     createSubController(UTF8StringPtr name,
                         const IUIDescription* description) override;
@@ -70,10 +70,9 @@ private:
     void on_region_selected_by_host(Id region_id);
     auto create_list_item_view(const Id id) -> VSTGUI::CView*;
 
-    RowColumnView* rowColView    = nullptr;
-    const IUIDescription* uidesc = nullptr;
-
+    RowColumnView* rowColView         = nullptr;
     ARADocumentController* controller = nullptr;
+    const IUIDescription* uidesc      = nullptr;
     OptPlaybackRegionId playback_region_id;
 
     RegionLifetimeCallback::Handle lifetime_observer_handle;

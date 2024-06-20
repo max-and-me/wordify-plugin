@@ -23,8 +23,8 @@ constexpr size_t PLAYBACK_REGION_ID_ATTR = 'prid';
 constexpr auto REGION_VIEW_TEMPLATE      = "RegionTemplate";
 
 //------------------------------------------------------------------------
-static auto find_region_view_by_id(const CRowColumnView& rowColView,
-                                   Id pbr_id) -> CView*
+static auto find_region_view_by_id(const CRowColumnView& rowColView, Id pbr_id)
+    -> CView*
 {
     CView* viewToFind = nullptr;
     rowColView.forEachChild([&, pbr_id](CView* view) {
@@ -378,7 +378,6 @@ void ListController::on_focus_word(
     if (toFind == nullptr)
         return;
 
-    using State   = WordButton::State;
     using Buttons = std::vector<WordButton*>;
     if (const auto* container = toFind->asViewContainer())
     {
