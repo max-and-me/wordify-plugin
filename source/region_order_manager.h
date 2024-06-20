@@ -4,8 +4,11 @@
 
 #pragma once
 
-#include "eventpp/callbacklist.h"
 #include "meta_words_playback_region.h"
+#include "supress_warnings.h"
+BEGIN_SUPRESS_WARNINGS
+#include "eventpp/callbacklist.h"
+END_SUPRESS_WARNINGS
 
 namespace mam {
 
@@ -33,8 +36,8 @@ public:
 
     using FuncStartInPlaybackTime = std::function<double(Id)>;
 
-    auto
-    initialize(FuncStartInPlaybackTime&& start_in_playback_time_func) -> bool;
+    auto initialize(FuncStartInPlaybackTime&& start_in_playback_time_func)
+        -> bool;
     auto get_order_subject() -> OrderSubject*
     {
         return &playback_region_order_subject;
