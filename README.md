@@ -4,6 +4,8 @@
 
 Wordify is an ARA / VST 3 plug-in. It transcribes (speech to text) selected clips from the project in a chat-like manner. Clicking on a word, locates to the time position where the word is spoken. An intelligent search makes it possible to quickly find spoken words in clips.
 
+![Wordify](https://wordify.org/assets/hero-main/wordify-hero-image.png)
+
 ## Getting Started
 
 To clone and create the project, open a command prompt and proceed as follows:
