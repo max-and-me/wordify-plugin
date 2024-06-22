@@ -4,6 +4,7 @@
 #include "mam/meta_words/runner.h"
 #include "supress_warnings.h"
 #include "whipser_cpp_wrapper.h"
+#include <algorithm>
 #include <array>
 #include <future>
 #include <optional>
@@ -125,8 +126,8 @@ struct TaskManager
 
     auto initialise(FuncTaskCount&& task_count_func) -> bool;
     auto terminate() -> void;
-    auto append_task(const InputData& input_data,
-                     FuncFinished&& finished_func) -> Id;
+    auto append_task(const InputData& input_data, FuncFinished&& finished_func)
+        -> Id;
     auto cancel_task(Id task_id) -> bool;
     auto count_tasks() const -> size_t;
 
@@ -298,8 +299,8 @@ auto terminate() -> void
 }
 
 //------------------------------------------------------------------------
-auto append_task(const InputData& input_data,
-                 FuncFinished&& finished_func) -> Id
+auto append_task(const InputData& input_data, FuncFinished&& finished_func)
+    -> Id
 {
     return TaskManager::instance().append_task(input_data,
                                                std::move(finished_func));
