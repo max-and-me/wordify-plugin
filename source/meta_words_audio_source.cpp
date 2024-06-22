@@ -254,10 +254,14 @@ void AudioSource::updateRenderSampleCache()
     write_audio_to_file(*this, path);
 
     // Start analyse task on temporary audio file
-    task_id = task_managing::append_task(path, [&](auto meta_words_) {
-        meta_words = meta_words_;
-        end_analysis();
-    });
+    task_id =
+        task_managing::append_task(path, [&](const auto& expected_result) {
+            if (expected_result.was_canceled)
+                return;
+
+            meta_words = expected_result.data;
+            end_analysis();
+        });
 
     begin_analysis();
 }

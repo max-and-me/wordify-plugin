@@ -82,13 +82,14 @@ auto do_work(Worker& worker) -> void
     if (worker.future_result.wait_for(std::chrono::seconds(0)) ==
         std::future_status::ready)
     {
+        bool was_canceled  = worker.is_canceled;
         worker.is_canceled = false;
         auto meta_words    = worker.future_result.get();
 
         if (worker.optional_task.has_value())
         {
             auto& task = worker.optional_task.value();
-            task.finished_callback(meta_words);
+            task.finished_callback({was_canceled, meta_words});
             worker.optional_task.reset();
         }
     }

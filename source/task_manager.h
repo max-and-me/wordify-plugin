@@ -9,16 +9,22 @@
 namespace mam::task_managing {
 
 //------------------------------------------------------------------------
+using ResultData = meta_words::MetaWords;
+struct Expected
+{
+    bool was_canceled = false;
+    ResultData data;
+};
+
 using PathType      = StringType;
-using ResultData    = meta_words::MetaWords;
 using InputData     = PathType;
-using FuncFinished  = std::function<void(const ResultData&)>;
+using FuncFinished  = std::function<void(const Expected&)>;
 using FuncTaskCount = std::function<void(size_t)>;
 
 auto initialise(FuncTaskCount&& task_count_callback) -> bool;
 auto terminate() -> void;
-auto append_task(const InputData& input_data,
-                 FuncFinished&& finished_callback) -> Id;
+auto append_task(const InputData& input_data, FuncFinished&& finished_callback)
+    -> Id;
 auto cancel_task(Id task_id) -> bool;
 auto count_tasks() -> size_t;
 
