@@ -200,6 +200,8 @@ auto SearchEngine::search(const StringType& search_word,
 {
     if (!get_regions)
         return;
+    
+    this->clear_results();
 
     const auto& results =
         detail::search(search_word, get_regions(), std::move(match_func));
