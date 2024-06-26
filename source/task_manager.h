@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "eventpp/callbacklist.h"
 #include "mam/meta_words/meta_word.h"
 #include "wordify_types.h"
 #include <functional>
@@ -16,17 +17,16 @@ struct Expected
     ResultData data;
 };
 
-using PathType      = StringType;
-using InputData     = PathType;
-using FuncFinished  = std::function<void(const Expected&)>;
-using FuncTaskCount = std::function<void(size_t)>;
+using PathType          = StringType;
+using InputData         = PathType;
+using FuncFinished      = std::function<void(const Expected&)>;
+using TaskCountCallback = eventpp::CallbackList<void(const size_t)>;
 
-auto initialise(FuncTaskCount&& task_count_callback) -> bool;
-auto terminate() -> void;
 auto append_task(const InputData& input_data, FuncFinished&& finished_callback)
     -> Id;
 auto cancel_task(Id task_id) -> bool;
 auto count_tasks() -> size_t;
+auto get_task_count_callback() -> TaskCountCallback*;
 
 //------------------------------------------------------------------------
 } // namespace mam::task_managing

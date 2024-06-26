@@ -177,9 +177,12 @@ static auto set_dark_scheme_on_editors(WordifySingleComponent::Editors& editors,
 static auto update_task_count_param(size_t count,
                                     WordifySingleComponent* component)
 {
-    auto p = component->getParameterObject(ParamIds::kParamIdAnalyzeTaskCount);
-    const auto norm = p->toNormalized(static_cast<Vst::ParamValue>(count));
-    p->setNormalized(norm);
+    if (auto p =
+            component->getParameterObject(ParamIds::kParamIdAnalyzeTaskCount))
+    {
+        const auto norm = p->toNormalized(static_cast<Vst::ParamValue>(count));
+        p->setNormalized(norm);
+    }
 }
 
 //------------------------------------------------------------------------
@@ -218,9 +221,8 @@ tresult PLUGIN_API WordifySingleComponent::terminate()
     // Here the Plug-in will be de-instantiated, last possibility to remove
     // some memory!
 
-    task_managing::terminate();
-
     store_parameters();
+    task_managing::get_task_count_callback()->remove(task_count_handle);
 
     for (auto i = 0; i < parameters.getParameterCount(); i++)
     {
@@ -357,18 +359,6 @@ VSTGUI::IController* WordifySingleComponent::createSubController(
     }
     else if (VSTGUI::UTF8StringView(name) == "SpinnerController")
     {
-        // TODO: Needs improvement!
-        if (auto p = getParameterObject(ParamIds::kParamIdAnalyzeTaskCount))
-        {
-            const auto num_tasks =
-                static_cast<Vst::ParamValue>(task_managing::count_tasks());
-            const auto norm = p->toNormalized(num_tasks);
-            p->setNormalized(norm);
-        }
-
-        task_managing::initialise(
-            [&](size_t count) { update_task_count_param(count, this); });
-
         return new SpinnerController(
             document_controller,
             getParameterObject(ParamIds::kParamIdAnalyzeTaskCount));
@@ -527,6 +517,14 @@ auto WordifySingleComponent::restore_parameters() -> void
     {
         parameters.addParameter(p);
         p->addDependent(this);
+
+        const auto num_tasks =
+            static_cast<Vst::ParamValue>(task_managing::count_tasks());
+        const auto norm = p->toNormalized(num_tasks);
+        p->setNormalized(norm);
+
+        task_count_handle = task_managing::get_task_count_callback()->append(
+            [&](size_t count) { update_task_count_param(count, this); });
     }
 }
 

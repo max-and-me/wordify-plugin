@@ -125,8 +125,6 @@ struct TaskManager
         return inst;
     }
 
-    auto initialise(FuncTaskCount&& task_count_func) -> bool;
-    auto terminate() -> void;
     auto append_task(const InputData& input_data, FuncFinished&& finished_func)
         -> Id;
     auto cancel_task(Id task_id) -> bool;
@@ -136,9 +134,9 @@ struct TaskManager
     auto work() -> void;
     auto assign_next_tasks() -> void;
 
-    FuncTaskCount task_count_callback;
     WorkerList workers;
     TaskList tasks;
+    TaskCountCallback task_count_callback;
 
     Steinberg::IPtr<Steinberg::Timer> timer;
     static Id next_task_id;
@@ -146,22 +144,6 @@ struct TaskManager
 
 //------------------------------------------------------------------------
 Id TaskManager::next_task_id = 0;
-auto TaskManager::initialise(FuncTaskCount&& task_count_callback_) -> bool
-{
-    task_count_callback = task_count_callback_;
-    return true;
-}
-
-//------------------------------------------------------------------------
-auto TaskManager::terminate() -> void
-{
-    task_count_callback = nullptr;
-    tasks.clear();
-    for (auto& worker : workers)
-    {
-        cancel(worker);
-    }
-}
 
 //------------------------------------------------------------------------
 auto TaskManager::append_task(const InputData& input_data,
@@ -288,18 +270,6 @@ auto TaskManager::count_tasks() const -> size_t
 } // namespace
 
 //------------------------------------------------------------------------
-auto initialise(FuncTaskCount&& task_count_func) -> bool
-{
-    return TaskManager::instance().initialise(std::move(task_count_func));
-}
-
-//------------------------------------------------------------------------
-auto terminate() -> void
-{
-    TaskManager::instance().terminate();
-}
-
-//------------------------------------------------------------------------
 auto append_task(const InputData& input_data, FuncFinished&& finished_func)
     -> Id
 {
@@ -317,6 +287,13 @@ auto cancel_task(Id task_id) -> bool
 auto count_tasks() -> size_t
 {
     return TaskManager::instance().count_tasks();
+}
+
+//------------------------------------------------------------------------
+auto get_task_count_callback() -> TaskCountCallback*
+{
+
+    return &TaskManager::instance().task_count_callback;
 }
 
 //------------------------------------------------------------------------

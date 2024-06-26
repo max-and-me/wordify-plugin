@@ -5,6 +5,7 @@
 #pragma once
 
 #include "supress_warnings.h"
+#include "task_manager.h"
 
 BEGIN_SUPRESS_WARNINGS
 #include "ARA_API/ARAVST3.h"
@@ -117,6 +118,7 @@ protected:
     auto store_parameters() -> void;
 
     bool dark_scheme = false;
+    task_managing::TaskCountCallback::Handle task_count_handle;
 };
 
 //------------------------------------------------------------------------
