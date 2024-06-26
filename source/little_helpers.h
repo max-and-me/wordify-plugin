@@ -4,11 +4,16 @@
 
 #pragma once
 
-#include "fmt/format.h"
-#include "vstgui/lib/ccolor.h"
+#include "supress_warnings.h"
 #include "wordify_types.h"
 #include <chrono>
 #include <optional>
+BEGIN_SUPRESS_WARNINGS
+#include "fmt/format.h"
+#include "vstgui/lib/animation/animator.h"
+#include "vstgui/lib/ccolor.h"
+#include "vstgui/lib/cframe.h"
+END_SUPRESS_WARNINGS
 
 namespace mam {
 
@@ -88,6 +93,22 @@ auto to_time_display_string(T seconds) -> TimeDisplayString
 
     return output;
 }
+
+//------------------------------------------------------------------------
+#if __linux__
+inline auto fix_crash_on_linux(VSTGUI::CView* view) -> void
+{
+    /**
+     * Temporary workaround:
+     * By calling 'onTimer(...)' after removing the view animtation, the
+     * animator will remove itself from the timer by using the platform
+     * frame. If we don't do that here, there is an ASSERT hitting which
+     * leads to a crash later.
+     */
+    if (view->getFrame()->getAnimator())
+        view->getFrame()->getAnimator()->onTimer();
+}
+#endif
 
 //------------------------------------------------------------------------
 

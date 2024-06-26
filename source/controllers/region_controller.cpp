@@ -12,6 +12,7 @@ BEGIN_SUPRESS_WARNINGS
 #include "vstgui/lib/animation/timingfunctions.h"
 #include "vstgui/lib/ccolor.h"
 #include "vstgui/lib/cfont.h"
+#include "vstgui/lib/cframe.h"
 #include "vstgui/lib/controls/cbuttons.h"
 #include "vstgui/lib/controls/ctextlabel.h"
 #include "vstgui/lib/cpoint.h"
@@ -292,6 +293,10 @@ class LoadingIndicatorAnimationHandler : public ViewListenerAdapter
     {
         if (view)
             view->removeAnimation(WaveAnimation::ANIMATION_ID);
+
+#if __linux__
+        fix_crash_on_linux(view);
+#endif
     }
 
     void viewWillDelete(CView* view) override

@@ -1,6 +1,8 @@
 // Copyright(c) 2024 Max And Me.
 
 #include "spinner_controller.h"
+#include "little_helpers.h"
+#include "supress_warnings.h"
 #include "views/spinner_view.h"
 #include "views/view_animations.h"
 #include "wordify_types.h"
@@ -10,6 +12,7 @@ BEGIN_SUPRESS_WARNINGS
 #include "public.sdk/source/vst/utility/stringconvert.h"
 #include "public.sdk/source/vst/vstparameters.h"
 #include "vstgui/lib/animation/timingfunctions.h"
+#include "vstgui/lib/cframe.h"
 #include "vstgui/lib/controls/ctextlabel.h"
 #include "vstgui/uidescription/iuidescription.h"
 #include "vstgui/uidescription/uiattributes.h"
@@ -77,6 +80,9 @@ struct SpinnerViewListener : ViewListenerAdapter
         if (dynamic_cast<SpinnerView*>(view))
         {
             view->removeAnimation(SpinAnimation::ANIMATION_ID);
+#if __linux__
+            fix_crash_on_linux(view);
+#endif
         }
     }
 
