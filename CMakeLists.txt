@@ -310,21 +310,21 @@ set_target_properties(main PROPERTIES
     OUTPUT_NAME "WordifyWorker"
 )
 
+smtg_target_setup_universal_binary(ARA_PlugIn_Library)
+smtg_target_setup_universal_binary(common)
 smtg_target_setup_universal_binary(fmt)
+smtg_target_setup_universal_binary(main)
+smtg_target_setup_universal_binary(meta-words)
 smtg_target_setup_universal_binary(nlohmann_json)
 smtg_target_setup_universal_binary(presonus-plugin-extensions)
 smtg_target_setup_universal_binary(samplerate)
-smtg_target_setup_universal_binary(special-folders)
-smtg_target_setup_universal_binary(wave-draw)
-smtg_target_setup_universal_binary(vstgui_support)
-smtg_target_setup_universal_binary(ARA_PlugIn_Library)
-smtg_target_setup_universal_binary(tiny-process-library)
 smtg_target_setup_universal_binary(sndfile)
-smtg_target_setup_universal_binary(meta-words)
+smtg_target_setup_universal_binary(special-folders)
+smtg_target_setup_universal_binary(tiny-process-library)
+smtg_target_setup_universal_binary(vstgui_support)
+smtg_target_setup_universal_binary(wave-draw)
 smtg_target_setup_universal_binary(whereami)
-smtg_target_setup_universal_binary(main)
 smtg_target_setup_universal_binary(whisper)
-smtg_target_setup_universal_binary(common)
 
 # Copy WordifyWorker next to our Wordify executable
 add_custom_command(
