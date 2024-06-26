@@ -207,6 +207,7 @@ set_property(
     TARGET
         ARA_PlugIn_Library
         common
+        eventpp
         fmt
         main
         meta-words
