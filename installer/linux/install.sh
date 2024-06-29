@@ -11,7 +11,7 @@ SRCPATH=$(pwd)
 
 # From the VST3 documentation
 VST3DIR="$HOME/.vst3"
-VST3PRESETSDIR="/usr/share/vst3/presets"
+WordifyData="$HOME/WordifyOrg"
 mkdir -p ${VST3DIR}
 
 # Help will be show when -h|--help
@@ -50,10 +50,10 @@ install()
         else echo "  ...failed!"
     fi
 
-    SOURCE="${SRCPATH}/presets"
-    TARGET="${VST3PRESETSDIR}"
-    echo "  Copy ${PRODUCT_NAME} presets to ${VST3PRESETSDIR}/$COMPANY_NAME ... "
-    if sudo mkdir -p "${TARGET}" && sudo cp -R "${SOURCE}/." "$_" # $_ is return of mkdir
+    SOURCE="${SRCPATH}/WordifyOrg"
+    TARGET="${WordifyData}"
+    echo "  Copy ${PRODUCT_NAME} presets to ${WordifyData}/$COMPANY_NAME ... "
+    if mkdir -p "${TARGET}" && cp -R "${SOURCE}/." "$_" # $_ is return of mkdir
         then echo "  ...done!"
         else echo "  ...failed!"
     fi
