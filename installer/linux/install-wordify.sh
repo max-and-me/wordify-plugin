@@ -11,7 +11,7 @@ SRCPATH=$(pwd)
 
 # From the VST3 documentation
 VST3DIR="$HOME/.vst3"
-WordifyData="$HOME/WordifyOrg"
+DATADIR="$HOME/$COMPANY_NAME"
 mkdir -p ${VST3DIR}
 
 # Help will be show when -h|--help
@@ -50,9 +50,9 @@ install()
         else echo "  ...failed!"
     fi
 
-    SOURCE="${SRCPATH}/WordifyOrg"
-    TARGET="${WordifyData}"
-    echo "  Copy ${PRODUCT_NAME} ModelData to ${WordifyData}/$COMPANY_NAME ... "
+    SOURCE="${SRCPATH}/${COMPANY_NAME}"
+    TARGET="${DATADIR}"
+    echo "  Copy ${PRODUCT_NAME} data to ${DATADIR} ... "
     if mkdir -p "${TARGET}" && cp -R "${SOURCE}/." "$_" # $_ is return of mkdir
         then echo "  ...done!"
         else echo "  ...failed!"
