@@ -21,6 +21,7 @@ endif()
 
 option(SMTG_ENABLE_VST3_PLUGIN_EXAMPLES "Enable VST 3 Plug-in Examples" OFF)
 option(SMTG_ENABLE_VST3_HOSTING_EXAMPLES "Enable VST 3 Hosting Examples" OFF)
+option(SMTG_CREATE_PLUGIN_LINK $<IF:$<CONFIG:Debug>,ON,OFF>)
 if(WIN32)
     option(SMTG_CREATE_PLUGIN_LINK OFF)
 endif()
