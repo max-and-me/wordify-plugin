@@ -52,7 +52,7 @@ install()
 
     SOURCE="${SRCPATH}/WordifyOrg"
     TARGET="${WordifyData}"
-    echo "  Copy ${PRODUCT_NAME} presets to ${WordifyData}/$COMPANY_NAME ... "
+    echo "  Copy ${PRODUCT_NAME} ModelData to ${WordifyData}/$COMPANY_NAME ... "
     if mkdir -p "${TARGET}" && cp -R "${SOURCE}/." "$_" # $_ is return of mkdir
         then echo "  ...done!"
         else echo "  ...failed!"

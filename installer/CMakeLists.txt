@@ -38,13 +38,26 @@ list(APPEND CPACK_COMPONENTS_ALL modeldata)
 
 message(STATUS "[MAM] MAM_MODEL_DATA_FOLDER: ${MAM_MODEL_DATA_FOLDER}")
 
-if(LINUX)
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     install(
         FILES 
             "${CPACK_RESOURCE_FILE_LICENSE}"
-            "linux/install.sh"
         DESTINATION .
         COMPONENT vst3plugin
+        PERMISSIONS 
+            OWNER_WRITE OWNER_READ 
+            GROUP_READ 
+            WORLD_READ
+    )
+    install(
+        FILES 
+            "linux/install-wordify.sh"
+        DESTINATION .
+        COMPONENT vst3plugin
+        PERMISSIONS 
+            OWNER_EXECUTE OWNER_WRITE OWNER_READ 
+            GROUP_READ GROUP_EXECUTE 
+            WORLD_READ WORLD_EXECUTE
     )
 endif()
 
