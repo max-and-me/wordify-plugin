@@ -38,4 +38,14 @@ list(APPEND CPACK_COMPONENTS_ALL modeldata)
 
 message(STATUS "[MAM] MAM_MODEL_DATA_FOLDER: ${MAM_MODEL_DATA_FOLDER}")
 
+if(LINUX)
+    install(
+        FILES 
+            "${CPACK_RESOURCE_FILE_LICENSE}"
+            "linux/install.sh"
+        DESTINATION .
+        COMPONENT vst3plugin
+    )
+endif()
+
 include(CPack)
