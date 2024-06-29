@@ -333,6 +333,7 @@ add_custom_command(
     COMMAND ${CMAKE_COMMAND} -E copy
         "$<TARGET_FILE:main>"
         "$<TARGET_FILE_DIR:Wordify>"
+    COMMAND chmod +x "$<TARGET_FILE_DIR:Wordify>/WordifyWorker"
 )
 
 # Dependency Graph
