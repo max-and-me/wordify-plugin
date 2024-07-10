@@ -202,13 +202,11 @@ auto TaskManager::cancel_task(Id task_id) -> bool
 //------------------------------------------------------------------------
 auto TaskManager::work() -> void
 {
-    bool stop_work_timer = true;
     for (auto& worker : workers)
     {
         do_work(worker);
         if (worker.optional_task.has_value())
         {
-            stop_work_timer = false;
             continue;
         }
 
@@ -218,7 +216,7 @@ auto TaskManager::work() -> void
         assign_next_tasks();
     }
 
-    if (stop_work_timer)
+    if (count_tasks() == 0)
         timer = nullptr;
 }
 
