@@ -2,13 +2,13 @@
 
 #include "spinner_controller.h"
 #include "little_helpers.h"
-#include "supress_warnings.h"
+#include "warn_cpp/suppress_warnings.h"
 #include "views/spinner_view.h"
 #include "views/view_animations.h"
 #include "wordify_types.h"
 #include <cassert>
 #include <limits>
-BEGIN_SUPRESS_WARNINGS
+BEGIN_SUPPRESS_WARNINGS
 #include "public.sdk/source/vst/utility/stringconvert.h"
 #include "public.sdk/source/vst/vstparameters.h"
 #include "vstgui/lib/animation/timingfunctions.h"
@@ -16,7 +16,7 @@ BEGIN_SUPRESS_WARNINGS
 #include "vstgui/lib/controls/ctextlabel.h"
 #include "vstgui/uidescription/iuidescription.h"
 #include "vstgui/uidescription/uiattributes.h"
-END_SUPRESS_WARNINGS
+END_SUPPRESS_WARNINGS
 
 using namespace VSTGUI;
 

@@ -1,8 +1,5 @@
 cmake_minimum_required(VERSION 3.25.0)
 
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules")
-include(MAM_TargetCompileOptions)
-
 set(CMAKE_OSX_DEPLOYMENT_TARGET 10.15 CACHE STRING "")
 string(TIMESTAMP VERSION_NOW "%Y.%m") # VERSION_NOW e.g. 2023.08
 
@@ -82,7 +79,6 @@ smtg_add_vst3plugin(Wordify
     source/search_engine.h
     source/string_matcher.cpp
     source/string_matcher.h
-    source/supress_warnings.h
     source/task_manager.cpp
     source/task_manager.h
     source/tiny_selection_model.h
@@ -173,8 +169,9 @@ target_link_libraries(Wordify
         sdk
         sndfile
         special-folders
-        wave-draw
         vstgui_support
+        warn-cpp
+        wave-draw
         whereami
 )
 
@@ -201,7 +198,7 @@ target_include_directories(Wordify
         source
 )
 
-mam_target_compile_options(Wordify)
+mam_target_compile_warnings(Wordify)
 
 set_property(
     TARGET

@@ -2,13 +2,13 @@
 
 #include "whipser_cpp_wrapper.h"
 #include "hao/special_folders/special_folders.h"
-#include "supress_warnings.h"
+#include "warn_cpp/suppress_warnings.h"
 #include "wordify_defines.h"
 #include <filesystem>
-BEGIN_SUPRESS_WARNINGS
+BEGIN_SUPPRESS_WARNINGS
 #include "base/source/fdebug.h"
 #include "whereami.h"
-END_SUPRESS_WARNINGS
+END_SUPPRESS_WARNINGS
 
 using namespace hao::special_folders;
 

@@ -4,14 +4,14 @@
 
 #include "audio_buffer_management.h"
 #include "mam/meta_words/meta_word.h"
-#include "supress_warnings.h"
+#include "warn_cpp/suppress_warnings.h"
 #include "wordify_types.h"
 #include <future>
 #include <optional>
-BEGIN_SUPRESS_WARNINGS
+BEGIN_SUPPRESS_WARNINGS
 #include "ARA_Library/PlugIn/ARAPlug.h"
 #include "base/source/timer.h"
-END_SUPRESS_WARNINGS
+END_SUPPRESS_WARNINGS
 
 namespace mam::meta_words {
 

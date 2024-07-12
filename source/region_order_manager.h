@@ -5,10 +5,10 @@
 #pragma once
 
 #include "meta_words_playback_region.h"
-#include "supress_warnings.h"
-BEGIN_SUPRESS_WARNINGS
+#include "warn_cpp/suppress_warnings.h"
+BEGIN_SUPPRESS_WARNINGS
 #include "eventpp/callbacklist.h"
-END_SUPRESS_WARNINGS
+END_SUPPRESS_WARNINGS
 
 namespace mam {
 

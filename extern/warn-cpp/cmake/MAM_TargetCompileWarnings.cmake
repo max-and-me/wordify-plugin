@@ -53,8 +53,3 @@ function(mam_target_compile_warnings my_target)
         message(FATAL_ERROR "[MAM] Unknown compiler ID: ${CMAKE_CXX_COMPILER_ID}")
     endif()
 endfunction()
-
-function (mam_target_compile_options my_target)
-    message(STATUS "[MAM] CMAKE_CXX_COMPILER_ID: ${CMAKE_CXX_COMPILER_ID}")
-    mam_target_compile_warnings(${my_target})
-endfunction()

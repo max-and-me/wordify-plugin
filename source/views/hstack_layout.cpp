@@ -1,10 +1,11 @@
 // Copyright(c) 2024 Max And Me.
 
 #include "hstack_layout.h"
+#include "warn_cpp/suppress_warnings.h"
 #include <vector>
-BEGIN_SUPRESS_WARNINGS
+BEGIN_SUPPRESS_WARNINGS
 #include "vstgui/lib/controls/ccontrol.h"
-END_SUPRESS_WARNINGS
+END_SUPPRESS_WARNINGS
 
 namespace mam {
 

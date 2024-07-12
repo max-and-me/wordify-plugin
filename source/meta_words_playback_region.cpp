@@ -2,10 +2,11 @@
 
 #include "meta_words_playback_region.h"
 #include "meta_words_audio_source.h"
+#include "warn_cpp/suppress_warnings.h"
 #include <array>
-BEGIN_SUPRESS_WARNINGS
+BEGIN_SUPPRESS_WARNINGS
 #include "ARA_Library/PlugIn/ARAPlug.h"
-END_SUPRESS_WARNINGS
+END_SUPPRESS_WARNINGS
 
 namespace mam::meta_words {
 

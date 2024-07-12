@@ -2,14 +2,15 @@
 
 #include "preferences_controller.h"
 #include "ara_document_controller.h"
+#include "warn_cpp/suppress_warnings.h"
 #include "version.h"
 #include "wordify_types.h"
 #include <string>
-BEGIN_SUPRESS_WARNINGS
+BEGIN_SUPPRESS_WARNINGS
 #include "public.sdk/source/vst/vstparameters.h"
 #include "vstgui/lib/controls/coptionmenu.h"
 #include "vstgui/uidescription/uiattributes.h"
-END_SUPRESS_WARNINGS
+END_SUPPRESS_WARNINGS
 
 #ifdef WIN32
 #include <windows.h>

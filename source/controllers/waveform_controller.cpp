@@ -2,10 +2,10 @@
 
 #include "waveform_controller.h"
 #include <optional>
-BEGIN_SUPRESS_WARNINGS
+BEGIN_SUPPRESS_WARNINGS
 #include "vstgui/lib/cgradientview.h"
 #include "vstgui/uidescription/uiattributes.h"
-END_SUPRESS_WARNINGS
+END_SUPPRESS_WARNINGS
 
 namespace mam {
 using namespace ::VSTGUI;

@@ -11,17 +11,18 @@
 #include "meta_words_playback_renderer.h"
 #include "parameter_ids.h"
 #include "preferences_serde.h"
+#include "warn_cpp/suppress_warnings.h"
 #include "task_manager.h"
 #include "wordify_cids.h"
 #include "wordify_defines.h"
 #include <optional>
-BEGIN_SUPRESS_WARNINGS
+BEGIN_SUPPRESS_WARNINGS
 #include "ara_document_controller.h"
 #include "base/source/fstreamer.h"
 #include "pluginterfaces/vst/ivstparameterchanges.h"
 #include "pluginterfaces/vst/ivstprocesscontext.h"
 #include "vstgui/uidescription/uidescription.h"
-END_SUPRESS_WARNINGS
+END_SUPPRESS_WARNINGS
 
 using namespace Steinberg;
 

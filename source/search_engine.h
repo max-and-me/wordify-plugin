@@ -3,15 +3,15 @@
 #pragma once
 
 #include "meta_words_playback_region.h"
-#include "supress_warnings.h"
+#include "warn_cpp/suppress_warnings.h"
 #include "wordify_types.h"
 #include <functional>
 #include <map>
 #include <optional>
 #include <vector>
-BEGIN_SUPRESS_WARNINGS
+BEGIN_SUPPRESS_WARNINGS
 #include "eventpp/callbacklist.h"
-END_SUPRESS_WARNINGS
+END_SUPPRESS_WARNINGS
 
 namespace mam::meta_words {
 class PlaybackRegion;

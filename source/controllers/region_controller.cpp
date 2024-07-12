@@ -3,11 +3,12 @@
 #include "region_controller.h"
 #include "little_helpers.h"
 #include "region_data.h"
+#include "warn_cpp/suppress_warnings.h"
 #include "views/hstack_layout.h"
 #include "views/word_button.h"
 #include <cmath>
 #include <optional>
-BEGIN_SUPRESS_WARNINGS
+BEGIN_SUPPRESS_WARNINGS
 #include "vstgui/lib/animation/ianimationtarget.h"
 #include "vstgui/lib/animation/timingfunctions.h"
 #include "vstgui/lib/ccolor.h"
@@ -23,7 +24,7 @@ BEGIN_SUPRESS_WARNINGS
 #include "vstgui/uidescription/detail/uiviewcreatorattributes.h"
 #include "vstgui/uidescription/iviewfactory.h"
 #include "vstgui/uidescription/uiattributes.h"
-END_SUPRESS_WARNINGS
+END_SUPPRESS_WARNINGS
 
 using namespace VSTGUI;
 

@@ -4,16 +4,16 @@
 
 #pragma once
 
-#include "supress_warnings.h"
+#include "warn_cpp/suppress_warnings.h"
 #include "wordify_types.h"
 #include <chrono>
 #include <optional>
-BEGIN_SUPRESS_WARNINGS
+BEGIN_SUPPRESS_WARNINGS
 #include "fmt/format.h"
 #include "vstgui/lib/animation/animator.h"
 #include "vstgui/lib/ccolor.h"
 #include "vstgui/lib/cframe.h"
-END_SUPRESS_WARNINGS
+END_SUPPRESS_WARNINGS
 
 namespace mam {
 

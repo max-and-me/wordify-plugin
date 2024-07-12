@@ -4,14 +4,14 @@
 
 #include "ara_document_controller.h"
 #include "nonstd.h"
-#include "supress_warnings.h"
+#include "warn_cpp/suppress_warnings.h"
 #include "views/waveform_view.h"
-BEGIN_SUPRESS_WARNINGS
+BEGIN_SUPPRESS_WARNINGS
 #include "base/source/fobject.h"
 #include "eventpp/callbacklist.h"
 #include "vstgui/lib/iviewlistener.h"
 #include "vstgui/uidescription/icontroller.h"
-END_SUPRESS_WARNINGS
+END_SUPPRESS_WARNINGS
 
 namespace VSTGUI {
 class CListControl;

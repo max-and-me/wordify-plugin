@@ -16,6 +16,7 @@ add_subdirectory(vst3sdk)
 add_subdirectory(wave-draw)
 add_subdirectory(special-folders)
 add_subdirectory(vst3-cpack)
+add_subdirectory(warn-cpp)
 add_subdirectory(whereami)
 
 

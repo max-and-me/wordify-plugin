@@ -7,12 +7,12 @@
 #include "meta_words_playback_region.h"
 #include "region_data.h"
 #include "region_order_manager.h"
-#include "supress_warnings.h"
+#include "warn_cpp/suppress_warnings.h"
 #include "tiny_selection_model.h"
-BEGIN_SUPRESS_WARNINGS
+BEGIN_SUPPRESS_WARNINGS
 #include "ARA_Library/PlugIn/ARAPlug.h"
 #include "eventpp/callbacklist.h"
-END_SUPRESS_WARNINGS
+END_SUPPRESS_WARNINGS
 
 namespace mam {
 namespace meta_words {

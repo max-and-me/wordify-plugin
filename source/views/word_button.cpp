@@ -1,10 +1,11 @@
 // Copyright(c) 2024 Max And Me.
 
+#include "warn_cpp/suppress_warnings.h"
 #include "word_button.h"
-BEGIN_SUPRESS_WARNINGS
+BEGIN_SUPPRESS_WARNINGS
 #include "vstgui/lib/cdrawcontext.h"
 #include "vstgui/uidescription/uidescription.h"
-END_SUPRESS_WARNINGS
+END_SUPPRESS_WARNINGS
 
 using namespace VSTGUI;
 

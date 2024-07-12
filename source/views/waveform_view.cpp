@@ -3,11 +3,12 @@
 #include "waveform_view.h"
 #include "little_helpers.h"
 #include "mam/wave-draw/wave-draw.h"
+#include "warn_cpp/suppress_warnings.h"
 #include <optional>
-BEGIN_SUPRESS_WARNINGS
+BEGIN_SUPPRESS_WARNINGS
 #include "vstgui/lib/cdrawcontext.h"
 #include "vstgui/lib/cgraphicspath.h"
-END_SUPRESS_WARNINGS
+END_SUPPRESS_WARNINGS
 
 using namespace VSTGUI;
 

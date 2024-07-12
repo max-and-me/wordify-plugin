@@ -5,14 +5,15 @@
 #include "list_controller.h"
 #include "region_controller.h"
 #include "search_engine.h"
+#include "warn_cpp/suppress_warnings.h"
 #include "views/word_button.h"
-BEGIN_SUPRESS_WARNINGS
+BEGIN_SUPPRESS_WARNINGS
 #include "vstgui/lib/cframe.h"
 #include "vstgui/lib/controls/cbuttons.h"
 #include "vstgui/lib/crowcolumnview.h"
 #include "vstgui/lib/cscrollview.h"
 #include "vstgui/uidescription/iuidescription.h"
-END_SUPRESS_WARNINGS
+END_SUPPRESS_WARNINGS
 
 using namespace VSTGUI;
 

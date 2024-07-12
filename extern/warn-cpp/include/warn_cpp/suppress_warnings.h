@@ -11,16 +11,16 @@
 
 #if defined(_MSC_VER)
 // the global warning level is now 0 here
-#define BEGIN_SUPRESS_WARNINGS __pragma(warning(push, 0))
-#define END_SUPRESS_WARNINGS __pragma(warning(pop))
+#define BEGIN_SUPPRESS_WARNINGS __pragma(warning(push, 0))
+#define END_SUPPRESS_WARNINGS __pragma(warning(pop))
 #elif defined(__clang__)
-#define BEGIN_SUPRESS_WARNINGS                                                 \
+#define BEGIN_SUPPRESS_WARNINGS                                                 \
     _Pragma("clang diagnostic push")                                           \
         _Pragma("clang diagnostic ignored \"-Weverything\"")
-#define END_SUPRESS_WARNINGS _Pragma("clang diagnostic push")
+#define END_SUPPRESS_WARNINGS _Pragma("clang diagnostic push")
 #elif defined(__GNUC__) || defined(__GNUG__)
 // clang-format off
-#define BEGIN_SUPRESS_WARNINGS
+#define BEGIN_SUPPRESS_WARNINGS
     _Pragma("GCC diagnostic push") \
     _Pragma("GCC diagnostic ignored \"-Wconversion-null\"") \
     _Pragma("GCC diagnostic ignored \"-Wcast-align\"") \
@@ -60,5 +60,5 @@
     _Pragma("GCC diagnostic ignored \"-Wunused-value\"") \
     _Pragma("GCC diagnostic ignored \"-Wunused-variable\"")
 // clang-format on
-#define END_SUPRESS_WARNINGS _Pragma("gcc diagnostic push")
+#define END_SUPPRESS_WARNINGS _Pragma("gcc diagnostic push")
 #endif

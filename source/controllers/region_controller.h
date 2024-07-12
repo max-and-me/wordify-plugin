@@ -3,14 +3,14 @@
 #pragma once
 
 #include "region_data.h"
-#include "supress_warnings.h"
-BEGIN_SUPRESS_WARNINGS
+#include "warn_cpp/suppress_warnings.h"
+BEGIN_SUPPRESS_WARNINGS
 #include "base/source/fobject.h"
 #include "eventpp/callbacklist.h"
 #include "vstgui/lib/iviewlistener.h"
 #include "vstgui/uidescription/icontroller.h"
 #include "vstgui/uidescription/uiattributes.h"
-END_SUPRESS_WARNINGS
+END_SUPPRESS_WARNINGS
 
 namespace VSTGUI {
 class IUIDescription;

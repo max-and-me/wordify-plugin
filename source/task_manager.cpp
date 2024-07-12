@@ -2,15 +2,15 @@
 
 #include "task_manager.h"
 #include "mam/meta_words/runner.h"
-#include "supress_warnings.h"
+#include "warn_cpp/suppress_warnings.h"
 #include "whipser_cpp_wrapper.h"
 #include <algorithm>
 #include <array>
 #include <future>
 #include <optional>
-BEGIN_SUPRESS_WARNINGS
+BEGIN_SUPPRESS_WARNINGS
 #include "base/source/timer.h"
-END_SUPRESS_WARNINGS
+END_SUPPRESS_WARNINGS
 
 namespace mam::task_managing {
 namespace {

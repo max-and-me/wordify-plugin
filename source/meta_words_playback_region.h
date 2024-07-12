@@ -5,12 +5,12 @@
 #include "meta_words_audio_source.h"
 #include "nonstd.h"
 #include "region_data.h"
-#include "supress_warnings.h"
+#include "warn_cpp/suppress_warnings.h"
 #include "wordify_types.h"
 #include <optional>
-BEGIN_SUPRESS_WARNINGS
+BEGIN_SUPPRESS_WARNINGS
 #include "ARA_Library/PlugIn/ARAPlug.h"
-END_SUPRESS_WARNINGS
+END_SUPPRESS_WARNINGS
 
 namespace mam::meta_words {
 

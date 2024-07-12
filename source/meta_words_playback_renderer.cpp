@@ -3,10 +3,11 @@
 #include "meta_words_playback_renderer.h"
 #include "ara_document_controller.h"
 #include "meta_words_audio_source.h"
+#include "warn_cpp/suppress_warnings.h"
 #include <algorithm>
-BEGIN_SUPRESS_WARNINGS
+BEGIN_SUPPRESS_WARNINGS
 #include "ARA_Library/Utilities/ARASamplePositionConversion.h"
-END_SUPRESS_WARNINGS
+END_SUPPRESS_WARNINGS
 
 namespace mam::meta_words {
 

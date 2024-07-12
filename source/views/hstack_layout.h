@@ -2,11 +2,11 @@
 
 #pragma once
 
-#include "supress_warnings.h"
-BEGIN_SUPRESS_WARNINGS
+#include "warn_cpp/suppress_warnings.h"
+BEGIN_SUPPRESS_WARNINGS
 #include "vstgui/lib/cviewcontainer.h"
 #include "vstgui/lib/iviewlistener.h"
-END_SUPRESS_WARNINGS
+END_SUPPRESS_WARNINGS
 
 namespace VSTGUI {
 class CViewContainer;

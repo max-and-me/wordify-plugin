@@ -1,12 +1,12 @@
 // Copyright(c) 2024 Max And Me.
 
 #include "view_animations.h"
-#include "supress_warnings.h"
-BEGIN_SUPRESS_WARNINGS
+#include "warn_cpp/suppress_warnings.h"
+BEGIN_SUPPRESS_WARNINGS
 #include "vstgui/lib/animation/animations.h"
 #include "vstgui/lib/animation/timingfunctions.h"
 #include "vstgui/lib/cview.h"
-END_SUPRESS_WARNINGS
+END_SUPPRESS_WARNINGS
 
 namespace mam::animations {
 
