@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.20.0)
 
 # https://github.com/cpp-best-practices/cppbestpractices/blob/master/02-Use_the_Tools_Available.md
-function(mam_target_compile_warnings my_target)
+function(mam_target_compile_warnings_private my_target)
     if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
         target_compile_options(${my_target} PUBLIC
             /W4     # Baseline reasonable warnings
@@ -52,4 +52,10 @@ function(mam_target_compile_warnings my_target)
     else()
         message(FATAL_ERROR "[MAM] Unknown compiler ID: ${CMAKE_CXX_COMPILER_ID}")
     endif()
+endfunction()
+
+function(mam_target_compile_warnings)
+    foreach(arg_target IN LISTS ARGN)
+        mam_target_compile_warnings_private(${arg_target})
+    endforeach()
 endfunction()
