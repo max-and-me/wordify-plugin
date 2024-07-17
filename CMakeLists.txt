@@ -330,8 +330,15 @@ add_custom_command(
     COMMAND ${CMAKE_COMMAND} -E copy
         "$<TARGET_FILE:main>"
         "$<TARGET_FILE_DIR:Wordify>"
-    COMMAND chmod +x "$<TARGET_FILE_DIR:Wordify>/WordifyWorker"
 )
+
+if(CMAKE_SYSTEM_NAME MATCHES "Linux")
+    add_custom_command(
+        TARGET Wordify POST_BUILD
+        COMMENT "[MAM] chmod +x WordifyWorker"
+        COMMAND chmod +x "$<TARGET_FILE_DIR:Wordify>/WordifyWorker"
+    )
+endif()
 
 # Dependency Graph
 add_custom_target(${PROJECT_NAME}-dependency-graph
