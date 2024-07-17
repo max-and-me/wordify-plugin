@@ -23,7 +23,7 @@ cmake --build .
 ### macOS
 
 ```sh
-git clone git clone https://github.com/max-and-me/wordify-plugin.git
+git clone https://github.com/max-and-me/wordify-plugin.git
 mkdir build
 cd build
 cmake -GXcode ../wordify-plugin
@@ -33,7 +33,7 @@ cmake --build .
 ### Linux
 
 ```sh
-git clone git clone https://github.com/max-and-me/wordify-plugin.git
+git clone https://github.com/max-and-me/wordify-plugin.git
 mkdir build
 cd build
 cmake -DCMAKE_BUILD_TYPE=Debug ../wordify-plugin
