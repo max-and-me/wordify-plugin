@@ -6,7 +6,7 @@ include(FetchContent)
 FetchContent_Declare(
     meta-words
     GIT_REPOSITORY "https://github.com/max-and-me/meta-words.git"
-    GIT_TAG e9018d463d54e6a5cfe90a2e1622cdb573482846
+    GIT_TAG 342b816c0ffd4100996d07152fa45cfe9a5c90ef
 )
 
 FetchContent_MakeAvailable(meta-words)
