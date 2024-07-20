@@ -58,6 +58,22 @@ Execute CPack inside the CMake binary directory the ```project```.
 cpack -C Release -G <CPack_Generator> .
 ```
 
+### Setup whisper's AI model environment
+
+Wordify needs OpenAI's whisper library and AI models to work. It searches for the models in different locations depending on wether it is build in ```Debug``` or ```Release```.
+
+Location in ```Debug``` on:
+* all platforms ```/<path_to>/build/_deps/meta-words-build/whisper.cpp/models/ggml-base.en.bin```
+
+Location in ```Release``` on:
+* macOS  : ```/Library/Application Support/WordifyOrg/Wordify/ModelData/ggml-medium.bin```
+* Windows: ```C:\ProgramData\WordifyOrg\Wordify\ModelData\ggml-medium.bin```
+* Linux  : ```/home/<user>/WordifyOrg/Wordify/ModelData/ggml-medium.bin```
+
+> In ```Debug``` it uses the small and more inaccurate model ```ggml-base.en.bin``` to speed up debugging as whisper can get quite slow. 
+
+> Run the installer first when you want to build and run the ```Release``` version locally. Otherwise Wordify will not find the model. It needs to be installed first.
+
 ## Dependency Graph
 
 ![Alt text](doc/Wordify.dot.Wordify.png "Dependency Graph")
