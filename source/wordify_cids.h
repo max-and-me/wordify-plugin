@@ -14,7 +14,7 @@ static const Steinberg::FUID
 static const Steinberg::FUID
     kWordifyControllerUID(0xB7046436, 0x1AFA58A3, 0x99C5BA83, 0x7ED9EC1F);
 
-#define WordifyVST3Category "Fx|OnlyARA"
+#define WordifyVST3Category "OnlyARA"
 
 //------------------------------------------------------------------------
 } // namespace mam
