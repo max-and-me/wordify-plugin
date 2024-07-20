@@ -11,8 +11,8 @@
 #include "meta_words_playback_renderer.h"
 #include "parameter_ids.h"
 #include "preferences_serde.h"
-#include "warn_cpp/suppress_warnings.h"
 #include "task_manager.h"
+#include "warn_cpp/suppress_warnings.h"
 #include "wordify_cids.h"
 #include "wordify_defines.h"
 #include <optional>
@@ -259,6 +259,9 @@ tresult PLUGIN_API WordifySingleComponent::setActive(TBool state)
 //------------------------------------------------------------------------
 tresult PLUGIN_API WordifySingleComponent::process(Vst::ProcessData& data)
 {
+    if (data.numOutputs == 0)
+        return kResultOk;
+
     ARA_VALIDATE_API_CONDITION(data.outputs[0].numChannels ==
                                getAudioBusChannelCount(audioOutputs[0]));
     ARA_VALIDATE_API_CONDITION(data.numSamples <=
