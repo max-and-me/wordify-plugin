@@ -208,8 +208,8 @@ tresult PLUGIN_API WordifySingleComponent::initialize(FUnknown* context)
     }
 
     //--- create Audio IO ------
-    addAudioInput(STR16("Stereo In"), Vst::SpeakerArr::kMono);
-    addAudioOutput(STR16("Stereo Out"), Vst::SpeakerArr::kMono);
+    addAudioInput(STR16("Mono In"), Vst::SpeakerArr::kMono);
+    addAudioOutput(STR16("Mono Out"), Vst::SpeakerArr::kMono);
 
     restore_parameters();
 
