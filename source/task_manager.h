@@ -3,14 +3,14 @@
 #pragma once
 
 #include "eventpp/callbacklist.h"
-#include "mam/meta_words/meta_word.h"
+#include "mam/meta_words/runner.h"
 #include "wordify_types.h"
 #include <functional>
 
 namespace mam::task_managing {
 
 //------------------------------------------------------------------------
-using ResultData = meta_words::MetaWords;
+using ResultData = meta_words::ExpectedMetaWords;
 struct Expected
 {
     bool was_canceled = false;

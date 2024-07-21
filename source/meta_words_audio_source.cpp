@@ -3,8 +3,8 @@
 #include "meta_words_audio_source.h"
 #include "little_helpers.h"
 #include "mam/meta_words/runner.h"
-#include "warn_cpp/suppress_warnings.h"
 #include "task_manager.h"
+#include "warn_cpp/suppress_warnings.h"
 #include "wordify_defines.h"
 #include "wordify_types.h"
 #include <cctype>
@@ -259,7 +259,9 @@ void AudioSource::updateRenderSampleCache()
             if (expected_result.was_canceled)
                 return;
 
-            meta_words = expected_result.data;
+            if (expected_result.data.has_value())
+                meta_words = expected_result.data.value();
+
             end_analysis();
         });
 
