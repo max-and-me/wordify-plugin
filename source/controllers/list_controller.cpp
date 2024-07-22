@@ -5,8 +5,8 @@
 #include "list_controller.h"
 #include "region_controller.h"
 #include "search_engine.h"
-#include "warn_cpp/suppress_warnings.h"
 #include "views/word_button.h"
+#include "warn_cpp/suppress_warnings.h"
 BEGIN_SUPPRESS_WARNINGS
 #include "vstgui/lib/cframe.h"
 #include "vstgui/lib/controls/cbuttons.h"
@@ -24,8 +24,8 @@ constexpr size_t PLAYBACK_REGION_ID_ATTR = 'prid';
 constexpr auto REGION_VIEW_TEMPLATE      = "RegionTemplate";
 
 //------------------------------------------------------------------------
-static auto find_region_view_by_id(const CRowColumnView& rowColView, Id pbr_id)
-    -> CView*
+static auto find_region_view_by_id(const CRowColumnView& rowColView,
+                                   Id pbr_id) -> CView*
 {
     CView* viewToFind = nullptr;
     rowColView.forEachChild([&, pbr_id](CView* view) {
@@ -140,19 +140,21 @@ static auto on_request_select_word(const Id region_id,
 //------------------------------------------------------------------------
 // ListController
 //------------------------------------------------------------------------
-ListController::ListController(ARADocumentController* controller,
+ListController::ListController(ARADocumentController* document_controller,
                                const IUIDescription* uidesc)
-: controller(controller)
+: document_controller(document_controller)
 , uidesc(uidesc)
 {
-    if (controller)
+    if (document_controller)
     {
         lifetime_observer_handle =
-            controller->get_playback_region_lifetimes_subject()->append(
-                [&](const auto& data) { on_add_remove_playback_region(data); });
+            document_controller->get_playback_region_lifetimes_subject()
+                ->append([&](const auto& data) {
+                    on_add_remove_playback_region(data);
+                });
 
         order_observer_handle =
-            controller->get_playback_region_order_subject()->append(
+            document_controller->get_playback_region_order_subject()->append(
                 [&](const auto&) { on_playback_regions_reordered(); });
 
         focus_word_observer_handle =
@@ -163,7 +165,7 @@ ListController::ListController(ARADocumentController* controller,
                 });
 
         region_selected_by_host_handle =
-            controller->get_region_selected_by_host_subject()->append(
+            document_controller->get_region_selected_by_host_subject()->append(
                 [this](const auto& region_id_data) {
                     on_region_selected_by_host(region_id_data.id);
                 });
@@ -179,18 +181,18 @@ ListController::~ListController()
         rowColView = nullptr;
     }
 
-    if (controller)
+    if (document_controller)
     {
-        controller->get_playback_region_order_subject()->remove(
+        document_controller->get_playback_region_order_subject()->remove(
             order_observer_handle);
 
         SearchEngine::instance().get_callback().remove(
             focus_word_observer_handle);
 
-        controller->get_playback_region_lifetimes_subject()->remove(
+        document_controller->get_playback_region_lifetimes_subject()->remove(
             lifetime_observer_handle);
 
-        controller->get_region_selected_by_host_subject()->remove(
+        document_controller->get_region_selected_by_host_subject()->remove(
             region_selected_by_host_handle);
     }
 }
@@ -206,9 +208,9 @@ CView* ListController::verifyView(CView* view,
         if (rowColView)
         {
             rowColView->registerViewListener(this);
-            if (controller)
+            if (document_controller)
             {
-                controller->for_each_region_id([&](const Id id) {
+                document_controller->for_each_region_id([&](const Id id) {
                     auto* newView = create_list_item_view(id);
                     if (newView)
                     {
@@ -246,7 +248,7 @@ void ListController::on_playback_regions_reordered()
     if (!rowColView)
         return;
 
-    if (!controller)
+    if (!document_controller)
         return;
 
     auto func = [&](size_t index, Id id) {
@@ -254,7 +256,7 @@ void ListController::on_playback_regions_reordered()
         rowColView->changeViewZOrder(viewToMove, static_cast<uint32_t>(index));
     };
 
-    controller->for_each_region_id_enumerated(func);
+    document_controller->for_each_region_id_enumerated(func);
 
     rowColView->invalid();
 }
@@ -322,27 +324,28 @@ ListController::createSubController(UTF8StringPtr name,
 
     if (UTF8StringView(name) == "RegionController")
     {
-        if (!controller)
+        if (!document_controller)
             return nullptr;
 
         auto pbr_id = playback_region_id.value();
-        auto ctler  = this->controller;
+        auto ctler  = document_controller;
 
         auto* subctrl = new RegionController(description);
         if (!subctrl)
             return nullptr;
 
-        auto& subject = controller->get_playback_region_changed_subject(pbr_id);
+        auto& subject =
+            document_controller->get_playback_region_changed_subject(pbr_id);
 
         subctrl->region_data_func = [=]() {
             return find_region_data(ctler, pbr_id);
         };
 
         subctrl->on_select_word_func = [=](Index index) {
-            controller->get_region_selection_model().select(
+            document_controller->get_region_selection_model().select(
                 {pbr_id, static_cast<size_t>(index)});
 
-            on_request_select_word(pbr_id, index, controller);
+            on_request_select_word(pbr_id, index, document_controller);
         };
 
         return subctrl->initialize(&subject) ? subctrl : nullptr;
@@ -361,10 +364,11 @@ void ListController::on_focus_word(
     {
         const auto index =
             search_result.indices.at(search_result.focused_word.value());
-        on_request_select_word(search_result.region_id, index, controller);
+        on_request_select_word(search_result.region_id, index,
+                               document_controller);
 
         // waveform selection
-        controller->get_region_selection_model().select(
+        document_controller->get_region_selection_model().select(
             {search_result.region_id,
              static_cast<size_t>(search_result.indices.at(
                  search_result.focused_word.value()))});
