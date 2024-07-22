@@ -99,18 +99,22 @@ auto compute_new_buffer_size(size_t buf_size, double ratio) -> size_t
 }
 
 //------------------------------------------------------------------------
+// Whisper only accepts mono files in 16kHz. Therefore we just use the left
+// channel for the analysis.
+const size_t kNumChannelsToProcess = 1;
+
 auto resample_to_16kHz(
     const AudioSource& audio_src,
     const audio_buffer_management::AudioBuffer<AudioSource::SampleType>& buf)
     -> const audio_buffer_management::AudioBuffer<AudioSource::SampleType>
 {
+    const auto channel_count = kNumChannelsToProcess;
     const auto ratio = WHISPER_CPP_SAMPLE_RATE / audio_src.getSampleRate();
 
     const auto new_size = compute_new_buffer_size(buf.size(), ratio);
     audio_buffer_management::AudioBuffer<AudioSource::SampleType> resampled_buf;
     resampled_buf.resize(new_size);
 
-    const auto channel_count = static_cast<size_t>(audio_src.getChannelCount());
     SRC_DATA data{};
     data.data_in      = buf.data();
     data.data_out     = resampled_buf.data();
@@ -119,8 +123,7 @@ auto resample_to_16kHz(
         static_cast<long>(resampled_buf.size() / channel_count);
     data.src_ratio = ratio;
 
-    const auto error =
-        src_simple(&data, SRC_LINEAR, audio_src.getChannelCount());
+    const auto error = src_simple(&data, SRC_LINEAR, channel_count);
     if (error != 0)
         resampled_buf.resize(0);
 
@@ -131,8 +134,9 @@ auto resample_to_16kHz(
 auto write_audio_to_file(AudioSource& audio_src,
                          const PathType& file_path) -> int
 {
-    const auto buffers   = audio_src.get_audio_buffers();
-    auto interleaved_buf = audio_buffer_management::to_interleaved(buffers);
+    const auto buffers = audio_src.get_audio_buffers();
+    // auto interleaved_buf = audio_buffer_management::to_interleaved(buffers);
+    auto interleaved_buf = buffers.at(0);
 
     bool needs_resampling =
         audio_src.getSampleRate() != WHISPER_CPP_SAMPLE_RATE;
@@ -145,7 +149,8 @@ auto write_audio_to_file(AudioSource& audio_src,
         /* sf_count_t	frames = */ 0,
         /* int			samplerate = */
         static_cast<int>(WHISPER_CPP_SAMPLE_RATE),
-        /* int			channels = */ audio_src.getChannelCount(),
+        /* int			channels = */
+        kNumChannelsToProcess, // audio_src.getChannelCount(),
         /* int			format = */ (SF_FORMAT_WAV | SF_FORMAT_PCM_16),
         /* int          sections = */ 0,
         /* int          seekable = */ 0};
