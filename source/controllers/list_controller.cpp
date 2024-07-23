@@ -362,16 +362,13 @@ void ListController::on_focus_word(
     if (!search_result.indices.empty() &&
         search_result.focused_word.has_value())
     {
-        const auto index =
-            search_result.indices.at(search_result.focused_word.value());
-        on_request_select_word(search_result.region_id, index,
-                               document_controller);
+        const auto focused_word_index = search_result.focused_word.value();
+        const auto region_id          = search_result.region_id;
+        const auto index = search_result.indices.at(focused_word_index);
 
-        // waveform selection
+        on_request_select_word(region_id, index, document_controller);
         document_controller->get_region_selection_model().select(
-            {search_result.region_id,
-             static_cast<size_t>(search_result.indices.at(
-                 search_result.focused_word.value()))});
+            {region_id, static_cast<size_t>(index)});
     }
 
     // ui update
