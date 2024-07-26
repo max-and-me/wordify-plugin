@@ -179,18 +179,18 @@ ARA::PlugIn::AudioSource* ARADocumentController::doCreateAudioSource(
 
     static Id id = 0;
 
-    auto* new_audio_source = new AudioSource(
-        document, hostRef,
-        [this](const auto& data) {
+    if (auto* new_audio_source = new AudioSource(document, hostRef, id))
+    {
+        id++;
+
+        new_audio_source->analyse_progress_func = [this](const auto& data) {
             this->on_analyze_audio_source_progress(data);
-        },
-        id);
-    id++;
+        };
 
-    if (!new_audio_source)
-        return nullptr;
+        return new_audio_source;
+    }
 
-    return new_audio_source;
+    return nullptr;
 }
 
 //------------------------------------------------------------------------
@@ -235,7 +235,6 @@ ARA::PlugIn::PlaybackRegion* ARADocumentController::doCreatePlaybackRegion(
 {
     auto* region = new PlaybackRegion(modification, hostRef);
 
-    // Do stuff!
     this->on_add_playback_region(region);
 
     return region;

@@ -47,7 +47,6 @@ public:
 
     AudioSource(ARA::PlugIn::Document* document,
                 ARA::ARAAudioSourceHostRef hostRef,
-                FuncAnalyseProgress&& analyse_progress_func,
                 Id id);
     ~AudioSource() override;
 
@@ -60,6 +59,8 @@ public:
     auto set_meta_words(const MetaWords& meta_words) -> void;
     auto get_id() const -> Id { return id; }
 
+    FuncAnalyseProgress analyse_progress_func;
+
     //--------------------------------------------------------------------
 protected:
     void begin_analysis();
@@ -70,7 +71,6 @@ protected:
     OptionalId task_id;
     MultiChannelBufferType audio_buffers;
     MetaWords meta_words;
-    FuncAnalyseProgress analyse_progress_func;
 };
 
 //------------------------------------------------------------------------

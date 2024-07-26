@@ -7,6 +7,7 @@
 #include "warn_cpp/suppress_warnings.h"
 #include "wordify_defines.h"
 #include "wordify_types.h"
+#include <cassert>
 #include <cctype>
 #include <cmath>
 #include <filesystem>
@@ -207,10 +208,8 @@ auto trim_meta_words(MetaWords& meta_words) -> void
 //------------------------------------------------------------------------
 AudioSource::AudioSource(ARA::PlugIn::Document* document,
                          ARA::ARAAudioSourceHostRef hostRef,
-                         FuncAnalyseProgress&& analyse_progress_func,
                          Id id)
 : ARA::PlugIn::AudioSource{document, hostRef}
-, analyse_progress_func(analyse_progress_func)
 , id(id)
 {
 }
@@ -281,7 +280,9 @@ void AudioSource::begin_analysis()
         /*.state*/ AnalyseProgressData::State::BeginAnalyse,
     };
 
-    analyse_progress_func(data);
+    assert(analyse_progress_func && "Lambda must be set from outside!");
+    if (analyse_progress_func)
+        analyse_progress_func(data);
 }
 
 //------------------------------------------------------------------------
@@ -292,7 +293,9 @@ void AudioSource::perform_analysis()
         /*.state*/ AnalyseProgressData::State::PerformAnalyse,
     };
 
-    analyse_progress_func(data);
+    assert(analyse_progress_func && "Lambda must be set from outside!");
+    if (analyse_progress_func)
+        analyse_progress_func(data);
 }
 
 //------------------------------------------------------------------------
@@ -306,7 +309,9 @@ void AudioSource::end_analysis()
         /*.state*/ AnalyseProgressData::State::EndAnalyse,
     };
 
-    analyse_progress_func(data);
+    assert(analyse_progress_func && "Lambda must be set from outside!");
+    if (analyse_progress_func)
+        analyse_progress_func(data);
 
     task_id.reset();
 }
