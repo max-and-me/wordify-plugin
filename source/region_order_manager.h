@@ -1,6 +1,4 @@
-//------------------------------------------------------------------------
 // Copyright(c) 2024 Max And Me.
-//------------------------------------------------------------------------
 
 #pragma once
 
@@ -33,34 +31,34 @@ public:
     using OrderedIds     = std::vector<Id>;
     using OrderSubject =
         eventpp::CallbackList<void(const PlaybackRegionOrderChangeData&)>;
-
     using FuncStartInPlaybackTime = std::function<double(Id)>;
 
-    auto initialize(FuncStartInPlaybackTime&& start_in_playback_time_func)
-        -> bool;
-    auto get_order_subject() -> OrderSubject*
-    {
-        return &playback_region_order_subject;
-    }
+    auto get_order_subject() -> OrderSubject*;
     auto push_back(Id id) -> void;
     auto remove(Id id) -> void;
     auto reorder() -> void;
+
     template <typename Func>
-    auto for_each_region_id_enumerated(Func& func) const
-    {
-        for (OrderedIds::size_type i = 0;
-             i < playback_region_ids_ordered.size(); i++)
-        {
-            func(i, playback_region_ids_ordered.at(i));
-        }
-    }
+    auto for_each_region_id_enumerated(Func& func) const;
+
+    FuncStartInPlaybackTime start_in_playback_time_func;
 
     //--------------------------------------------------------------------
 private:
     OrderSubject playback_region_order_subject;
     OrderedIds playback_region_ids_ordered;
-    FuncStartInPlaybackTime start_in_playback_time_func;
 };
+
+//------------------------------------------------------------------------
+template <typename Func>
+inline auto RegionOrderManager::for_each_region_id_enumerated(Func& func) const
+{
+    for (OrderedIds::size_type i = 0; i < playback_region_ids_ordered.size();
+         i++)
+    {
+        func(i, playback_region_ids_ordered.at(i));
+    }
+}
 
 //------------------------------------------------------------------------
 } // namespace mam

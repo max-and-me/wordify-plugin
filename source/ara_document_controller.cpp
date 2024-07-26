@@ -89,13 +89,13 @@ ARADocumentController::ARADocumentController(
     const ARA::ARADocumentControllerHostInstance* instance) noexcept
 : ARA::PlugIn::DocumentController(entry, instance)
 {
-    region_order_manager.initialize([this](Id id) {
+    region_order_manager.start_in_playback_time_func = [this](Id id) {
         const auto opt_region = find_playback_region(id);
         if (opt_region)
             return opt_region.value()->getStartInPlaybackTime();
 
         return 0.;
-    });
+    };
 }
 
 //------------------------------------------------------------------------

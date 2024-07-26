@@ -1,8 +1,7 @@
-//------------------------------------------------------------------------
 // Copyright(c) 2024 Max And Me.
-//------------------------------------------------------------------------
 
 #include "region_order_manager.h"
+#include <cassert>
 
 namespace mam {
 
@@ -29,14 +28,6 @@ bool sort(RegionOrderManager::FuncStartInPlaybackTime& start_in_playback_time,
 //------------------------------------------------------------------------
 // RegionOrderManager
 //------------------------------------------------------------------------
-auto RegionOrderManager::initialize(
-    FuncStartInPlaybackTime&& start_in_playback_time_func_) -> bool
-{
-    this->start_in_playback_time_func = start_in_playback_time_func_;
-    return true;
-}
-
-//------------------------------------------------------------------------
 auto RegionOrderManager::push_back(Id id) -> void
 {
     playback_region_ids_ordered.push_back(id);
@@ -54,11 +45,22 @@ auto RegionOrderManager::remove(Id id) -> void
 //------------------------------------------------------------------------
 auto RegionOrderManager::reorder() -> void
 {
-    bool should_notify_listeners = sort(this->start_in_playback_time_func,
-                                        this->playback_region_ids_ordered);
+    assert(start_in_playback_time_func &&
+           "start_in_playback_time_func must be set from outside!");
+    if (!start_in_playback_time_func)
+        return;
 
-    if (should_notify_listeners)
+    bool is_notify_listeners =
+        sort(start_in_playback_time_func, playback_region_ids_ordered);
+
+    if (is_notify_listeners)
         playback_region_order_subject({});
+}
+
+//------------------------------------------------------------------------
+auto RegionOrderManager::get_order_subject() -> OrderSubject*
+{
+    return &playback_region_order_subject;
 }
 
 //------------------------------------------------------------------------
