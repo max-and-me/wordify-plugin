@@ -176,17 +176,19 @@ auto write_audio_to_file(AudioSource& audio_src,
 }
 
 //------------------------------------------------------------------------
-auto transform_to_seconds(MetaWords& meta_words) -> void
+auto transform_to_seconds(MetaWords& meta_words) -> MetaWords&
 {
     for (auto& meta_word : meta_words)
     {
         meta_word.begin *= 0.001;
         meta_word.duration *= 0.001;
     }
+
+    return meta_words;
 }
 
 //------------------------------------------------------------------------
-auto trim_meta_words(MetaWords& meta_words) -> void
+auto trim_meta_words(MetaWords& meta_words) -> MetaWords&
 {
     for (auto& word : meta_words)
     {
@@ -198,6 +200,52 @@ auto trim_meta_words(MetaWords& meta_words) -> void
                                  }),
                   str.end());
     }
+
+    return meta_words;
+}
+
+//------------------------------------------------------------------------
+auto remove_non_spoken_words(MetaWords& meta_words) -> MetaWords&
+{
+    static const auto kBracket = "[";
+
+    const auto iter = std::remove_if(
+        meta_words.begin(), meta_words.end(), [](const auto& el) {
+            return el.value.find(kBracket) != std::string::npos;
+        });
+
+    meta_words.erase(iter, meta_words.end());
+
+    return meta_words;
+}
+
+//------------------------------------------------------------------------
+auto prepare_meta_words(MetaWords& meta_words) -> MetaWords&
+{
+    meta_words = trim_meta_words(meta_words);
+    meta_words = remove_non_spoken_words(meta_words);
+
+    return meta_words;
+}
+
+//------------------------------------------------------------------------
+auto write_audio_file(AudioSource& audio_source) -> const PathType
+{
+    const auto tmp_dir =
+        std::filesystem::temp_directory_path() / PLUGIN_IDENTIFIER;
+    std::filesystem::create_directories(tmp_dir);
+
+    const auto tmp_file = tmp_dir / PathType(audio_source.getName());
+
+    // TODO: no idea why this does not build with GCC
+#if defined(__GNUC__) || defined(__GNUG__)
+    const auto path = PathType{tmp_file};
+#else
+    const auto path = PathType{tmp_file.generic_u8string()};
+#endif
+    write_audio_to_file(audio_source, path);
+
+    return path;
 }
 
 //------------------------------------------------------------------------
@@ -241,21 +289,7 @@ void AudioSource::updateRenderSampleCache()
             channel_count, sample_count);
 
     read_audio_from_host(*this);
-
-    // Write audio buffers to temporary audio file
-    const auto tmp_dir =
-        std::filesystem::temp_directory_path() / PLUGIN_IDENTIFIER;
-    std::filesystem::create_directories(tmp_dir);
-
-    const auto tmp_file = tmp_dir / PathType(getName());
-
-    // TODO: no idea why this does not build with GCC
-#if defined(__GNUC__) || defined(__GNUG__)
-    const auto path = PathType{tmp_file};
-#else
-    const auto path = PathType{tmp_file.generic_u8string()};
-#endif
-    write_audio_to_file(*this, path);
+    const auto path = write_audio_file(*this);
 
     // Start analyse task on temporary audio file
     task_id =
@@ -301,8 +335,8 @@ void AudioSource::perform_analysis()
 //------------------------------------------------------------------------
 void AudioSource::end_analysis()
 {
-    transform_to_seconds(meta_words);
-    trim_meta_words(meta_words);
+    meta_words = transform_to_seconds(meta_words);
+    meta_words = prepare_meta_words(meta_words);
 
     const AnalyseProgressData& data = {
         /*.id*/ get_id(),
@@ -342,7 +376,7 @@ auto AudioSource::set_meta_words(const MetaWords& meta_words_) -> void
         task_managing::cancel_task(task_id.value());
 
     meta_words = meta_words_;
-    trim_meta_words(meta_words);
+    prepare_meta_words(meta_words);
 }
 
 //------------------------------------------------------------------------
