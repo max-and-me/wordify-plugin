@@ -78,7 +78,10 @@ using Range = std::pair<size_t, size_t>;
 static auto to_sample_range(const meta_words::MetaWord& word,
                             double sample_rate) -> const Range
 {
-    return {word.begin * sample_rate, word.duration * sample_rate};
+    const auto begin_sample = static_cast<size_t>(word.begin * sample_rate);
+    const auto duration_sample =
+        static_cast<size_t>(word.duration * sample_rate);
+    return {begin_sample, duration_sample};
 }
 
 //------------------------------------------------------------------------
