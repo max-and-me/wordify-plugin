@@ -205,16 +205,27 @@ auto trim_meta_words(MetaWords& meta_words) -> MetaWords&
 }
 
 //------------------------------------------------------------------------
-auto remove_non_spoken_words(MetaWords& meta_words) -> MetaWords&
+auto remove_all_words_with(const char* character,
+                           MetaWords& meta_words) -> MetaWords&
 {
-    static const auto kBracket = "[";
-
     const auto iter = std::remove_if(
-        meta_words.begin(), meta_words.end(), [](const auto& el) {
-            return el.value.find(kBracket) != std::string::npos;
+        meta_words.begin(), meta_words.end(), [character](const auto& el) {
+            return el.value.find(character) != std::string::npos;
         });
 
     meta_words.erase(iter, meta_words.end());
+
+    return meta_words;
+}
+
+//------------------------------------------------------------------------
+auto remove_non_spoken_words(MetaWords& meta_words) -> MetaWords&
+{
+    static const auto kSquaredBrackets = "[";
+    static const auto kParentheses     = "(";
+
+    meta_words = remove_all_words_with(kSquaredBrackets, meta_words);
+    meta_words = remove_all_words_with(kParentheses, meta_words);
 
     return meta_words;
 }
