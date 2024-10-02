@@ -262,6 +262,7 @@ if(SMTG_MAC)
             ${whisper_SOURCE_DIR}/ggml-metal.metal
             ${resources_folder}/ggml-metal.metal
     )   
+    set_target_properties(Wordify PROPERTIES XCODE_ATTRIBUTE_ENABLE_HARDENED_RUNTIME YES)
 elseif(SMTG_WIN)
     target_sources(Wordify PRIVATE 
         resource/win32resource.rc
@@ -305,6 +306,7 @@ set_target_properties(Wordify PROPERTIES
 # 'WordifyWorker'
 set_target_properties(main PROPERTIES 
     OUTPUT_NAME "WordifyWorker"
+    XCODE_ATTRIBUTE_ENABLE_HARDENED_RUNTIME YES
 )
 
 smtg_target_setup_universal_binary(ARA_PlugIn_Library)
