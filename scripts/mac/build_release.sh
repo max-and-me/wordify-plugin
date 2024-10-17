@@ -34,7 +34,7 @@ fi
 echo "[MAM] MacOS_Build_Release_sh: Clone Project"
 git clone https://github.com/max-and-me/wordify-plugin.git
 mkdir build
-d build
+cd build
 echo "[MAM] MacOS_Build_Release_sh: CMake project"
 cmake -GXcode ../wordify-plugin
 cmake --build . --target Wordify --config Release
