@@ -325,6 +325,7 @@ smtg_target_setup_universal_binary(vstgui_support)
 smtg_target_setup_universal_binary(wave-draw)
 smtg_target_setup_universal_binary(whereami)
 smtg_target_setup_universal_binary(whisper)
+smtg_target_setup_universal_binary(ggml)
 
 # Copy WordifyWorker next to our Wordify executable
 add_custom_command(
