@@ -253,13 +253,14 @@ if(SMTG_MAC)
     add_custom_command(
             TARGET Wordify POST_BUILD
             COMMAND ${CMAKE_COMMAND} -E copy_if_different
-                ${whisper_SOURCE_DIR}/ggml-common.h
+                ${whisper_SOURCE_DIR}/ggml/src/ggml-common.h 
                 ${resources_folder}/ggml-common.h
     )
     add_custom_command(
         TARGET Wordify POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            ${whisper_SOURCE_DIR}/ggml-metal.metal
+            # ${whisper_SOURCE_DIR}/ggml/src/ggml-metal/ggml-metal.metal whisper.cpp > v1.7.2
+            ${whisper_SOURCE_DIR}/ggml/src/ggml-metal.metal
             ${resources_folder}/ggml-metal.metal
     )   
     set_target_properties(Wordify PROPERTIES XCODE_ATTRIBUTE_ENABLE_HARDENED_RUNTIME YES)
