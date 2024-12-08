@@ -57,18 +57,39 @@ codesign --display -vv ./VST3/Release/Wordify.vst3
 echo "MacOS_Build_Release_sh: Run the packager:"
 cpack -C Release -G productbuild .
 
+# Find the generated installer 
+installer_name=$(ls *.pkg)
+
+# Check if a .pkg file exists
+if [ -z "$installer_name" ]; then
+    echo "No .pkg file found"
+    exit 1
+fi
+
+# Handle multiple .pkg files
+if [ $(echo "$installer_name" | wc -l) -ne 1 ]; then
+    echo "Multiple .pkg files found:"
+    echo "$installer_name"
+    echo "Please make sure only one package exists."
+    exit 1
+fi
+
+# Remove extension 
+installer_name_no_ext=${installer_name%.pkg}
+installer_name_signed="${installer_name_no_ext}-signed.pkg"
+
 # Sign the Installer
 echo "[MAM] MacOS_Build_Release_sh: Sign the Installer:"
-productsign --sign "$2" ./Wordify-2024.10-Darwin.pkg ./Wordify-2024.10-Darwin-signed.pkg  
+productsign --sign "$2" "./${installer_name}" "./${installer_name_signed}"  
 
 # Check installer signing
 echo "[MAM] MacOS_Build_Release_sh: Check installer signing:"
-pkgutil --check-signature ./Wordify-2024.10-Darwin-signed.pkg
+pkgutil --check-signature "./${installer_name_signed}" 
 
 ## Run the notary service
 echo "[MAM] MacOS_Build_Release_sh: Run the notary service:"
-xcrun notarytool submit ./Wordify-2024.10-Darwin-signed.pkg --keychain-profile NOTARYTOOL_PASSWORD --wait
+xcrun notarytool submit "./${installer_name_signed}" --keychain-profile NOTARYTOOL_PASSWORD --wait
 
 ## Run Stapler
 echo "[MAM] MacOS_Build_Release_sh: Staple the result:"
-xcrun stapler staple ./Wordify-2024.10-Darwin-signed.pkg 
+xcrun stapler staple "./${installer_name_signed}"
