@@ -2,7 +2,7 @@
 
 # Display help function
 function display_help {
-    echo "Usage: $0 [option] arg1 arg2"
+    echo "Usage: $0 [option] arg1 arg2 arg3"
     echo
     echo "This script clones the repository, creates and builds the project, signs the binary, creates and signs the installer and runs Apples notary services."
     echo
@@ -12,9 +12,10 @@ function display_help {
     echo "Arguments:"
     echo "  arg1            The first argument, Developer ID Application as string"
     echo "  arg2            The second argument, Developer ID Installer as string"
+    echo "  arg3            The third argument, Git tag as string (Optional)"
     echo
     echo "Example:"
-    echo "  $0 'Developer ID Application: My Company (E53ZE5AABB)' 'Developer ID Installer: My Company (E53ZE5AABB)'"
+    echo "  $0 'Developer ID Application: My Company (E53ZE5AABB)' 'Developer ID Installer: My Company (E53ZE5AABB)' v2024.12"
     echo
     exit 0
 }
@@ -25,23 +26,28 @@ if [[ "$1" == "-h" || "$1" == "--help" ]]; then
 fi
 
 # If no arguments are provided, show error and help
-if [[ $# -lt 2 ]]; then
+if [[ $# -le 2 ]]; then
     echo "[MAM] MacOS_Build_Release_sh: Error, insufficient arguments provided."
     display_help
 fi
 
-# Cmake project
+# Clone project
 echo "[MAM] MacOS_Build_Release_sh: Clone Project"
 git clone https://github.com/max-and-me/wordify-plugin.git
+
+echo "[MAM] MacOS_Build_Release_sh: Checkout Project with tag" 
+if [ -n "$3" ]; then
+    cd wordify-plugin
+    git checkout -b checkout-at-"$3" "$3"
+    cd ..
+fi
+
+# Cmake project
 mkdir build
 cd build
 echo "[MAM] MacOS_Build_Release_sh: CMake project"
 cmake -GXcode ../wordify-plugin
 cmake --build . --target Wordify --config Release
-
-# Strip leading/trailing double quotes from arguments
-arg1=$(echo "$1" | sed 's/^"//;s/"$//')
-arg2=$(echo "$2" | sed 's/^"//;s/"$//')
 
 # Sign the binaries
 echo "[MAM] MacOS_Build_Release_sh: Sign the binaries"
