@@ -169,6 +169,7 @@ target_link_libraries(Wordify
         sdk
         sndfile
         special-folders
+        libtinyfiledialogs
         vstgui_support
         warn-cpp
         wave-draw
