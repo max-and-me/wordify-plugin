@@ -2,15 +2,18 @@
 
 #include "preferences_controller.h"
 #include "ara_document_controller.h"
-#include "warn_cpp/suppress_warnings.h"
 #include "version.h"
-#include "wordify_types.h"
+#include "warn_cpp/suppress_warnings.h"
 #include <string>
 BEGIN_SUPPRESS_WARNINGS
 #include "public.sdk/source/vst/vstparameters.h"
 #include "vstgui/lib/controls/coptionmenu.h"
 #include "vstgui/uidescription/uiattributes.h"
 END_SUPPRESS_WARNINGS
+
+#include "tinyfiledialogs.h"
+#include <fstream>
+#include <iostream>
 
 #ifdef WIN32
 #include <windows.h>
@@ -75,6 +78,7 @@ CView* PreferencesController::verifyView(CView* view,
             if (options_menu)
             {
                 options_menu->addEntry("Visit wordify.org ...");
+                options_menu->addEntry("Export as Text ...");
                 options_menu->addEntry(UTF8String("v") + VERSION_STR, -1,
                                        CMenuItem::kDisabled);
                 options_menu->registerControlListener(this);
@@ -91,8 +95,76 @@ void PreferencesController::valueChanged(CControl* pControl)
 {
     if (pControl == options_menu)
     {
-        open_url(URL{"https://www.wordify.org"});
+        if (options_menu->getLastResult() == 0)
+        {
+            open_url(URL{"https://www.wordify.org"});
+        }
+        else if (options_menu->getLastResult() == 1)
+        {
+            export_text();
+        }
     }
+}
+
+//------------------------------------------------------------------------
+void PreferencesController::export_text()
+{
+    nlohmann::json transcript;
+
+    const char* filePath = tinyfd_saveFileDialog(
+        "Save JSON File", "transcript.json", 0, nullptr, nullptr);
+
+    if (!filePath)
+    {
+        std::cerr << "File save canceled by the user." << std::endl;
+        return;
+    }
+
+    controller->for_each_region_id(
+        [&](const Id id) { add_transcript_to_json(id, transcript); });
+
+    std::ofstream file(filePath);
+    if (file.is_open())
+    {
+        file << std::setw(4) << transcript << std::endl;
+        file.close();
+        std::cout << "JSON file saved to: " << filePath << std::endl;
+    }
+    else
+    {
+        std::cerr << "Unable to open file for writing!" << std::endl;
+    }
+}
+
+//------------------------------------------------------------------------
+void PreferencesController::add_transcript_to_json(const Id region_id,
+                                                   nlohmann::json& transcript)
+{
+    if (!controller)
+        return;
+
+    auto opt_region = controller->find_playback_region(region_id);
+    auto region     = opt_region.value_or(nullptr);
+    if (!region)
+        return;
+
+    const auto words_data = region->get_region_data();
+
+    StringType speaker    = words_data.name;
+    StringType start_time = std::to_string(words_data.project_time_start);
+    StringType duration   = std::to_string(words_data.duration);
+
+    const auto& words = words_data.words;
+    StringType spoken_text;
+    for (const auto& word : words)
+        spoken_text += word.word.value + " ";
+
+    nlohmann::json speaker_data = {{"speaker", speaker},
+                                   {"start_time", start_time},
+                                   {"duration", duration},
+                                   {"spoken_text", spoken_text}};
+
+    transcript["transcript"].push_back(speaker_data);
 }
 
 //------------------------------------------------------------------------

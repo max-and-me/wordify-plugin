@@ -9,6 +9,9 @@ BEGIN_SUPPRESS_WARNINGS
 #include "vstgui/uidescription/icontroller.h"
 END_SUPPRESS_WARNINGS
 
+#include "nlohmann/json.hpp"
+#include "wordify_types.h"
+
 namespace VSTGUI {
 class COptionMenu;
 }
@@ -48,6 +51,8 @@ public:
 
     //--------------------------------------------------------------------
 private:
+    void export_text();
+    void add_transcript_to_json(const Id region_id, nlohmann::json& transcript);
     ARADocumentController* controller = nullptr;
     VSTGUI::COptionMenu* options_menu = nullptr;
 };
