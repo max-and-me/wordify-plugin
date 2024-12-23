@@ -207,6 +207,7 @@ set_property(
         common
         eventpp
         fmt
+        libtinyfiledialogs
         main
         meta-words
         nlohmann_json
