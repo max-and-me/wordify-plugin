@@ -7,11 +7,11 @@
 #include <string>
 BEGIN_SUPPRESS_WARNINGS
 #include "public.sdk/source/vst/vstparameters.h"
+#include "vstgui/lib/cfileselector.h"
 #include "vstgui/lib/controls/coptionmenu.h"
 #include "vstgui/uidescription/uiattributes.h"
 END_SUPPRESS_WARNINGS
 
-#include "tinyfiledialogs.h"
 #include <fstream>
 #include <iostream>
 
@@ -111,28 +111,47 @@ void PreferencesController::export_text()
 {
     nlohmann::json transcript;
 
-    const char* filePath = tinyfd_saveFileDialog(
-        "Save JSON File", "transcript.json", 0, nullptr, nullptr);
-
-    if (!filePath)
+    CNewFileSelector* selector = CNewFileSelector::create(
+        options_menu->getFrame(), CNewFileSelector::kSelectSaveFile);
+    if (selector)
     {
-        std::cerr << "File save canceled by the user." << std::endl;
-        return;
-    }
+        selector->setTitle("Save JSON File");
+        selector->setAllowMultiFileSelection(false);
+        selector->setDefaultExtension(CFileExtension("JSON", "json"));
+        selector->run([&](CNewFileSelector* control) {
+            if (control == nullptr)
+                return;
 
-    controller->for_each_region_id(
-        [&](const Id id) { add_transcript_to_json(id, transcript); });
+            auto size = control->getNumSelectedFiles();
+            if (size == 0)
+            {
+                std::cerr << "No file selected!" << std::endl;
+                return;
+            }
 
-    std::ofstream file(filePath);
-    if (file.is_open())
-    {
-        file << std::setw(4) << transcript << std::endl;
-        file.close();
-        std::cout << "JSON file saved to: " << filePath << std::endl;
-    }
-    else
-    {
-        std::cerr << "Unable to open file for writing!" << std::endl;
+            std::string filePath = control->getSelectedFile(0);
+            if (!filePath.empty())
+            {
+                controller->for_each_region_id([&](const Id id) {
+                    add_transcript_to_json(id, transcript);
+                });
+
+                std::ofstream file(filePath);
+                if (file.is_open())
+                {
+                    file << std::setw(4) << transcript << std::endl;
+                    file.close();
+                    std::cout << "JSON file saved to: " << filePath
+                              << std::endl;
+                }
+                else
+                {
+                    std::cerr << "Unable to open file for writing!"
+                              << std::endl;
+                }
+            }
+        });
+        selector->forget();
     }
 }
 

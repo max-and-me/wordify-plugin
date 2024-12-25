@@ -169,7 +169,6 @@ target_link_libraries(Wordify
         sdk
         sndfile
         special-folders
-        libtinyfiledialogs
         vstgui_support
         warn-cpp
         wave-draw
@@ -207,7 +206,6 @@ set_property(
         common
         eventpp
         fmt
-        libtinyfiledialogs
         main
         meta-words
         nlohmann_json
