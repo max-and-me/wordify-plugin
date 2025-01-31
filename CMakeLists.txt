@@ -206,7 +206,7 @@ set_property(
         common
         eventpp
         fmt
-        main
+        whisper-cli
         meta-words
         nlohmann_json
         presonus-plugin-extensions
@@ -226,8 +226,8 @@ set_property(
 
 target_compile_definitions(Wordify
     PRIVATE
-        MAM_WHISPER_CPP_EXECUTABLE="$<TARGET_FILE:main>"
-        MAM_WHISPER_CPP_EXECUTABLE_NAME="$<TARGET_FILE_NAME:main>"
+        MAM_WHISPER_CPP_EXECUTABLE="$<TARGET_FILE:whisper-cli>"
+        MAM_WHISPER_CPP_EXECUTABLE_NAME="$<TARGET_FILE_NAME:whisper-cli>"
         MAM_GGML_DIRECTORY_NAME="${MAM_GGML_DIRECTORY_NAME}"
         MAM_WHISPER_CPP_MODEL_DOWNLOAD_DIR="${MAM_WHISPER_CPP_MODEL_DOWNLOAD_DIR}"
         CPACK_PACKAGE_VENDOR="${CPACK_PACKAGE_VENDOR}"
@@ -302,18 +302,14 @@ set_target_properties(Wordify PROPERTIES
     BUNDLE_EXTENSION vst3
 )
 
-# whispercpp's command line executable is called 'main'. We need
-# some more meaningful name and simple rename the executable
-# 'WordifyWorker'
-set_target_properties(main PROPERTIES 
-    OUTPUT_NAME "WordifyWorker"
+set_target_properties(whisper-cli PROPERTIES 
     XCODE_ATTRIBUTE_ENABLE_HARDENED_RUNTIME YES
 )
 
 smtg_target_setup_universal_binary(ARA_PlugIn_Library)
 smtg_target_setup_universal_binary(common)
 smtg_target_setup_universal_binary(fmt)
-smtg_target_setup_universal_binary(main)
+smtg_target_setup_universal_binary(whisper-cli)
 smtg_target_setup_universal_binary(meta-words)
 smtg_target_setup_universal_binary(nlohmann_json)
 smtg_target_setup_universal_binary(presonus-plugin-extensions)
@@ -327,20 +323,20 @@ smtg_target_setup_universal_binary(whereami)
 smtg_target_setup_universal_binary(whisper)
 smtg_target_setup_universal_binary(ggml)
 
-# Copy WordifyWorker next to our Wordify executable
+# Copy whisper-cli next to our Wordify executable
 add_custom_command(
     TARGET Wordify POST_BUILD
-    COMMENT "[MAM] Copy WordifyWorker."
+    COMMENT "[MAM] Copy whisper-cli."
     COMMAND ${CMAKE_COMMAND} -E copy
-        "$<TARGET_FILE:main>"
+        "$<TARGET_FILE:whisper-cli>"
         "$<TARGET_FILE_DIR:Wordify>"
 )
 
 if(CMAKE_SYSTEM_NAME MATCHES "Linux")
     add_custom_command(
         TARGET Wordify POST_BUILD
-        COMMENT "[MAM] chmod +x WordifyWorker"
-        COMMAND chmod +x "$<TARGET_FILE_DIR:Wordify>/WordifyWorker"
+        COMMENT "[MAM] chmod +x whisper-cli"
+        COMMAND chmod +x "$<TARGET_FILE_DIR:Wordify>/whisper-cli"
     )
 endif()
 

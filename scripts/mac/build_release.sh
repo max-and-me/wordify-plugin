@@ -51,7 +51,7 @@ cmake --build . --target Wordify --config Release
 
 # Sign the binaries
 echo "[MAM] MacOS_Build_Release_sh: Sign the binaries"
-codesign --sign "$1" -f -o runtime --timestamp -v ./VST3/Release/Wordify.vst3/Contents/MacOS/WordifyWorker
+codesign --sign "$1" -f -o runtime --timestamp -v ./VST3/Release/Wordify.vst3/Contents/MacOS/whisper-cli
 codesign --sign "$1" -f -o runtime --timestamp -v ./VST3/Release/Wordify.vst3/Contents/MacOS/Wordify
 codesign --sign "$1" -f -o runtime --timestamp -v ./VST3/Release/Wordify.vst3
 
