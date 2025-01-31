@@ -5,7 +5,7 @@ include(FetchContent)
 FetchContent_Declare(
     whereami
     GIT_REPOSITORY "https://github.com/gpakosz/whereami.git"
-    GIT_TAG c5f6b015c36964790493841b9b4623184c0f7c3f
+    GIT_TAG dcb52a058dc14530ba9ae05e4339bd3ddfae0e0e
 )
 
 FetchContent_MakeAvailable(whereami)

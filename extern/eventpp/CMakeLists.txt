@@ -6,7 +6,7 @@ include(FetchContent)
 FetchContent_Declare(
     eventpp
     GIT_REPOSITORY https://github.com/wqking/eventpp.git
-    GIT_TAG c472fb22e71ead0e58ff7df89e12c66b0bdfb533
+    GIT_TAG 1224dd6c9bd4577d686ac42334fc545997f5ece1
 )
 
 FetchContent_MakeAvailable(eventpp)

@@ -6,7 +6,7 @@ include(FetchContent)
 FetchContent_Declare(
     presonus-plugin-extensions
     GIT_REPOSITORY "https://github.com/fenderdigital/presonus-plugin-extensions.git"
-    GIT_TAG 04-2024 
+    GIT_TAG 10-2024 
 )
 
 FetchContent_MakeAvailable(presonus-plugin-extensions)
