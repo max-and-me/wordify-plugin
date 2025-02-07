@@ -169,6 +169,7 @@ target_link_libraries(Wordify
         sdk
         sndfile
         special-folders
+        vstgui
         vstgui_support
         warn-cpp
         wave-draw
@@ -181,11 +182,6 @@ smtg_target_configure_version_file(Wordify)
 target_sources(Wordify
     PRIVATE
         resource/wordify_editor.uidesc
-)
-
-target_link_libraries(Wordify
-    PRIVATE
-        vstgui_support
 )
 
 target_compile_features(Wordify 
@@ -317,6 +313,7 @@ smtg_target_setup_universal_binary(samplerate)
 smtg_target_setup_universal_binary(sndfile)
 smtg_target_setup_universal_binary(special-folders)
 smtg_target_setup_universal_binary(tiny-process-library)
+smtg_target_setup_universal_binary(vstgui)
 smtg_target_setup_universal_binary(vstgui_support)
 smtg_target_setup_universal_binary(wave-draw)
 smtg_target_setup_universal_binary(whereami)
