@@ -1,4 +1,4 @@
-// Copyright(c) 2024 Max And Me.
+// Copyright(c) 2025 Max And Me.
 
 #include "task_manager.h"
 #include "mam/meta_words/runner.h"

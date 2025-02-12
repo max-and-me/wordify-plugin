@@ -1,4 +1,4 @@
-// Copyright(c) 2024 Max And Me.
+// Copyright(c) 2025 Max And Me.
 
 #include "meta_words_playback_region.h"
 #include "meta_words_audio_source.h"

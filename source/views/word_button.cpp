@@ -1,4 +1,4 @@
-// Copyright(c) 2024 Max And Me.
+// Copyright(c) 2025 Max And Me.
 
 #include "warn_cpp/suppress_warnings.h"
 #include "word_button.h"

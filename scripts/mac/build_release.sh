@@ -18,7 +18,7 @@ function display_help {
     echo "  arg3            The third argument, Git tag as string (Optional)"
     echo
     echo "Example:"
-    echo "  $0 'Developer ID Application: My Company (E53ZE5AABB)' 'Developer ID Installer: My Company (E53ZE5AABB)' v2024.12"
+    echo "  $0 'Developer ID Application: My Company (E53ZE5AABB)' 'Developer ID Installer: My Company (E53ZE5AABB)' v2025.02"
     echo
     exit 0
 }
