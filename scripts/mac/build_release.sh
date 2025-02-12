@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# Exit immediately if any command fails
+set -e  
+
 # Display help function
 function display_help {
     echo "Usage: $0 [option] arg1 arg2 arg3"
