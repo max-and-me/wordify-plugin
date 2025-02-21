@@ -1,4 +1,4 @@
-// Copyright(c) 2025 Max And Me.
+// Copyright (c) 2023-present, WordifyOrg.
 
 #include "spinner_controller.h"
 #include "little_helpers.h"

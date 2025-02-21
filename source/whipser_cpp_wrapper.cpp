@@ -1,4 +1,4 @@
-// Copyright(c) 2025 Max And Me.
+// Copyright (c) 2023-present, WordifyOrg.
 
 #include "whipser_cpp_wrapper.h"
 #include "hao/special_folders/special_folders.h"

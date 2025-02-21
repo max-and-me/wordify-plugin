@@ -1,4 +1,4 @@
-// Copyright(c) 2025 Max And Me.
+// Copyright (c) 2023-present, WordifyOrg.
 
 #include "hstack_layout.h"
 #include "warn_cpp/suppress_warnings.h"
