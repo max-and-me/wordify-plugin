@@ -21,12 +21,12 @@ public:
 
     SpinnerView(const VSTGUI::CRect& size);
 
-    auto set_dregree(Degree value) -> void;
+    auto set_animation_position(float position) -> void;
     void draw(VSTGUI::CDrawContext* context) override;
 
     //--------------------------------------------------------------------
 private:
-    Degree rotationAngle = 0.;
+    float animation_position = 0.;
 };
 
 //------------------------------------------------------------------------
@@ -50,9 +50,6 @@ public:
                            bool wasCanceled) override;
     //--------------------------------------------------------------------
 private:
-    using Degree             = SpinnerView::Degree;
-    const Degree start_value = 0.;
-    const Degree end_value   = 360.;
 };
 
 //------------------------------------------------------------------------
