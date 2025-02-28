@@ -18,80 +18,77 @@ namespace mam {
 //------------------------------------------------------------------------
 auto inset_for_round_line_caps(CRect& size, const CCoord line_width) -> CRect&
 {
-    size.left += std::floor(line_width / 2.);
+    size.left += std::ceil(line_width / 2.);
     size.right -= std::ceil(line_width / 2.);
-    size.top += std::floor(line_width / 2.);
+    size.top += std::ceil(line_width / 2.);
     size.bottom -= std::ceil(line_width / 2.);
 
     return size;
 }
 
 //------------------------------------------------------------------------
-auto draw_spinner_spinning(CDrawContext* context,
-                           const CRect& bounds_,
-                           double position) -> void
+using Point = struct
 {
-    constexpr auto use_round_caps = true;
-    constexpr auto numLines       = 12;
-    constexpr auto angleStep      = 360. / numLines;
+    double x = 0.;
+    double y = 0.;
+};
 
-    constexpr CCoord kNormLineLength = 0.4; // normalized from 0. to 1.
-    constexpr CCoord kNormLineWidth  = 0.1; // normalized from 0. to 1.
-    constexpr CColor lineColor(150, 150, 150);
+using Rect = struct
+{
+    double width  = 0.;
+    double height = 0.;
+};
 
-    const double rotationAngle = 360. * position;
+using Line   = std::pair<Point, Point>;
+using FnLine = std::function<void(const Line&, double delta)>;
+/**
+ * @brief Computes the lines to be drawn
+ * @param rect The rect inside which the lines shall be drawn
+ * @param centerPoint The center point coordinates inside the rect
+ * @param angleDeltaNormalized Rotate the lines around the center, range 0..1
+ * (e.g. for animation)
+ * @param fnLine Function callback for each line
+ */
+auto compute_lines(const Rect& rect,
+                   const Point& center,
+                   double angleDeltaNormalized,
+                   FnLine&& fnLine) -> void
+{
+    constexpr auto MAX_CIRCLE_ANGLE  = 360.;
+    constexpr auto HALF_CIRCLE_ANGLE = 180.;
+    constexpr auto NUM_LINES         = std::max(1, 12); // at least one line
+    constexpr auto ANGLE_STEP        = MAX_CIRCLE_ANGLE / NUM_LINES;
+    constexpr double MAX_ANGLE =
+        (NUM_LINES * ANGLE_STEP) * (kPI / HALF_CIRCLE_ANGLE);
+    constexpr auto NORM_LINE_LEN = 0.3; // normalized from 0. to 1.
 
-    CRect bounds = bounds_;
-    if (use_round_caps)
+    const auto angleDeltaDegree = angleDeltaNormalized * MAX_CIRCLE_ANGLE;
+    const auto width_half       = rect.width * 0.5;
+    const auto height_half      = rect.height * 0.5;
+
+    for (int i = 0; i < NUM_LINES; ++i)
     {
-        // When using round caps, we need to have an inset to avoid clipping
-        bounds = inset_for_round_line_caps(bounds,
-                                           kNormLineWidth * bounds.getWidth());
-        context->setLineStyle(
-            CLineStyle(CLineStyle::kLineCapRound, CLineStyle::kLineJoinRound));
+        const auto angle = (double(i) * ANGLE_STEP + angleDeltaDegree) *
+                           (kPI / HALF_CIRCLE_ANGLE);
+        const auto width  = sin(angle - kPI) * width_half;
+        const auto height = cos(angle - kPI) * height_half;
+        const Point start{center.x + width, center.y + height};
+        const Point end{center.x + width * (1. - NORM_LINE_LEN),
+                        center.y + height * (1. - NORM_LINE_LEN)};
+
+        const auto delta = angle / MAX_ANGLE;
+        const Line line{start, end};
+        if (fnLine)
+            fnLine(line, delta);
     }
-
-    const CPoint center    = bounds.getCenter();
-    const auto width_half  = bounds.getWidth() * 0.5;
-    const auto height_half = bounds.getHeight() * 0.5;
-
-    context->setDrawMode(kAntiAliasing);
-    context->setLineWidth(kNormLineWidth * bounds.getWidth());
-    context->setFrameColor(lineColor);
-    context->setFillColor(lineColor);
-
-    LineList lines;
-    for (int i = 0; i < numLines; ++i)
-    {
-        const CCoord angle =
-            (CCoord(i) * angleStep + rotationAngle) * (kPI / 180.0);
-
-        const auto width  = cos(angle) * width_half;
-        const auto height = sin(angle) * height_half;
-        const CPoint start(center.x + width, center.y + height);
-        const CPoint end(center.x + width * (1. - kNormLineLength),
-                         center.y + height * (1. - kNormLineLength));
-
-        lines.push_back({start, end});
-    }
-
-    context->drawLines(lines);
 }
-
 //------------------------------------------------------------------------
 auto draw_spinner_like_ios(CDrawContext* context,
                            const CRect& bounds_,
-                           double position) -> void
+                           double animPos) -> void
 {
-    // position: animation position from 0..1
-
     constexpr auto USE_ROUND_CAPS    = true;
-    constexpr auto NUM_LINES         = 10; // at least 2 lines!!!
-    constexpr auto ANGLE_STEP        = 360. / NUM_LINES;
-    constexpr CCoord MAX_ANGLE       = (NUM_LINES * ANGLE_STEP) * (kPI / 180.0);
-    constexpr CCoord NORM_LINE_LEN   = 0.4; // normalized from 0. to 1.
     constexpr CCoord NORM_LINE_WIDTH = 0.1; // normalized from 0. to 1.
-    constexpr CColor LINE_COLOR(150, 150, 150);
 
     CRect bounds = bounds_;
     if (USE_ROUND_CAPS)
@@ -103,31 +100,26 @@ auto draw_spinner_like_ios(CDrawContext* context,
             CLineStyle(CLineStyle::kLineCapRound, CLineStyle::kLineJoinRound));
     }
 
-    const CPoint center    = bounds.getCenter();
-    const auto width_half  = bounds.getWidth() * 0.5;
-    const auto height_half = bounds.getHeight() * 0.5;
-
     context->setDrawMode(kAntiAliasing);
     context->setLineWidth(NORM_LINE_WIDTH * bounds.getWidth());
 
-    for (int i = 0; i < NUM_LINES; ++i)
-    {
-        const CCoord angle = (CCoord(i) * ANGLE_STEP) * (kPI / 180.0);
-        const auto width   = sin(angle - kPI) * width_half;
-        const auto height  = cos(angle - kPI) * height_half;
-        const CPoint start(center.x + width, center.y + height);
-        const CPoint end(center.x + width * (1. - NORM_LINE_LEN),
-                         center.y + height * (1. - NORM_LINE_LEN));
+    const Point centerPoint{bounds.getCenter().x, bounds.getCenter().y};
+    const Rect boundingBox{bounds.getWidth(), bounds.getHeight()};
 
-        const auto delta    = angle / MAX_ANGLE;
-        const auto newAlpha = 1. - fmod(position + delta, 1.);
+    compute_lines(boundingBox, centerPoint, 0.,
+                  [context, animPos](const Line& line, double delta) {
+                      constexpr CColor LINE_COLOR(150, 150, 150);
+                      const auto newAlpha = 1. - fmod(animPos + delta, 1.);
 
-        auto newLineColor = LINE_COLOR;
-        newLineColor.setNormAlpha(newAlpha);
-        context->setFrameColor(newLineColor);
-        context->setFillColor(newLineColor);
-        context->drawLine({start, end});
-    }
+                      auto newLineColor = LINE_COLOR;
+                      newLineColor.setNormAlpha(newAlpha);
+                      context->setFrameColor(newLineColor);
+                      context->setFillColor(newLineColor);
+
+                      const CPoint start{line.first.x, line.first.y};
+                      const CPoint end{line.second.x, line.second.y};
+                      context->drawLine({start, end});
+                  });
 }
 
 //------------------------------------------------------------------------
@@ -149,7 +141,6 @@ void SpinnerView::draw(CDrawContext* context)
     CView::draw(context);
 
     draw_spinner_like_ios(context, getViewSize(), animation_position);
-    // draw_spinner_spinning(context, getViewSize(), animation_position);
 }
 
 //------------------------------------------------------------------------
