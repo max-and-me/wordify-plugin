@@ -2,9 +2,9 @@
 
 #include "spinner_controller.h"
 #include "little_helpers.h"
-#include "warn_cpp/suppress_warnings.h"
 #include "views/spinner_view.h"
 #include "views/view_animations.h"
+#include "warn_cpp/suppress_warnings.h"
 #include "wordify_types.h"
 #include <cassert>
 #include <limits>
@@ -63,7 +63,7 @@ struct SpinnerViewListener : ViewListenerAdapter
     {
         if (dynamic_cast<SpinnerView*>(view))
         {
-            constexpr auto SPIN_PERIOD_DURATION = 3000;
+            constexpr auto SPIN_PERIOD_DURATION = 700;
             constexpr auto SPIN_FOREVER = std::numeric_limits<int32_t>().max();
 
             auto* timing_function =
