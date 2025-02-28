@@ -27,13 +27,13 @@ auto inset_for_round_line_caps(CRect& size, const CCoord line_width) -> CRect&
 }
 
 //------------------------------------------------------------------------
-using Point = struct
+struct Point
 {
     double x = 0.;
     double y = 0.;
 };
 
-using Rect = struct
+struct Rect
 {
     double width  = 0.;
     double height = 0.;
