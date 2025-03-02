@@ -50,20 +50,21 @@ bool isSubMatch(StringType toMatch, StringType string)
 //------------------------------------------------------------------------
 bool isFuzzyMatch(StringType toMatch, StringType string, FuzzyMatchStyle style)
 {
-    int x = static_cast<int>(toMatch.length());
-    int y = static_cast<int>(string.length());
+    size_t x = toMatch.length();
+    size_t y = string.length();
+
 
     std::vector<std::vector<int>> distanceVector(x + 1,
                                                  std::vector<int>(y + 1, 0));
 
-    for (int i = 0; i <= x; ++i)
-        distanceVector[i][0] = i;
-    for (int j = 0; j <= y; ++j)
-        distanceVector[0][j] = j;
+    for (size_t i = 0; i <= x; ++i)
+        distanceVector[i][0] = static_cast<int>(i);
+    for (size_t j = 0; j <= y; ++j)
+        distanceVector[0][j] =  static_cast<int>(j);
 
-    for (int i = 1; i <= x; ++i)
+    for (size_t i = 1; i <= x; ++i)
     {
-        for (int j = 1; j <= y; ++j)
+        for (size_t j = 1; j <= y; ++j)
         {
             if (toMatch[i - 1] == string[j - 1])
                 distanceVector[i][j] = distanceVector[i - 1][j - 1];
