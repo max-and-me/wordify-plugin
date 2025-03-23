@@ -105,3 +105,8 @@ cd bin
 ```
 
 > See also: https://github.com/ggerganov/whisper.cpp
+
+## Getting Help
+
+* https://vstdev.org
+* https://github.com/ggerganov/whisper.cpp
