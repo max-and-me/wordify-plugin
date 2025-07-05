@@ -26,6 +26,11 @@ option(VSTGUI_TOOLS "Build VSTGUI Tools" OFF)
 #     option(SMTG_CREATE_PLUGIN_LINK OFF)
 # endif()
 
+# Disable symbolic link creation on Linux because of a bug in v3.7.14_build_55
+if(LINUX)
+    option(SMTG_CREATE_PLUGIN_LINK OFF)
+endif()
+
 FetchContent_Declare(
     vst3sdk
     GIT_REPOSITORY https://github.com/steinbergmedia/vst3sdk.git
