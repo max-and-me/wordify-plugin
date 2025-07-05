@@ -29,7 +29,7 @@ option(VSTGUI_TOOLS "Build VSTGUI Tools" OFF)
 FetchContent_Declare(
     vst3sdk
     GIT_REPOSITORY https://github.com/steinbergmedia/vst3sdk.git
-    GIT_TAG v3.7.13_build_42
+    GIT_TAG v3.7.14_build_55
 )
 
 #set(VSTGUI_SOURCE_DIR "${vstgui_SOURCE_DIR}")
