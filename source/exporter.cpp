@@ -82,7 +82,12 @@ static auto convert(const RegionDataList& regions,
         sub_title.end_time = subrip::to_time_display_string(
             region.project_time_start + region.duration);
         for (const auto& word : region.words)
+        {
+            if (word.is_clipped_by_region)
+                continue;
+                
             sub_title.text += word.word.value + ' ';
+        }
         sub_title.text = trim(sub_title.text);
 
         sub_titles.emplace_back(sub_title);
