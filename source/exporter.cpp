@@ -63,12 +63,17 @@ static auto do_export(const PathType& output_path, const SubTitles& sub_titles)
 }
 } // namespace subrip
 
-static StringType trim(const StringType& str)
+static auto trim(StringType& str) -> StringType
 {
-    auto start = std::find_if_not(str.begin(), str.end(), ::isspace);
-    auto end   = std::find_if_not(str.rbegin(), str.rend(), ::isspace).base();
+    if (str.empty())
+        return str;
 
-    return (start < end) ? StringType(start, end) : StringType();
+    if (std::isspace(str.front()) != 0)
+        str.erase(str.begin());
+    if (std::isspace(str.back()))
+        str.pop_back();
+
+    return str;
 }
 
 static auto convert(const RegionDataList& regions,
