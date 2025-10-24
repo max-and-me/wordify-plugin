@@ -6,7 +6,7 @@ include(FetchContent)
 FetchContent_Declare(
     libsndfile
     GIT_REPOSITORY https://github.com/libsndfile/libsndfile.git
-    GIT_TAG 1.2.2
+    GIT_TAG d9a35ea0d5c64c19dd635ae578e0028df8f66d6a
 )
 
 option (ENABLE_EXTERNAL_LIBS "Enable FLAC, Vorbis, and Opus codecs" OFF)
