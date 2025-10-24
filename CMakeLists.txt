@@ -286,10 +286,6 @@ elseif(SMTG_WIN)
             -D_UNICODE
             -DUNICODE
     )
-    target_compile_features(Wordify 
-        PRIVATE
-            cxx_std_20
-    )
 elseif(SMTG_LINUX)
     target_compile_features(Wordify 
         PRIVATE
