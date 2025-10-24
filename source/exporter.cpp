@@ -13,7 +13,7 @@ namespace mam::exporter {
 namespace subrip {
 
 template <typename T>
-auto to_time_display_string(T seconds) -> const StringType
+auto to_time_display_string(T seconds) -> StringType
 {
     namespace chrono = std::chrono;
 
@@ -85,7 +85,7 @@ static auto convert(const RegionDataList& regions,
         {
             if (word.is_clipped_by_region)
                 continue;
-                
+
             sub_title.text += word.word.value + ' ';
         }
         sub_title.text = trim(sub_title.text);
@@ -109,6 +109,10 @@ auto do_export(const PathType& output_path,
 
         case Format::JSON: {
             // TODO: Put JSON stuff here
+            return false;
+        }
+
+        default: {
             return false;
         }
     }

@@ -88,7 +88,7 @@ static auto selectFilePath(VSTGUI::CFrame& frame) -> const StringType
     {
         selector->setTitle("Save SubRip File");
         selector->setAllowMultiFileSelection(false);
-        selector->setDefaultExtension(CFileExtension("SRF", "srf"));
+        selector->setDefaultExtension(CFileExtension("SubRip", "srt"));
         selector->run([&](CNewFileSelector* control) {
             if (control == nullptr)
                 return;
@@ -105,8 +105,8 @@ static auto selectFilePath(VSTGUI::CFrame& frame) -> const StringType
 static auto export_subrip(ARADocumentController& controller,
                           VSTGUI::CFrame& frame)
 {
-    using StringType = std::string;
-    StringType output_file_path = selectFilePath (frame);
+    using StringType            = std::string;
+    StringType output_file_path = selectFilePath(frame);
     if (output_file_path.empty())
         return;
 
