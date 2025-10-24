@@ -188,7 +188,7 @@ target_sources(Wordify
 
 target_compile_features(Wordify 
     PRIVATE
-        cxx_std_17
+        cxx_std_20
 )
 
 target_include_directories(Wordify
