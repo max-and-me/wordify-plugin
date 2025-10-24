@@ -188,7 +188,7 @@ target_sources(Wordify
 
 target_compile_features(Wordify 
     PRIVATE
-        cxx_std_20
+        cxx_std_17
 )
 
 target_include_directories(Wordify
@@ -285,6 +285,10 @@ elseif(SMTG_WIN)
         PUBLIC
             -D_UNICODE
             -DUNICODE
+    )
+    target_compile_features(Wordify 
+        PRIVATE
+            cxx_std_20
     )
 elseif(SMTG_LINUX)
     target_compile_features(Wordify 
