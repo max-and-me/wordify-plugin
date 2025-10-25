@@ -53,6 +53,8 @@ smtg_add_vst3plugin(Wordify
     source/controllers/spinner_controller.h
     source/controllers/waveform_controller.cpp
     source/controllers/waveform_controller.h
+    source/exporter.cpp
+    source/exporter.h
     source/little_helpers.h
     source/meta_words_audio_modification.cpp
     source/meta_words_audio_modification.h

@@ -2,8 +2,10 @@
 
 #include "preferences_controller.h"
 #include "ara_document_controller.h"
+#include "exporter.h"
 #include "version.h"
 #include "warn_cpp/suppress_warnings.h"
+#include <map>
 #include <string>
 BEGIN_SUPPRESS_WARNINGS
 #include "public.sdk/source/vst/vstparameters.h"
@@ -26,6 +28,20 @@ namespace mam {
 using namespace VSTGUI;
 
 //------------------------------------------------------------------------
+enum MenuEntryIndex
+{
+    VISIT = 0,
+    EXPORT_TEXT,
+    EXPORT_SRT
+};
+
+using MenuEntries                     = std::map<MenuEntryIndex, StringType>;
+static const MenuEntries kMenuEntries = {
+    {{VISIT, "Visit wordify.org ..."},
+     {EXPORT_TEXT, "Export as Text ..."},
+     {EXPORT_SRT, "Export as SubRip ..."}}};
+
+//------------------------------------------------------------------------
 using URL = const struct
 {
     StringType value;
@@ -41,6 +57,61 @@ auto open_url(URL& url) -> void
 #elif __linux__
     system((std::string("xdg-open ") + url.value).c_str());
 #endif
+}
+
+//------------------------------------------------------------------------
+static auto collectPlaybackRegions(ARADocumentController& controller)
+    -> const exporter::RegionDataList
+{
+    exporter::RegionDataList regions;
+    controller.for_each_region_id([&](const Id id) {
+        auto opt_region = controller.find_playback_region(id);
+        auto region     = opt_region.value_or(nullptr);
+        if (!region)
+            return;
+
+        regions.push_back(region->get_region_data());
+    });
+
+    return regions;
+}
+
+//------------------------------------------------------------------------
+static auto selectFilePath(VSTGUI::CFrame& frame) -> const StringType
+{
+    using StringType = std::string;
+    StringType output_file_path;
+
+    CNewFileSelector* selector =
+        CNewFileSelector::create(&frame, CNewFileSelector::kSelectSaveFile);
+    if (selector)
+    {
+        selector->setTitle("Save SubRip File");
+        selector->setAllowMultiFileSelection(false);
+        selector->setDefaultExtension(CFileExtension("SubRip", "srt"));
+        selector->run([&](CNewFileSelector* control) {
+            if (control == nullptr)
+                return;
+
+            output_file_path = control->getSelectedFile(0);
+        });
+        selector->forget();
+    }
+
+    return output_file_path;
+}
+
+//------------------------------------------------------------------------
+static auto export_subrip(ARADocumentController& controller,
+                          VSTGUI::CFrame& frame)
+{
+    using StringType            = std::string;
+    StringType output_file_path = selectFilePath(frame);
+    if (output_file_path.empty())
+        return;
+
+    exporter::do_export(output_file_path, collectPlaybackRegions(controller),
+                        exporter::Format::SRT);
 }
 
 //------------------------------------------------------------------------
@@ -77,8 +148,11 @@ CView* PreferencesController::verifyView(CView* view,
             options_menu = dynamic_cast<COptionMenu*>(view);
             if (options_menu)
             {
-                options_menu->addEntry("Visit wordify.org ...");
-                options_menu->addEntry("Export as Text ...");
+                for (const auto& el : kMenuEntries)
+                {
+                    options_menu->addEntry(UTF8String(el.second), el.first);
+                }
+
                 options_menu->addEntry(UTF8String("v") + VERSION_STR, -1,
                                        CMenuItem::kDisabled);
                 options_menu->registerControlListener(this);
@@ -95,13 +169,20 @@ void PreferencesController::valueChanged(CControl* pControl)
 {
     if (pControl == options_menu)
     {
-        if (options_menu->getLastResult() == 0)
+        if (options_menu->getLastResult() == VISIT)
         {
             open_url(URL{"https://www.wordify.org"});
         }
-        else if (options_menu->getLastResult() == 1)
+        else if (options_menu->getLastResult() == EXPORT_TEXT)
         {
             export_text();
+        }
+        else if (options_menu->getLastResult() == EXPORT_SRT)
+        {
+            if (!controller || !options_menu->getFrame())
+                return;
+
+            export_subrip(*controller, *(options_menu->getFrame()));
         }
     }
 }
