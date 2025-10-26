@@ -142,15 +142,23 @@ static auto get_color_scheme(bool is_dark) -> const ColorSchemeDesc
 }
 
 //------------------------------------------------------------------------
+static auto is_current_dark_scheme(WordifySingleComponent& controller,
+                                   mam::ParamIds id) -> bool
+{
+    const auto* color_scheme_param = controller.getParameterObject(id);
+    if (!color_scheme_param)
+        return false;
+
+    const auto is_dark = color_scheme_param->getNormalized() > 0.;
+    return is_dark;
+}
+
+//------------------------------------------------------------------------
 using OptColorSchemeDesc = std::optional<ColorSchemeDesc>;
 static auto get_color_scheme(WordifySingleComponent& controller,
                              mam::ParamIds id) -> OptColorSchemeDesc
 {
-    const auto* color_scheme_param = controller.getParameterObject(id);
-    if (!color_scheme_param)
-        return std::nullopt;
-
-    const auto is_dark      = color_scheme_param->getNormalized() > 0.;
+    const auto is_dark      = is_current_dark_scheme(controller, id);
     const auto color_scheme = get_color_scheme(is_dark);
     return {color_scheme};
 }
@@ -172,7 +180,7 @@ static auto set_dark_scheme_on_editors(WordifySingleComponent::Editors& editors,
                 return;
 
             uidesc->setSharedResources(dark_scheme_resources);
-            view->exchangeView("view");
+            view->exchangeView(is_dark ? "view_dark" : "view");
         }
     }
 }
@@ -395,8 +403,9 @@ IPlugView* PLUGIN_API WordifySingleComponent::createView(FIDString name)
     if (FIDStringsEqual(name, Vst::ViewType::kEditor))
     {
         // create your editor here and return a IPlugView ptr of it
-        auto* view =
-            new VSTGUI::VST3Editor(this, "view", "wordify_editor.uidesc");
+        const bool is_dark = is_current_dark_scheme(*this, kParamIdColorScheme);
+        auto* view         = new VSTGUI::VST3Editor(
+            this, is_dark ? "view_dark" : "view", "wordify_editor.uidesc");
 
         const auto uidesc = view->getUIDescription();
         if (uidesc)

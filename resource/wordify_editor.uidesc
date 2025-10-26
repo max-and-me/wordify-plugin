@@ -12,7 +12,7 @@
 		"custom": {
 			"FocusDrawing": {},
 			"VST3Editor": {
-				"Path": "Z:\\Private\\mam\\vst-gpt\\resource\\wordify_editor.uidesc"
+				"Path": "/home/rene/Developer/github/max-and-me/wordify/wordify-plugin/resource/wordify_editor.uidesc"
 			},
 			"UIGridController": {
 				"Grids": "1x 1,4x 4,8x 8,10x 10,12x 12,15x 15",
@@ -22,12 +22,12 @@
 				"SelectedTemplate": "view"
 			},
 			"UIEditController": {
-				"EditViewScale": "1.0",
-				"EditorSize": "0, 0, 1471, 894",
-				"SplitViewSize_0_0": "0.6970046082949308274834265830577351152897",
-				"SplitViewSize_0_1": "0.2834101382488479203836106989911058917642",
-				"SplitViewSize_1_0": "0.5875576036866358986543446007999591529369",
-				"SplitViewSize_1_1": "0.4815668202764977201546514606889104470611",
+				"EditViewScale": "1",
+				"EditorSize": "0, 0, 1471, 894.5",
+				"SplitViewSize_0_0": "0.6971790443293034433835941854340489953756",
+				"SplitViewSize_0_1": "0.2832469775474956708016804896033136174083",
+				"SplitViewSize_1_0": "0.5875071963154864240763686211721505969763",
+				"SplitViewSize_1_1": "0.4815774323546344048985190511302789673209",
 				"SplitViewSize_2_0": "0.7838205302515295347376422796514816582203",
 				"SplitViewSize_2_1": "0.2154996600951733509710095404443563893437",
 				"TabSwitchValue": "0",
@@ -504,7 +504,7 @@
 																			"font-color": "~ WhiteCColor",
 																			"frame-color": "~ BlackCColor",
 																			"frame-width": "1",
-																			"max-value": "2",
+																			"max-value": "3",
 																			"menu-check-style": "false",
 																			"menu-popup-style": "false",
 																			"min-value": "0",
@@ -551,7 +551,7 @@
 									"background-color-draw-style": "filled and stroked",
 									"bordered": "false",
 									"class": "CScrollView",
-									"container-size": "708, 256",
+									"container-size": "624, 396",
 									"follow-focus-view": "false",
 									"horizontal-scrollbar": "false",
 									"mouse-enabled": "true",
@@ -560,6 +560,7 @@
 									"overlay-scrollbars": "false",
 									"scrollbar-background-color": "~ TransparentCColor",
 									"scrollbar-frame-color": "~ TransparentCColor",
+									"scrollbar-min-scroller-size": "8",
 									"scrollbar-scroller-color": "scroll_bar_handle_color",
 									"scrollbar-width": "16",
 									"size": "652, 212",
@@ -583,7 +584,7 @@
 											"opacity": "1",
 											"origin": "0, 0",
 											"row-style": "true",
-											"size": "708, 256",
+											"size": "624, 396",
 											"spacing": "24",
 											"transparent": "true",
 											"uidesc-label": "VLayout",
@@ -1785,6 +1786,39 @@
 							"value-precision": "2",
 							"wants-focus": "false",
 							"wheel-inc-value": "0.1"
+						}
+					}
+				}
+			},
+			"view_dark": {
+				"attributes": {
+                    "autosize": "left right top bottom ",
+					"background-color": "search_hilite_text_color",
+					"background-color-draw-style": "filled and stroked",
+					"class": "CViewContainer",
+					"maxSize": "32000, 32000",
+					"minSize": "652, 320",
+					"mouse-enabled": "true",
+					"opacity": "1",
+					"origin": "0, 0",
+					"size": "652, 320",
+					"transparent": "true",
+					"wants-focus": "false"
+				},
+				"children": {
+					"CViewContainer": {
+						"attributes": {
+							"autosize": "left right top bottom ",
+							"background-color": "main_background",
+							"background-color-draw-style": "filled and stroked",
+							"class": "CViewContainer",
+							"mouse-enabled": "true",
+							"opacity": "1",
+							"origin": "0, 0",
+							"size": "652, 320",
+							"template": "view",
+							"transparent": "false",
+							"wants-focus": "false"
 						}
 					}
 				}
