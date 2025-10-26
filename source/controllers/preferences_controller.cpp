@@ -93,6 +93,10 @@ static auto selectFilePath(VSTGUI::CFrame& frame) -> const StringType
             if (control == nullptr)
                 return;
 
+            const auto canceled = control->getNumSelectedFiles() == 0;
+            if (canceled)
+                return;
+
             output_file_path = control->getSelectedFile(0);
         });
         selector->forget();
