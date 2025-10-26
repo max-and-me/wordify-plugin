@@ -77,9 +77,10 @@ static auto collect_playback_regions(ARADocumentController& controller)
 }
 
 //------------------------------------------------------------------------
-static auto export_file(ARADocumentController& controller,
+static auto export_file(const exporter::RegionDataList& list,
                         VSTGUI::CFrame& frame,
-                        exporter::Format format) -> const StringType
+                        exporter::Format format,
+                        const StringType& last_file_path) -> const StringType
 {
     using StringType = std::string;
     StringType output_file_path;
@@ -92,10 +93,11 @@ static auto export_file(ARADocumentController& controller,
         const auto extension =
             CFileExtension(UTF8String(format_info.description),
                            UTF8String(format_info.extension));
-        const UTF8String title = "Save " + format_info.description + " File";
+        const UTF8String title = "Export " + format_info.description;
         selector->setTitle(title);
         selector->setAllowMultiFileSelection(false);
         selector->setDefaultExtension(extension);
+        selector->setInitialDirectory(UTF8String(last_file_path));
         selector->run([&](CNewFileSelector* control) {
             if (control == nullptr)
                 return;
@@ -105,8 +107,7 @@ static auto export_file(ARADocumentController& controller,
                 return;
 
             output_file_path = control->getSelectedFile(0);
-            exporter::do_export(output_file_path,
-                                collect_playback_regions(controller), format);
+            exporter::do_export(output_file_path, list, format);
         });
         selector->forget();
     }
@@ -182,8 +183,9 @@ void PreferencesController::valueChanged(CControl* pControl)
             if (!controller || !options_menu->getFrame())
                 return;
 
-            export_file(*controller, *(options_menu->getFrame()),
-                        exporter::Format::SRT);
+            last_file_path = export_file(collect_playback_regions(*controller),
+                                         *(options_menu->getFrame()),
+                                         exporter::Format::SRT, last_file_path);
         }
     }
 }
