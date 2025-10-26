@@ -60,7 +60,7 @@ auto open_url(URL& url) -> void
 }
 
 //------------------------------------------------------------------------
-static auto collectPlaybackRegions(ARADocumentController& controller)
+static auto collect_playback_regions(ARADocumentController& controller)
     -> const exporter::RegionDataList
 {
     exporter::RegionDataList regions;
@@ -77,7 +77,9 @@ static auto collectPlaybackRegions(ARADocumentController& controller)
 }
 
 //------------------------------------------------------------------------
-static auto selectFilePath(VSTGUI::CFrame& frame) -> const StringType
+static auto export_file(ARADocumentController& controller,
+                        VSTGUI::CFrame& frame,
+                        exporter::Format format) -> const StringType
 {
     using StringType = std::string;
     StringType output_file_path;
@@ -86,9 +88,14 @@ static auto selectFilePath(VSTGUI::CFrame& frame) -> const StringType
         CNewFileSelector::create(&frame, CNewFileSelector::kSelectSaveFile);
     if (selector)
     {
-        selector->setTitle("Save SubRip File");
+        const auto format_info = exporter::getFormatInfo(format);
+        const auto extension =
+            CFileExtension(UTF8String(format_info.description),
+                           UTF8String(format_info.extension));
+        const UTF8String title = "Save " + format_info.description + " File";
+        selector->setTitle(title);
         selector->setAllowMultiFileSelection(false);
-        selector->setDefaultExtension(CFileExtension("SubRip", "srt"));
+        selector->setDefaultExtension(extension);
         selector->run([&](CNewFileSelector* control) {
             if (control == nullptr)
                 return;
@@ -98,24 +105,13 @@ static auto selectFilePath(VSTGUI::CFrame& frame) -> const StringType
                 return;
 
             output_file_path = control->getSelectedFile(0);
+            exporter::do_export(output_file_path,
+                                collect_playback_regions(controller), format);
         });
         selector->forget();
     }
 
     return output_file_path;
-}
-
-//------------------------------------------------------------------------
-static auto export_subrip(ARADocumentController& controller,
-                          VSTGUI::CFrame& frame)
-{
-    using StringType            = std::string;
-    StringType output_file_path = selectFilePath(frame);
-    if (output_file_path.empty())
-        return;
-
-    exporter::do_export(output_file_path, collectPlaybackRegions(controller),
-                        exporter::Format::SRT);
 }
 
 //------------------------------------------------------------------------
@@ -186,7 +182,8 @@ void PreferencesController::valueChanged(CControl* pControl)
             if (!controller || !options_menu->getFrame())
                 return;
 
-            export_subrip(*controller, *(options_menu->getFrame()));
+            export_file(*controller, *(options_menu->getFrame()),
+                        exporter::Format::SRT);
         }
     }
 }

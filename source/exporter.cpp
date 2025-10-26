@@ -123,4 +123,17 @@ auto do_export(const PathType& output_path,
     }
 }
 
+auto getFormatInfo(Format format) -> FormatInfo
+{
+    switch (format)
+    {
+        case Format::SRT:
+            return {"SubRip", "srt"};
+        case Format::JSON:
+            return {"JSON", "json"};
+        default:
+            return {};
+    }
+}
+
 } // namespace mam::exporter

@@ -18,8 +18,16 @@ using StringType     = std::string;
 using PathType       = StringType;
 using RegionDataList = std::vector<RegionData>;
 
+struct FormatInfo
+{
+    StringType description;
+    StringType extension;
+};
+
 auto do_export(const PathType& output_path,
                const RegionDataList& regions,
                Format format) -> bool;
+
+auto getFormatInfo (Format format) -> FormatInfo;
 
 } // namespace mam::exporter
