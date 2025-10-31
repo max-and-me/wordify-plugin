@@ -12,13 +12,22 @@ set(SMTG_ENABLE_VSTGUI_SUPPORT OFF)
 FetchContent_Declare(
     vstgui
     GIT_REPOSITORY https://github.com/steinbergmedia/vstgui.git
-    GIT_TAG a65af9afedfa8318bf499aca39b15e848b402cfc
+    GIT_TAG 772e5e141b6da97e66976cf41b83681d2bc86d90
 )
 
 FetchContent_GetProperties(vstgui)
 if(NOT vstgui_POPULATED)
     FetchContent_Populate(vstgui)
 endif()
+
+# Patch for this issue: https://github.com/steinbergmedia/vstgui/issues/249
+# I have no other solution for this atm but patching
+execute_process(COMMAND ${GIT_EXECUTABLE} apply --ignore-whitespace "${CMAKE_CURRENT_LIST_DIR}/vstgui_cairo_finish.patch"
+    WORKING_DIRECTORY ${vstgui_SOURCE_DIR}
+    RESULT_VARIABLE ret
+    ERROR_VARIABLE err
+    TIMEOUT 5
+)
 # 
 # option(SMTG_ENABLE_VST3_PLUGIN_EXAMPLES "Enable VST 3 Plug-in Examples" OFF)
 # option(SMTG_ENABLE_VST3_HOSTING_EXAMPLES "Enable VST 3 Hosting Examples" OFF)

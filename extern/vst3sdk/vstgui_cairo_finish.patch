@@ -1,0 +1,12 @@
+diff --git a/vstgui/lib/platform/linux/cairographicscontext.cpp b/vstgui/lib/platform/linux/cairographicscontext.cpp
+index f3564c50..d7d7a7c4 100644
+--- a/vstgui/lib/platform/linux/cairographicscontext.cpp
++++ b/vstgui/lib/platform/linux/cairographicscontext.cpp
+@@ -109,6 +109,7 @@ CairoGraphicsDevice::~CairoGraphicsDevice () noexcept
+ {
+ 	if (impl->device)
+ 	{
++		cairo_device_finish (impl->device);
+ 		cairo_device_destroy (impl->device);
+ 	}
+ }
