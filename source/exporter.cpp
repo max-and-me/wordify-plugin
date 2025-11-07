@@ -4,12 +4,27 @@
 #include "warn_cpp/suppress_warnings.h"
 #include <chrono>
 #include <fstream>
+#include <iostream>
+#include <nlohmann/json.hpp>
 #include <sstream>
 BEGIN_SUPPRESS_WARNINGS
 #include "fmt/format.h"
 END_SUPPRESS_WARNINGS
 
 namespace mam::exporter {
+static auto trim(StringType& str) -> StringType
+{
+    if (str.empty())
+        return str;
+
+    if (std::isspace(str.front()) != 0)
+        str.erase(str.begin());
+    if (std::isspace(str.back()))
+        str.pop_back();
+
+    return str;
+}
+
 namespace subrip {
 
 template <typename T>
@@ -63,18 +78,55 @@ static auto do_export(const PathType& output_path, const SubTitles& sub_titles)
 }
 } // namespace subrip
 
-static auto trim(StringType& str) -> StringType
+namespace json {
+auto do_export(const PathType& output_path, const RegionDataList& regions)
+    -> bool
 {
-    if (str.empty())
-        return str;
+    nlohmann::json transcript;
 
-    if (std::isspace(str.front()) != 0)
-        str.erase(str.begin());
-    if (std::isspace(str.back()))
-        str.pop_back();
+    for (const auto& region : regions)
+    {
+        const auto& words_data = region;
 
-    return str;
+        StringType speaker    = words_data.name;
+        StringType start_time = std::to_string(words_data.project_time_start);
+        StringType duration   = std::to_string(words_data.duration);
+
+        const auto& words = words_data.words;
+        StringType spoken_text;
+        for (const auto& word : words)
+        {
+            if (word.is_clipped_by_region)
+                continue;
+
+            spoken_text += word.word.value + " ";
+        }
+
+        nlohmann::json speaker_data = {{"speaker", speaker},
+                                       {"start_time", start_time},
+                                       {"duration", duration},
+                                       {"spoken_text", trim(spoken_text)}};
+
+        transcript["transcript"].push_back(speaker_data);
+    }
+
+    auto& filePath = output_path;
+    std::ofstream file(filePath);
+    if (file.is_open())
+    {
+        file << std::setw(4) << transcript << std::endl;
+        file.close();
+        std::cout << "JSON file saved to: " << filePath << std::endl;
+    }
+    else
+    {
+        std::cerr << "Unable to open file for writing!" << std::endl;
+    }
+
+    return true;
 }
+
+} // namespace json
 
 static auto convert(const RegionDataList& regions,
                     subrip::SubTitles& sub_titles) -> void
@@ -113,8 +165,7 @@ auto do_export(const PathType& output_path,
         }
 
         case Format::JSON: {
-            // TODO: Put JSON stuff here
-            return false;
+            return json::do_export(output_path, regions);
         }
 
         default: {

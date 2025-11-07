@@ -38,8 +38,8 @@ enum MenuEntryIndex
 using MenuEntries                     = std::map<MenuEntryIndex, StringType>;
 static const MenuEntries kMenuEntries = {
     {{VISIT, "Visit wordify.org ..."},
-     {EXPORT_TEXT, "Export as Text ..."},
-     {EXPORT_SRT, "Export as SubRip ..."}}};
+     {EXPORT_TEXT, "Export Wordify Json ..."},
+     {EXPORT_SRT, "Export SubRip ..."}}};
 
 //------------------------------------------------------------------------
 using URL = const struct
@@ -176,7 +176,12 @@ void PreferencesController::valueChanged(CControl* pControl)
         }
         else if (options_menu->getLastResult() == EXPORT_TEXT)
         {
-            export_text();
+            if (!controller || !options_menu->getFrame())
+                return;
+
+            last_file_path = export_file(collect_playback_regions(*controller),
+                                         *(options_menu->getFrame()),
+                                         exporter::Format::JSON, last_file_path);
         }
         else if (options_menu->getLastResult() == EXPORT_SRT)
         {
@@ -188,86 +193,6 @@ void PreferencesController::valueChanged(CControl* pControl)
                                          exporter::Format::SRT, last_file_path);
         }
     }
-}
-
-//------------------------------------------------------------------------
-void PreferencesController::export_text()
-{
-    nlohmann::json transcript;
-
-    CNewFileSelector* selector = CNewFileSelector::create(
-        options_menu->getFrame(), CNewFileSelector::kSelectSaveFile);
-    if (selector)
-    {
-        selector->setTitle("Save JSON File");
-        selector->setAllowMultiFileSelection(false);
-        selector->setDefaultExtension(CFileExtension("JSON", "json"));
-        selector->run([&](CNewFileSelector* control) {
-            if (control == nullptr)
-                return;
-
-            auto size = control->getNumSelectedFiles();
-            if (size == 0)
-            {
-                std::cerr << "No file selected!" << std::endl;
-                return;
-            }
-
-            std::string filePath = control->getSelectedFile(0);
-            if (!filePath.empty())
-            {
-                controller->for_each_region_id([&](const Id id) {
-                    add_transcript_to_json(id, transcript);
-                });
-
-                std::ofstream file(filePath);
-                if (file.is_open())
-                {
-                    file << std::setw(4) << transcript << std::endl;
-                    file.close();
-                    std::cout << "JSON file saved to: " << filePath
-                              << std::endl;
-                }
-                else
-                {
-                    std::cerr << "Unable to open file for writing!"
-                              << std::endl;
-                }
-            }
-        });
-        selector->forget();
-    }
-}
-
-//------------------------------------------------------------------------
-void PreferencesController::add_transcript_to_json(const Id region_id,
-                                                   nlohmann::json& transcript)
-{
-    if (!controller)
-        return;
-
-    auto opt_region = controller->find_playback_region(region_id);
-    auto region     = opt_region.value_or(nullptr);
-    if (!region)
-        return;
-
-    const auto words_data = region->get_region_data();
-
-    StringType speaker    = words_data.name;
-    StringType start_time = std::to_string(words_data.project_time_start);
-    StringType duration   = std::to_string(words_data.duration);
-
-    const auto& words = words_data.words;
-    StringType spoken_text;
-    for (const auto& word : words)
-        spoken_text += word.word.value + " ";
-
-    nlohmann::json speaker_data = {{"speaker", speaker},
-                                   {"start_time", start_time},
-                                   {"duration", duration},
-                                   {"spoken_text", spoken_text}};
-
-    transcript["transcript"].push_back(speaker_data);
 }
 
 //------------------------------------------------------------------------

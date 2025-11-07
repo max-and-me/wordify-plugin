@@ -52,8 +52,6 @@ public:
     //--------------------------------------------------------------------
 private:
     StringType last_file_path;
-    void export_text();
-    void add_transcript_to_json(const Id region_id, nlohmann::json& transcript);
     ARADocumentController* controller = nullptr;
     VSTGUI::COptionMenu* options_menu = nullptr;
 };
