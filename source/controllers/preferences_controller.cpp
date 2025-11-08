@@ -5,7 +5,6 @@
 #include "exporter.h"
 #include "version.h"
 #include "warn_cpp/suppress_warnings.h"
-#include <map>
 #include <string>
 BEGIN_SUPPRESS_WARNINGS
 #include "public.sdk/source/vst/vstparameters.h"
@@ -13,9 +12,6 @@ BEGIN_SUPPRESS_WARNINGS
 #include "vstgui/lib/controls/coptionmenu.h"
 #include "vstgui/uidescription/uiattributes.h"
 END_SUPPRESS_WARNINGS
-
-#include <fstream>
-#include <iostream>
 
 #ifdef WIN32
 #include <windows.h>
@@ -26,20 +22,6 @@ END_SUPPRESS_WARNINGS
 
 namespace mam {
 using namespace VSTGUI;
-
-//------------------------------------------------------------------------
-enum MenuEntryIndex
-{
-    VISIT = 0,
-    EXPORT_TEXT,
-    EXPORT_SRT
-};
-
-using MenuEntries                     = std::map<MenuEntryIndex, StringType>;
-static const MenuEntries kMenuEntries = {
-    {{VISIT, "Visit wordify.org ..."},
-     {EXPORT_TEXT, "Export Wordify Json ..."},
-     {EXPORT_SRT, "Export SubRip ..."}}};
 
 //------------------------------------------------------------------------
 using URL = const struct
@@ -126,15 +108,7 @@ PreferencesController::PreferencesController(ARADocumentController* controller)
 }
 
 //------------------------------------------------------------------------
-PreferencesController::~PreferencesController()
-{
-    if (options_menu)
-    {
-        options_menu->unregisterControlListener(this);
-        options_menu->unregisterViewListener(this);
-        options_menu = nullptr;
-    }
-}
+PreferencesController::~PreferencesController() {}
 
 //------------------------------------------------------------------------
 CView* PreferencesController::verifyView(CView* view,
@@ -149,15 +123,34 @@ CView* PreferencesController::verifyView(CView* view,
             options_menu = dynamic_cast<COptionMenu*>(view);
             if (options_menu)
             {
-                for (const auto& el : kMenuEntries)
-                {
-                    options_menu->addEntry(UTF8String(el.second), el.first);
-                }
+                auto item = new CCommandMenuItem({"Visit wordify.org..."});
+                item->setActions(
+                    [this](auto) { open_url(URL{"https://www.wordify.org"}); });
+                options_menu->addEntry(item);
+
+                auto export_submenu = new COptionMenu();
+                options_menu->addEntry(export_submenu, "Export");
+
+                item = new CCommandMenuItem({"JSON..."});
+                item->setActions([this](auto) {
+                    last_file_path =
+                        export_file(collect_playback_regions(*controller),
+                                    *(options_menu->getFrame()),
+                                    exporter::Format::JSON, last_file_path);
+                });
+                export_submenu->addEntry(item);
+
+                item = new CCommandMenuItem({"SubRip..."});
+                item->setActions([this](auto) {
+                    last_file_path =
+                        export_file(collect_playback_regions(*controller),
+                                    *(options_menu->getFrame()),
+                                    exporter::Format::SRT, last_file_path);
+                });
+                export_submenu->addEntry(item);
 
                 options_menu->addEntry(UTF8String("v") + VERSION_STR, -1,
                                        CMenuItem::kDisabled);
-                options_menu->registerControlListener(this);
-                options_menu->registerViewListener(this);
             }
         }
     }
@@ -166,34 +159,7 @@ CView* PreferencesController::verifyView(CView* view,
 }
 
 //------------------------------------------------------------------------
-void PreferencesController::valueChanged(CControl* pControl)
-{
-    if (pControl == options_menu)
-    {
-        if (options_menu->getLastResult() == VISIT)
-        {
-            open_url(URL{"https://www.wordify.org"});
-        }
-        else if (options_menu->getLastResult() == EXPORT_TEXT)
-        {
-            if (!controller || !options_menu->getFrame())
-                return;
-
-            last_file_path = export_file(collect_playback_regions(*controller),
-                                         *(options_menu->getFrame()),
-                                         exporter::Format::JSON, last_file_path);
-        }
-        else if (options_menu->getLastResult() == EXPORT_SRT)
-        {
-            if (!controller || !options_menu->getFrame())
-                return;
-
-            last_file_path = export_file(collect_playback_regions(*controller),
-                                         *(options_menu->getFrame()),
-                                         exporter::Format::SRT, last_file_path);
-        }
-    }
-}
+void PreferencesController::valueChanged(CControl* /* pControl */) {}
 
 //------------------------------------------------------------------------
 void PLUGIN_API PreferencesController::update(FUnknown* /*changedUnknown*/,
@@ -202,15 +168,7 @@ void PLUGIN_API PreferencesController::update(FUnknown* /*changedUnknown*/,
 }
 
 //------------------------------------------------------------------------
-void PreferencesController::viewWillDelete(VSTGUI::CView* view)
-{
-    if (view == options_menu)
-    {
-        options_menu->unregisterControlListener(this);
-        options_menu->unregisterViewListener(this);
-        options_menu = nullptr;
-    }
-}
+void PreferencesController::viewWillDelete(VSTGUI::CView* view) {}
 
 //------------------------------------------------------------------------
 } // namespace mam
