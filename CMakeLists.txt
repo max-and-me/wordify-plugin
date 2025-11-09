@@ -13,8 +13,13 @@ project("Wordify"
     VERSION       ${VERSION_NOW}
     DESCRIPTION   "Wordify VST 3 Plug-in"
     HOMEPAGE_URL  "https://www.wordify.org"
-    LANGUAGES     C CXX OBJC OBJCXX
+    LANGUAGES     C CXX
 )
+
+# For Objective C (.mm files) code on macOS
+if(APPLE)
+	enable_language(OBJC OBJCXX)
+endif()
 
 string(TIMESTAMP YEAR_NOW     "%Y") # Current year
 set(CPACK_PACKAGE_VENDOR      "WordifyOrg")
@@ -172,7 +177,6 @@ target_link_libraries(Wordify
         sdk
         sndfile
         special-folders
-        vstgui
         vstgui_support
         warn-cpp
         wave-draw
