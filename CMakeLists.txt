@@ -13,6 +13,7 @@ project("Wordify"
     VERSION       ${VERSION_NOW}
     DESCRIPTION   "Wordify VST 3 Plug-in"
     HOMEPAGE_URL  "https://www.wordify.org"
+    LANGUAGES     C CXX OBJC OBJCXX
 )
 
 string(TIMESTAMP YEAR_NOW     "%Y") # Current year
