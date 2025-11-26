@@ -49,7 +49,7 @@ fi
 mkdir build
 cd build
 echo "[MAM] MacOS_Build_Release_sh: CMake project"
-cmake -GXcode ../wordify-plugin
+cmake -GXcode -DSMTG_BUILD_UNIVERSAL_BINARY=OFF ../wordify-plugin
 cmake --build . --target Wordify --config Release
 
 # Sign the binaries
