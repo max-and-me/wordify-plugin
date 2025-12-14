@@ -62,11 +62,8 @@ static auto collect_playback_regions(ARADocumentController& controller)
 static auto export_file(const exporter::RegionDataList& list,
                         VSTGUI::CFrame& frame,
                         exporter::Format format,
-                        const StringType& last_file_path) -> const StringType
+                        StringType& last_file_path) -> void
 {
-    using StringType = std::string;
-    StringType output_file_path;
-
     CNewFileSelector* selector =
         CNewFileSelector::create(&frame, CNewFileSelector::kSelectSaveFile);
     if (selector)
@@ -80,21 +77,20 @@ static auto export_file(const exporter::RegionDataList& list,
         selector->setAllowMultiFileSelection(false);
         selector->setDefaultExtension(extension);
         selector->setInitialDirectory(UTF8String(last_file_path));
-        selector->run([&](CNewFileSelector* control) {
-            if (control == nullptr)
-                return;
+        selector->run(
+            [&last_file_path, list, format](CNewFileSelector* control) {
+                if (control == nullptr)
+                    return;
 
-            const auto canceled = control->getNumSelectedFiles() == 0;
-            if (canceled)
-                return;
+                const auto canceled = control->getNumSelectedFiles() == 0;
+                if (canceled)
+                    return;
 
-            output_file_path = control->getSelectedFile(0);
-            exporter::do_export(output_file_path, list, format);
-        });
+                last_file_path = control->getSelectedFile(0);
+                exporter::do_export(last_file_path, list, format);
+            });
         selector->forget();
     }
-
-    return output_file_path;
 }
 
 //------------------------------------------------------------------------
@@ -133,19 +129,17 @@ CView* PreferencesController::verifyView(CView* view,
 
                 item = new CCommandMenuItem({"JSON..."});
                 item->setActions([this](auto) {
-                    last_file_path =
-                        export_file(collect_playback_regions(*controller),
-                                    *(options_menu->getFrame()),
-                                    exporter::Format::JSON, last_file_path);
+                    export_file(collect_playback_regions(*controller),
+                                *(options_menu->getFrame()),
+                                exporter::Format::JSON, last_file_path);
                 });
                 export_submenu->addEntry(item);
 
                 item = new CCommandMenuItem({"SubRip..."});
                 item->setActions([this](auto) {
-                    last_file_path =
-                        export_file(collect_playback_regions(*controller),
-                                    *(options_menu->getFrame()),
-                                    exporter::Format::SRT, last_file_path);
+                    export_file(collect_playback_regions(*controller),
+                                *(options_menu->getFrame()),
+                                exporter::Format::SRT, last_file_path);
                 });
                 export_submenu->addEntry(item);
 
@@ -168,7 +162,7 @@ void PLUGIN_API PreferencesController::update(FUnknown* /*changedUnknown*/,
 }
 
 //------------------------------------------------------------------------
-void PreferencesController::viewWillDelete(VSTGUI::CView* view) {}
+void PreferencesController::viewWillDelete(VSTGUI::CView* /*view*/) {}
 
 //------------------------------------------------------------------------
 } // namespace mam
