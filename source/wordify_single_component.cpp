@@ -197,22 +197,45 @@ static auto update_task_count_param(size_t count,
     }
 }
 
+//-----------------------------------------------------------------------------
+// WordifySingleComponentAudioPart
 //------------------------------------------------------------------------
-// WordifySingleComponent
-//------------------------------------------------------------------------
-WordifySingleComponent::WordifySingleComponent() {}
+WordifySingleComponentAudioPart::WordifySingleComponentAudioPart() {}
 
 //------------------------------------------------------------------------
-WordifySingleComponent::~WordifySingleComponent() {}
-
-//------------------------------------------------------------------------
-tresult PLUGIN_API WordifySingleComponent::initialize(FUnknown* context)
+WordifySingleComponentAudioPart::~WordifySingleComponentAudioPart() {}
+//-----------------------------------------------------------------------------
+const ARA::ARAPlugInExtensionInstance* PLUGIN_API
+WordifySingleComponentAudioPart::bindToDocumentController(
+    ARA::ARADocumentControllerRef /*documentControllerRef*/)
 {
-    // Here the Plug-in will be instantiated
+    ARA_VALIDATE_API_STATE(
+        false && "call is deprecated in ARA 2, host must not call this");
+    return nullptr;
+}
 
-    //---always initialize the parent-------
+//-----------------------------------------------------------------------------
+const ARA::ARAPlugInExtensionInstance* PLUGIN_API
+WordifySingleComponentAudioPart::bindToDocumentControllerWithRoles(
+    ARA::ARADocumentControllerRef documentControllerRef,
+    ARA::ARAPlugInInstanceRoleFlags knownRoles,
+    ARA::ARAPlugInInstanceRoleFlags assignedRoles)
+{
+    return araPlugInExtension.bindToARA(documentControllerRef, knownRoles,
+                                        assignedRoles);
+}
+
+//-----------------------------------------------------------------------------
+const ARA::ARAFactory* PLUGIN_API WordifySingleComponentAudioPart::getFactory()
+{
+    return ARADocumentController::getARAFactory();
+}
+
+//------------------------------------------------------------------------
+tresult PLUGIN_API
+WordifySingleComponentAudioPart::initialize(FUnknown* context)
+{
     tresult result = SingleComponentEffect::initialize(context);
-    // if everything Ok, continue
     if (result != kResultOk)
     {
         return result;
@@ -222,32 +245,17 @@ tresult PLUGIN_API WordifySingleComponent::initialize(FUnknown* context)
     addAudioInput(STR16("Mono In"), Vst::SpeakerArr::kMono);
     addAudioOutput(STR16("Mono Out"), Vst::SpeakerArr::kMono);
 
-    restore_parameters();
-
     return kResultOk;
 }
 
 //------------------------------------------------------------------------
-tresult PLUGIN_API WordifySingleComponent::terminate()
+tresult PLUGIN_API WordifySingleComponentAudioPart::terminate()
 {
-    // Here the Plug-in will be de-instantiated, last possibility to remove
-    // some memory!
-
-    store_parameters();
-    task_managing::get_task_count_callback()->remove(task_count_handle);
-
-    for (auto i = 0; i < parameters.getParameterCount(); i++)
-    {
-        if (auto* p = parameters.getParameterByIndex(i))
-            p->removeDependent(this);
-    }
-
-    //---do not forget to call parent ------
     return SingleComponentEffect::terminate();
 }
 
 //------------------------------------------------------------------------
-tresult PLUGIN_API WordifySingleComponent::setActive(TBool state)
+tresult PLUGIN_API WordifySingleComponentAudioPart::setActive(TBool state)
 {
     //--- called when the Plug-in is enable/disable (On/Off) -----
 
@@ -268,7 +276,8 @@ tresult PLUGIN_API WordifySingleComponent::setActive(TBool state)
 }
 
 //------------------------------------------------------------------------
-tresult PLUGIN_API WordifySingleComponent::process(Vst::ProcessData& data)
+tresult PLUGIN_API
+WordifySingleComponentAudioPart::process(Vst::ProcessData& data)
 {
     if (data.numOutputs == 0)
         return kResultOk;
@@ -305,14 +314,14 @@ tresult PLUGIN_API WordifySingleComponent::process(Vst::ProcessData& data)
 
 //------------------------------------------------------------------------
 tresult PLUGIN_API
-WordifySingleComponent::setupProcessing(Vst::ProcessSetup& newSetup)
+WordifySingleComponentAudioPart::setupProcessing(Vst::ProcessSetup& newSetup)
 {
     return SingleComponentEffect::setupProcessing(newSetup);
 }
 
 //------------------------------------------------------------------------
 tresult PLUGIN_API
-WordifySingleComponent::canProcessSampleSize(int32 symbolicSampleSize)
+WordifySingleComponentAudioPart::canProcessSampleSize(int32 symbolicSampleSize)
 {
     // by default kSample32 is supported
     if (symbolicSampleSize == Vst::kSample32)
@@ -326,15 +335,54 @@ WordifySingleComponent::canProcessSampleSize(int32 symbolicSampleSize)
 }
 
 //------------------------------------------------------------------------
-tresult PLUGIN_API WordifySingleComponent::setState(IBStream* /*state*/)
+tresult PLUGIN_API
+WordifySingleComponentAudioPart::setState(IBStream* /*state*/)
 {
     return kResultOk;
 }
 
 //------------------------------------------------------------------------
-tresult PLUGIN_API WordifySingleComponent::getState(IBStream* /*state*/)
+tresult PLUGIN_API
+WordifySingleComponentAudioPart::getState(IBStream* /*state*/)
 {
     return kResultOk;
+}
+
+//------------------------------------------------------------------------
+// WordifySingleComponent
+//------------------------------------------------------------------------
+WordifySingleComponent::WordifySingleComponent() {}
+
+//------------------------------------------------------------------------
+WordifySingleComponent::~WordifySingleComponent() {}
+
+//------------------------------------------------------------------------
+tresult PLUGIN_API WordifySingleComponent::initialize(FUnknown* context)
+{
+    auto res = WordifySingleComponentAudioPart::initialize(context);
+
+    restore_parameters();
+
+    return res;
+}
+
+//------------------------------------------------------------------------
+tresult PLUGIN_API WordifySingleComponent::terminate()
+{
+    // Here the Plug-in will be de-instantiated, last possibility to remove
+    // some memory!
+
+    store_parameters();
+    task_managing::get_task_count_callback()->remove(task_count_handle);
+
+    for (auto i = 0; i < parameters.getParameterCount(); i++)
+    {
+        if (auto* p = parameters.getParameterByIndex(i))
+            p->removeDependent(this);
+    }
+
+    //---do not forget to call parent ------
+    return WordifySingleComponentAudioPart::terminate();
 }
 
 //------------------------------------------------------------------------
@@ -432,33 +480,6 @@ IPlugView* PLUGIN_API WordifySingleComponent::createView(FIDString name)
         return view;
     }
     return nullptr;
-}
-
-//-----------------------------------------------------------------------------
-const ARA::ARAPlugInExtensionInstance* PLUGIN_API
-WordifySingleComponent::bindToDocumentController(
-    ARA::ARADocumentControllerRef /*documentControllerRef*/)
-{
-    ARA_VALIDATE_API_STATE(
-        false && "call is deprecated in ARA 2, host must not call this");
-    return nullptr;
-}
-
-//-----------------------------------------------------------------------------
-const ARA::ARAPlugInExtensionInstance* PLUGIN_API
-WordifySingleComponent::bindToDocumentControllerWithRoles(
-    ARA::ARADocumentControllerRef documentControllerRef,
-    ARA::ARAPlugInInstanceRoleFlags knownRoles,
-    ARA::ARAPlugInInstanceRoleFlags assignedRoles)
-{
-    return araPlugInExtension.bindToARA(documentControllerRef, knownRoles,
-                                        assignedRoles);
-}
-
-//-----------------------------------------------------------------------------
-const ARA::ARAFactory* PLUGIN_API WordifySingleComponent::getFactory()
-{
-    return ARADocumentController::getARAFactory();
 }
 
 //------------------------------------------------------------------------
