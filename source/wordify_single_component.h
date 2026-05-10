@@ -10,6 +10,7 @@ BEGIN_SUPPRESS_WARNINGS
 #include "ARA_API/ARAVST3.h"
 #include "ARA_Library/PlugIn/ARAPlug.h"
 #include "ipslviewembedding.h"
+#include "pluginterfaces/base/funknownimpl.h"
 #include "public.sdk/source/vst/vstsinglecomponenteffect.h"
 #include "vstgui/plugin-bindings/vst3editor.h"
 END_SUPPRESS_WARNINGS
@@ -20,9 +21,9 @@ namespace mam {
 //  WordifySingleComponentAudioPart
 //------------------------------------------------------------------------
 class WordifySingleComponentAudioPart
-: public Steinberg::Vst::SingleComponentEffect,
-  public ARA::IPlugInEntryPoint,
-  public ARA::IPlugInEntryPoint2
+: public Steinberg::U::Extends<
+      Steinberg::Vst::SingleComponentEffect,
+      Steinberg::U::Directly<ARA::IPlugInEntryPoint, ARA::IPlugInEntryPoint2>>
 {
 public:
     //------------------------------------------------------------------------
@@ -58,11 +59,8 @@ public:
 
     OBJ_METHODS(WordifySingleComponentAudioPart,
                 Steinberg::Vst::SingleComponentEffect)
-    DEFINE_INTERFACES
-    DEF_INTERFACE(IPlugInEntryPoint)
-    DEF_INTERFACE(IPlugInEntryPoint2)
-    END_DEFINE_INTERFACES(Steinberg::Vst::SingleComponentEffect)
-    REFCOUNT_METHODS(Steinberg::Vst::SingleComponentEffect)
+
+    //REFCOUNT_METHODS(Steinberg::Vst::SingleComponentEffect)
     //------------------------------------------------------------------------
 protected:
     ARA::PlugIn::PlugInExtension araPlugInExtension;
@@ -71,11 +69,11 @@ protected:
 //------------------------------------------------------------------------
 //  WordifySingleComponent
 //------------------------------------------------------------------------
-class WordifySingleComponent : public WordifySingleComponentAudioPart,
-                               // public ARA::IPlugInEntryPoint,
-                               // public ARA::IPlugInEntryPoint2,
-                               public VSTGUI::VST3EditorDelegate,
-                               public Presonus::IPlugInViewEmbedding
+class WordifySingleComponent
+: public VSTGUI::VST3EditorDelegate,
+  public Steinberg::U::Extends<
+      WordifySingleComponentAudioPart,
+      Steinberg::U::Directly<Presonus::IPlugInViewEmbedding>>
 {
 public:
     //--------------------------------------------------------------------
@@ -116,10 +114,7 @@ public:
         Steinberg::IPlugView* view, Steinberg::TBool embedded) override;
 
     OBJ_METHODS(WordifySingleComponent, WordifySingleComponentAudioPart)
-    DEFINE_INTERFACES
-    DEF_INTERFACE(IPlugInViewEmbedding)
-    END_DEFINE_INTERFACES(WordifySingleComponentAudioPart)
-    REFCOUNT_METHODS(Steinberg::Vst::SingleComponentEffect)
+    //REFCOUNT_METHODS(Steinberg::Vst::SingleComponentEffect)
 
     //--------------------------------------------------------------------
 protected:
