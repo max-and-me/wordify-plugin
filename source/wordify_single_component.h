@@ -119,7 +119,7 @@ public:
     DEFINE_INTERFACES
     DEF_INTERFACE(IPlugInViewEmbedding)
     END_DEFINE_INTERFACES(WordifySingleComponentAudioPart)
-    REFCOUNT_METHODS(WordifySingleComponentAudioPart)
+    REFCOUNT_METHODS(Steinberg::Vst::SingleComponentEffect)
 
     //--------------------------------------------------------------------
 protected:
