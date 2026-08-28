@@ -34,7 +34,7 @@ public:
     // Class ID
     static const Steinberg::FUID getClassFUID()
     {
-        return Steinberg::FUID(0xB761364A, 0x035149BF, 0xA580C576, 0xECD186FB);
+        return Steinberg::FUID(0x8E9F9137, 0x954B4479, 0xB9DBB635, 0xA8DBA34F);
     }
 
     // Create function
