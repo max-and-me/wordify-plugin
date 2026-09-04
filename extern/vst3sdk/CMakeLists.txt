@@ -12,7 +12,7 @@ set(SMTG_ENABLE_VSTGUI_SUPPORT OFF)
 FetchContent_Declare(
     vstgui
     GIT_REPOSITORY https://github.com/steinbergmedia/vstgui.git
-    GIT_TAG 772e5e141b6da97e66976cf41b83681d2bc86d90
+    GIT_TAG vstgui4_15_1
 )
 
 FetchContent_GetProperties(vstgui)
