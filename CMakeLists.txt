@@ -7,10 +7,7 @@ string(TIMESTAMP VERSION_NOW "%Y.%m") # VERSION_NOW e.g. 2023.08
 option(SMTG_RUN_VST_VALIDATOR $<$<CONFIG:Debug>:OFF>$<$<CONFIG:Release>:ON>)
 
 project("Wordify"
-    # This is your plug-in version number. Change it here only.
-    # Version number symbols usable in C++ can be found in
-    # source/version.h and ${PROJECT_BINARY_DIR}/projectversion.h.
-    VERSION       ${VERSION_NOW}
+    VERSION       2026.10 # ${VERSION_NOW}
     DESCRIPTION   "Wordify VST 3 Plug-in"
     HOMEPAGE_URL  "https://www.wordify.org"
     LANGUAGES     C CXX
@@ -35,6 +32,7 @@ message(STATUS "[MAM] PROJECT_CONTACT_EMAIL      : ${PROJECT_CONTACT_EMAIL}")
 message(STATUS "[MAM] PROJECT_NAME               : ${PROJECT_NAME}")
 message(STATUS "[MAM] PROJECT_BUNDLE_IDENTIFIER  : ${PROJECT_BUNDLE_IDENTIFIER}")
 message(STATUS "[MAM] PROJECT_LEGAL_COPYRIGHT    : ${PROJECT_LEGAL_COPYRIGHT}")
+message(STATUS "[MAM] PROJECT_VERSION            : ${PROJECT_VERSION}")
 
 add_subdirectory(extern)
 smtg_enable_vst3_sdk()
